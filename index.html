@@ -69,6 +69,21 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .rowb .cost.pill{background:var(--accent);color:#fff;border-radius:8px;padding:5px 9px}
 .rowb[disabled]{opacity:.45}.rowb.danger .cost{color:var(--bad)}
 .lbl{font-size:.75em;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);font-weight:800}
+.title{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding-left:var(--gl);background:linear-gradient(180deg,rgba(14,26,20,.55),rgba(14,26,20,.82));color:#f3efe4;text-align:center}
+.title .logo{width:64px;height:64px;border-radius:18px;background:#1d9e75;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:bob 2.4s ease-in-out infinite}
+.title .logo i{display:block;width:34px;height:34px;background:linear-gradient(#fff,#fff) center/100% 9px no-repeat,linear-gradient(#fff,#fff) center/9px 100% no-repeat;border-radius:3px}
+.title h1{margin:4px 0 0;font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.title .tag{margin:0;font-size:13px;font-weight:700;color:#cfe3db;letter-spacing:.14em;text-transform:uppercase}
+.title .btns{display:flex;gap:8px;margin-top:10px}
+.title .big{height:48px;padding:0 22px;font-size:15px;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.title .big.ghost{background:rgba(255,253,247,.12);color:#f3efe4;border:1px solid rgba(255,255,255,.3)}
+.title .small{display:flex;gap:14px;margin-top:6px;font-size:11px;font-weight:700;color:#9fb8ad}
+.title .small button{color:#cfe3db;text-decoration:underline;font-size:11px;height:32px}
+.title .ver{position:absolute;right:12px;bottom:8px;font-family:var(--mono);font-size:10px;color:#7f948a}
+
+.app.titled .bar,.app.titled .chat,.app.titled .menu{visibility:hidden}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (max-height:480px){.title h1{font-size:28px}.title .logo{width:52px;height:52px}.title{gap:6px}}
 .review{position:absolute;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:8px 8px 8px var(--gl);z-index:10}
 .rev{width:min(var(--revW),100%);max-height:100%;overflow:auto;font-size:var(--revF);display:grid;gap:8px;align-content:start}
 .rev h2{margin:0;font-size:1.45em;font-weight:800;display:flex;align-items:baseline;gap:10px}.rev h2 small{font-size:.6em;color:var(--ink-2);font-weight:700}
@@ -119,6 +134,14 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
     <div class="grip" id="chatGrip" aria-label="Resize"></div>
   </div>
   <div class="hud sheet" id="sheet" hidden></div>
+  <div class="title" id="title" hidden>
+    <div class="logo"><i></i></div>
+    <h1>Maple Street Pharmacy</h1>
+    <p class="tag">a small pharmacy · a big squeeze</p>
+    <div class="btns"><button class="big ghost" id="tCont" hidden>Continue</button><button class="big" id="tNew">New game</button></div>
+    <div class="small"><button id="tSound">Sound: on</button></div>
+    <div class="ver" id="tVer"></div>
+  </div>
   <div class="review" id="review" hidden><div class="rev" id="rev"></div></div>
   <div class="review dbgp" id="dbg" hidden><div class="rev">
     <h2>Debug report <button class="big ghost" id="dbgClose" style="margin-left:auto">Close</button></h2>
@@ -131,7 +154,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v11 zoned floor 2026-10-23';
+const BUILD='v11.1 title screen 2026-10-23';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -279,6 +302,7 @@ function startWeek(){audioInit();S.running=true;S.day=0;S.tick=0;S.wk=blank();S.
   for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;}for(const k in busyS)delete busyS[k];for(const sc of S.scripts)sc.claimed=null;
   $('review').hidden=true;closeSheet();hourSnap={served:0,lost:0,cashIn:0,missed:0};setSpeed(S.speed||1);duck();SFX.bell();
   if(adv){glog('event',adv);adv='';}const due=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-l.fee),0);glog('money',`Week ${S.week} opens. Insurers pay ${fmt(due)} on Saturday. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);
+  saveGame();
   log('game',`week ${S.week} start`,{staff:S.staff.map(w=>w.role),build:Object.values(S.build).map(b=>b.type+b.level),plan:S.plan,cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1),demand:+demandPerDay().toFixed(1)});}
 function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();
   let paid=0,fee=0;S.ledger=S.ledger.filter(l=>{if(l.due<=S.week){paid+=l.amt*(1-l.fee);fee+=l.amt*l.fee;return false;}return true;});
@@ -545,13 +569,21 @@ cv.addEventListener('wheel',e=>{e.preventDefault();const [x,y]=toLocal(e.clientX
 const AU={ctx:null,master:null,music:null,sfx:null,on:true};try{AU.on=localStorage.getItem('msp-sound')!=='off';}catch(e){}
 function setSound(on){AU.on=on;try{localStorage.setItem('msp-sound',on?'on':'off');}catch(e){}if(AU.master)AU.master.gain.setTargetAtTime(on?1:0,AU.ctx.currentTime,.05);}
 function audioInit(){if(AU.ctx){if(AU.ctx.state==='suspended')AU.ctx.resume();return;}const C=window.AudioContext||window.webkitAudioContext;if(!C)return;AU.ctx=new C();AU.master=AU.ctx.createGain();AU.master.gain.value=AU.on?1:0;AU.master.connect(AU.ctx.destination);AU.music=AU.ctx.createGain();AU.music.gain.value=.18;AU.music.connect(AU.master);AU.sfx=AU.ctx.createGain();AU.sfx.gain.value=.4;AU.sfx.connect(AU.master);startMusic();}
-function duck(){if(AU.music)AU.music.gain.setTargetAtTime(S.running?.18:.08,AU.ctx.currentTime,.8);}
+function duck(){if(AU.music)AU.music.gain.setTargetAtTime(musicMode==='title'?.26:S.running?.18:.08,AU.ctx.currentTime,.8);}
 const midi=n=>440*Math.pow(2,(n-69)/12);
 function tone(n,t,dur,type,vol,dest,att,rel,cut){if(!AU.ctx)return;const o=AU.ctx.createOscillator(),g=AU.ctx.createGain(),f=AU.ctx.createBiquadFilter();o.type=type;o.frequency.value=midi(n);f.type='lowpass';f.frequency.value=cut||1800;o.connect(f);f.connect(g);g.connect(dest);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur+rel);o.start(t);o.stop(t+dur+rel+.05);}
 let nb=null;function noise(t,dur,vol,dest,freq,q){if(!AU.ctx)return;if(!nb){nb=AU.ctx.createBuffer(1,AU.ctx.sampleRate*.5,AU.ctx.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}const s=AU.ctx.createBufferSource(),g=AU.ctx.createGain(),f=AU.ctx.createBiquadFilter();s.buffer=nb;f.type='bandpass';f.frequency.value=freq;f.Q.value=q||1;s.connect(f);f.connect(g);g.connect(dest);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.start(t);s.stop(t+dur+.02);}
-const CHORDS=[[60,64,67,71],[57,60,64,67],[53,57,60,64],[55,60,62,65]];const E8=60/76/2;let mB=0,mN=0;
-function startMusic(){mN=AU.ctx.currentTime+.2;setInterval(()=>{while(mN<AU.ctx.currentTime+.5){step(mB,mN);mB++;mN+=E8;}},120);}
-function step(b,t){const bar=Math.floor(b/16)%4,ch=CHORDS[bar],e=b%16;if(e===0){ch.forEach(n=>tone(n,t,E8*14,'triangle',.035,AU.music,1.2,1.5,900));tone(ch[0]-24,t,E8*5,'sine',.11,AU.music,.02,.5,400);}if(e===10)tone(ch[0]-24+(bar===3?5:7),t,E8*4,'sine',.08,AU.music,.02,.4,400);const pat=[1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1];if(pat[e]&&Math.random()<.8)tone(ch[(b*5+bar)%4]+12*(Math.random()<.35?2:1),t,E8*1.2,'sine',.05,AU.music,.005,.45,2600);if(e%4===2)noise(t,.06,.018,AU.music,7000,.8);if(e===0||e===8)noise(t,.09,.05,AU.music,180,1.5);}
+/* two themes: 'title' (bright, slower, bell melody) and 'game' (lo-fi storefront loop). Switches at the next step. */
+const THEMES={game:{ch:[[60,64,67,71],[57,60,64,67],[53,57,60,64],[55,60,62,65]],bpm:76,mel:[1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1],hat:true},
+              title:{ch:[[65,69,72,76],[67,71,74,77],[64,67,71,74],[57,60,64,67]],bpm:92,mel:[1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,0],hat:false}};
+let musicMode='title',mB=0,mN=0;
+function setMusic(m){musicMode=m;}
+function startMusic(){mN=AU.ctx.currentTime+.2;setInterval(()=>{while(mN<AU.ctx.currentTime+.5){const T=THEMES[musicMode];const E8=60/T.bpm/2;step(mB,mN,T,E8);mB++;mN+=E8;}},120);}
+function step(b,t,T,E8){const bar=Math.floor(b/16)%4,ch=T.ch[bar],e=b%16;
+  if(e===0){ch.forEach(n=>tone(n,t,E8*14,'triangle',musicMode==='title'?.045:.035,AU.music,1.2,1.5,musicMode==='title'?1400:900));tone(ch[0]-24,t,E8*5,'sine',.11,AU.music,.02,.5,400);}
+  if(e===10)tone(ch[0]-24+(bar===3?5:7),t,E8*4,'sine',.08,AU.music,.02,.4,400);
+  if(T.mel[e]&&Math.random()<.85){const n=ch[(b*5+bar)%4]+12*(Math.random()<.35?2:1);if(musicMode==='title'){tone(n+12,t,E8*2,'sine',.07,AU.music,.004,.9,5000);tone(n+24,t,E8*1.2,'sine',.02,AU.music,.004,.6,8000);}else tone(n+12,t,E8*1.2,'sine',.05,AU.music,.005,.45,2600);}
+  if(T.hat&&e%4===2)noise(t,.06,.018,AU.music,7000,.8);if(T.hat&&(e===0||e===8))noise(t,.09,.05,AU.music,180,1.5);}
 const lastT={};const T=()=>AU.ctx?AU.ctx.currentTime:null;const gate=(k,g)=>{const t=T();if(t===null||t-(lastT[k]||0)<g)return null;lastT[k]=t;return t;};
 const SFX={door(){const t=gate('door',.9);if(t===null)return;tone(88,t,.18,'sine',.12,AU.sfx,.005,.5,6000);tone(84,t+.17,.3,'sine',.1,AU.sfx,.005,.7,6000);},
   register(){const t=gate('reg',.35);if(t===null)return;noise(t,.05,.1,AU.sfx,3000,2);tone(98,t+.04,.06,'triangle',.08,AU.sfx,.003,.3,6000);tone(103,t+.09,.25,'sine',.08,AU.sfx,.003,.6,8000);},
@@ -581,13 +613,22 @@ setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();}
 /* ---------- start ---------- */
 function saveGame(){try{localStorage.setItem('msp-save',JSON.stringify({S,GL:GL.slice(-120)}));}catch(e){}}
 function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week){GL.push(...(d.GL||[]));return d.S;}}catch(e){}return null;}
+function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
+  $('tSound').onclick=()=>{setSound(!AU.on);$('tSound').textContent='Sound: '+(AU.on?'on':'off');$('mSound').textContent='Sound: '+(AU.on?'on':'off');audioInit();};
+  const go=(fresh_)=>{audioInit();setMusic('title');duck();SFX.bell();$('title').hidden=true;$('app').classList.remove('titled');
+    if(fresh_){S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}renderHud();showIntro();}
+    else{renderHud();renderChat();if(S.running){setSpeed(S.speed||1);}else showReview();}
+    setTimeout(()=>{setMusic('game');duck();},6000);};
+  $('tNew').onclick=()=>go(true);$('tCont').onclick=()=>go(false);}
 function start(data){const saved=(data&&data.S)?null:loadGame();S=(data&&data.S)?data.S:(saved||fresh());if(saved)data={S:saved};
   if(data&&data.S){for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){sc.stage='bin';sc.at='bin';}}}
   fitCanvas();applyLayout();fitWorld();for(const w of S.staff){w.x=w.idle.x;w.y=w.idle.y;}$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();
-  if(S.running)setSpeed(S.speed||1);else if(S.intro){S.intro=false;showIntro();}else showReview();
+  if(data&&data.S&&!saved){if(S.running)setSpeed(S.speed||1);else if(S.intro){S.intro=false;showIntro();}else showReview();}
+  else{S.intro=false;if(S.running){S.speed=0;}showTitle(!!saved);}
   log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
 try{window.claude?.hot?.snapshot?.(()=>({S}));}catch(e){}
 window.__msp={GL,LOG,get S(){return S;},get L(){return L;}};
+window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 (window.claude?.hot?.ready)?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
 })();
 </script>
