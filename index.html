@@ -27,6 +27,7 @@
   --bg:#141a16; --panel-rgb:30,37,33; --panel-solid:#1e2521; --ink:#eef1ec; --ink-2:#a2aca5; --line:#36403a;
   --accent:#5dcaa5; --accent-ink:#e1f5ee; --accent-soft:#0f3a2e; --owed:#fac775; --bad:#f09595; --bad-soft:#3f1a1a; --good:#c0dd97; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px));padding-block:0;-webkit-tap-highlight-color:transparent}
 .app{height:100%;position:relative;overflow:hidden;--gl:12px}
@@ -130,7 +131,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v10.2 save+debug fix 2026-10-23';
+const BUILD='v10.3 hidden-rule fix 2026-10-23';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];

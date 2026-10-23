@@ -27,3 +27,11 @@ BIG=1 WEEKS=6 node harness.js index.html   # expanded store, all insurance plans
 ## Design notes
 
 See `DESIGN.md` for the concept, the decisions made so far, and the open questions.
+
+## Browser smoke test (WebKit = Safari's engine)
+
+```
+npm i playwright && npx playwright install webkit
+node test/webkit-smoke.js
+```
+Loads the game at phone landscape and phone portrait (rotated mode), runs a few seconds of week 1, opens and closes the debug page, and prints any JavaScript errors. Screenshots land in `test/`.
