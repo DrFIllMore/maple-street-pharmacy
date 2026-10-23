@@ -130,7 +130,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v10 tuned hud 2026-10-23';
+const BUILD='v10.1 viewport fix 2026-10-23';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -427,11 +427,12 @@ $('wkBtn').onclick=()=>{if(!S.running)return;setSpeed(S.speed===0?1:S.speed===1?
 /* ---------- renderer ---------- */
 const cv=$('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1};let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
 try{forceLand=localStorage.getItem('msp-land')!=='off';}catch(e){}
-function applyOrientation(){const app=$('app');ROT=innerHeight>innerWidth&&forceLand;app.classList.toggle('rot',ROT);VW=ROT?innerHeight:app.clientWidth;VH=ROT?innerWidth:app.clientHeight;}
+function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;ROT=ih>iw&&forceLand;app.classList.toggle('rot',ROT);
+  if(ROT){app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 function fitWorld(){const bx=L.floor.x*VW,by=L.floor.y*VH,bw=L.floor.w*VW,bh=L.floor.h*VH;const z=Math.min(bw/952,bh/540);cam.z=Math.max(.25,z);cam.x=bx+bw/2-68*cam.z;cam.y=by+bh/2-206*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
-let rsT;window.addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();fitWorld();log('sys',`resize ${innerWidth}×${innerHeight} rot=${ROT}`);},80);});
+let rsT;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();fitWorld();log('sys',`resize ${innerWidth}×${innerHeight} vv=${window.visualViewport?Math.round(window.visualViewport.width)+'×'+Math.round(window.visualViewport.height):'n/a'} rot=${ROT}`);},80);};window.addEventListener('resize',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);
 const iso=(x,y)=>[cam.x+(x-y)*TW*cam.z,cam.y+(x+y)*TH*cam.z];const Z=()=>cam.z;
 function shade(hex,k){const n=parseInt(hex.slice(1),16);const f=v=>Math.min(255,((n>>v)&255)*k)|0;return `rgb(${f(16)},${f(8)},${f(0)})`;}
 function poly(pts,col,stroke){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();if(col){ctx.fillStyle=col;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}}
