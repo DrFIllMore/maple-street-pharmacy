@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Maple St Pharmacy">
+<meta name="theme-color" content="#141a16">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231d9e75'/%3E%3Crect x='78' y='40' width='24' height='100' rx='6' fill='%23fff'/%3E%3Crect x='40' y='78' width='100' height='24' rx='6' fill='%23fff'/%3E%3C/svg%3E">
+<style>html,body{height:100%;margin:0;background:#141a16}</style>
+<title>Maple Street Pharmacy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: the floor is ~90% of the screen. One thin status bar on top, one ticker line at the bottom. Every size is a token the Layout panel can change. */
+:root{
+  --bg:#cfdad0; --panel-rgb:255,253,247; --panel-solid:#fffdf7; --ink:#243028; --ink-2:#66736b; --line:#c9d3ca;
+  --accent:#1d9e75; --accent-ink:#085041; --accent-soft:#e1f5ee; --owed:#ba7517; --bad:#a32d2d; --bad-soft:#fcebeb; --good:#3b6d11;
+  --sans:"Nunito",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --k:1; --barL:87px; --barR:39px; --barY:3px; --barH:41px; --barF:11px; --chatX:85px; --chatY:8px; --chatW:362px; --chatH:108px; --chatF:10px; --sheetW:360px; --sheetF:13px; --rowH:44px; --revW:560px; --revF:13px; --hudA:.9; --glR:87px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141a16; --panel-rgb:30,37,33; --panel-solid:#1e2521; --ink:#eef1ec; --ink-2:#a2aca5; --line:#36403a;
+  --accent:#5dcaa5; --accent-ink:#e1f5ee; --accent-soft:#0f3a2e; --owed:#fac775; --bad:#f09595; --bad-soft:#3f1a1a; --good:#c0dd97; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a16; --panel-rgb:30,37,33; --panel-solid:#1e2521; --ink:#eef1ec; --ink-2:#a2aca5; --line:#36403a;
+  --accent:#5dcaa5; --accent-ink:#e1f5ee; --accent-soft:#0f3a2e; --owed:#fac775; --bad:#f09595; --bad-soft:#3f1a1a; --good:#c0dd97; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px));padding-block:0;-webkit-tap-highlight-color:transparent}
+.app{height:100%;position:relative;overflow:hidden;--gl:12px}
+.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:var(--glR)}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hud{position:absolute;background:rgba(var(--panel-rgb),var(--hudA))}
+.bar{left:var(--barL);right:var(--barR);top:var(--barY);height:var(--barH);border-radius:8px;display:flex;align-items:center;gap:calc(12px*var(--k));padding:0 2px;font-size:var(--barF);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.bar .sp{flex:1}
+.bar .st{color:var(--ink-2)}.bar .st b{font-family:var(--mono);font-weight:500;color:var(--ink);margin-left:3px}
+.bar .st b.owed{color:var(--owed)}.bar .st b.neg{color:var(--bad)}.bar .st b.pos{color:var(--good)}
+.bb{height:100%;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:var(--barF)}
+.bb#menuBtn{font-size:calc(var(--barF) + 8px)}
+.menu{right:var(--barR);top:calc(var(--barY) + var(--barH) + 4px);display:grid;border:1px solid var(--line);border-radius:10px;overflow:hidden;z-index:12}
+.menu button{height:40px;padding:0 16px;text-align:left;font-size:13px;border-bottom:1px solid var(--line)}.menu button:last-child{border:0}
+.chat{left:var(--chatX);bottom:calc(var(--chatY) + max(0px,env(safe-area-inset-bottom,0px)));width:var(--chatW);height:var(--chatH);background:rgba(20,30,25,.62);color:#e7ece8;border-radius:10px;font-size:var(--chatF);display:flex;flex-direction:column;z-index:8;touch-action:none}
+.chat.collapsed{height:28px}
+.chat .tabs{display:flex;align-items:center;gap:2px;padding:2px 4px 2px 8px;height:28px;flex:none;cursor:move;touch-action:none}
+.chat .tabs button{height:24px;padding:0 8px;border-radius:6px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(231,236,232,.7);font-weight:800}
+.chat .tabs button.on{background:rgba(93,202,165,.25);color:#9fe1cb}
+.chat .chev{margin-left:auto;width:36px;height:24px;color:rgba(231,236,232,.85);font-size:14px}
+.chat .last{display:none;padding:0 8px;height:28px;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat .last .dot{font-size:9px}.chat .last .txt{overflow:hidden;text-overflow:ellipsis;flex:1}.chat .last .chev{margin-left:auto;flex:none}
+.chat.collapsed .tabs,.chat.collapsed .ll,.chat.collapsed .grip{display:none}.chat.collapsed .last{display:flex}
+.chat .ll{flex:1;overflow:auto;padding:2px 8px 6px;line-height:1.45;font-variant-numeric:tabular-nums}
+.chat .ll div{display:flex;gap:6px}.chat .ts{color:rgba(231,236,232,.55);font-family:var(--mono);font-size:.9em;flex:none}
+.chat .ops,.dot.ops{color:#fac775}.chat .bad,.dot.bad{color:#f09595}.chat .money,.dot.money{color:#c0dd97}.chat .staff,.dot.staff{color:#b5d4f4}.chat .event,.dot.event{color:#cecbf6}
+.chat .grip{position:absolute;right:-12px;top:-12px;width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid #fff;touch-action:none;opacity:.85}
+.sheet{left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom,0px));width:var(--sheetW);max-width:calc(100% - var(--gl) - 16px);max-height:calc(100% - var(--barH) - var(--barY) - 16px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:6px;font-size:var(--sheetF);z-index:9}
+.app.rot .sheet{left:calc(var(--gl) + (100% - var(--gl))/2)}
+.sheet h3{margin:0;font-size:1.1em;font-weight:800;padding-right:40px;display:flex;align-items:baseline;gap:8px}.sheet h3 small{font-weight:600;color:var(--ink-2);font-size:.8em}
+.sheet p{margin:0;font-size:.9em;color:var(--ink-2);font-weight:600}
+.sheet .x{position:absolute;right:4px;top:4px;width:40px;height:36px;font-size:18px;color:var(--ink-2)}
+.rows{display:grid;gap:4px}
+.rowb{display:flex;align-items:center;gap:8px;min-height:var(--rowH);padding:4px 6px 4px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel-solid);text-align:left;font-weight:700;font-size:1em}
+.rowb .sub{display:block;color:var(--ink-2);font-weight:600;font-size:.82em}
+.rowb .cost{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:.95em;white-space:nowrap;flex:none}
+.rowb .cost.pill{background:var(--accent);color:#fff;border-radius:8px;padding:5px 9px}
+.rowb[disabled]{opacity:.45}.rowb.danger .cost{color:var(--bad)}
+.lbl{font-size:.75em;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);font-weight:800}
+.review{position:absolute;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:8px 8px 8px var(--gl);z-index:10}
+.rev{width:min(var(--revW),100%);max-height:100%;overflow:auto;font-size:var(--revF);display:grid;gap:8px;align-content:start}
+.rev h2{margin:0;font-size:1.45em;font-weight:800;display:flex;align-items:baseline;gap:10px}.rev h2 small{font-size:.6em;color:var(--ink-2);font-weight:700}
+.rev .sub{font-size:.95em;color:var(--ink-2);font-weight:600;margin:0;line-height:1.4}.rev .sub b{color:var(--ink)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.res{background:var(--panel-solid);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
+.res .l{font-size:.78em;color:var(--ink-2);font-weight:700}.res .v{font-family:var(--mono);font-size:1.3em;font-weight:500;font-variant-numeric:tabular-nums}.res .n{font-size:.78em;color:var(--ink-2);font-weight:600;line-height:1.3}
+.pos{color:var(--good)}.neg{color:var(--bad)}
+.lever{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel-solid)}
+.lever .n{font-size:1em;font-weight:800}.lever .h{font-size:.82em;color:var(--ink-2);font-weight:600}
+.seg{display:flex;gap:4px;flex:none}.seg button{height:var(--rowH);min-width:44px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.95em}
+.seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{border:1px solid var(--accent);border-radius:10px;padding:8px 10px;background:var(--accent-soft);display:grid;gap:5px}
+.card .t{font-size:1em;font-weight:800;color:var(--accent-ink)}.card .s{font-size:.88em;color:var(--accent-ink);font-weight:600}
+.card .opts{display:flex;gap:6px;flex-wrap:wrap}.card .opts button{height:var(--rowH);padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.95em}
+.card .opts button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btns{display:flex;gap:6px;justify-content:flex-end}
+.big{height:var(--rowH);border-radius:10px;background:var(--accent);color:#fff;font-size:1.05em;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.big.ghost{background:var(--panel-solid);color:var(--ink);border:1px solid var(--line)}
+.big[disabled]{opacity:.45}
+.spark{width:100%;height:46px;display:block}
+.dbgp .env,.dbgp .lines{font-family:var(--mono);font-size:11px;line-height:1.45;white-space:pre-wrap;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--panel-solid)}
+.dbgp .lines{overflow:auto;max-height:160px}.dbgp .lines .err{color:var(--bad)}.dbgp .lines .game{color:var(--accent-ink)}
+.dbgp textarea{position:absolute;left:-9999px;top:0;width:10px;height:10px}
+</style>
+
+</head>
+<body>
+<div class="app" id="app">
+  <canvas id="cv"></canvas>
+  <div class="hud bar" id="bar">
+    <button class="bb" id="wkBtn" aria-label="Speed"><span id="wkIc">▶</span><span id="wkT">Week 1</span></button>
+    <span class="sp"></span>
+    <span class="st">Cash<b id="cash"></b></span>
+    <span class="st">Owed<b id="owed" class="owed"></b></span>
+    <span class="st" id="wnetSt">Week<b id="wnet"></b></span>
+    <span class="st" id="runSt">Runway<b id="runway"></b></span>
+    <span class="st">Trust<b id="trust"></b></span>
+    <button class="bb" id="menuBtn" aria-label="Menu">⋯</button>
+  </div>
+  <div class="hud menu" id="menu" hidden>
+    <button id="mStaff">Staff</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mDbg">Debug report</button>
+  </div>
+  <div class="hud chat" id="chat">
+    <div class="tabs" id="chatTabs"><button data-f="all" class="on">All</button><button data-f="ops">Ops</button><button data-f="money">Money</button><button data-f="staff">Staff</button><button class="chev" id="chatDown" aria-label="Collapse">⌄</button></div>
+    <div class="last" id="chatLast"><span class="dot" id="chatDot">●</span><span class="txt" id="chatTxt">Tap the clock to open.</span><button class="chev" id="chatUp" aria-label="Expand">⌃</button></div>
+    <div class="ll" id="chatLines"></div>
+    <div class="grip" id="chatGrip" aria-label="Resize"></div>
+  </div>
+  <div class="hud sheet" id="sheet" hidden></div>
+  <div class="review" id="review" hidden><div class="rev" id="rev"></div></div>
+  <div class="review dbgp" id="dbg" hidden><div class="rev">
+    <h2>Debug report <button class="big ghost" id="dbgClose" style="margin-left:auto">Close</button></h2>
+    <div class="env" id="dbgEnv"></div><div class="lines" id="dbgLines"></div>
+    <div class="btns" style="justify-content:flex-start;flex-wrap:wrap"><button class="big" id="dbgCopy">Copy full report</button><button class="big ghost" id="dbgRot">Force landscape: on</button><button class="big ghost" id="dbgClear">Clear</button><span id="dbgMsg" style="color:var(--ink-2);font-weight:700;align-self:center"></span></div>
+    <textarea id="dbgTa" aria-hidden="true" tabindex="-1"></textarea>
+  </div></div>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const BUILD='v10 tuned hud 2026-10-23';
+const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const uid=()=>Math.random().toString(36).slice(2,8);
+const SHIRTS=['#d85a30','#378add','#7f77dd','#d4537e','#639922','#ef9f27','#5dcaa5','#888780','#b5d4f4','#f0997b','#f4c0d1','#fac775'];
+const SKINS=['#f3d3b6','#e0b08a','#c78f63','#9c6a43','#6b4630'];
+const NAMES=['Dana','Luis','Priya','Theo','Amara','Kenji','Rosa','Owen','Ines','Bo','Grace','Omar','Nia','Felix'];
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+/* ---------- floor: 16 x 12 tiles, build slots ---------- */
+const DOOR={x:16.5,y:7.5},MAT={x:15,y:7},BIN={x:.6,y:3.3},BINSTAND={x:1.5,y:3.5};
+const SLOTS={};
+for(let i=0;i<6;i++)SLOTS['b'+i]={id:'b'+i,zone:'back',x:1.4+2*i,y:1.1,w:1.6,d:.9,staff:{x:2.2+2*i,y:2.7}};
+for(let i=0;i<4;i++)SLOTS['c'+i]={id:'c'+i,zone:'counter',x:2.2+2.7*i,y:4.4,w:2.2,d:.7,staff:{x:3.3+2.7*i,y:3.6},stand:{x:3.3+2.7*i,y:5.7}};
+for(let i=0;i<4;i++)SLOTS['f'+i]={id:'f'+i,zone:'front',x:2.4+2.3*i,y:9.4,w:1.8,d:.8};
+SLOTS.r0={id:'r0',zone:'room',x:12.8,y:6.2,w:2.6,d:2.4,staff:{x:14.1,y:7.1},stand:{x:14.1,y:8.4}};
+const TYPES={
+  dropoff:{zone:'counter',name:'Drop-off window',cost:600,desc:'Walk-ins hand over prescriptions here. A clerk takes them to the basket bin.'},
+  register:{zone:'counter',name:'Register',cost:500,desc:'Pick-up and payment. More registers, shorter lines.'},
+  fill:{zone:'back',name:'Fill station',cost:1200,desc:'A tech counts and fills baskets here.',levels:[{n:'Counting tray',t:2},{n:'Automatic counter',t:1.2,cost:2500,h:'almost twice as fast'},{n:'Filling robot',t:.7,cost:8000,h:'fills almost on its own'}]},
+  verify:{zone:'back',name:'Verify terminal',cost:900,desc:'A pharmacist checks every fill here before it becomes a bag.'},
+  shelf:{zone:'back',name:'Will-call shelf',cost:500,desc:'Finished bags wait here for pick-up. Holds 16.'},
+  phone:{zone:'back',name:'Phone desk',cost:700,desc:'Phone-in prescriptions get answered here instead of tying up drop-off.'},
+  problem:{zone:'back',name:'Problem desk',cost:800,desc:'Rejected claims and prescriber calls get worked here, twice as fast.'},
+  chairs:{zone:'front',name:'Two chairs',cost:200,desc:'Seated patients wait longer before giving up.'},
+  otc:{zone:'front',name:'OTC shelf',cost:900,desc:'Cold medicine and vitamins. Walk-ins buy on the way out.'},
+  room:{zone:'room',name:'Consult room',cost:2500,desc:'Vaccines and med reviews: $35 cash each, pharmacist time.'},
+};
+const WAGES={tech:800,clerk:650,rph:1800};
+const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};
+
+/* ---------- economy ---------- */
+const PLANS={few:{name:'Few',vol:.7,insured:.45,delay:1,fee:.05,h:'fewer patients · paid in 1 week · 5% fee'},most:{name:'Most',vol:1,insured:.75,delay:2,fee:.08,h:'more patients · paid in 2 weeks · 8% fee'},all:{name:'All',vol:1.3,insured:.9,delay:3,fee:.12,h:'most patients · paid in 3 weeks · 12% fee'}};
+const TICKS_DAY=108,DAYS_WEEK=6,TICK_MS=200;   /* 5 game minutes per tick: a day ≈ 22 s, a week ≈ 2 min at 1× */
+const RENT=500,DRUG=10,CASH_PRICE=36,COPAY=10,INSURER=36,CONSULT=35,OTC=8;
+
+/* ---------- state ---------- */
+let S;
+function fresh(){const s={week:1,day:0,tick:0,speed:0,running:false,done:false,cash:8000,trust:50,plan:'most',rent:RENT,ledger:[],mods:{},seen:[],
+  build:{},staff:[],scripts:[],patients:[],fx:[],wk:blank(),card:null,choice:null,intro:true,sel:null,sid:1};
+  s.build.c0={type:'dropoff',level:0};s.build.c2={type:'register',level:0};s.build.b0={type:'fill',level:0};s.build.b2={type:'verify',level:0};s.build.b3={type:'shelf',level:0};s.build.f0={type:'chairs',level:0};
+  s.staff.push(mkStaff('You','rph',true),mkStaff('Dana','tech'),mkStaff('Luis','clerk'));return s;}
+const blank=()=>({served:0,lost:0,consults:0,otc:0,cashIn:0,drug:0,paid:0,fee:0,trust0:0,phoneMissed:0});
+function mkStaff(name,role,isYou){return {id:uid(),name,role,isYou:!!isYou,x:DOOR.x,y:DOOR.y,skin:pick(SKINS),plan:null,step:0,work:0,workMax:0,carry:[],bob:Math.random()*6,idle:{x:rnd(4,11),y:rnd(2.6,3.2)}};}
+const slotsOf=t=>Object.keys(S.build).filter(k=>S.build[k].type===t).map(k=>SLOTS[k]);
+const has=t=>slotsOf(t).length>0;
+const plan=()=>PLANS[S.plan];
+function demandPerDay(){let d=22*plan().vol*(.7+S.trust/160);if(S.mods.chain)d*=S.mods.chainK;if(S.mods.referral)d+=7;return d;}
+function wages(){return S.staff.reduce((t,p)=>t+(p.isYou?0:WAGES[p.role]+(S.mods.raise?100:0)),0);}
+function owedTotal(){return S.ledger.reduce((t,l)=>t+l.amt,0);}
+
+/* ---------- scripts (baskets) & patients ---------- */
+function newScript(src){const sc={id:S.sid++,src,stage:'new',at:null,claimed:null,insured:Math.random()<plan().insured,t0:S.day*TICKS_DAY+S.tick,problem:Math.random()<.12,abandoned:false,wait:0};S.scripts.push(sc);return sc;}
+function spawnWalkIn(){const sc=newScript('walk');const w=pickQueue('dropoff');if(!w){sc.stage='dead';return;}sc.stage='withPatient';
+  const p={id:uid(),seq:S.sid++,script:sc.id,shirt:pick(SHIRTS),skin:pick(SKINS),elderly:Math.random()<.25,x:DOOR.x,y:DOOR.y,state:'toQueue',q:w.id,qt:0,wait:0,chair:-1,bob:Math.random()*6,otc:Math.random()<.35};
+  sc.patient=p.id;S.patients.push(p);SFX.door();}
+function spawnPhone(){const sc=newScript('phone');sc.stage='ringing';sc.ring=0;SFX.ring();}
+function spawnE(){const sc=newScript('e');sc.stage='bin';sc.at='bin';fx(BIN,'e-script','owed');}
+function spawnConsult(){if(!has('room'))return;const p={id:uid(),script:null,consult:true,shirt:pick(SHIRTS),skin:pick(SKINS),elderly:Math.random()<.4,x:DOOR.x,y:DOOR.y,state:'toRoom',qt:0,bob:Math.random()*6};S.patients.push(p);SFX.door();}
+function pickQueue(type){const ss=slotsOf(type);if(!ss.length)return null;return ss.map(s=>[s,S.patients.filter(p=>p.q===s.id&&(p.state==='toQueue'||p.state==='queued')).length]).sort((a,b)=>a[1]-b[1])[0][0];}
+function returnForPickup(sc){const r=pickQueue('register');if(!r){return;}
+  if(sc.src==='walk'){const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.state='toQueue';p.q=r.id;p.qt=0;p.chair=-1;p.seq=S.sid++;return;}}
+  const p={id:uid(),seq:S.sid++,script:sc.id,shirt:pick(SHIRTS),skin:pick(SKINS),elderly:Math.random()<.25,x:DOOR.x,y:DOOR.y,state:'pending',q:r.id,qt:0,wait:0,chair:-1,bob:Math.random()*6,otc:Math.random()<.2,delay:Math.floor(rnd(4,14))};sc.patient=p.id;S.patients.push(p);}
+function fx(at,text,kind){S.fx.push({x:at.x,y:at.y,text,kind,t:0});if(S.fx.length>14)S.fx.shift();if(text==='claim rejected')glog('money','Claim rejected by the insurer. Working it.','rej',6);}
+const qIndex=p=>S.patients.filter(o=>o.q===p.q&&(o.state==='toQueue'||o.state==='queued')).sort((a,b)=>a.seq-b.seq).indexOf(p);
+function chairsList(){return slotsOf('chairs').flatMap(s=>[{x:s.x+.2,y:s.y+.2},{x:s.x+1.1,y:s.y+.2}]);}
+function seat(p){const cs=chairsList();const taken=new Set(S.patients.map(o=>o.chair));for(let i=0;i<cs.length;i++)if(!taken.has(i)){p.chair=i;p.state='toSeat';p.sx=cs[i].x+.3;p.sy=cs[i].y+.1;return;}p.chair=-1;p.state='toSeat';p.sx=rnd(4,11);p.sy=rnd(6.6,7.6);}
+
+/* ---------- jobs ---------- */
+const PRI={clerk:['pickup','intake','phone','problem'],tech:['fill'],rph:['verify','consult','problem','pickup','intake','phone','fill']};
+const busyS={};  /* slotId -> staffId */
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function freeSlot(type,w){return slotsOf(type).filter(s=>!busyS[s.id]).sort((a,b)=>dist(a.staff,w)-dist(b.staff,w))[0];}
+function findJob(w){
+  for(const kind of PRI[w.role]){
+    if(kind==='intake'){for(const s of slotsOf('dropoff')){if(busyS[s.id])continue;const p=S.patients.find(o=>o.q===s.id&&o.state==='queued'&&o.arrived&&qIndex(o)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&!sc.claimed)return jobIntake(w,s,p,sc);}}}
+    if(kind==='phone'){const sc=S.scripts.find(x=>x.stage==='ringing'&&!x.claimed);if(sc){const s=freeSlot('phone',w)||freeSlot('dropoff',w);if(s)return jobPhone(w,s,sc);}}
+    if(kind==='fill'){const sc=S.scripts.filter(x=>x.stage==='bin'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const s=freeSlot('fill',w);const v=slotsOf('verify')[0];if(s&&v)return jobFill(w,s,sc,v);}}
+    if(kind==='verify'){const sc=S.scripts.filter(x=>x.stage==='tray'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const s=freeSlot('verify',w);if(s)return jobVerify(w,s,sc);}}
+    if(kind==='problem'){const sc=S.scripts.filter(x=>x.stage==='problem'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const s=freeSlot('problem',w)||(w.role==='rph'?freeSlot('verify',w):null);if(s)return jobProblem(w,s,sc);}}
+    if(kind==='pickup'){for(const s of slotsOf('register')){if(busyS[s.id])continue;const p=S.patients.find(o=>o.q===s.id&&o.state==='queued'&&o.arrived&&qIndex(o)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='shelf'&&!sc.claimed)return jobPickup(w,s,p,sc);}}}
+    if(kind==='consult'){const r=slotsOf('room')[0];if(r&&!busyS[r.id]){const p=S.patients.find(o=>o.consult&&o.state==='atRoom');if(p)return jobConsult(w,r,p);}}
+  }return null;}
+function claim(w,slot,sc){busyS[slot.id]=w.id;if(sc)sc.claimed=w.id;}
+function release(slot,sc){delete busyS[slot.id];if(sc)sc.claimed=null;}
+function jobIntake(w,s,p,sc){claim(w,s,sc);p.state='served';return {name:'intake',steps:[{go:s.staff},{work:1,label:'taking Rx'},{fn:()=>{sc.stage='carried';sc.at=null;w.carry=[sc];seat(p);release(s,null);}},{go:BINSTAND},{fn:()=>{w.carry=[];sc.stage='bin';sc.at='bin';sc.claimed=null;SFX.paper();}}]};}
+function jobPhone(w,s,sc){claim(w,s,sc);return {name:'phone',steps:[{go:s.staff},{work:2,label:'on the phone'},{fn:()=>{sc.stage='carried';w.carry=[sc];release(s,null);}},{go:BINSTAND},{fn:()=>{w.carry=[];sc.stage='bin';sc.at='bin';sc.claimed=null;}}]};}
+function jobFill(w,s,sc,v){claim(w,s,sc);const lvl=TYPES.fill.levels[S.build[s.id].level];const plan={name:'fill',steps:[{go:BINSTAND},{fn:()=>{const more=S.scripts.filter(x=>x.stage==='bin'&&!x.claimed&&x!==sc).sort((a,b)=>a.t0-b.t0).slice(0,2);const batch=[sc,...more];for(const b of batch){b.claimed=w.id;b.stage='carried';b.at=null;}w.carry=batch;
+    plan.steps.push({go:s.staff},{fn:()=>{for(const b of batch)b.at='slot:'+s.id;w.carry=[];}},{work:lvl.t*batch.length*(S.mods.shortage?1.5:1),label:'filling'},{fn:()=>{for(const b of batch)b.at=null;w.carry=batch;release(s,null);SFX.pills();}},{go:v.staff},{fn:()=>{for(const b of batch){b.stage='tray';b.at='tray:'+v.id;b.claimed=null;}w.carry=[];}});}}]};return plan;}
+function jobVerify(w,s,sc){claim(w,s,sc);const shelf=slotsOf('shelf')[0];const prob=slotsOf('problem')[0];const plan={name:'verify',steps:[]};const P=plan.steps;
+  P.push({go:s.staff});
+  P.push({fn:()=>{const more=S.scripts.filter(x=>x.stage==='tray'&&x.at==='tray:'+s.id&&!x.claimed&&x!==sc).sort((a,b)=>a.t0-b.t0).slice(0,3);const batch=[sc,...more];for(const b of batch){b.claimed=w.id;b.at='slot:'+s.id;}
+    P.push({work:batch.length,label:'checking'});
+    P.push({fn:()=>{const good=batch.filter(b=>!b.problem),bad=batch.filter(b=>b.problem);for(const b of bad)b.problem=false;release(s,null);
+      if(good.length){P.push({fn:()=>{w.carry=good;for(const b of good)b.at=null;}},{go:shelf?shelf.staff:s.staff},{fn:()=>{for(const b of good)bagIt(w,b,shelf);w.carry=[];}});}
+      if(bad.length){
+        if(prob){P.push({fn:()=>{w.carry=bad;for(const b of bad)b.at=null;}},{go:prob.staff},{fn:()=>{for(const b of bad){b.stage='problem';b.at='problem:'+prob.id;b.claimed=null;}w.carry=[];fx(prob,'claim rejected','bad');}});}
+        else{P.push({go:s.staff},{fn:()=>{for(const b of bad)b.at='slot:'+s.id;fx(s,'claim rejected','bad');}},{work:4*bad.length,label:'calling insurer'},{fn:()=>{w.carry=bad;for(const b of bad)b.at=null;}},{go:shelf?shelf.staff:s.staff},{fn:()=>{for(const b of bad)bagIt(w,b,shelf);w.carry=[];}});}
+      }}});}});
+  return plan;}
+function jobProblem(w,s,sc){claim(w,s,sc);const shelf=slotsOf('shelf')[0];const fast=S.build[s.id].type==='problem';return {name:'problem',steps:[{go:s.staff},{fn:()=>{sc.at='slot:'+s.id;}},{work:fast?2:4,label:'calling insurer'},{fn:()=>{w.carry=[sc];sc.at=null;release(s,null);}},{go:shelf?shelf.staff:s.staff},{fn:()=>{bagIt(w,sc,shelf);w.carry=[];}}]};}
+function bagIt(w,sc,shelf){sc.claimed=null;S.wk.cyc=(S.wk.cyc||0)+(S.day*TICKS_DAY+S.tick-sc.t0);S.wk.bags=(S.wk.bags||0)+1;sc.stage='shelf';sc.at=shelf?'shelf:'+shelf.id:'bin';S.wk.drug+=DRUG;SFX.paper();if(sc.abandoned){sc.unclaimed=true;}else if(sc.tomorrow){}else returnForPickup(sc);}
+function jobPickup(w,s,p,sc){claim(w,s,sc);p.state='served';const shelf=slotsOf('shelf')[0];return {name:'pickup',steps:[{go:s.staff},{fn:()=>{w.carry=[sc];sc.at=null;}},{work:1,label:'ringing up'},{fn:()=>{w.carry=[];pay(sc,p,s);release(s,sc);sc.stage='done';p.state='leaving';p.mood='check';}}]};}
+function jobConsult(w,r,p){claim(w,r,null);p.state='served';return {name:'consult',steps:[{go:r.staff},{work:4,label:'consulting'},{fn:()=>{S.cash+=CONSULT;S.wk.cashIn+=CONSULT;S.wk.consults++;S.trust+=.3;fx(r.stand,'+$35','cash');SFX.register();release(r,null);p.state='leaving';p.mood='heart';}}]};}
+function pay(sc,p,s){S.wk.served++;S.trust+=.04;let otc=0;if(p.otc&&has('otc'))otc=OTC*Math.min(2,slotsOf('otc').length);
+  if(sc.insured){S.cash+=COPAY+otc;S.wk.cashIn+=COPAY+otc;S.ledger.push({due:S.week+plan().delay,amt:INSURER,fee:plan().fee});fx(s.stand,`+$${COPAY+otc} · $${INSURER} owed`,'owed');}
+  else{S.cash+=CASH_PRICE+otc;S.wk.cashIn+=CASH_PRICE+otc;fx(s.stand,`+$${CASH_PRICE+otc}`,'cash');}
+  if(otc)S.wk.otc+=otc;SFX.register();}
+
+/* ---------- tick (5 game minutes) ---------- */
+let accW=0,accP=0,accE=0,accC=0;
+function tick(){
+  S.tick++;if(S.tick===1)morning();const h=9+S.tick*5/60;const rush=h<11?.75:h<13?1.35:h<16?.8:1.3;
+  const d=demandPerDay()/TICKS_DAY*rush;accW+=d*.5;accP+=d*.25;accE+=d*.25;accC+=(has('room')?5*(.6+S.trust/120)/TICKS_DAY:0);
+  while(accW>=1){accW-=1;spawnWalkIn();}while(accP>=1){accP-=1;spawnPhone();}while(accE>=1){accE-=1;spawnE();}while(accC>=1){accC-=1;spawnConsult();}
+  /* workers */
+  for(const w of S.staff){if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;}}
+    if(w.plan){const st=w.plan.steps[w.step];if(st&&st.work!==undefined){if(!w.workMax){w.workMax=st.work;w.work=st.work;}w.work--;if(w.work<=0){w.workMax=0;w.step++;}}}}
+  /* scripts */
+  for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14){sc.stage='dead';S.wk.phoneMissed++;S.trust-=.2;glog('bad','Missed a phone-in prescription. Nobody picked up.','missed',12);}}}
+  /* patients */
+  for(const p of S.patients){
+    if(p.state==='queued'){p.qt++;if(p.qt>12){leave(p,true);}}
+    if(p.state==='waiting'){p.wait++;const lim=p.chair>=0?34:24;if(p.wait>lim)leave(p,true);}
+    if(p.state==='atRoom'){p.qt++;if(p.qt>10)leave(p,false);}
+    if(p.state==='pending'){p.delay--;if(p.delay<=0){p.state='toQueue';p.seq=S.sid++;}}
+  }
+  S.trust=Math.max(0,Math.min(100,S.trust));
+  if(S.tick%36===0)log('tick',`d${S.day} ${Math.floor(h)}h bin${S.scripts.filter(x=>x.stage==='bin').length} tray${S.scripts.filter(x=>x.stage==='tray').length} shelf${S.scripts.filter(x=>x.stage==='shelf').length} prob${S.scripts.filter(x=>x.stage==='problem').length} ring${S.scripts.filter(x=>x.stage==='ringing').length} people${S.patients.length} served${S.wk.served} lost${S.wk.lost} idle${S.staff.filter(w=>!w.plan).length}/${S.staff.length} fps${fps}`);
+  watch();if(S.tick>=TICKS_DAY)endDay();renderHud();}
+function leave(p,angry){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage!=='done'){sc.abandoned=true;if(sc.stage==='withPatient')sc.stage='dead';if(sc.stage==='shelf'){sc.unclaimed=true;}}
+  if(angry){S.wk['lost_'+p.state+(p.q?'_'+(S.build[p.q]||{}).type:'')]=(S.wk['lost_'+p.state+(p.q?'_'+(S.build[p.q]||{}).type:'')]||0)+1;}const where=p.q&&S.build[p.q]?(S.build[p.q].type==='register'?'at pick-up':'at drop-off'):'waiting for the fill';p.state='leaving';p.q=null;p.chair=-1;if(angry){p.mood='angry';S.wk.lost++;S.trust-=.3;SFX.sigh();glog('bad',`Someone gave up ${where}.`,'walk',12);}}
+function endDay(){S.tick=0;S.day++;
+  for(const p of S.patients){if(p.state==='leaving'||p.state==='served')continue;const sc=S.scripts.find(x=>x.id===p.script);
+    if(sc&&sc.stage!=='done'&&sc.stage!=='withPatient'){sc.src='phone';sc.patient=null;sc.tomorrow=true;p.state='leaving';p.q=null;p.chair=-1;}
+    else leave(p,false);}
+  S.scripts=S.scripts.filter(sc=>!(sc.unclaimed||sc.stage==='dead'||sc.stage==='done'));
+  if(S.day>=DAYS_WEEK)endWeek();}
+function morning(){for(const sc of S.scripts)if(sc.tomorrow){sc.tomorrow=false;if(sc.stage==='shelf')returnForPickup(sc);}}
+
+/* ---------- week ---------- */
+let timer=null;
+function setSpeed(n){S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setInterval(tick,TICK_MS/n);renderHud();}
+function startWeek(){audioInit();S.running=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf'].includes(sc.stage)&&!sc.abandoned);
+  for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;}for(const k in busyS)delete busyS[k];for(const sc of S.scripts)sc.claimed=null;
+  $('review').hidden=true;closeSheet();hourSnap={served:0,lost:0,cashIn:0,missed:0};setSpeed(S.speed||1);duck();SFX.bell();
+  if(adv){glog('event',adv);adv='';}const due=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-l.fee),0);glog('money',`Week ${S.week} opens. Insurers pay ${fmt(due)} on Saturday. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);
+  log('game',`week ${S.week} start`,{staff:S.staff.map(w=>w.role),build:Object.values(S.build).map(b=>b.type+b.level),plan:S.plan,cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1),demand:+demandPerDay().toFixed(1)});}
+function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();
+  let paid=0,fee=0;S.ledger=S.ledger.filter(l=>{if(l.due<=S.week){paid+=l.amt*(1-l.fee);fee+=l.amt*l.fee;return false;}return true;});
+  S.cash+=paid;S.wk.paid=paid;S.wk.fee=fee;const costs=wages()+S.rent+S.wk.drug*(S.mods.cheap?.9:1)+(S.mods.delivery?60:0);S.cash-=costs;S.wk.costs=costs;
+  if(S.mods.delivery)S.trust+=1.5;if(S.mods.referral)S.trust+=1;
+  for(const k of Object.keys(S.mods)){if(typeof S.mods[k]==='number'&&S.mods[k]<99){S.mods[k]--;if(S.mods[k]<=0)delete S.mods[k];}}
+  S.trust=Math.max(0,Math.min(100,S.trust));S.wk.net=S.wk.cashIn+paid-costs;(S.hist=S.hist||[]).push({week:S.week,cash:Math.round(S.cash),net:Math.round(S.wk.net),inflow:S.wk.cashIn+paid});
+  glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, drugs ${fmt(S.wk.drug)} paid. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
+  log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,consults:S.wk.consults,otc:S.wk.otc,missedCalls:S.wk.phoneMissed,cashIn:S.wk.cashIn,paid:Math.round(paid),fee:Math.round(fee),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
+  if(S.cash>=30000&&S.trust>=60)S.done='win';else if(S.cash<-6000)S.done='lose';
+  S.card=S.done?null:pickCard();S.choice=null;S.week++;showReview();}
+
+/* ---------- event cards ---------- */
+const CARDS=[
+  {id:'referral',when:()=>S.week>=2&&!S.mods.referral,t:'A clinic nearby wants to send you about 40 more patients a week.',s:'All insured: more owed to you, more work, more trust.',o:[['Pass',()=>{}],['Take it',()=>{S.mods.referral=4;}]]},
+  {id:'chain',when:()=>S.week>=3&&!S.mods.chain,t:'A chain pharmacy opened across the street.',s:'Fewer walk-ins for a month unless you fight for them.',o:[['Ride it out',()=>{S.mods.chain=4;S.mods.chainK=.8;}],['Run a $1,500 promo',()=>{S.cash-=1500;S.mods.chain=4;S.mods.chainK=.93;}]]},
+  {id:'rent',when:()=>S.week>=4,t:'Your landlord wants $150 more per week.',s:'Pushing back usually works. Sometimes it doesn\'t.',o:[['Agree',()=>{S.rent+=150;}],['Push back',()=>{if(Math.random()<.6)adv='The landlord backed down.';else{S.rent+=250;adv='The landlord dug in: $250 more.';}}]]},
+  {id:'flu',when:()=>has('room')&&!S.mods.flu,t:'Flu season is here. People want shots.',s:'Consult visits double for two weeks. Your pharmacist will be busy.',o:[['Noted',()=>{S.mods.flu=2;}]]},
+  {id:'raise',when:()=>S.staff.length>=4&&!S.mods.raise,t:'Your team asks for a raise.',s:'$100 more per person each week, or a grumpy month.',o:[['Give it',()=>{S.mods.raise=99;}],['Not now',()=>{S.trust-=2;}]]},
+  {id:'slowpay',when:()=>S.plan!=='few'&&owedTotal()>2500,t:'A big insurer is paying late this month.',s:'Wait it out, or take 85% of what\'s owed right now.',o:[['Wait',()=>{for(const l of S.ledger)l.due++;}],['Take the advance',()=>{S.cash+=owedTotal()*.85;S.ledger=[];}]]},
+  {id:'deliver',when:()=>S.week>=3&&!S.mods.delivery,t:'Mrs. Alvarez asks if you could deliver her insulin. Her neighbors are asking too.',s:'A driver costs $60 a week. Word gets around.',o:[['Sorry, no',()=>{S.trust-=1;}],['Start delivering',()=>{S.mods.delivery=99;}]]},
+  {id:'wholesale',when:()=>S.week>=2&&S.cash>=3000&&!S.mods.cheap,t:'Your wholesaler offers 10% off drugs if you pay $2,000 up front.',s:'Cash now for cheaper stock for a month.',o:[['Pass',()=>{}],['Pay it',()=>{S.cash-=2000;S.mods.cheap=4;}]]},
+  {id:'shortage',when:()=>S.week>=3&&!S.mods.shortage,t:'A drug shortage hits this month.',s:'Filling takes 50% longer for two weeks.',o:[['Noted',()=>{S.mods.shortage=2;}]]},
+];
+let adv='';
+function pickCard(){const ok=CARDS.filter(c=>c.when()&&!S.seen.slice(-3).includes(c.id));if(!ok.length)return null;const c=pick(ok);S.seen.push(c.id);return c.id;}
+
+/* ---------- layout (reference 799×430 landscape phone; the player tuned these in the preview) ---------- */
+const LDEF={barL:87,barR:39,barY:3,barH:41,barF:11,chatX:85,chatY:8,chatW:362,chatH:108,chatF:10,sheetW:360,sheetF:13,rowH:44,revW:560,revF:13,size:1,chatOpen:true,chatShown:true,floor:{x:58/799,y:39/430,w:670/799,h:383/430},glR:87};
+let L=JSON.parse(JSON.stringify(LDEF));try{const sv=JSON.parse(localStorage.getItem('msp-layout2')||'{}');for(const k of ['chatX','chatY','chatW','chatH','size','chatOpen','chatShown'])if(sv[k]!==undefined)L[k]=sv[k];}catch(e){}
+let K=1;
+function applyLayout(){K=Math.max(.8,Math.min(1.4,Math.min(VW/799,VH/430)))*L.size;const r=document.documentElement.style;r.setProperty('--k',K);
+  for(const k of ['barL','barR','barY','barH','barF','chatF','sheetW','sheetF','rowH','revW','revF'])r.setProperty('--'+k,(L[k]*K)+'px');
+  for(const k of ['chatX','chatY','chatW','chatH'])r.setProperty('--'+k,L[k]+'px');r.setProperty('--glR',L.glR+'px');
+  const c=$('chat');c.classList.toggle('collapsed',!L.chatOpen);c.hidden=!L.chatShown;
+  try{localStorage.setItem('msp-layout2',JSON.stringify({chatX:L.chatX,chatY:L.chatY,chatW:L.chatW,chatH:L.chatH,size:L.size,chatOpen:L.chatOpen,chatShown:L.chatShown}));}catch(e){}}
+function layoutText(){return `layout ${JSON.stringify({barL:L.barL,barR:L.barR,barY:L.barY,barH:L.barH,barF:L.barF,chat:[L.chatX,L.chatY,L.chatW,L.chatH,L.chatF],size:L.size,k:+K.toFixed(2)})} · window ${innerWidth}×${innerHeight} @${devicePixelRatio} rot=${ROT}`;}
+function copyText(txt,msgId){const done=()=>{$(msgId).textContent='Copied. Paste it to Claude.';setTimeout(()=>$(msgId).textContent='',3000);};const fb=()=>{const ta=$('dbgTa');ta.value=txt;ta.style.left='0';ta.style.width='100%';ta.style.height='120px';ta.focus();ta.select();try{document.execCommand('copy');done();}catch(e){$(msgId).textContent='Select the box and copy manually.';}setTimeout(()=>{ta.style.left='-9999px';ta.style.width='10px';ta.style.height='10px';},6000);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb();}
+
+/* ---------- activity chat (MMORPG-style, bottom-left) ---------- */
+const GL=[];let logFilter='all';const glast={};
+function glog(type,text,key,cool){const now=S.week*1000+S.day*TICKS_DAY+S.tick;if(key){if(glast[key]!==undefined&&now-glast[key]<(cool||12))return;glast[key]=now;}
+  GL.push({wk:S.week,day:S.day,tick:S.tick,type,text});if(GL.length>400)GL.shift();renderChat();}
+const stamp=e=>`${DAYS[e.day]?DAYS[e.day].slice(0,3):'—'} ${clockAt(e.tick)}`;
+function clockAt(t){const m=9*60+t*5,h=Math.floor(m/60),mm=m%60;return `${((h+11)%12)+1}:${String(mm).padStart(2,'0')}`;}
+function renderChat(){const e=GL[GL.length-1];if(e){$('chatTxt').textContent=`${stamp(e)} · ${e.text}`;$('chatDot').className='dot '+e.type;}
+  if(!L.chatOpen||!L.chatShown)return;const el=$('chatLines');const rows=GL.filter(x=>logFilter==='all'||x.type===logFilter||(logFilter==='ops'&&x.type==='bad')).slice(-80);
+  el.innerHTML=rows.map(x=>`<div><span class="ts">${stamp(x)}</span><span class="${x.type}">${x.text}</span></div>`).join('')||'<div><span class="ts">—</span><span>Quiet so far.</span></div>';el.scrollTop=1e6;}
+$('chatTabs').querySelectorAll('[data-f]').forEach(b=>b.onclick=e=>{e.stopPropagation();logFilter=b.dataset.f;$('chatTabs').querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));renderChat();});
+$('chatDown').onclick=e=>{e.stopPropagation();L.chatOpen=false;applyLayout();};$('chatUp').onclick=e=>{e.stopPropagation();L.chatOpen=true;applyLayout();renderChat();};
+(function(){const g=$('chatGrip'),t=$('chatTabs');let d=null;
+  g.addEventListener('pointerdown',e=>{g.setPointerCapture(e.pointerId);d={x:e.clientX,y:e.clientY,w:L.chatW,h:L.chatH};e.stopPropagation();});
+  g.addEventListener('pointermove',e=>{if(!d)return;const [dx,dy]=dLocal(e.clientX-d.x,e.clientY-d.y);L.chatW=Math.max(180,Math.min(VW-L.chatX-16,d.w+dx));L.chatH=Math.max(60,Math.min(VH-80,d.h-dy));applyLayout();});
+  const up=()=>{d=null;};g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up);
+  let m=null;t.addEventListener('pointerdown',e=>{if(e.target.tagName==='BUTTON')return;t.setPointerCapture(e.pointerId);m={x:e.clientX,y:e.clientY,X:L.chatX,Y:L.chatY};});
+  t.addEventListener('pointermove',e=>{if(!m)return;const [dx,dy]=dLocal(e.clientX-m.x,e.clientY-m.y);L.chatX=Math.max(0,Math.min(VW-L.chatW,m.X+dx));L.chatY=Math.max(0,Math.min(VH-L.chatH-8,m.Y-dy));applyLayout();});
+  const mu=()=>{m=null;};t.addEventListener('pointerup',mu);t.addEventListener('pointercancel',mu);})();
+/* game-state watchers: called each tick, rate-limited by key */
+let hourSnap={served:0,lost:0,cashIn:0,missed:0};
+function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;const bin=c('bin'),tray=c('tray'),prob=c('problem'),shelf=c('shelf'),ring=c('ringing');
+  const ql=t=>Math.max(0,...slotsOf(t).map(s=>S.patients.filter(p=>p.q===s.id&&(p.state==='toQueue'||p.state==='queued')).length));
+  const tech=S.staff.find(w=>w.role==='tech'),rph=S.staff.find(w=>w.role==='rph'&&!w.isYou)||S.staff.find(w=>w.isYou);
+  if(!has('verify'))glog('bad','No verify terminal. Nothing can be checked.','noverify',36);
+  if(!has('register'))glog('bad','No register. Nobody can pay.','noreg',36);
+  if(ring>=2)glog('bad',`${ring} phones ringing, nobody free to answer.`,'ring',24);
+  if(bin>=6)glog('bad',tech?`${tech.name}: bin has ${bin} baskets, I can't keep up.`:`Bin has ${bin} baskets and no technician.`,'bin',24);
+  else if(bin>=3)glog('ops',`Bin is filling: ${bin} baskets.`,'bin',24);
+  if(tray>=4)glog('bad',`${rph?rph.name:'Pharmacist'}: ${tray} fills waiting on me to check.`,'tray',24);
+  if(ql('dropoff')>=4)glog('ops',`Line at drop-off: ${ql('dropoff')} waiting.`,'qd',24);
+  if(ql('register')>=4)glog('ops',`Line at pick-up: ${ql('register')} waiting.`,'qr',24);
+  if(prob>=3)glog('ops',`${prob} rejected claims waiting to be worked.`,'prob',24);
+  if(shelf>=12)glog('ops',`${shelf} bags on the shelf. People haven't come back yet.`,'shelf',36);
+  const idle=S.staff.filter(w=>!w.plan).length;if(idle>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idle} staff standing around.`,'idle',36);
+  if(S.tick%12===0){const s=S.wk.served-hourSnap.served,l=S.wk.lost-hourSnap.lost,m=S.wk.cashIn-hourSnap.cashIn,pm=S.wk.phoneMissed-hourSnap.missed;hourSnap={served:S.wk.served,lost:S.wk.lost,cashIn:S.wk.cashIn,missed:S.wk.phoneMissed};
+    if(s||l||m)glog('money',`Hour: ${s} served, ${l} gave up${pm?`, ${pm} calls missed`:''}, ${fmt(m)} in.`);}
+  if(owedTotal()>S.cash*1.5&&owedTotal()>2500)glog('ops',`Insurers owe you ${fmt(owedTotal())}; you have ${fmt(S.cash)}.`,'owed',72);}
+/* ---------- numbers the bar shows ---------- */
+function weekSoFar(){const frac=(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK);return S.wk.cashIn-(wages()+S.rent)*frac-S.wk.drug;}
+function runwayWeeks(){const burn=wages()+S.rent+demandPerDay()*6*DRUG;const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
+
+/* ---------- review: two pages, never scrolls on a phone ---------- */
+function page(html){$('rev').innerHTML=html;$('review').hidden=false;}
+function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const W=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*W,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${W}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/><circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="3" fill="var(--accent)"/></svg>`;}
+function showReview(){closeAll();const w=S.wk,prev=S.week-1;
+  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>The bank called</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}. Too much owed, not enough in hand.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;renderHud();showIntro();};return;}
+  if(prev<1){reviewDecide();return;}
+  const lostWhy=Object.keys(w).filter(k=>k.startsWith('lost_')).map(k=>`${w[k]} at ${k.includes('register')?'pick-up':k.includes('dropoff')?'drop-off':'waiting'}`).join(', ');
+  const rw=runwayWeeks();const d=S.trust-w.trust0;
+  page(`<h2>Week ${prev} <small>results · 1 of 2</small></h2>
+    <div class="grid4"><div class="res"><div class="l">Served</div><div class="v">${w.served}</div><div class="n">${w.lost?`<span class="neg">${w.lost} gave up</span> (${lostWhy})`:'nobody gave up'}${w.phoneMissed?`<br><span class="neg">${w.phoneMissed} calls missed</span>`:''}</div></div>
+      <div class="res"><div class="l">Consults · OTC</div><div class="v">${w.consults}</div><div class="n">${fmt(w.consults*CONSULT+w.otc)} cash</div></div>
+      <div class="res"><div class="l">Trust</div><div class="v ${d<0?'neg':'pos'}">${d>=0?'+':''}${Math.round(d)}</div><div class="n">now ${Math.round(S.trust)}</div></div>
+      <div class="res"><div class="l">Runway</div><div class="v ${rw<2?'neg':''}">${rw===Infinity?'ok':Math.round(rw*10)/10+'w'}</div><div class="n">${rw===Infinity?'earning more than you burn':'weeks of cash at this pace'}</div></div></div>
+    <div class="grid3"><div class="res"><div class="l">Cash in at the counter</div><div class="v pos">+${fmt(w.cashIn)}</div><div class="n">copays, cash sales, consults</div></div><div class="res"><div class="l">Insurers paid you</div><div class="v pos">+${fmt(w.paid)}</div><div class="n">after ${fmt(w.fee)} fees · ${fmt(owedTotal())} still owed</div></div><div class="res"><div class="l">Costs</div><div class="v neg">−${fmt(w.costs)}</div><div class="n">staff ${fmt(wages())} · drugs ${fmt(w.drug)} · rent ${fmt(S.rent)}</div></div></div>
+    <div class="res" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span><span class="l">Week ${prev} net</span><br><span class="v ${w.net<0?'neg':'pos'}">${w.net>=0?'+':''}${fmt(w.net)}</span></span><span style="flex:1;min-width:0">${spark()}</span><span style="text-align:right"><span class="l">Cash now</span><br><span class="v">${fmt(S.cash)}</span></span></div>
+    <div class="btns"><button class="big" id="next">Next: decide ▶</button></div>`);
+  $('next').onclick=()=>{SFX.click();reviewDecide();};}
+function reviewDecide(){const card=CARDS.find(c=>c.id===S.card);const due=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-l.fee),0);
+  page(`<h2>Week ${S.week} <small>${S.week>1?'decide · 2 of 2':'set up'}</small></h2>
+    <div class="lever"><div><div class="n">Insurance plans</div><div class="h" id="plH">${plan().h}</div></div><div class="seg" id="plSeg">${Object.keys(PLANS).map(k=>`<button data-k="${k}" class="${S.plan===k?'on':''}">${PLANS[k].name}</button>`).join('')}</div></div>
+    ${card?`<div class="card"><div class="t">${card.t}</div><div class="s">${card.s}</div><div class="opts" id="opts">${card.o.map((o,i)=>`<button data-i="${i}">${o[0]}</button>`).join('')}</div></div>`:''}
+    <p class="sub">Expect about <b>${Math.round(demandPerDay())}</b> prescriptions a day. Insurers will pay <b>${fmt(due)}</b> at the end of this week. Build and hire from the floor any time.</p>
+    <div class="btns">${S.week>1?'<button class="big ghost" id="back">◀ Results</button>':''}<button class="big" id="run" ${card?'disabled':''}>Run week ${S.week} ▶</button></div>`);
+  $('rev').querySelectorAll('#plSeg button').forEach(b=>b.onclick=()=>{S.plan=b.dataset.k;$('rev').querySelectorAll('#plSeg button').forEach(x=>x.classList.toggle('on',x===b));$('plH').textContent=plan().h;SFX.click();});
+  if(card)$('rev').querySelectorAll('#opts button').forEach(b=>b.onclick=()=>{S.choice=+b.dataset.i;$('rev').querySelectorAll('#opts button').forEach(x=>x.classList.toggle('on',x===b));$('run').disabled=false;SFX.click();});
+  const bk=$('back');if(bk)bk.onclick=()=>{SFX.click();showReview();};
+  $('run').onclick=()=>{if(card&&S.choice!==null){card.o[S.choice][1]();log('game',`card ${card.id} -> ${card.o[S.choice][0]}`);glog('event',`${card.t} You chose: ${card.o[S.choice][0]}.`);}$('review').hidden=true;startWeek();};renderHud();}
+function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy</h2><p class="sub">You own a small pharmacy with ${fmt(S.cash)} in the bank. Prescriptions arrive by walk-in, phone, and screen. They become baskets in the bin; a tech fills them, a pharmacist checks them, a bag waits on the shelf, the patient pays at the register.</p><p class="sub"><b>Tap a dashed slot</b> to build. <b>Tap a station</b> to upgrade it. <b>⋯ menu</b> for staff and settings. The chat box in the corner tells you what's happening; drag its corner to resize it.</p><p class="sub">Goal: ${fmt(30000)} in cash with the neighborhood's trust. Insurers pay late; don't run out of cash waiting.</p><div class="btns"><button class="big" id="go">Set up week 1</button></div>`);$('go').onclick=()=>{S.card=null;reviewDecide();};}
+
+/* ---------- sheets: build / station / staff ---------- */
+function sheet(html){const el=$('sheet');el.innerHTML=html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
+function closeSheet(){$('sheet').hidden=true;S.sel=null;}
+function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;}
+function openSlot(id){const s=SLOTS[id],b=S.build[id];S.sel=id;SFX.click();$('menu').hidden=true;
+  if(!b){const opts=Object.keys(TYPES).filter(t=>TYPES[t].zone===s.zone);
+    sheet(`<h3>Empty space <small>${s.zone==='counter'?'counter':s.zone==='back'?'back room':s.zone==='front'?'floor':'room'}</small></h3><div class="rows">${opts.map(t=>`<button class="rowb" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><span>${TYPES[t].name}<span class="sub">${TYPES[t].desc}</span></span><span class="cost pill">${fmt(TYPES[t].cost)}</span></button>`).join('')}</div>`);
+    $('sheet').querySelectorAll('[data-t]').forEach(x=>x.onclick=()=>{const t=x.dataset.t;S.cash-=TYPES[t].cost;S.build[id]={type:t,level:0};SFX.build();log('game',`build ${t} at ${id}`);glog('staff',`Built a ${TYPES[t].name.toLowerCase()} for ${fmt(TYPES[t].cost)}.`);closeSheet();renderHud();});return;}
+  const T=TYPES[b.type];const n=b.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+id).length:b.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+id).length:b.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+id).length:b.type==='problem'?S.scripts.filter(x=>x.at==='problem:'+id).length:['dropoff','register'].includes(b.type)?S.patients.filter(p=>p.q===id&&p.state!=='leaving').length:0;
+  const who=S.staff.find(w=>busyS[id]===w.id);const status=who?`${who.name} is ${who.plan&&who.plan.steps[who.step]&&who.plan.steps[who.step].label||'working'} here`:n?`${n} waiting`:'idle';
+  const lvl=T.levels?T.levels[b.level]:null,nxt=T.levels?T.levels[b.level+1]:null;
+  const essential=['dropoff','register','verify','shelf'].includes(b.type)&&slotsOf(b.type).length===1;
+  sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}.</p><div class="rows">
+    ${nxt?`<button class="rowb" id="upg" ${S.cash<nxt.cost?'disabled':''}><span>Upgrade to ${nxt.n}<span class="sub">${nxt.h}</span></span><span class="cost pill">${fmt(nxt.cost)}</span></button>`:''}
+    <button class="rowb danger" id="rm" ${essential||who?'disabled':''}><span>Remove<span class="sub">${essential?'You need at least one of these.':'Half the cost comes back.'}</span></span><span class="cost">+${fmt(T.cost/2)}</span></button></div>`);
+  const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;b.level++;SFX.build();log('game',`upgrade ${b.type} at ${id} -> ${b.level}`);glog('staff',`${T.name} upgraded to ${nxt.n}.`);openSlot(id);renderHud();};
+  $('rm').onclick=()=>{S.cash+=T.cost/2;delete S.build[id];for(const sc of S.scripts)if(sc.at&&sc.at.endsWith(':'+id)){sc.at='bin';if(sc.stage!=='shelf')sc.stage='bin';}log('game',`remove ${b.type} at ${id}`);glog('staff',`Removed the ${T.name.toLowerCase()}.`);closeSheet();renderHud();};}
+function openStaff(){S.sel='staff';SFX.click();$('menu').hidden=true;
+  sheet(`<h3>Staff <small>${fmt(wages())}/week</small></h3><div class="rows">${S.staff.map(w=>`<button class="rowb" data-f="${w.id}" ${w.isYou?'disabled':''}><span>${w.name}<span class="sub">${ROLE[w.role]} · ${w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle'}</span></span><span class="cost">${w.isYou?'owner':'let go'}</span></button>`).join('')}</div>
+    <div class="lbl">Hire</div><div class="rows">${['tech','clerk','rph'].map(r=>`<button class="rowb" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}><span>${ROLE[r]}<span class="sub">${r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'verifies, consults, covers anything'}</span></span><span class="cost pill">${fmt(WAGES[r])}/wk</span></button>`).join('')}</div>`);
+  $('sheet').querySelectorAll('[data-h]').forEach(x=>x.onclick=()=>{const r=x.dataset.h;const used=S.staff.map(w=>w.name);const p=mkStaff(pick(NAMES.filter(n=>!used.includes(n)))||'New hire',r);S.staff.push(p);SFX.cash();log('game','hire '+r);glog('staff',`${p.name} hired as ${ROLE[r].toLowerCase()}, ${fmt(WAGES[r])}/week.`);openStaff();renderHud();});
+  $('sheet').querySelectorAll('[data-f]').forEach(x=>x.onclick=()=>{const w=S.staff.find(o=>o.id===x.dataset.f);if(!w||w.isYou)return;for(const c of w.carry){c.stage='bin';c.at='bin';c.claimed=null;}for(const k in busyS)if(busyS[k]===w.id)delete busyS[k];S.staff.splice(S.staff.indexOf(w),1);S.trust-=1;log('game','fire '+w.role);glog('staff',`${w.name} let go.`);openStaff();renderHud();});}
+
+/* ---------- menu + hud ---------- */
+$('menuBtn').onclick=()=>{const m=$('menu');m.hidden=!m.hidden;SFX.click();};
+$('mStaff').onclick=openStaff;
+$('mChat').onclick=()=>{L.chatShown=!L.chatShown;$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');applyLayout();renderChat();$('menu').hidden=true;};
+$('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');applyLayout();fitWorld();};
+$('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
+$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};
+function renderHud(){const t=`Wk ${S.week} · ${S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:'review'}`;$('wkT').textContent=t;$('wkIc').textContent=!S.running?'▶':S.speed===0?'▶':S.speed===1?'▶▶':'❚❚';
+  $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());$('trust').textContent=Math.round(S.trust);
+  const ws=weekSoFar();$('wnet').textContent=(ws>=0?'+':'')+fmt(ws);$('wnet').className=ws<0?'neg':'pos';$('wnetSt').hidden=!S.running;
+  const rw=runwayWeeks();$('runway').textContent=rw===Infinity?'ok':Math.round(rw*10)/10+'w';$('runway').className=rw<2?'neg':'';$('runSt').hidden=VW<600;}
+$('wkBtn').onclick=()=>{if(!S.running)return;setSpeed(S.speed===0?1:S.speed===1?3:0);SFX.click();};
+
+/* ---------- renderer ---------- */
+const cv=$('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1};let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
+try{forceLand=localStorage.getItem('msp-land')!=='off';}catch(e){}
+function applyOrientation(){const app=$('app');ROT=innerHeight>innerWidth&&forceLand;app.classList.toggle('rot',ROT);VW=ROT?innerHeight:app.clientWidth;VH=ROT?innerWidth:app.clientHeight;}
+function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+function fitWorld(){const bx=L.floor.x*VW,by=L.floor.y*VH,bw=L.floor.w*VW,bh=L.floor.h*VH;const z=Math.min(bw/952,bh/540);cam.z=Math.max(.25,z);cam.x=bx+bw/2-68*cam.z;cam.y=by+bh/2-206*cam.z;}
+const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
+let rsT;window.addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();fitWorld();log('sys',`resize ${innerWidth}×${innerHeight} rot=${ROT}`);},80);});
+const iso=(x,y)=>[cam.x+(x-y)*TW*cam.z,cam.y+(x+y)*TH*cam.z];const Z=()=>cam.z;
+function shade(hex,k){const n=parseInt(hex.slice(1),16);const f=v=>Math.min(255,((n>>v)&255)*k)|0;return `rgb(${f(16)},${f(8)},${f(0)})`;}
+function poly(pts,col,stroke){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();if(col){ctx.fillStyle=col;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}}
+function box(x,y,w,d,h,col){const H=h*TH*2*Z();const p=[iso(x,y),iso(x+w,y),iso(x+w,y+d),iso(x,y+d)];poly([p[3],p[2],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],shade(col,.72));poly([p[2],p[1],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H]],shade(col,.86));poly([[p[0][0],p[0][1]-H],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],col);}
+function flat(x,y,w,d,col){poly([iso(x,y),iso(x+w,y),iso(x+w,y+d),iso(x,y+d)],col);}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
+function label(x,y,t,col,size){const [sx,sy]=iso(x,y);ctx.font=`800 ${(size||10)*Z()}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillStyle=col||'rgba(42,47,42,.55)';ctx.fillText(t,sx,sy);}
+function basket(sx,sy,kind){ctx.fillStyle=kind==='bag'?'#fff':kind==='problem'?'#e24b4a':'#5dcaa5';ctx.fillRect(sx-6,sy-8,12,8);ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=.8;ctx.strokeRect(sx-6,sy-8,12,8);if(kind==='bag'){ctx.fillStyle='#1d9e75';ctx.fillRect(sx-1,sy-7,2,6);ctx.fillRect(sx-3,sy-5,6,2);}}
+function stack(x,y,n,kind,lift){const z=Z();const [sx,sy]=iso(x,y);ctx.save();ctx.translate(sx,sy-(lift||0)*z);ctx.scale(z,z);for(let i=0;i<Math.min(n,7);i++)basket(0,-i*4,kind);if(n>=3){ctx.fillStyle=n>=6?'#e24b4a':'#2a2f2a';ctx.font='800 11px Nunito,sans-serif';ctx.textAlign='center';ctx.fillText(n,0,-Math.min(n,7)*4-8);}ctx.restore();}
+function person(x,y,o){const z=Z();const [sx,sy]=iso(x,y);const bob=(o.busy||o.walking)?Math.sin(perf/90+o.bob)*1.5:0;ctx.save();ctx.translate(sx,sy);ctx.scale(z,z);
+  ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(0,0,9,4,0,0,Math.PI*2);ctx.fill();const by=-6+bob;ctx.fillStyle='#3b3a44';ctx.fillRect(-5,by-10,4,10);ctx.fillRect(1,by-10,4,10);ctx.fillStyle=o.coat||o.shirt;rr(-7,by-28,14,19,4);if(o.coat){ctx.fillStyle=o.shirt;ctx.fillRect(-2,by-27,4,8);}
+  ctx.fillStyle=o.skin;ctx.beginPath();ctx.arc(0,by-34,7,0,Math.PI*2);ctx.fill();ctx.fillStyle=o.hair||'#3a2a1e';ctx.beginPath();ctx.arc(0,by-36,7,Math.PI,0);ctx.fill();
+  if(o.cane){ctx.strokeStyle='#6b4630';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(9,by-20);ctx.lineTo(10,by);ctx.stroke();}
+  if(o.carry)for(let i=0;i<(o.carryN||1);i++)basket(11,by-14-i*4,o.carry);
+  if(o.tag){ctx.font='700 9px Nunito,sans-serif';ctx.textAlign='center';ctx.fillStyle='rgba(20,30,25,.8)';ctx.fillText(o.tag,0,13);}
+  if(o.prog!==undefined){ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.arc(0,by-50,7,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#1d9e75';ctx.beginPath();ctx.arc(0,by-50,7,-Math.PI/2,-Math.PI/2+Math.PI*2*o.prog);ctx.stroke();}
+  if(o.mood)bubble(0,by-56,o.mood);ctx.restore();}
+function bubble(x,y,kind){ctx.fillStyle='#fff';rr(x-11,y-11,22,20,6);ctx.beginPath();ctx.moveTo(x-4,y+9);ctx.lineTo(x,y+14);ctx.lineTo(x+4,y+9);ctx.fill();ctx.textAlign='center';ctx.font='800 13px Nunito,sans-serif';const m={angry:['#e24b4a','!'],heart:['#d4537e','♥'],check:['#1d9e75','✓'],clock:['#ba7517','◷']}[kind];if(m){ctx.fillStyle=m[0];ctx.fillText(m[1],x,y+4);}}
+const PILLS=['#e24b4a','#378add','#ef9f27','#1d9e75','#7f77dd','#d4537e'];
+function tint(x,y,w,d,n){if(n<3)return;const a=.18+.1*Math.sin(perf/250);poly([iso(x-.3,y-.3),iso(x+w+.3,y-.3),iso(x+w+.3,y+d+.3),iso(x-.3,y+d+.3)],(n>=6?'rgba(226,75,74,':'rgba(239,159,39,')+a+')');}
+function drawStation(s,b){const z=Z();const t=b.type;
+  if(t==='dropoff'||t==='register'){tint(s.x,s.y,s.w,s.d,S.patients.filter(p=>p.q===s.id&&(p.state==='toQueue'||p.state==='queued')).length);box(s.x,s.y,s.w,s.d,.9,'#8fb8a8');label(s.x+s.w/2,s.y+.45,t==='dropoff'?'DROP OFF':'PICK UP','#fff');if(t==='register')box(s.x+s.w-.6,s.y+.1,.45,.4,.35,'#3b3a44');
+    if(t==='dropoff'){const ring=S.scripts.some(x=>x.stage==='ringing')&&!has('phone');if(ring&&Math.floor(perf/300)%2){const [sx,sy]=iso(s.x+.4,s.y+.3);ctx.fillStyle='#e24b4a';ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('☎',sx,sy-34*z);}}}
+  else if(t==='fill'){tint(s.x,s.y,s.w,s.d,S.scripts.filter(x=>x.stage==='bin').length>=6?6:0);box(s.x,s.y,s.w,s.d,.75,'#c9d6cf');if(b.level>=1)box(s.x+.1,s.y+.15,.6,.6,.7,'#9fb8d4');if(b.level>=2)box(s.x+.85,s.y+.1,.65,.7,1.1,'#7f8fa8');const n=S.scripts.filter(x=>x.at==='slot:'+s.id).length;if(n)stack(s.x+1.2,s.y+.5,n,'basket',26);label(s.x+.8,s.y+1.25,'FILL','rgba(42,47,42,.45)',9);}
+  else if(t==='verify'){tint(s.x,s.y,s.w,s.d,S.scripts.filter(x=>x.at==='tray:'+s.id).length>=4?6:0);box(s.x,s.y,s.w,s.d,.8,'#d9cdb6');const [sx,sy]=iso(s.x+.45,s.y+.4);ctx.fillStyle='#3b3a44';ctx.fillRect(sx-8*z,sy-40*z,16*z,12*z);ctx.fillStyle='#9fe1cb';ctx.fillRect(sx-7*z,sy-39*z,14*z,10*z);const n=S.scripts.filter(x=>x.at==='tray:'+s.id).length;if(n)stack(s.x+1.25,s.y+.5,n,'basket',27);const w=S.scripts.filter(x=>x.at==='slot:'+s.id).length;if(w)stack(s.x+.9,s.y+.3,w,'basket',27);label(s.x+.8,s.y+1.25,'VERIFY','rgba(42,47,42,.45)',9);}
+  else if(t==='shelf'){box(s.x,s.y,s.w,.5,1.7,'#d9cdb6');const bags=S.scripts.filter(x=>x.at==='shelf:'+s.id);for(let i=0;i<Math.min(bags.length,16);i++){const [sx,sy]=iso(s.x+.15+(i%8)*.18,s.y+.25);ctx.save();ctx.translate(sx,sy-(52-Math.floor(i/8)*20)*z);ctx.scale(z,z);basket(0,0,'bag');ctx.restore();}label(s.x+.8,s.y+1.2,'WILL CALL','rgba(42,47,42,.45)',9);}
+  else if(t==='phone'){box(s.x,s.y,s.w,s.d,.8,'#d9cdb6');const [sx,sy]=iso(s.x+.5,s.y+.45);const ring=S.scripts.some(x=>x.stage==='ringing');ctx.fillStyle=ring&&Math.floor(perf/300)%2?'#e24b4a':'#3b3a44';ctx.font=`800 ${13*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('☎',sx,sy-30*z);label(s.x+.8,s.y+1.25,'PHONES','rgba(42,47,42,.45)',9);}
+  else if(t==='problem'){box(s.x,s.y,s.w,s.d,.8,'#d9cdb6');const n=S.scripts.filter(x=>x.at==='problem:'+s.id).length;if(n)stack(s.x+.8,s.y+.45,n,'problem',27);else{const [sx,sy]=iso(s.x+.8,s.y+.45);ctx.strokeStyle='#e24b4a';ctx.lineWidth=1.2*z;ctx.strokeRect(sx-7*z,sy-33*z,14*z,8*z);}label(s.x+.8,s.y+1.25,'PROBLEMS','rgba(42,47,42,.45)',9);}
+  else if(t==='chairs'){for(const dx of [.1,1.0]){box(s.x+dx,s.y+.1,.6,.6,.45,'#7f77dd');box(s.x+dx,s.y+.55,.6,.15,.95,'#534ab7');}}
+  else if(t==='otc'){box(s.x,s.y,s.w,s.d,1,'#e8e1cf');for(let i=0;i<4;i++){const [sx,sy]=iso(s.x+.25+i*.4,s.y+.1);ctx.fillStyle=PILLS[(i*5+1)%6];ctx.fillRect(sx-3*z,sy-30*z,7*z,8*z);}}
+  else if(t==='room'){flat(s.x,s.y,s.w,s.d,'rgba(93,202,165,.2)');box(s.x,s.y,s.w,.12,1.3,'#9fe1cb');box(s.x,s.y,.12,s.d,1.3,'#5dcaa5');box(s.x+.6,s.y+.9,1.2,.5,.5,'#eef0e8');label(s.x+1.3,s.y+2.9,'CONSULT ROOM','#085041',9);}}
+function drawSlotOutline(s){const z=Z();const p=[iso(s.x,s.y),iso(s.x+s.w,s.y),iso(s.x+s.w,s.y+s.d),iso(s.x,s.y+s.d)];ctx.setLineDash([4*z,4*z]);ctx.lineWidth=1.2*z;poly(p,'rgba(29,158,117,.07)','rgba(29,158,117,.6)');ctx.setLineDash([]);const [cx,cy]=iso(s.x+s.w/2,s.y+s.d/2);ctx.fillStyle='rgba(29,158,117,.8)';ctx.font=`800 ${14*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('+',cx,cy+5*z);}
+function drawScene(){
+  ctx.clearRect(0,0,VW,VH);
+  for(let x=0;x<16;x++)for(let y=0;y<12;y++)flat(x,y,1,1,y<4.4?((x+y)%2?'#e3e9e3':'#d9e1d9'):((x+y)%2?'#eef0e8':'#e4e8de'));
+  const z=Z(),H=64*z;const p0=iso(0,0),p1=iso(16,0),p2=iso(0,12);poly([p0,p1,[p1[0],p1[1]-H],[p0[0],p0[1]-H]],'#cfe3db');poly([p0,p2,[p2[0],p2[1]-H],[p0[0],p0[1]-H]],'#bdd6cc');
+  const w1=iso(0,6.5),w2=iso(0,9.5);poly([[w1[0]+2,w1[1]-50*z],[w2[0]+2,w2[1]-50*z],[w2[0]+2,w2[1]-22*z],[w1[0]+2,w1[1]-22*z]],'#eaf6ff');
+  const t=iso(11,0);ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.fillStyle='#085041';ctx.textAlign='center';ctx.fillText('MAPLE STREET PHARMACY',t[0],t[1]-40*z);
+  flat(MAT.x,MAT.y,1,1,'#b8a888');
+  const items=[];
+  items.push({d:.6,f:()=>{box(.3,.2,2.5,.5,1.8,'#d9cdb6');for(let r=0;r<3;r++)for(let i=0;i<6;i++){const [sx,sy]=iso(.55+i*.38,.45);ctx.fillStyle=PILLS[(i+r)%6];ctx.fillRect(sx-2*z,sy-(58-r*17)*z,5*z,9*z);}}});
+  items.push({d:BIN.y+.7,f:()=>{tint(BIN.x,BIN.y,.7,.7,S.scripts.filter(x=>x.at==='bin').length);box(BIN.x,BIN.y,.7,.7,.5,'#8b8f8a');const n=S.scripts.filter(x=>x.at==='bin').length;if(n)stack(BIN.x+.35,BIN.y+.35,n,'basket',18);label(BIN.x+.4,BIN.y+1.2,'BIN','rgba(42,47,42,.45)',9);}});
+  for(const id in SLOTS){const s=SLOTS[id];const b=S.build[id];items.push({d:s.y+s.d,f:()=>{if(b)drawStation(s,b);else drawSlotOutline(s);}});}
+  items.push({d:11.9,f:()=>{box(.2,11.2,.6,.6,.5,'#b8a888');const [sx,sy]=iso(.5,11.5);ctx.fillStyle='#3b6d11';for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(sx+Math.cos(i*1.3)*7*z,sy-26*z+Math.sin(i*1.3)*5*z,8*z,5*z,i,0,Math.PI*2);ctx.fill();}}});
+  for(const w of S.staff){const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
+    items.push({d:w.y+.01,f:()=>person(w.x,w.y,{shirt:w.isYou?'#378add':w.role==='tech'?'#1d9e75':w.role==='rph'?'#7f77dd':'#888780',coat:w.role==='rph'?'#f4f4f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.plan&&w.plan.name==='pickup'?'bag':w.plan&&w.plan.name==='verify'&&w.carry[0].stage!=='problem'?'bag':'basket'):null,carryN:w.carry.length,prog})});}
+  for(const p of S.patients){let mood=p.mood;if(!mood&&(p.state==='queued'&&p.qt>6||p.state==='waiting'&&p.wait>18))mood='clock';
+    items.push({d:p.y,f:()=>person(p.x,p.y,{shirt:p.shirt,skin:p.skin,walking:p.walking,bob:p.bob,mood,cane:p.elderly,hair:p.elderly?'#cfcfcf':'#3a2a1e'})});}
+  items.sort((a,b)=>a.d-b.d);for(const it of items)it.f();
+  for(const f of S.fx){const [sx,sy]=iso(f.x,f.y);ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.globalAlpha=Math.max(0,1-f.t/1.6);ctx.fillStyle=f.kind==='cash'?'#1d9e75':f.kind==='bad'?'#e24b4a':'#ba7517';ctx.fillText(f.text,sx,sy-(40+f.t*22)*z);ctx.globalAlpha=1;}
+  if(S.sel&&SLOTS[S.sel]){const s=SLOTS[S.sel];ctx.setLineDash([]);ctx.lineWidth=2*z;poly([iso(s.x-.1,s.y-.1),iso(s.x+s.w+.1,s.y-.1),iso(s.x+s.w+.1,s.y+s.d+.1),iso(s.x-.1,s.y+s.d+.1)],null,'#1d9e75');}
+  if(!S.running){ctx.fillStyle='rgba(20,30,40,.25)';ctx.fillRect(0,0,VW,VH);}}
+
+/* ---------- movement (frame) ---------- */
+let perf=0,last=0,fps=0,fpsN=0,fpsT=0;
+function moveTo(o,tx,ty,dt,spd){const dx=tx-o.x,dy=ty-o.y,d=Math.hypot(dx,dy);if(d<.03){o.x=tx;o.y=ty;o.walking=false;return true;}const st=Math.min(d,spd*dt);o.x+=dx/d*st;o.y+=dy/d*st;o.walking=true;return false;}
+function frame(ts){perf=ts;const raw=Math.min(.05,(ts-last)/1000||0);last=ts;fpsN++;if(ts-fpsT>1000){fps=fpsN;fpsN=0;fpsT=ts;badge();}
+  if(S.running&&S.speed>0){const dt=raw*(S.speed===3?2.4:1.4);
+    for(const w of S.staff){if(!w.plan){moveTo(w,w.idle.x,w.idle.y,dt,4);continue;}
+      let guard=0;while(w.plan&&guard++<6){const st=w.plan.steps[w.step];if(!st){w.plan=null;w.idle={x:rnd(4,11),y:rnd(2.6,3.2)};break;}
+        if(st.go){if(moveTo(w,st.go.x,st.go.y,dt,6))w.step++;break;}
+        else if(st.fn){st.fn();w.step++;}
+        else break;}}
+    for(let i=S.patients.length-1;i>=0;i--){const p=S.patients[i];const spd=p.elderly?2.6:3.6;
+      if(p.state==='toQueue'||p.state==='queued'){const s=SLOTS[p.q];if(!s||!S.build[p.q]){leave(p,false);continue;}const k=Math.min(qIndex(p),8);const sp={x:s.stand.x+k*.7,y:s.stand.y+k*.55};const ok=moveTo(p,sp.x,sp.y,dt,spd);if(p.state==='toQueue'&&ok){p.state='queued';p.arrived=true;}else if(p.state==='queued')p.arrived=ok;}
+      else if(p.state==='toSeat'){if(moveTo(p,p.sx,p.sy,dt,spd))p.state='waiting';}
+      else if(p.state==='toRoom'){const r=slotsOf('room')[0];if(!r){leave(p,false);continue;}if(moveTo(p,r.stand.x,r.stand.y,dt,spd))p.state='atRoom';}
+      else if(p.state==='leaving'){if(moveTo(p,DOOR.x,DOOR.y,dt,spd+.8))S.patients.splice(i,1);}}
+    for(const f of S.fx)f.t+=raw*1.2;S.fx=S.fx.filter(f=>f.t<1.6);}
+  drawScene();requestAnimationFrame(frame);}
+
+/* ---------- pointer: pan, pinch, tap slots ---------- */
+const ptrs=new Map();let dragging=false,pinch0=0,z0=1;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY});dragging=false;if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);z0=cam.z;}});
+cv.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p)return;const [dx,dy]=dLocal(e.clientX-p.x,e.clientY-p.y);p.x=e.clientX;p.y=e.clientY;if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const [cx,cy]=toLocal((a.x+b.x)/2,(a.y+b.y)/2);zoomLocal(cx,cy,z0*d/pinch0);dragging=true;return;}if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)>8)dragging=true;if(dragging){cam.x+=dx;cam.y+=dy;}});
+function inSlot(mx,my,s){const lift=S.build[s.id]?16*Z():0;const pts=[iso(s.x,s.y),iso(s.x+s.w,s.y),iso(s.x+s.w,s.y+s.d),iso(s.x,s.y+s.d)].map(p=>[p[0],p[1]-lift]);let inside=false;for(let i=0,j=3;i<4;j=i++){const [xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>my)!==(yj>my)&&mx<(xj-xi)*(my-yi)/(yj-yi)+xi)inside=!inside;}if(inside)return true;const [cx,cy]=iso(s.x+s.w/2,s.y+s.d/2);return Math.hypot(mx-cx,my-(cy-lift-8*Z()))<34*Z();}
+function endPtr(e){const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p||dragging||ptrs.size)return;const [mx,my]=toLocal(e.clientX,e.clientY);
+  $('menu').hidden=true;const hit=Object.values(SLOTS).filter(s=>inSlot(mx,my,s)).sort((a,b)=>(b.y+b.d)-(a.y+a.d))[0];if(hit){openSlot(hit.id);return;}closeSheet();}
+cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',endPtr);
+function zoomLocal(px,py,nz){nz=Math.max(.35,Math.min(2.2,nz));const k=nz/cam.z;cam.x=px-(px-cam.x)*k;cam.y=py-(py-cam.y)*k;cam.z=nz;}
+cv.addEventListener('wheel',e=>{e.preventDefault();const [x,y]=toLocal(e.clientX,e.clientY);zoomLocal(x,y,cam.z*(e.deltaY<0?1.1:.9));},{passive:false});
+
+/* ---------- audio ---------- */
+const AU={ctx:null,master:null,music:null,sfx:null,on:true};try{AU.on=localStorage.getItem('msp-sound')!=='off';}catch(e){}
+function setSound(on){AU.on=on;try{localStorage.setItem('msp-sound',on?'on':'off');}catch(e){}if(AU.master)AU.master.gain.setTargetAtTime(on?1:0,AU.ctx.currentTime,.05);}
+function audioInit(){if(AU.ctx){if(AU.ctx.state==='suspended')AU.ctx.resume();return;}const C=window.AudioContext||window.webkitAudioContext;if(!C)return;AU.ctx=new C();AU.master=AU.ctx.createGain();AU.master.gain.value=AU.on?1:0;AU.master.connect(AU.ctx.destination);AU.music=AU.ctx.createGain();AU.music.gain.value=.18;AU.music.connect(AU.master);AU.sfx=AU.ctx.createGain();AU.sfx.gain.value=.4;AU.sfx.connect(AU.master);startMusic();}
+function duck(){if(AU.music)AU.music.gain.setTargetAtTime(S.running?.18:.08,AU.ctx.currentTime,.8);}
+const midi=n=>440*Math.pow(2,(n-69)/12);
+function tone(n,t,dur,type,vol,dest,att,rel,cut){if(!AU.ctx)return;const o=AU.ctx.createOscillator(),g=AU.ctx.createGain(),f=AU.ctx.createBiquadFilter();o.type=type;o.frequency.value=midi(n);f.type='lowpass';f.frequency.value=cut||1800;o.connect(f);f.connect(g);g.connect(dest);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur+rel);o.start(t);o.stop(t+dur+rel+.05);}
+let nb=null;function noise(t,dur,vol,dest,freq,q){if(!AU.ctx)return;if(!nb){nb=AU.ctx.createBuffer(1,AU.ctx.sampleRate*.5,AU.ctx.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}const s=AU.ctx.createBufferSource(),g=AU.ctx.createGain(),f=AU.ctx.createBiquadFilter();s.buffer=nb;f.type='bandpass';f.frequency.value=freq;f.Q.value=q||1;s.connect(f);f.connect(g);g.connect(dest);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.start(t);s.stop(t+dur+.02);}
+const CHORDS=[[60,64,67,71],[57,60,64,67],[53,57,60,64],[55,60,62,65]];const E8=60/76/2;let mB=0,mN=0;
+function startMusic(){mN=AU.ctx.currentTime+.2;setInterval(()=>{while(mN<AU.ctx.currentTime+.5){step(mB,mN);mB++;mN+=E8;}},120);}
+function step(b,t){const bar=Math.floor(b/16)%4,ch=CHORDS[bar],e=b%16;if(e===0){ch.forEach(n=>tone(n,t,E8*14,'triangle',.035,AU.music,1.2,1.5,900));tone(ch[0]-24,t,E8*5,'sine',.11,AU.music,.02,.5,400);}if(e===10)tone(ch[0]-24+(bar===3?5:7),t,E8*4,'sine',.08,AU.music,.02,.4,400);const pat=[1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1];if(pat[e]&&Math.random()<.8)tone(ch[(b*5+bar)%4]+12*(Math.random()<.35?2:1),t,E8*1.2,'sine',.05,AU.music,.005,.45,2600);if(e%4===2)noise(t,.06,.018,AU.music,7000,.8);if(e===0||e===8)noise(t,.09,.05,AU.music,180,1.5);}
+const lastT={};const T=()=>AU.ctx?AU.ctx.currentTime:null;const gate=(k,g)=>{const t=T();if(t===null||t-(lastT[k]||0)<g)return null;lastT[k]=t;return t;};
+const SFX={door(){const t=gate('door',.9);if(t===null)return;tone(88,t,.18,'sine',.12,AU.sfx,.005,.5,6000);tone(84,t+.17,.3,'sine',.1,AU.sfx,.005,.7,6000);},
+  register(){const t=gate('reg',.35);if(t===null)return;noise(t,.05,.1,AU.sfx,3000,2);tone(98,t+.04,.06,'triangle',.08,AU.sfx,.003,.3,6000);tone(103,t+.09,.25,'sine',.08,AU.sfx,.003,.6,8000);},
+  paper(){const t=gate('paper',.3);if(t!==null)noise(t,.12,.06,AU.sfx,2200,.7);},pills(){const t=gate('pills',.4);if(t===null)return;for(let i=0;i<4;i++)noise(t+i*.035,.03,.05,AU.sfx,4500+Math.random()*1500,4);},
+  ring(){const t=gate('ring',1.2);if(t===null)return;for(let i=0;i<4;i++)tone(i%2?81:79,t+i*.09,.07,'square',.03,AU.sfx,.005,.05,2400);},
+  sigh(){const t=gate('sigh',.6);if(t===null)return;const o=AU.ctx.createOscillator(),g=AU.ctx.createGain();o.type='sine';o.frequency.setValueAtTime(midi(69),t);o.frequency.exponentialRampToValueAtTime(midi(57),t+.45);o.connect(g);g.connect(AU.sfx);g.gain.setValueAtTime(.07,t);g.gain.exponentialRampToValueAtTime(.0001,t+.5);o.start(t);o.stop(t+.55);},
+  click(){const t=T();if(t!==null)tone(96,t,.03,'square',.04,AU.sfx,.002,.04,3000);},cash(){const t=T();if(t===null)return;tone(91,t,.08,'sine',.1,AU.sfx,.003,.2,8000);tone(98,t+.09,.3,'sine',.1,AU.sfx,.003,.6,8000);},
+  build(){const t=T();if(t===null)return;for(let i=0;i<3;i++){noise(t+i*.14,.05,.12,AU.sfx,900,3);tone(60,t+i*.14,.05,'triangle',.06,AU.sfx,.002,.1,1200);}},
+  bell(){const t=T();if(t===null)return;tone(79,t,1.1,'sine',.14,AU.sfx,.005,1.2,6000);tone(91,t,.8,'sine',.05,AU.sfx,.005,.9,8000);}};
+
+/* ---------- debug ---------- */
+const LOG=[];
+function log(type,msg,data){LOG.push({t:Math.round(performance.now()),type,msg,data,wk:S?S.week:0});if(LOG.length>500)LOG.shift();if(!$('dbg').hidden)renderDbg();}
+window.addEventListener('error',e=>log('err',`${e.message} @${(e.filename||'').split('/').pop()}:${e.lineno}:${e.colno}`));
+window.addEventListener('unhandledrejection',e=>log('err','promise: '+(e.reason&&e.reason.message||e.reason)));
+function env(){const app=$('app');const rect=id=>{const el=$(id);if(el.hidden)return 'hidden';const r=el.getBoundingClientRect();const ov=[];if(r.bottom>innerHeight+1)ov.push('bottom+'+Math.round(r.bottom-innerHeight));if(r.right>innerWidth+1)ov.push('right+'+Math.round(r.right-innerWidth));if(r.left<-1)ov.push('left'+Math.round(r.left));if(r.top<-1)ov.push('top'+Math.round(r.top));return `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)}${ov.length?' CLIPPED '+ov.join(','):' ok'}`;};
+  return [`build ${BUILD} · ${new Date().toISOString()}`,`window ${innerWidth}×${innerHeight} · dpr ${devicePixelRatio} · screen ${screen.width}×${screen.height}`,`orientation ${screen.orientation?screen.orientation.type:'?'} · app ${app.clientWidth}×${app.clientHeight} · rotated ${ROT} · forced ${forceLand} · fps ${fps}`,`bar ${rect('bar')} · chat ${rect('chat')} · sheet ${rect('sheet')} · review ${rect('review')}`,layoutText(),`ua ${navigator.userAgent}`].join('\n');}
+function snap(){if(!S)return '';const c=st=>S.scripts.filter(x=>x.stage===st).length;return `week ${S.week} day ${S.day} tick ${S.tick} running=${S.running} speed=${S.speed} cash=${Math.round(S.cash)} owed=${owedTotal()} trust=${S.trust.toFixed(1)} plan=${S.plan} rent=${S.rent} mods=${JSON.stringify(S.mods)}\nbuild ${Object.entries(S.build).map(([k,b])=>k+':'+b.type+b.level).join(' ')}\nstaff ${S.staff.map(w=>`${w.name}/${w.role}/${w.plan?w.plan.name+':'+w.step:'idle'}${w.carry?'*':''}`).join(', ')}\nscripts new${c('new')} ring${c('ringing')} with${c('withPatient')} bin${c('bin')} carried${c('carried')} tray${c('tray')} prob${c('problem')} shelf${c('shelf')} · people ${S.patients.length} (${S.patients.map(p=>p.state).join(',')})\nbusy ${JSON.stringify(busyS)} wk=${JSON.stringify(S.wk)} demand/day=${demandPerDay().toFixed(1)}`;}
+function report(){return `=== Maple Street Pharmacy debug ===\n${env()}\n\n--- state ---\n${snap()}\n\n--- activity (${GL.length}) ---\n`+GL.slice(-60).map(e=>`w${e.wk} ${stamp(e)} [${e.type}] ${e.text}`).join('\n')+`\n\n--- log (${LOG.length}) ---\n`+LOG.map(l=>`${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${l.msg}${l.data?' '+JSON.stringify(l.data):''}`).join('\n');}
+function renderDbg(){$('dbgEnv').textContent=env()+'\n'+snap();$('dbgLines').innerHTML=LOG.slice(-80).map(l=>`<div class="${l.type}">${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${String(l.msg).replace(/</g,'&lt;')}${l.data?' '+JSON.stringify(l.data).replace(/</g,'&lt;'):''}</div>`).join('');$('dbgLines').scrollTop=1e6;$('dbgRot').textContent='Force landscape: '+(forceLand?'on':'off');}
+function copyReport(){const txt=report();const done=()=>{$('dbgMsg').textContent='Copied. Paste it to Claude.';setTimeout(()=>$('dbgMsg').textContent='',3000);};const fb=()=>{const ta=$('dbgTa');ta.value=txt;ta.style.left='0';ta.style.width='100%';ta.style.height='120px';ta.focus();ta.select();try{document.execCommand('copy');done();}catch(e){$('dbgMsg').textContent='Select the box and copy manually.';}setTimeout(()=>{ta.style.left='-9999px';ta.style.width='10px';ta.style.height='10px';},6000);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb();}
+function badge(){}
+$('dbgClose').onclick=()=>$('dbg').hidden=true;$('dbgCopy').onclick=()=>copyText(report(),'dbgMsg');$('dbgClear').onclick=()=>{LOG.length=0;renderDbg();};
+$('dbgRot').onclick=()=>{forceLand=!forceLand;try{localStorage.setItem('msp-land',forceLand?'on':'off');}catch(e){}fitCanvas();fitWorld();badge();renderDbg();};
+setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();},1000);
+
+/* ---------- start ---------- */
+function start(data){S=(data&&data.S)?data.S:fresh();
+  if(data&&data.S){for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){sc.stage='bin';sc.at='bin';}}}
+  fitCanvas();applyLayout();fitWorld();for(const w of S.staff){w.x=w.idle.x;w.y=w.idle.y;}$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();
+  if(S.running)setSpeed(S.speed||1);else if(S.intro){S.intro=false;showIntro();}else showReview();
+  log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
+try{window.claude?.hot?.snapshot?.(()=>({S}));}catch(e){}
+window.__msp={GL,LOG,get S(){return S;},get L(){return L;}};
+(window.claude?.hot?.ready)?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
+})();
+</script>
+
+</body>
+</html>
