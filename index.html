@@ -122,7 +122,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
   <div class="review dbgp" id="dbg" hidden><div class="rev">
     <h2>Debug report <button class="big ghost" id="dbgClose" style="margin-left:auto">Close</button></h2>
     <div class="env" id="dbgEnv"></div><div class="lines" id="dbgLines"></div>
-    <div class="btns" style="justify-content:flex-start;flex-wrap:wrap"><button class="big" id="dbgCopy">Copy full report</button><button class="big ghost" id="dbgRot">Force landscape: on</button><button class="big ghost" id="dbgClear">Clear</button><span id="dbgMsg" style="color:var(--ink-2);font-weight:700;align-self:center"></span></div>
+    <div class="btns" style="justify-content:flex-start;flex-wrap:wrap"><button class="big" id="dbgCopy">Copy full report</button><button class="big ghost" id="dbgRot">Force landscape: on</button><button class="big ghost" id="dbgClear">Clear</button><button class="big" id="dbgClose2">Close</button><span id="dbgMsg" style="color:var(--ink-2);font-weight:700;align-self:center"></span></div>
     <textarea id="dbgTa" aria-hidden="true" tabindex="-1"></textarea>
   </div></div>
 </div>
@@ -130,7 +130,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v10.1 viewport fix 2026-10-23';
+const BUILD='v10.2 save+debug fix 2026-10-23';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -260,7 +260,7 @@ function tick(){
   }
   S.trust=Math.max(0,Math.min(100,S.trust));
   if(S.tick%36===0)log('tick',`d${S.day} ${Math.floor(h)}h bin${S.scripts.filter(x=>x.stage==='bin').length} tray${S.scripts.filter(x=>x.stage==='tray').length} shelf${S.scripts.filter(x=>x.stage==='shelf').length} prob${S.scripts.filter(x=>x.stage==='problem').length} ring${S.scripts.filter(x=>x.stage==='ringing').length} people${S.patients.length} served${S.wk.served} lost${S.wk.lost} idle${S.staff.filter(w=>!w.plan).length}/${S.staff.length} fps${fps}`);
-  watch();if(S.tick>=TICKS_DAY)endDay();renderHud();}
+  watch();if(S.tick%36===0)saveGame();if(S.tick>=TICKS_DAY)endDay();renderHud();}
 function leave(p,angry){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage!=='done'){sc.abandoned=true;if(sc.stage==='withPatient')sc.stage='dead';if(sc.stage==='shelf'){sc.unclaimed=true;}}
   if(angry){S.wk['lost_'+p.state+(p.q?'_'+(S.build[p.q]||{}).type:'')]=(S.wk['lost_'+p.state+(p.q?'_'+(S.build[p.q]||{}).type:'')]||0)+1;}const where=p.q&&S.build[p.q]?(S.build[p.q].type==='register'?'at pick-up':'at drop-off'):'waiting for the fill';p.state='leaving';p.q=null;p.chair=-1;if(angry){p.mood='angry';S.wk.lost++;S.trust-=.3;SFX.sigh();glog('bad',`Someone gave up ${where}.`,'walk',12);}}
 function endDay(){S.tick=0;S.day++;
@@ -288,7 +288,7 @@ function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeS
   glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, drugs ${fmt(S.wk.drug)} paid. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
   log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,consults:S.wk.consults,otc:S.wk.otc,missedCalls:S.wk.phoneMissed,cashIn:S.wk.cashIn,paid:Math.round(paid),fee:Math.round(fee),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
   if(S.cash>=30000&&S.trust>=60)S.done='win';else if(S.cash<-6000)S.done='lose';
-  S.card=S.done?null:pickCard();S.choice=null;S.week++;showReview();}
+  S.card=S.done?null:pickCard();S.choice=null;S.week++;saveGame();showReview();}
 
 /* ---------- event cards ---------- */
 const CARDS=[
@@ -315,7 +315,7 @@ function applyLayout(){K=Math.max(.8,Math.min(1.4,Math.min(VW/799,VH/430)))*L.si
   const c=$('chat');c.classList.toggle('collapsed',!L.chatOpen);c.hidden=!L.chatShown;
   try{localStorage.setItem('msp-layout2',JSON.stringify({chatX:L.chatX,chatY:L.chatY,chatW:L.chatW,chatH:L.chatH,size:L.size,chatOpen:L.chatOpen,chatShown:L.chatShown}));}catch(e){}}
 function layoutText(){return `layout ${JSON.stringify({barL:L.barL,barR:L.barR,barY:L.barY,barH:L.barH,barF:L.barF,chat:[L.chatX,L.chatY,L.chatW,L.chatH,L.chatF],size:L.size,k:+K.toFixed(2)})} · window ${innerWidth}×${innerHeight} @${devicePixelRatio} rot=${ROT}`;}
-function copyText(txt,msgId){const done=()=>{$(msgId).textContent='Copied. Paste it to Claude.';setTimeout(()=>$(msgId).textContent='',3000);};const fb=()=>{const ta=$('dbgTa');ta.value=txt;ta.style.left='0';ta.style.width='100%';ta.style.height='120px';ta.focus();ta.select();try{document.execCommand('copy');done();}catch(e){$(msgId).textContent='Select the box and copy manually.';}setTimeout(()=>{ta.style.left='-9999px';ta.style.width='10px';ta.style.height='10px';},6000);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb();}
+function copyText(txt,msgId){const done=()=>{$(msgId).textContent='Copied. Paste it to Claude.';setTimeout(()=>$(msgId).textContent='',3000);};const fb=()=>{const ta=$('dbgTa');ta.value=txt;ta.readOnly=true;ta.style.left='0';ta.style.width='100%';ta.style.height='120px';ta.select();try{document.execCommand('copy');done();}catch(e){$(msgId).textContent='Select the box and copy manually.';}setTimeout(()=>{ta.style.left='-9999px';ta.style.width='10px';ta.style.height='10px';},6000);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,()=>{$(msgId).textContent='Copy blocked here. Try again, or screenshot.';});else fb();}
 
 /* ---------- activity chat (MMORPG-style, bottom-left) ---------- */
 const GL=[];let logFilter='all';const glast={};
@@ -363,7 +363,7 @@ function page(html){$('rev').innerHTML=html;$('review').hidden=false;}
 function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const W=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*W,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
   return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${W}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/><circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="3" fill="var(--accent)"/></svg>`;}
 function showReview(){closeAll();const w=S.wk,prev=S.week-1;
-  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>The bank called</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}. Too much owed, not enough in hand.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;renderHud();showIntro();};return;}
+  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>The bank called</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}. Too much owed, not enough in hand.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}renderHud();showIntro();};return;}
   if(prev<1){reviewDecide();return;}
   const lostWhy=Object.keys(w).filter(k=>k.startsWith('lost_')).map(k=>`${w[k]} at ${k.includes('register')?'pick-up':k.includes('dropoff')?'drop-off':'waiting'}`).join(', ');
   const rw=runwayWeeks();const d=S.trust-w.trust0;
@@ -427,7 +427,7 @@ $('wkBtn').onclick=()=>{if(!S.running)return;setSpeed(S.speed===0?1:S.speed===1?
 /* ---------- renderer ---------- */
 const cv=$('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1};let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
 try{forceLand=localStorage.getItem('msp-land')!=='off';}catch(e){}
-function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;ROT=ih>iw&&forceLand;app.classList.toggle('rot',ROT);
+function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=screen.orientation&&screen.orientation.type?screen.orientation.type.startsWith('portrait'):ih>iw;ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);
   if(ROT){app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 function fitWorld(){const bx=L.floor.x*VW,by=L.floor.y*VH,bw=L.floor.w*VW,bh=L.floor.h*VH;const z=Math.min(bw/952,bh/540);cam.z=Math.max(.25,z);cam.x=bx+bw/2-68*cam.z;cam.y=by+bh/2-206*cam.z;}
@@ -548,12 +548,14 @@ function report(){return `=== Maple Street Pharmacy debug ===\n${env()}\n\n--- s
 function renderDbg(){$('dbgEnv').textContent=env()+'\n'+snap();$('dbgLines').innerHTML=LOG.slice(-80).map(l=>`<div class="${l.type}">${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${String(l.msg).replace(/</g,'&lt;')}${l.data?' '+JSON.stringify(l.data).replace(/</g,'&lt;'):''}</div>`).join('');$('dbgLines').scrollTop=1e6;$('dbgRot').textContent='Force landscape: '+(forceLand?'on':'off');}
 function copyReport(){const txt=report();const done=()=>{$('dbgMsg').textContent='Copied. Paste it to Claude.';setTimeout(()=>$('dbgMsg').textContent='',3000);};const fb=()=>{const ta=$('dbgTa');ta.value=txt;ta.style.left='0';ta.style.width='100%';ta.style.height='120px';ta.focus();ta.select();try{document.execCommand('copy');done();}catch(e){$('dbgMsg').textContent='Select the box and copy manually.';}setTimeout(()=>{ta.style.left='-9999px';ta.style.width='10px';ta.style.height='10px';},6000);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb();}
 function badge(){}
-$('dbgClose').onclick=()=>$('dbg').hidden=true;$('dbgCopy').onclick=()=>copyText(report(),'dbgMsg');$('dbgClear').onclick=()=>{LOG.length=0;renderDbg();};
+$('dbgClose').onclick=()=>$('dbg').hidden=true;$('dbgClose2').onclick=()=>$('dbg').hidden=true;$('dbg').addEventListener('click',e=>{if(e.target===$('dbg'))$('dbg').hidden=true;});$('dbgCopy').onclick=()=>copyText(report(),'dbgMsg');$('dbgClear').onclick=()=>{LOG.length=0;renderDbg();};
 $('dbgRot').onclick=()=>{forceLand=!forceLand;try{localStorage.setItem('msp-land',forceLand?'on':'off');}catch(e){}fitCanvas();fitWorld();badge();renderDbg();};
 setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();},1000);
 
 /* ---------- start ---------- */
-function start(data){S=(data&&data.S)?data.S:fresh();
+function saveGame(){try{localStorage.setItem('msp-save',JSON.stringify({S,GL:GL.slice(-120)}));}catch(e){}}
+function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week){GL.push(...(d.GL||[]));return d.S;}}catch(e){}return null;}
+function start(data){const saved=(data&&data.S)?null:loadGame();S=(data&&data.S)?data.S:(saved||fresh());if(saved)data={S:saved};
   if(data&&data.S){for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){sc.stage='bin';sc.at='bin';}}}
   fitCanvas();applyLayout();fitWorld();for(const w of S.staff){w.x=w.idle.x;w.y=w.idle.y;}$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();
   if(S.running)setSpeed(S.speed||1);else if(S.intro){S.intro=false;showIntro();}else showReview();
