@@ -1,5 +1,8 @@
 # Changelog
 
+## v17.7 — 2026-10-24
+- Fix: on phone-sized forced-landscape screens (e.g. 852×393) the proposal cards grew wider than their columns and overlapped each other — the line-clamped text blocks were forcing the card's minimum width. Cards now clip to their column; From lines wrap to two lines instead of truncating; "To" drops the redundant week. Feed photo trimmed so the feed slip also fits that screen. Added the iPhone 15 Pro viewport to the layout test.
+
 ## v17.6 — 2026-10-24
 - Proposal cards share one template and one height: header with icon, From/To and a Required/Optional tag; Re: line (two lines reserved); body (two lines reserved); three-line terms area; equal-width buttons on a dashed signature line. The event card lists its options as terms so no card is shorter than the others.
 
