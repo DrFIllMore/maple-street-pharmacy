@@ -213,7 +213,10 @@ const TYPES={
   medshelf:{name:'Stock shelf',cost:400,w:2,d:1,block:'all',cat:'furniture',desc:'Makes the back room look like a pharmacy. Small trust bonus.'},
   plant:{name:'Plant',cost:80,w:1,d:1,block:'all',cat:'furniture',desc:'People like plants.'},
 };
-const PALETTE=['dropoff','register','counter','bin','fill','verify','shelf','chair','wall','door','phone','problem','consult','otc','medshelf','plant'];
+const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','chair','wall','door'];
+const PALETTE_MORE=['phone','problem','consult','otc','medshelf','plant'];
+const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE]:PALETTE_START;
+const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
 const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const WAGES={tech:800,clerk:650,rph:1800};
 /* insurance plans (contracts) */
 const PLANS={blue:{name:'BlueLeaf',rate:38,delay:2,reject:.06,share:.35,h:'commercial · pays in 2 weeks · 6% rejected'},
@@ -254,6 +257,10 @@ function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;
 function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;const o=S.objs[i];const T=TYPES[o.type];if(busyS[id])return 'Someone is using it.';
   for(const sc of S.scripts)if(sc.at&&sc.at.endsWith(':'+id)){const b=objsOf('bin')[0];sc.at=b?'bin:'+b.id:null;if(sc.stage!=='shelf'&&sc.stage!=='claim')sc.stage='bin';}
   S.cash+=T.cost/2;S.objs.splice(i,1);rebuildGrid();nudgeAll();glog('staff',`Removed the ${T.name.toLowerCase()}.`);saveGame();return null;}
+let held=null; /* object picked up for moving */
+function pickUp(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';held={o,ox:o.x,oy:o.y,orot:o.rot};S.objs.splice(S.objs.indexOf(o),1);rebuildGrid();nudgeAll();tool='move';rot=o.rot;return null;}
+function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if((rot?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;o.x=x;o.y=y;o.rot=rot;S.objs.push(o);held=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
+function cancelMove(){if(!held)return;const o=held.o;o.x=held.ox;o.y=held.oy;o.rot=held.orot;S.objs.push(o);held=null;rebuildGrid();}
 function nudgeAll(){for(const a of [...S.staff,...S.patients]){a.path=null;a.pv=-1;const tx=Math.floor(a.x),ty=Math.floor(a.y);if(inb(tx,ty)&&(a.role?grid[ty][tx].bs:grid[ty][tx].bp)){const t=nearestFree(tx,ty,!!a.role);if(t){a.x=t[0]+.5;a.y=t[1]+.5;}}}}
 function nearestFree(x,y,staff){for(let r=1;r<6;r++)for(let dx=-r;dx<=r;dx++)for(let dy=-r;dy<=r;dy++){const nx=x+dx,ny=y+dy;if((staff?passS(nx,ny):passP(nx,ny)))return [nx,ny];}return null;}
 const objsOf=t=>S.objs.filter(o=>o.type===t);
@@ -412,7 +419,7 @@ function endDay(){
 /* ============ week ============ */
 let timer=null;
 function setSpeed(n){S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setInterval(tick,TICK_MS/n);renderHud();}
-function startWeek(){audioInit();S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
+function startWeek(){audioInit();cancelMove();if(!S.opened)glog('ops','Open for business. The Build menu now has phone desk, problem desk, consult desk, OTC shelf, stock shelf and plants.');S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
   for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const k in busyS)delete busyS[k];for(const sc of S.scripts)sc.claimed=null;hourSnap={served:0,lost:0,cashIn:0,missed:0};
   $('review').hidden=true;$('office').hidden=true;closeSheet();setSpeed(S.speed||1);duck();SFX.bell();
   if(adv){glog('event',adv);adv='';}const due=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0);glog('money',`Week ${S.week} opens. Insurers pay ${fmt(due)} on Saturday. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);saveGame();
@@ -483,14 +490,20 @@ function reviewDecide(){closeAll();const card=CARDS.find(c=>c.id===S.card);const
 
 /* ============ build mode ============ */
 let buildOn=false,tool=null,rot=0;
-function setBuild(on){buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();}
-function renderPalette(){const el=$('palItems');el.innerHTML=PALETTE.map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Remove</b><small>½ back</small></button>`;
-  el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();$('palHint').textContent=tool?(tool==='erase'?'Tap something to remove it.':TYPES[tool].desc+(TYPES[tool].w>1?' Rotate with ↻.':'')):'Pick something to build, then tap the floor.';});
+function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();}
+function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Remove</b><small>½ back</small></button>`;
+  el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
+  if(!tool)palHint();
   $('palRot').textContent=rot?'↻ facing east':'↻ facing south';$('palRot').onclick=()=>{rot=rot?0:1;renderPalette();SFX.click();};
   $('palDone').onclick=()=>{if(!S.opened)showChecklist();else setBuild(false);};$('palDone').textContent=S.opened?'Done':'Ready to open?';}
-function tapTile(tx,ty){if(tool==='erase'){const c=inb(tx,ty)?grid[ty][tx]:null;if(c&&c.o){const err=removeObj(c.o);if(err)toast(err);}return;}
+function palHint(){let t;if(tool==='erase')t='Tap something to remove it.';else if(tool==='move')t=held?'Tap where it goes. ↻ rotates. Pick another tool to cancel.':'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Rotate with ↻.':'');
+  else if(!S.opened){const need=readiness().find(r=>!r.ok&&Object.keys(NEXT_HINT).some(k=>r.t.startsWith(k)));t=need?`Next: ${need.t.replace(/ customers can reach.*|$/,'')}. Tap it below, then tap the floor.`:'Everything is placed. Tap "Ready to open?"';}
+  else t='Pick something to build, then tap the floor.';$('palHint').textContent=t;}
+function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;const err=held?putDown(tx,ty):(c&&c.o?pickUp(c.o):'Nothing there.');if(err)toast(err);renderPalette();palHint();return;}
+  if(tool==='erase'){const c=inb(tx,ty)?grid[ty][tx]:null;if(c&&c.o){const err=removeObj(c.o);if(err)toast(err);}return;}
   if(!tool)return;const T=TYPES[tool];const o={type:tool,x:tx,y:ty,rot};/* center 2-wide items under the finger */if((rot?T.d:T.w)>1&&tx===W-1)o.x=tx-1;
   const err=place(tool,o.x,o.y,rot);if(err)toast(err);else{renderPalette();if(tool==='wall'||tool==='counter'||tool==='chair')return;/* keep tool for painting */}}
+function startMove(id){closeSheet();if(!buildOn)setBuild(true);const err=pickUp(id);if(err)toast(err);renderPalette();palHint();}
 function toast(t){glog('ops',t);}
 
 /* ============ sheets ============ */
@@ -504,8 +517,10 @@ function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}. ${priv}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p><div class="rows">
     ${nxt?`<button class="rowb" id="upg" ${S.cash<nxt.cost?'disabled':''}><span>Upgrade to ${nxt.n}<span class="sub">${nxt.h}</span></span><span class="cost pill">${fmt(nxt.cost)}</span></button>`:''}
+    <button class="rowb" id="mv" ${who?'disabled':''}><span>Move<span class="sub">Pick it up and put it somewhere else.</span></span><span class="cost">free</span></button>
     <button class="rowb danger" id="rm" ${who?'disabled':''}><span>Remove<span class="sub">Half the cost comes back.</span></span><span class="cost">+${fmt(T.cost/2)}</span></button></div>`);
   const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;o.level++;SFX.build();glog('staff',`${T.name} upgraded to ${nxt.n}.`);openObj(o);renderHud();};
+  $('mv').onclick=()=>startMove(o.id);
   $('rm').onclick=()=>{const err=removeObj(o.id);if(err)toast(err);closeSheet();renderHud();};}
 function openStaff(){S.sel='staff';SFX.click();$('menu').hidden=true;
   sheet(`<h3>Staff <small>${fmt(wages())}/week</small></h3><div class="rows">${S.staff.map(w=>`<button class="rowb" data-f="${w.id}" ${w.isYou?'disabled':''}><span>${w.name}<span class="sub">${ROLE[w.role]} · ${w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle'} · tired ${w.fatigue}/6</span></span><span class="cost">${w.isYou?'owner':'let go'}</span></button>`).join('')}</div>
@@ -677,9 +692,8 @@ function drawScene(){
   ctx.clearRect(0,0,VW,VH);const z=Z();
   for(let x=0;x<W;x++)for(let y=0;y<D;y++){const shop=reach.has(x+','+y);flat(x,y,1,1,shop?((x+y)%2?'#eadcc4':'#e4d5bb'):((x+y)%2?'#dfe6ee':'#d3dce6'));}
   const H=64*z;const p0=iso(0,0),p1=iso(W,0),p2=iso(0,D);poly([p0,p1,[p1[0],p1[1]-H],[p0[0],p0[1]-H]],'#c3d3e2');poly([p0,p2,[p2[0],p2[1]-H],[p0[0],p0[1]-H]],'#bdd6cc');
-  const t=iso(W*.6,0);ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.fillStyle='#085041';ctx.textAlign='center';ctx.fillText('MAPLE STREET PHARMACY',t[0],t[1]-40*z);
   /* door on the east edge */flat(DOOR.x,DOOR.y,1,1,'#b8a888');const dA=iso(W,DOOR.y),dB=iso(W,DOOR.y+1);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=3*z;ctx.beginPath();ctx.moveTo(dA[0],dA[1]);ctx.lineTo(dA[0],dA[1]-50*z);ctx.moveTo(dB[0],dB[1]);ctx.lineTo(dB[0],dB[1]-50*z);ctx.stroke();label(DOOR.x+.5,DOOR.y+1.6,'ENTRANCE','rgba(107,74,30,.6)',8);
-  if(buildOn&&tool&&tool!=='erase'&&hover){const T=TYPES[tool];const o={type:tool,x:hover[0],y:hover[1],rot};const ok=!canPlace(tool,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');const st=staffTile(o),pt=patientTile(o);if(st&&inb(st[0],st[1]))flat(st[0],st[1],1,1,'rgba(43,74,107,.25)');if(pt&&inb(pt[0],pt[1]))flat(pt[0],pt[1],1,1,'rgba(107,74,30,.25)');}
+  if(buildOn&&tool&&tool!=='erase'&&(tool!=='move'||held)&&hover){const ty=tool==='move'?held.o.type:tool;const T=TYPES[ty];const o={type:ty,x:hover[0],y:hover[1],rot};const ok=!canPlace(ty,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');const st=staffTile(o),pt=patientTile(o);if(st&&inb(st[0],st[1]))flat(st[0],st[1],1,1,'rgba(43,74,107,.25)');if(pt&&inb(pt[0],pt[1]))flat(pt[0],pt[1],1,1,'rgba(107,74,30,.25)');}
   if(buildOn){for(let x=0;x<W;x++)for(let y=0;y<D;y++){if(grid[y][x].o)continue;const [sx,sy]=iso(x+.5,y+.5);ctx.fillStyle='rgba(0,0,0,.08)';ctx.beginPath();ctx.arc(sx,sy,1.2*z,0,Math.PI*2);ctx.fill();}}
   const items=[];
   for(const o of S.objs){const T=TYPES[o.type];const w=o.rot?T.d:T.w,d=o.rot?T.w:T.d;items.push({d:o.x+o.y+w+d-1,f:()=>drawObj(o)});}
@@ -765,7 +779,7 @@ $('dbgRot').onclick=()=>{forceLand=!forceLand;try{localStorage.setItem('msp-land
 setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();},1000);
 
 /* ============ save / title / start ============ */
-function saveGame(){try{localStorage.setItem('msp-save',JSON.stringify({S,GL:GL.slice(-120),PLANS}));}catch(e){}}
+function saveGame(){let objs=S.objs;if(held&&!S.objs.includes(held.o))objs=[...S.objs,{...held.o,x:held.ox,y:held.oy,rot:held.orot}];try{localStorage.setItem('msp-save',JSON.stringify({S:{...S,objs},GL:GL.slice(-120),PLANS}));}catch(e){}}
 function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){GL.push(...(d.GL||[]));if(d.PLANS)for(const k in d.PLANS)Object.assign(PLANS[k],d.PLANS[k]);return d.S;}}catch(e){}return null;}
 function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
   $('tSound').onclick=()=>{setSound(!AU.on);$('tSound').textContent='Sound: '+(AU.on?'on':'off');$('mSound').textContent='Sound: '+(AU.on?'on':'off');audioInit();};
@@ -778,7 +792,7 @@ function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
   if(saved){for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(pick(NAMES),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,tapTile,pickUp,putDown,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(pick(NAMES),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
 })();
