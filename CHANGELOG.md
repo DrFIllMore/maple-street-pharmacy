@@ -1,5 +1,10 @@
 # Changelog
 
+## v16.3 — 2026-10-24
+- "Ready to open?" is a centred ℞ slip with a two-column checklist (was a cramped side sheet overlapping the palette).
+- Top bar: "Week N" label with the clock/Closed/Building beneath it, proper left padding; new **Rx today** and **In store** counts.
+- The floor empties when the week ends — no customers wandering a closed store during the review.
+
 ## v16.2 — 2026-10-24 — Illustrated portraits
 - Portraits are now DiceBear **lorelei** illustrations (by Lisa Wischofsky, CC0 1.0) — hand-drawn line art, generated offline by `tools/gen-avatars.js` into `avatars.js` (122 KB). Advisors are hand-specified (Dana: auburn bob, glasses, earrings · Marcus: short grey hair, beard · Priya: long black hair, earrings); every staff name has a fixed portrait, and the floor figure's skin tone now matches it. Role shows as the card tint and a coloured bar under the portrait.
 - The earlier hand-coded SVG faces are gone.
