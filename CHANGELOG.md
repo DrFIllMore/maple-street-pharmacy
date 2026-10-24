@@ -1,5 +1,12 @@
 # Changelog
 
+## v13.2 — 2026-10-24
+- Manage is gone as a single screen. Each section is its own icon button in a strip above the clock: Build · Money · Insurers · Claims (badge) · Shifts · Stock · Prices. Tapping one opens a small panel; tapping it again closes it.
+- Money is three lines: cash now, coming in by Saturday, Saturday bills → Saturday night, with the verdict and the loan buttons. What insurers owe moved to Insurers; "where people wait" moved to Shifts.
+- Item card is compact: one status line and a row of buttons (Move · Rotate · Upgrade · Sell), docked above the chat log so it doesn't cover the floor.
+- Taps: all HUD buttons use touch-action: manipulation (no double-tap delay), and the hit area for tapping an item on the floor has a 26px minimum regardless of zoom.
+- Attire: pharmacist white coat, technician blue, clerk green; ring and name chip match. Customers never wear blue, green, grey or white.
+
 ## v13.1 — 2026-10-24 — Economy check & notebook look
 - **Fixed a game-breaking bug:** the "chain pharmacy" event's demand factor was treated as a countdown and deleted a week later, turning demand, orders and cash into NaN (the floor emptied, cash showed blank). Found by running 12-week simulations.
 - **Economy rebalanced so the loan can actually be repaid with good play.** Before: $400/week fixed repayment = 50 weeks minimum, and a well-run store netted ≈ $0/week. Now: insurer rates $52 / $44 / $38 per script (copay $12, cash price $48, drugs $11), loan carries 1% weekly interest and can be paid down early from Manage → Money (keeps $1,000 back). Win = $25,000 cash + loan repaid + trust 60; lose = past a $3,000 overdraft. Write-offs cost 0.5 trust (was 1).
