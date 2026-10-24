@@ -1,5 +1,10 @@
 # Changelog
 
+## v12.3 — 2026-10-24
+- Layout: top bar, palette, chat, menu and camera button all share the same left/right gutters, so they line up edge to edge. In native landscape the gutters are 12px (the phone's safe area handles the notch); the wide left gutter is kept only in forced-landscape mode.
+- The floor now fits the space that's actually free: below the top bar, above the palette while building, full height otherwise. It re-fits when Build opens or closes and when the view rotates.
+- Built items can be turned in place: tap the item → **Turn ↻** (free). It cycles through the facings that fit where it stands.
+
 ## v12.2 — 2026-10-24
 - Every palette tile now carries a one-line "what it does" under its name.
 - Moving shows the picked-up item as a translucent ghost with a facing arrow; tap a spot to preview, tap again (or **Place here**) to set it down. ↻ turns it while held.

@@ -30,21 +30,21 @@
 [hidden]{display:none!important}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px));padding-block:0;-webkit-tap-highlight-color:transparent}
-.app{height:100%;position:relative;overflow:hidden;--gl:12px}
-.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:var(--glR)}
+.app{height:100%;position:relative;overflow:hidden;--gl:12px;--gr:12px;--sab:env(safe-area-inset-bottom,0px)}
+.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:var(--glR);--gr:var(--barR)}
 canvas{display:block;width:100%;height:100%;touch-action:none}
 button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .hud{position:absolute;background:rgba(var(--panel-rgb),var(--hudA))}
-.bar{left:var(--barL);right:var(--barR);top:var(--barY);height:var(--barH);border-radius:8px;display:flex;align-items:center;gap:calc(12px*var(--k));padding:0 2px;font-size:var(--barF);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.bar{left:var(--gl);right:var(--gr);top:var(--barY);height:var(--barH);border-radius:8px;display:flex;align-items:center;gap:calc(12px*var(--k));padding:0 2px;font-size:var(--barF);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
 .bar .sp{flex:1}
 .bar .st{color:var(--ink-2)}.bar .st b{font-family:var(--mono);font-weight:500;color:var(--ink);margin-left:3px}
 .bar .st b.owed{color:var(--owed)}.bar .st b.neg{color:var(--bad)}.bar .st b.pos{color:var(--good)}
 .bb{height:100%;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:var(--barF)}
 .bb#menuBtn{font-size:calc(var(--barF) + 8px)}
-.menu{right:var(--barR);top:calc(var(--barY) + var(--barH) + 4px);display:grid;border:1px solid var(--line);border-radius:10px;overflow:hidden;z-index:12}
+.menu{right:var(--gr);top:calc(var(--barY) + var(--barH) + 4px);display:grid;border:1px solid var(--line);border-radius:10px;overflow:hidden;z-index:12}
 .menu button{height:40px;padding:0 16px;text-align:left;font-size:13px;border-bottom:1px solid var(--line)}.menu button:last-child{border:0}
-.chat{left:var(--chatX);bottom:calc(var(--chatY) + max(0px,env(safe-area-inset-bottom,0px)));width:var(--chatW);height:var(--chatH);background:rgba(20,30,25,.62);color:#e7ece8;border-radius:10px;font-size:var(--chatF);display:flex;flex-direction:column;z-index:8;touch-action:none}
+.chat{left:calc(var(--gl) + var(--chatX) - var(--glR));bottom:calc(var(--chatY) + max(0px,env(safe-area-inset-bottom,0px)));width:var(--chatW);height:var(--chatH);background:rgba(20,30,25,.62);color:#e7ece8;border-radius:10px;font-size:var(--chatF);display:flex;flex-direction:column;z-index:8;touch-action:none}
 .chat.collapsed{height:28px}
 .chat .tabs{display:flex;align-items:center;gap:2px;padding:2px 4px 2px 8px;height:28px;flex:none;cursor:move;touch-action:none}
 .chat .tabs button{height:24px;padding:0 8px;border-radius:6px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(231,236,232,.7);font-weight:800}
@@ -113,7 +113,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .bb.tool.on{background:var(--accent);color:#fff}
 .bb.tool.alert{color:var(--bad)}
 .app.building .chat{visibility:hidden}
-.palette{left:var(--gl);right:var(--barR);bottom:max(8px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px;padding:6px 8px;border-radius:12px;z-index:7;max-width:calc(100% - var(--gl) - var(--barR))}
+.palette{left:var(--gl);right:var(--gr);bottom:max(8px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px;padding:6px 8px;border-radius:12px;z-index:7;max-width:calc(100% - var(--gl) - var(--gr))}
 .palette .row{display:flex;gap:6px;align-items:center}
 .palette .items{display:flex;gap:6px;overflow-x:auto;flex:1;padding-bottom:2px;-webkit-overflow-scrolling:touch}
 .pal{flex:none;min-width:96px;height:52px;border-radius:9px;border:1px solid var(--line);background:var(--panel-solid);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;font-size:11px;padding:0 8px}
@@ -123,7 +123,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .pal[disabled]{opacity:.4}
 .palette .hint{font-size:11px;color:var(--ink-2);font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .palette .pb{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;flex:none}
-.camb{right:calc(var(--barR) + 4px);top:calc(var(--barY) + var(--barH) + 10px);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel-solid);font-size:20px;line-height:1;z-index:6;color:var(--ink)}
+.camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel-solid);font-size:20px;line-height:1;z-index:6;color:var(--ink)}
 .palette .pb.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .tabs2{display:flex;gap:4px;flex-wrap:wrap}.tabs2 button{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.9em}.tabs2 button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .seg1{height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.85em}.seg1.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -266,6 +266,7 @@ function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;cons
 let held=null,ghostAt=null; /* object picked up for moving; ghostAt = proposed tile */
 function pickUp(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';held={o,ox:o.x,oy:o.y,orot:o.rot};S.objs.splice(S.objs.indexOf(o),1);rebuildGrid();nudgeAll();tool='move';rot=o.rot;return null;}
 function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if(((rot&1)?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;o.x=x;o.y=y;o.rot=rot;S.objs.push(o);held=null;ghostAt=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
+function turnObj(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';const i=S.objs.indexOf(o);S.objs.splice(i,1);rebuildGrid();const r0=o.rot||0;for(let k=1;k<4;k++){const r=(r0+k)&3;if(!canPlace(o.type,o.x,o.y,r)){o.rot=r;S.objs.splice(i,0,o);rebuildGrid();nudgeAll();SFX.click();saveGame();return null;}}S.objs.splice(i,0,o);rebuildGrid();return 'No room to turn it here. Move it instead.';}
 function cancelMove(){ghostAt=null;if(!held)return;const o=held.o;o.x=held.ox;o.y=held.oy;o.rot=held.orot;S.objs.push(o);held=null;rebuildGrid();}
 function nudgeAll(){for(const a of [...S.staff,...S.patients]){a.path=null;a.pv=-1;const tx=Math.floor(a.x),ty=Math.floor(a.y);if(inb(tx,ty)&&(a.role?grid[ty][tx].bs:grid[ty][tx].bp)){const t=nearestFree(tx,ty,!!a.role);if(t){a.x=t[0]+.5;a.y=t[1]+.5;}}}}
 function nearestFree(x,y,staff){for(let r=1;r<6;r++)for(let dx=-r;dx<=r;dx++)for(let dy=-r;dy<=r;dy++){const nx=x+dx,ny=y+dy;if((staff?passS(nx,ny):passP(nx,ny)))return [nx,ny];}return null;}
@@ -496,7 +497,7 @@ function reviewDecide(){closeAll();const card=CARDS.find(c=>c.id===S.card);const
 
 /* ============ build mode ============ */
 let buildOn=false,tool=null,rot=0;
-function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();}
+function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();fitWorld();}
 function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><b>${TYPES[t].name}</b><em>${TYPES[t].short}</em><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Remove</b><em>Sell it back</em><small>½ back</small></button>`;
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
@@ -524,9 +525,11 @@ function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}. ${priv}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p><div class="rows">
     ${nxt?`<button class="rowb" id="upg" ${S.cash<nxt.cost?'disabled':''}><span>Upgrade to ${nxt.n}<span class="sub">${nxt.h}</span></span><span class="cost pill">${fmt(nxt.cost)}</span></button>`:''}
+    <button class="rowb" id="turn" ${who?'disabled':''}><span>Turn ↻<span class="sub">Facing ${FACE_N[(o.rot||0)&3]}. Staff and customer sides turn with it.</span></span><span class="cost">free</span></button>
     <button class="rowb" id="mv" ${who?'disabled':''}><span>Move<span class="sub">Pick it up and put it somewhere else.</span></span><span class="cost">free</span></button>
     <button class="rowb danger" id="rm" ${who?'disabled':''}><span>Remove<span class="sub">Half the cost comes back.</span></span><span class="cost">+${fmt(T.cost/2)}</span></button></div>`);
   const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;o.level++;SFX.build();glog('staff',`${T.name} upgraded to ${nxt.n}.`);openObj(o);renderHud();};
+  $('turn').onclick=()=>{const err=turnObj(o.id);if(err)toast(err);openObj(o);};
   $('mv').onclick=()=>startMove(o.id);
   $('rm').onclick=()=>{const err=removeObj(o.id);if(err)toast(err);closeSheet();renderHud();};}
 function openStaff(){S.sel='staff';SFX.click();$('menu').hidden=true;
@@ -630,7 +633,8 @@ try{forceLand=localStorage.getItem('msp-land')!=='off';}catch(e){}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=screen.orientation&&screen.orientation.type?screen.orientation.type.startsWith('portrait'):ih>iw;ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);
   if(ROT){app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
-function fitWorld(){const bx=L.floor.x*VW,by=L.floor.y*VH,bw=L.floor.w*VW,bh=L.floor.h*VH;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
+function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight+10:6)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
+function fitWorld(){const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
 let rsT;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();fitWorld();},80);};window.addEventListener('resize',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);
 const vw=(x,y)=>cam.r===0?[x,y]:cam.r===1?[D-y,x]:cam.r===2?[W-x,D-y]:[y,W-x];
@@ -807,7 +811,7 @@ function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
   if(saved){for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(pick(NAMES),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(pick(NAMES),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
 })();
