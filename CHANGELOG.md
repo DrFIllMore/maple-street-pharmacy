@@ -1,5 +1,10 @@
 # Changelog
 
+## v17 — 2026-10-24 — Weekly call & proposals
+- Advisors now appear in a **Weekly call**: a video-conference layout with four tiles (three advisors and you), each advisor's tile outlined in their stance colour with a status dot and stance badge, and a meeting-chat panel on the right carrying their message and "what I'd do". One screen.
+- The decide slip shows **three proposals as contract forms**, each addressed from a sender with an icon — "From: SilverPlan · accounts payable", "From: MedVax Supply · contracts", "From: Ines · Technician · internal" — with Re:, body, terms and signature buttons. The week's event is the required one; the second is a standing offer that fits your store (vaccines, QuickPay network, specialty supply, loyalty cards, a newspaper ad, or the wholesaler's standing order); the third is an internal memo from the team (day-off request, half-days proposal, relieve-a-bottleneck request, or a quiet note). Signing acts immediately; declining is free.
+- A one-line strip under the proposals shows cash vs goal, loan, trust and the Saturday forecast.
+
 ## v16.5 — 2026-10-24
 - Decide slip (3 of 3) rebuilt as two columns: the week's event card and one forecast sentence on the left; goal bars and four "this week" numbers on the right. Manage button removed (the taskbar is a tap away from Floor). Fits one screen.
 - Advisor email text a size larger.
