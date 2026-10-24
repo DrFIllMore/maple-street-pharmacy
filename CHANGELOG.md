@@ -1,5 +1,8 @@
 # Changelog
 
+## v15.3 — 2026-10-24
+- Staff lists (Workers, Schedule, Performance) are sorted pharmacists → technicians → clerks, owner first, then by name.
+
 ## v15.2 — 2026-10-24
 - Week and clock moved to the top-left of the top bar.
 - Speed buttons (⏸ ▶ ▶▶) sit together with the view-rotate button (now a circular-arrow 360° icon) in one cluster under the bar at top-right. The bottom clock pill is gone.
