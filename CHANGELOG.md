@@ -1,5 +1,8 @@
 # Changelog
 
+## v15.1 — 2026-10-24
+- Fix: game rotated itself even though the screen was already landscape. Rotation is now decided purely from the viewport's real shape (taller than wide → rotate), never from the phone's reported orientation, which can be stale after an orientation-lock request. Also re-checks on orientationchange and screen.orientation change events.
+
 ## v15 — 2026-10-24 — Floor detail & polish pass
 - **Prescriptions look like prescriptions:** wire baskets carry an amber pill vial, a blue liquid bottle or a cream tube; finished bags are white paper with an ℞ label; the fill station shows a counting tray with pills and vials. Each script has a form (pills / liquid / cream).
 - **Tap people:** tapping a customer shows their mood face, what they're doing and how long ("in line to drop off · 25 min"), and a line of what they're thinking. Tapping a worker shows energy, mood, wage and current task, with **Day off tomorrow**, **Shifts** and **Let go**.
