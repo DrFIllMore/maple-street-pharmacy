@@ -1,5 +1,12 @@
 # Changelog
 
+## v20.4 — 2026-10-24 — One worker per station, said out loud
+- Item cards for every station show a **Staff** row ("Rosa · 1 / 1 · one at a time") and, when a worker of that role is idle because every station of that kind is taken, a red note: "Luis is waiting for a free fill station · build another or upgrade this one".
+- Flow rows say the same: "1 station · one tech each · 1 tech waiting for a free one", "1 window · 2 clerks · 2 clerks waiting for a free one".
+- Station descriptions state "One tech works it at a time" (and the same for the window, register and verify terminal).
+- Fix: the Flow panel had been opening empty since the taskbar split — its tab was never wired to the live flow view. It renders again.
+- The pharmacist no longer takes the drop-off window, register or phone while a clerk stands idle.
+
 ## v20.3 — 2026-10-24 — Why is he standing there?
 - Tapping an idle worker now says why: "idle · waiting — the only fill station is taken · a second one would keep this tech busy", "nothing in the bin to fill right now", "can't reach the fill station — something blocks the staff side", "no one in line right now", and so on. After two idle hours the chat log says the same once a day.
 

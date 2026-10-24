@@ -274,7 +274,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20.3 · 2026-10-24';
+const BUILD='v20.4 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -294,11 +294,11 @@ const TYPES={
   wall:{two:true,short:'Blocks everyone',name:'Wall',cost:60,w:1,d:1,block:'all',cat:'build',desc:'Solid. Rooms need a door.'},
   door:{short:'Walk-through in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'Goes in a wall line. Swings toward the side you face it. One door makes a walled consult room private.'},
   counter:{short:'Staff pass, customers don’t',name:'Counter',cost:150,w:1,d:1,block:'patients',cat:'build',two:true,desc:'A half-height counter line. Staff step over it; customers can\'t.'},
-  dropoff:{short:'Customers hand in Rx',name:'Drop-off window',cost:600,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Customers hand in prescriptions. A clerk works it from behind.'},
-  register:{short:'Pay & pick up',name:'Register',cost:500,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Pick-up and payment, worked from behind.',levels:[{n:'Till',t:1},{n:'Card reader',t:.6,cost:800,h:'rings up 40% faster'}]},
+  dropoff:{short:'Customers hand in Rx',name:'Drop-off window',cost:600,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Customers hand in prescriptions. A clerk works it from behind. One clerk works it at a time.'},
+  register:{short:'Pay & pick up',name:'Register',cost:500,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Pick-up and payment, worked from behind. One clerk at a time.',levels:[{n:'Till',t:1},{n:'Card reader',t:.6,cost:800,h:'rings up 40% faster'}]},
   bin:{short:'New Rx wait for a tech',name:'Basket bin',cost:150,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'New prescriptions wait here for a tech.'},
-  fill:{short:'Tech counts pills',name:'Fill station',cost:1200,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'A tech counts and fills here.',levels:[{n:'Counting tray',t:2},{n:'Automatic counter',t:1.2,cost:2500,h:'almost twice as fast'},{n:'Filling robot',t:.7,cost:8000,h:'fills almost on its own'}]},
-  verify:{short:'Pharmacist checks',name:'Verify terminal',cost:900,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'A pharmacist checks every fill here.',levels:[{n:'Terminal',t:1},{n:'Barcode scanner',t:.65,cost:1500,h:'checks a third faster'}]},
+  fill:{short:'Tech counts pills',name:'Fill station',cost:1200,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'A tech counts and fills here. One tech works it at a time.',levels:[{n:'Counting tray',t:2},{n:'Automatic counter',t:1.2,cost:2500,h:'almost twice as fast'},{n:'Filling robot',t:.7,cost:8000,h:'fills almost on its own'}]},
+  verify:{short:'Pharmacist checks',name:'Verify terminal',cost:900,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'A pharmacist checks every fill here. One pharmacist at a time.',levels:[{n:'Terminal',t:1},{n:'Barcode scanner',t:.65,cost:1500,h:'checks a third faster'}]},
   shelf:{short:'Finished bags wait',name:'Will-call shelf',cost:500,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'Finished bags wait for pick-up. Holds 16.'},
   phone:{short:'Takes phone-in Rx',name:'Phone desk',cost:700,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Phone-in prescriptions get answered here.'},
   problem:{short:'Fixes rejected claims',name:'Problem desk',cost:800,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Rejected claims get worked here automatically.'},
@@ -452,7 +452,7 @@ function jobEscort(w,p){p.escort=w.id;const t=p.state==='inBack'?[Math.floor(p.x
 const PRI={clerk:['pickup','intake','receive','phone','restock','problem'],tech:['receive','fill','restock'],rph:['verify','consult','problem','pickup','intake','phone','fill']};
 const busyS={};const dist=(a,b)=>Math.hypot(a[0]+.5-b.x,a[1]+.5-b.y);
 function freeObj(type,w){return objsOf(type).filter(o=>!busyS[o.id]&&passS(...staffTile(o))).sort((a,b)=>dist(staffTile(a),w)-dist(staffTile(b),w))[0];}
-function findJob(w){let pri=PRI[w.role];if(w.role!=='tech'){const qd=objsOf('dropoff').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0),qr=objsOf('register').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0);if(w.role==='clerk')pri=qd>qr?['intake','pickup','receive','phone','restock','problem']:['pickup','intake','receive','phone','restock','problem'];if((qd+qr)>=3&&S.scripts.some(x=>x.stage==='ringing'))pri=pri.filter(k=>k!=='phone');}
+function findJob(w){let pri=PRI[w.role];if(w.role!=='tech'){const qd=objsOf('dropoff').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0),qr=objsOf('register').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0);if(w.role==='clerk')pri=qd>qr?['intake','pickup','receive','phone','restock','problem']:['pickup','intake','receive','phone','restock','problem'];if((qd+qr)>=3&&S.scripts.some(x=>x.stage==='ringing'))pri=pri.filter(k=>k!=='phone');if(w.role==='rph'&&S.staff.some(x=>x.role==='clerk'&&!x.off&&x.x<W&&!x.plan))pri=pri.filter(k=>!['intake','pickup','phone'].includes(k));/* don't take a clerk's window while a clerk stands idle */}
   {const sn=S.patients.find(p=>(p.state==='inBack'||(p.state==='sneak'&&p.snT>=3))&&!p.escort);if(sn&&(w.role!=='tech'||!S.staff.some(x=>x.role!=='tech'&&!x.off&&!x.plan)))return jobEscort(w,sn);}
   for(const kind of pri){
     if(kind==='intake'){for(const o of objsOf('dropoff')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.state==='queued'&&x.arrived&&qIndex(x)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&!sc.claimed&&objsOf('bin').length)return jobIntake(w,o,p,sc);}}}
@@ -601,14 +601,15 @@ function flowHtml(){const cnt=f=>S.scripts.filter(f).length;const pat=f=>S.patie
   const wins=objsOf('dropoff'),regs=objsOf('register'),fills=objsOf('fill'),vers=objsOf('verify'),shelves=objsOf('shelf'),chairs=objsOf('chair');
   const techs=S.staff.filter(w=>w.role==='tech'&&!w.off).length,clerks=S.staff.filter(w=>w.role==='clerk'&&!w.off).length,rphs=S.staff.filter(w=>w.role==='rph'&&!w.off).length;
   const inQ=t=>pat(p=>p.q&&objById(p.q)&&objById(p.q).type===t&&(p.state==='toQueue'||p.state==='queued'));
+  const waiting=(type,role)=>{const same=objsOf(type);const idle=S.staff.filter(w=>w.role===role&&!w.off&&w.x<W&&!w.plan).length;return S.running&&same.length&&same.every(q=>busyS[q.id])&&idle?` · ${idle} ${role==='rph'?'pharmacist':role}${idle>1?'s':''} waiting for a free one`:'';};
   const rows=[
-    {l:'Drop-off line',n:inQ('dropoff'),cap:Math.max(1,wins.length)*4,who:`${wins.length} window${wins.length!==1?'s':''} · ${clerks} clerk${clerks!==1?'s':''}`,fix:'another window, or a clerk who isn\'t on the phone'},
+    {l:'Drop-off line',n:inQ('dropoff'),cap:Math.max(1,wins.length)*4,who:`${wins.length} window${wins.length!==1?'s':''} · ${clerks} clerk${clerks!==1?'s':''}${waiting('dropoff','clerk')}`,fix:'another window, or a clerk who isn\'t on the phone'},
     {l:'Phones ringing',n:cnt(x=>x.stage==='ringing'),cap:2,who:objsOf('phone').length?'phone desk':'no phone desk',fix:'a phone desk'},
     {l:'Baskets in the bin',n:cnt(x=>x.stage==='bin'),cap:Math.max(1,techs)*6,who:`${techs} tech${techs!==1?'s':''}`,fix:'a second tech'},
-    {l:'Filling',n:cnt(x=>typeof x.at==='string'&&x.at.startsWith('slot:')&&fills.some(f=>x.at==='slot:'+f.id)),cap:Math.max(1,fills.length)*3,who:`${fills.length} station${fills.length!==1?'s':''}${fills[0]&&fills[0].level?' · '+TYPES.fill.levels[fills[0].level].n:''}`,fix:'upgrade the fill station'},
-    {l:'Waiting for your check',n:cnt(x=>x.stage==='tray'),cap:4*Math.max(1,vers.length),who:`${rphs} pharmacist${rphs!==1?'s':''}`,fix:'you\'re the bottleneck — fewer phones for you, or a barcode scanner'},
+    {l:'Filling',n:cnt(x=>typeof x.at==='string'&&x.at.startsWith('slot:')&&fills.some(f=>x.at==='slot:'+f.id)),cap:Math.max(1,fills.length)*3,who:`${fills.length} station${fills.length!==1?'s':''} · one tech each${fills[0]&&fills[0].level?' · '+TYPES.fill.levels[fills[0].level].n:''}${waiting('fill','tech')}`,fix:'upgrade the fill station'},
+    {l:'Waiting for your check',n:cnt(x=>x.stage==='tray'),cap:4*Math.max(1,vers.length),who:`${vers.length} terminal${vers.length!==1?'s':''} · ${rphs} pharmacist${rphs!==1?'s':''}${waiting('verify','rph')}`,fix:'you\'re the bottleneck — fewer phones for you, or a barcode scanner'},
     {l:'Bags on the shelf',n:cnt(x=>x.stage==='shelf'),cap:16*Math.max(1,shelves.length),who:`${shelves.length} shel${shelves.length===1?'f':'ves'}`,fix:'a second will-call shelf'},
-    {l:'Pick-up line',n:inQ('register'),cap:Math.max(1,regs.length)*4,who:`${regs.length} register${regs.length!==1?'s':''}`,fix:'another register'},
+    {l:'Pick-up line',n:inQ('register'),cap:Math.max(1,regs.length)*4,who:`${regs.length} register${regs.length!==1?'s':''}${waiting('register','clerk')}`,fix:'another register'},
     {l:'Delivery to put away',n:S.inv.recv.length,cap:4,who:S.inv.recv.length?S.inv.recv.map(b=>INV[b.line].n.toLowerCase()).join(', '):'nothing waiting',fix:'a free tech or clerk'},
     {l:'Sitting & waiting',n:pat(p=>p.state==='waiting'||p.state==='toSeat'),cap:Math.max(1,chairs.length),who:`${chairs.length} chair${chairs.length!==1?'s':''}`,fix:'more chairs'}];
   const jam=rows.filter(r=>r.n/r.cap>=.85);
@@ -853,7 +854,7 @@ function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
   const live=o.tt>20?(o.bt||0)/o.tt:null;const util=o.util!==undefined?o.util:live;const cap=o.type==='fill'?3:o.type==='verify'?4:o.type==='shelf'?16:o.type==='bin'?8:['dropoff','register'].includes(o.type)?4:o.type==='chair'?1:null;
   const ustat=util===null||util===undefined?'':util>=.85?`<span class="ustat bad">OVERUSED ${Math.round(util*100)}% · build another</span>`:util<.2?`<span class="ustat warn">IDLE ${Math.round(util*100)}%</span>`:`<span class="ustat ok">BUSY ${Math.round(util*100)}%</span>`;
-  const stats=(T.sides||T.levels||o.type==='bin'||o.type==='shelf'||o.type==='chair'||o.type==='otc')?`<div class="kv"><div><span>Use</span>${ustat||'<b>no data yet</b>'}${o.util!==undefined?' <small class="sub">yesterday</small>':live!==null?' <small class="sub">today</small>':''}</div>${cap?`<div><span>Load</span><span class="ebar"><i style="width:${Math.min(100,Math.round(n/cap*100))}%;background:${n/cap>=.85?'var(--bad)':'var(--good)'}"></i></span><b>${n} / ${cap}</b></div>`:''}${o.earn||['register','consult','otc'].includes(o.type)?`<div><span>Earned</span><b>${fmt(o.earn||0)}</b> <small class="sub">this week</small></div>`:''}</div>`:'';
+  const stats=(T.sides||T.levels||o.type==='bin'||o.type==='shelf'||o.type==='chair'||o.type==='otc')?`<div class="kv"><div><span>Use</span>${ustat||'<b>no data yet</b>'}${o.util!==undefined?' <small class="sub">yesterday</small>':live!==null?' <small class="sub">today</small>':''}</div>${cap?`<div><span>Load</span><span class="ebar"><i style="width:${Math.min(100,Math.round(n/cap*100))}%;background:${n/cap>=.85?'var(--bad)':'var(--good)'}"></i></span><b>${n} / ${cap}</b></div>`:''}${staffingNote(o)}${o.earn||['register','consult','otc'].includes(o.type)?`<div><span>Earned</span><b>${fmt(o.earn||0)}</b> <small class="sub">this week</small></div>`:''}</div>`:'';
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}.${priv?' '+priv:''}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p>${stats}<div class="acts">
     <button id="mv" ${who?'disabled':''}>↔ Move</button><button id="turn" ${who?'disabled':''}>↻ Rotate</button>${nxt?`<button id="upg" class="pri" ${S.cash<nxt.cost?'disabled':''}>⬆ ${nxt.n} <b>${fmt(nxt.cost)}</b></button>`:''}<button id="rm" class="danger" ${who?'disabled':''}>Sell <b>+${fmt(T.cost/2)}</b></button></div>`);
   const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;o.level++;SFX.build();glog('staff',`${T.name} upgraded to ${nxt.n}.`);openObj(o);renderHud();};
@@ -865,6 +866,11 @@ function patientDoing(p){const o=p.q&&objById(p.q);if(p.state==='queued'||p.stat
 function openPatient(p){S.sel=null;SFX.click();const m=moodOf(p);sheet(`<h3>${MOODJI[m]||'🙂'} ${p.name} <small>${p.elderly?'senior · ':''}${p.sick?'unwell · ':''}${p.kind==='consult'?'consult':'prescription'}</small></h3><p>${patientDoing(p)}.</p><p class="quote">“${pick(MOODWORDS[m]||MOODWORDS.content)}”</p>`);}
 function workerMood(w){if(w.off)return ['off shift','🏠'];if(w.fatigue>=5)return ['exhausted','😩'];if(w.fatigue>=4)return ['tired','😮‍💨'];const idle=w.wkTicks?w.wkIdle/w.wkTicks:0;if(idle>.6&&w.wkTicks>60)return ['bored','🥱'];if(S.mods.raise===99)return ['happy (got the raise)','😊'];return ['doing fine','🙂'];}
 function energyBar(w){const e=1-w.fatigue/6;return `<span class="ebar"><i style="width:${Math.round(e*100)}%;background:${e>.5?'var(--good)':e>.25?'#ef9f27':'var(--bad)'}"></i></span>`;}
+const STATION_ROLE={fill:'tech',verify:'rph',dropoff:'clerk',register:'clerk',phone:'clerk',problem:'rph',consult:'rph'};
+function staffingNote(o){/* one worker per station: who is on it, and whether someone of that role is idle waiting for it */const role=STATION_ROLE[o.type];if(!role)return '';const who=S.staff.find(w=>busyS[o.id]===w.id);const same=objsOf(o.type);const onRole=S.staff.filter(w=>w.role===role&&!w.off&&w.x<W);const idleRole=onRole.filter(w=>!w.plan);const allBusy=same.every(q=>busyS[q.id]);
+  const line=`<div><span>Staff</span><b>${who?who.name:'nobody'} · ${who?1:0} / 1</b> <small class="sub">one at a time</small></div>`;
+  const warn=S.running&&idleRole.length&&allBusy?`<div class="ustat bad">${idleRole[0].name} is waiting for a free ${TYPES[o.type].name.toLowerCase()} · build another${TYPES[o.type].levels&&TYPES[o.type].levels[(o.level||0)+1]?' or upgrade this one':''}</div>`:'';
+  return line+warn;}
 function idleWhy(w){const can=o=>passS(...staffTile(o));
   if(w.role==='tech'){const fs=objsOf('fill');if(!fs.length)return 'no fill station to work at';if(!fs.some(can))return 'can\'t reach the fill station — something blocks the staff side';if(!objsOf('verify').some(can))return 'no verify terminal the fills can go to';if(!S.scripts.some(x=>x.stage==='bin'&&!x.claimed))return 'nothing in the bin to fill right now';if(fs.every(o=>busyS[o.id]))return `waiting — ${fs.length>1?'every fill station is':'the only fill station is'} taken${fs.length>1?'':' · a second one would keep this tech busy'}`;return 'between tasks';}
   if(w.role==='clerk'){const ws=[...objsOf('dropoff'),...objsOf('register')];if(!ws.some(can))return 'can\'t get behind a window';if(!S.patients.some(p=>p.state==='queued'))return 'no one in line right now';if(ws.every(o=>busyS[o.id]))return 'waiting — every window is taken';return 'between tasks';}
@@ -893,6 +899,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===officeTab));$('offClose').onclick=()=>{SFX.click();closeOffice();};
   let body='';const ds=S.days.slice(-18);
   const line=(key,col,max)=>{if(ds.length<2)return '';const mx=max||Math.max(1,...ds.map(d=>typeof key==='function'?key(d):d[key]));const Wd=200,H=26;const pts=ds.map((d,i)=>{const v=typeof key==='function'?key(d):d[key];return [i/(ds.length-1)*Wd,H-2-(v/mx)*(H-4)];});return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;};
+  if(officeTab==='flow')body=flowHtml();
   if(officeTab==='metrics'){const last=ds[ds.length-1]||{};const u=last.util||{};
     const dueNow=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0),dueNext=S.ledger.filter(l=>l.due===S.week+1).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0),dueLater=owedTotal()*(1-.06)-dueNow-dueNext;
     const interest=Math.round(S.loan*LOAN_RATE);const bills=wages()+S.rent+Math.min(LOAN_PAY,S.loan)+interest+(S.mods.delivery?60:0);
