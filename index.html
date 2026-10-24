@@ -684,7 +684,7 @@ function lw(o,lx,ly){const T=TYPES[o.type];const r=(o.rot||0)&3;return r===0?[o.
 function lbox(o,lx,ly,w,d,h,col){const a=lw(o,lx,ly),b=lw(o,lx+w,ly+d);const x0=Math.min(a[0],b[0]),y0=Math.min(a[1],b[1]);box(x0,y0,Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]),h,col);}
 function lpt(o,lx,ly){return iso(...lw(o,lx,ly));}
 function frontStrip(o,col){/* thin strip along the customer-facing edge */const T=TYPES[o.type];lbox(o,0,T.d-.12,T.w,.12,.95,col);}
-function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const t=o.type;const grow=Math.min(1,(performance.now()-(o.t0||0))/350);
+function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const t=o.type;const grow=o.t0?Math.max(0,Math.min(1,(performance.now()-o.t0)/350)):1;
   if(grow<1){const [cx,cy]=iso(o.x+w/2,o.y+d/2);ctx.save();ctx.translate(cx,cy);ctx.scale(grow,grow);ctx.translate(-cx,-cy);}
   const cx=o.x+w/2,cy=o.y+d/2;
   if(t==='wall')box(o.x,o.y,1,1,1.6,'#c3d3e2');
@@ -814,7 +814,7 @@ function showTitle(saved){$('app').classList.add('titled');$('title').hidden=fal
     setTimeout(()=>{setMusic('game');duck();},6000);};
   $('tNew').onclick=()=>go(true);$('tCont').onclick=()=>go(false);}
 function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
-  if(saved){for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
+  if(saved){for(const o of S.objs)o.t0=0;for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
 window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(pick(NAMES),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};

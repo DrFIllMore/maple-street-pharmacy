@@ -1,5 +1,8 @@
 # Changelog
 
+## v12.6 — 2026-10-24
+- Fix: **Continue** showed a blank beige screen (or mirrored items). The "pop-in" animation timestamp on each item was saved and compared against the new page's clock, producing a negative scale that blew one box up over the whole view. Timestamps are reset on load and the scale is clamped.
+
 ## v12.5 — 2026-10-24
 - Items now visibly rotate: the customer-facing strip, trays, terminals, chair backs and shelf runs follow the facing, and a selected item shows an arrow for its front.
 - Item card order is Move · Rotate · Upgrade · Sell ("Sell" replaces "Remove" everywhere).
