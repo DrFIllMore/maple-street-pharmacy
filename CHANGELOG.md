@@ -1,5 +1,8 @@
 # Changelog
 
+## v20.3 — 2026-10-24 — Why is he standing there?
+- Tapping an idle worker now says why: "idle · waiting — the only fill station is taken · a second one would keep this tech busy", "nothing in the bin to fill right now", "can't reach the fill station — something blocks the staff side", "no one in line right now", and so on. After two idle hours the chat log says the same once a day.
+
 ## v20.2 — 2026-10-24 — Chairs are solid
 - Nobody walks through a chair any more. A chair tile blocks customers and staff alike; only the person who has claimed that seat may step onto it, so a row of chairs is a wall for everyone else and paths go around it. A chair counts as reachable when a walkable tile next to it is. Build changes no longer nudge someone off the chair they are sitting in.
 

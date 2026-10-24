@@ -274,7 +274,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20.2 · 2026-10-24';
+const BUILD='v20.3 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -519,7 +519,7 @@ function tick(){
   for(const o of S.objs){o.tt=(o.tt||0)+1;if(busyS[o.id]||(['dropoff','register'].includes(o.type)&&S.patients.some(p=>p.q===o.id&&p.state==='queued')))o.bt=(o.bt||0)+1;}
   /* staff shifts */
   for(const w of S.staff){const on=onShift(w);if(w.off&&on){w.off=false;w.x=OUT.x;w.y=OUT.y;w.path=null;}if(!w.off&&!on&&!w.plan){w.off=true;for(const k in busyS)if(busyS[k]===w.id)delete busyS[k];w.goal=null;}}
-  for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;}}
+  for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;w.idleT=0;}else{w.idleT=(w.idleT||0)+1;if(w.idleT===24&&!w.isYou&&S.tick>12)glog('staff',`${w.name} has had nothing to do for two hours: ${idleWhy(w)}.`,'idle'+w.id,108);}}else w.idleT=0;
     if(w.plan){const st=w.plan.steps[w.step];if(st&&st.work!==undefined){if(!w.workMax){w.workMax=st.work;w.work=st.work;}const nIn=S.patients.filter(p=>p.state==='inBack').length;w.work-=nIn?1/(1+.5*nIn):1;if(w.work<=0){w.workMax=0;w.step++;}const o=w.plan.steps.find(s=>s.go)?null:null;util[w.plan.name]=(util[w.plan.name]||0)+1;}}}
   for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14){sc.stage='dead';S.wk.phoneMissed++;S.trust-=.2;glog('bad','Missed a phone-in prescription.','missed',12);}}}
   /* claims expire */for(const c of S.claims)if(c.status==='open'&&(S.week*10+S.day)-c.day>=3){const sc=S.scripts.find(x=>x.id===c.id);if(sc)writeOff(sc,'expired');else c.status='written off';}
@@ -865,7 +865,11 @@ function patientDoing(p){const o=p.q&&objById(p.q);if(p.state==='queued'||p.stat
 function openPatient(p){S.sel=null;SFX.click();const m=moodOf(p);sheet(`<h3>${MOODJI[m]||'🙂'} ${p.name} <small>${p.elderly?'senior · ':''}${p.sick?'unwell · ':''}${p.kind==='consult'?'consult':'prescription'}</small></h3><p>${patientDoing(p)}.</p><p class="quote">“${pick(MOODWORDS[m]||MOODWORDS.content)}”</p>`);}
 function workerMood(w){if(w.off)return ['off shift','🏠'];if(w.fatigue>=5)return ['exhausted','😩'];if(w.fatigue>=4)return ['tired','😮‍💨'];const idle=w.wkTicks?w.wkIdle/w.wkTicks:0;if(idle>.6&&w.wkTicks>60)return ['bored','🥱'];if(S.mods.raise===99)return ['happy (got the raise)','😊'];return ['doing fine','🙂'];}
 function energyBar(w){const e=1-w.fatigue/6;return `<span class="ebar"><i style="width:${Math.round(e*100)}%;background:${e>.5?'var(--good)':e>.25?'#ef9f27':'var(--bad)'}"></i></span>`;}
-function openWorker(w){S.sel=null;SFX.click();const [md,mj]=workerMood(w);const task=w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'nothing to do';const tmr=(S.sched[w.id]||['F','F','F','F','F','F'])[(S.day+1)%6];
+function idleWhy(w){const can=o=>passS(...staffTile(o));
+  if(w.role==='tech'){const fs=objsOf('fill');if(!fs.length)return 'no fill station to work at';if(!fs.some(can))return 'can\'t reach the fill station — something blocks the staff side';if(!objsOf('verify').some(can))return 'no verify terminal the fills can go to';if(!S.scripts.some(x=>x.stage==='bin'&&!x.claimed))return 'nothing in the bin to fill right now';if(fs.every(o=>busyS[o.id]))return `waiting — ${fs.length>1?'every fill station is':'the only fill station is'} taken${fs.length>1?'':' · a second one would keep this tech busy'}`;return 'between tasks';}
+  if(w.role==='clerk'){const ws=[...objsOf('dropoff'),...objsOf('register')];if(!ws.some(can))return 'can\'t get behind a window';if(!S.patients.some(p=>p.state==='queued'))return 'no one in line right now';if(ws.every(o=>busyS[o.id]))return 'waiting — every window is taken';return 'between tasks';}
+  if(w.role==='rph'){if(!objsOf('verify').some(can))return 'can\'t reach the verify terminal';if(!S.scripts.some(x=>x.stage==='tray'&&!x.claimed))return 'nothing to check right now';return 'between tasks';}return 'nothing to do';}
+function openWorker(w){S.sel=null;SFX.click();const [md,mj]=workerMood(w);const task=w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle · '+idleWhy(w);const tmr=(S.sched[w.id]||['F','F','F','F','F','F'])[(S.day+1)%6];
   sheet(`<h3><span class="pp" style="margin-right:8px">${staffPortrait(w,46)}</span>${w.name} <small>${ROLE[w.role]}${w.isYou?' · owner':''} · ${mj}</small></h3><div class="kv"><div><span>Energy</span>${energyBar(w)}<b>${6-w.fatigue}/6</b></div><div><span>Mood</span><b>${md}</b></div><div><span>Wage</span><b>${w.isYou?'—':fmt(wageOf(w))+'/wk'}</b></div><div><span>Now</span><b>${task}</b></div></div>
     ${w.isYou?'':`<div class="acts"><button id="dayoff" ${tmr==='O'?'disabled':''}>${tmr==='O'?'Off tomorrow':'Day off tomorrow'}</button><button id="shifts">Shifts</button><button id="fire" class="danger">Let go</button></div>`}`);
   if(w.isYou)return;$('dayoff').onclick=()=>{const sc=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);sc[(S.day+1)%6]='O';SFX.click();glog('staff',`${w.name} gets tomorrow off.`);openWorker(w);};
