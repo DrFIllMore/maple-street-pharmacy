@@ -123,7 +123,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .pal[disabled]{opacity:.4}
 .palette .hint{font-size:11px;color:var(--ink-2);font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .palette .pb{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;flex:none}
-.camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel-solid);font-size:20px;line-height:1;z-index:6;color:var(--ink)}
+.camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;font-weight:800;line-height:1;z-index:6;color:var(--ink)}
 .palette .pb.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .tabs2{display:flex;gap:4px;flex-wrap:wrap}.tabs2 button{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.9em}.tabs2 button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .seg1{height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.85em}.seg1.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -156,7 +156,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
     <div class="ll" id="chatLines"></div>
     <div class="grip" id="chatGrip" aria-label="Resize"></div>
   </div>
-  <button class="hud camb" id="camBtn" aria-label="Rotate view" title="Rotate view">⟳</button>
+  <button class="hud camb" id="camBtn" aria-label="Rotate view" title="Rotate view">⟳ View</button>
   <div class="hud panel palette" id="palette" hidden>
     <div class="row"><div class="items" id="palItems"></div></div>
     <div class="row"><span class="hint" id="palHint">Pick something to build, then tap the floor.</span><button class="pb" id="palRot">↻</button><button class="pb primary" id="palDone">Ready to open?</button></div>
@@ -497,14 +497,14 @@ function reviewDecide(){closeAll();const card=CARDS.find(c=>c.id===S.card);const
 
 /* ============ build mode ============ */
 let buildOn=false,tool=null,rot=0;
-function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();fitWorld();}
+function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();if(!userCam)fitWorld();}
 function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><b>${TYPES[t].name}</b><em>${TYPES[t].short}</em><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Remove</b><em>Sell it back</em><small>½ back</small></button>`;
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
-  $('palRot').textContent='↻ facing '+FACE_N[rot&3];$('palRot').onclick=()=>{rot=(rot+1)&3;renderPalette();SFX.click();};
+  $('palRot').textContent='Rotate · '+FACE_N[rot&3];$('palRot').onclick=()=>{rot=(rot+1)&3;renderPalette();SFX.click();};
   $('palDone').onclick=()=>{if(held&&ghostAt){const err=putDown(ghostAt[0],ghostAt[1]);if(err)toast(err);renderPalette();palHint();return;}if(!S.opened)showChecklist();else setBuild(false);};$('palDone').textContent=held?'Place here':S.opened?'Done':'Ready to open?';
   $('camBtn').onclick=rotateCam;}
-function palHint(){let t;if(tool==='erase')t='Tap something to remove it.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". ↻ turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Rotate with ↻.':'');
+function palHint(){let t;if(tool==='erase')t='Tap something to remove it.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". Rotate turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Use Rotate to face it another way.':'');
   else if(!S.opened){const need=readiness().find(r=>!r.ok&&Object.keys(NEXT_HINT).some(k=>r.t.startsWith(k)));t=need?`Next: ${need.t.replace(/ customers can reach.*|$/,'')}. Tap it below, then tap the floor.`:'Everything is placed. Tap "Ready to open?"';}
   else t='Pick something to build, then tap the floor.';$('palHint').textContent=t;}
 function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}if(err)toast(err);renderPalette();palHint();return;}
@@ -525,7 +525,7 @@ function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}. ${priv}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p><div class="rows">
     ${nxt?`<button class="rowb" id="upg" ${S.cash<nxt.cost?'disabled':''}><span>Upgrade to ${nxt.n}<span class="sub">${nxt.h}</span></span><span class="cost pill">${fmt(nxt.cost)}</span></button>`:''}
-    <button class="rowb" id="turn" ${who?'disabled':''}><span>Turn ↻<span class="sub">Facing ${FACE_N[(o.rot||0)&3]}. Staff and customer sides turn with it.</span></span><span class="cost">free</span></button>
+    <button class="rowb" id="turn" ${who?'disabled':''}><span>Rotate<span class="sub">Facing ${FACE_N[(o.rot||0)&3]}. Staff and customer sides turn with it.</span></span><span class="cost">free</span></button>
     <button class="rowb" id="mv" ${who?'disabled':''}><span>Move<span class="sub">Pick it up and put it somewhere else.</span></span><span class="cost">free</span></button>
     <button class="rowb danger" id="rm" ${who?'disabled':''}><span>Remove<span class="sub">Half the cost comes back.</span></span><span class="cost">+${fmt(T.cost/2)}</span></button></div>`);
   const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;o.level++;SFX.build();glog('staff',`${T.name} upgraded to ${nxt.n}.`);openObj(o);renderHud();};
@@ -628,15 +628,15 @@ function renderHud(){const t=`Wk ${S.week} · ${S.running?`${DAYS[S.day].slice(0
 $('wkBtn').onclick=()=>{if(!S.running){if(!S.opened&&!buildOn){setBuild(true);}return;}setSpeed(S.speed===0?1:S.speed===1?3:0);SFX.click();};
 
 /* ============ renderer ============ */
-const cv=$('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1,r:0};let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
+const cv=$('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1,r:0};let userCam=false;let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
 try{forceLand=localStorage.getItem('msp-land')!=='off';}catch(e){}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=screen.orientation&&screen.orientation.type?screen.orientation.type.startsWith('portrait'):ih>iw;ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);
   if(ROT){app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight+10:6)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
-function fitWorld(){const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
+function fitWorld(){userCam=false;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
-let rsT;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();fitWorld();},80);};window.addEventListener('resize',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);
+let rsT,lastVW=0,lastVH=0;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();const big=Math.abs(VW-lastVW)>120||Math.abs(VH-lastVH)>120;if(!userCam||big)fitWorld();lastVW=VW;lastVH=VH;},80);};window.addEventListener('resize',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);
 const vw=(x,y)=>cam.r===0?[x,y]:cam.r===1?[D-y,x]:cam.r===2?[W-x,D-y]:[y,W-x];
 const unvw=(a,b)=>cam.r===0?[a,b]:cam.r===1?[b,D-a]:cam.r===2?[W-a,D-b]:[W-b,a];
 const isoV=(a,b)=>[cam.x+(a-b)*TW*cam.z,cam.y+(a+b)*TH*cam.z];const iso=(x,y)=>isoV(...vw(x,y));const Z=()=>cam.z;
@@ -746,7 +746,7 @@ function idleTile(){const back=[];for(let y=0;y<D;y++)for(let x=0;x<W;x++)if(!re
 /* ============ pointer ============ */
 const ptrs=new Map();let dragging=false,pinch0=0,z0=1;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY});dragging=false;if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);z0=cam.z;}const [mx,my]=toLocal(e.clientX,e.clientY);const [wx,wy]=fromScreen(mx,my);hover=[Math.floor(wx),Math.floor(wy)];});
-cv.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);const [mx,my]=toLocal(e.clientX,e.clientY);const [wx,wy]=fromScreen(mx,my);hover=[Math.floor(wx),Math.floor(wy)];if(!p)return;const [dx,dy]=dLocal(e.clientX-p.x,e.clientY-p.y);p.x=e.clientX;p.y=e.clientY;if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const [cx,cy]=toLocal((a.x+b.x)/2,(a.y+b.y)/2);zoomLocal(cx,cy,z0*d/pinch0);dragging=true;return;}if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)>8)dragging=true;if(dragging){cam.x+=dx;cam.y+=dy;}});
+cv.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);const [mx,my]=toLocal(e.clientX,e.clientY);const [wx,wy]=fromScreen(mx,my);hover=[Math.floor(wx),Math.floor(wy)];if(!p)return;const [dx,dy]=dLocal(e.clientX-p.x,e.clientY-p.y);p.x=e.clientX;p.y=e.clientY;if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const [cx,cy]=toLocal((a.x+b.x)/2,(a.y+b.y)/2);zoomLocal(cx,cy,z0*d/pinch0);dragging=true;return;}if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)>12)dragging=true;if(dragging){cam.x+=dx;cam.y+=dy;userCam=true;}});
 function endPtr(e){const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p||dragging||ptrs.size)return;const [mx,my]=toLocal(e.clientX,e.clientY);$('menu').hidden=true;
   /* hit objects by their top face (lifted) */let best=null,bd=1e9;for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const [cx,cy]=iso(o.x+w/2,o.y+d/2);const dd=Math.hypot(mx-cx,my-(cy-14*Z()));if(dd<bd){bd=dd;best=o;}}
   const [wx,wy]=fromScreen(mx,my);const tx=Math.floor(wx),ty=Math.floor(wy);
@@ -755,7 +755,7 @@ function endPtr(e){const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p|
   if(inb(tx,ty)&&grid[ty][tx].o){openObj(objById(grid[ty][tx].o));return;}
   closeSheet();}
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',endPtr);
-function zoomLocal(px,py,nz){nz=Math.max(.3,Math.min(2.2,nz));const k=nz/cam.z;cam.x=px-(px-cam.x)*k;cam.y=py-(py-cam.y)*k;cam.z=nz;}
+function zoomLocal(px,py,nz){userCam=true;nz=Math.max(.3,Math.min(2.2,nz));const k=nz/cam.z;cam.x=px-(px-cam.x)*k;cam.y=py-(py-cam.y)*k;cam.z=nz;}
 cv.addEventListener('wheel',e=>{e.preventDefault();const [x,y]=toLocal(e.clientX,e.clientY);zoomLocal(x,y,cam.z*(e.deltaY<0?1.1:.9));},{passive:false});
 
 /* ============ audio ============ */

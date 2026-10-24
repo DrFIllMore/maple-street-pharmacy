@@ -1,5 +1,9 @@
 # Changelog
 
+## v12.4 — 2026-10-24
+- Wording: the facing button is now **Rotate · south/east/north/west**; the item card's action is **Rotate**; the camera button reads **⟳ View**.
+- Camera no longer jumps while placing: the view only re-fits on an explicit action (rotate view, opening/closing Build when you haven't panned). Safari's toolbar show/hide and other small viewport changes keep your pan and zoom. Tap-vs-drag threshold raised to 12px so a tap with a slightly moving finger doesn't pan.
+
 ## v12.3 — 2026-10-24
 - Layout: top bar, palette, chat, menu and camera button all share the same left/right gutters, so they line up edge to edge. In native landscape the gutters are 12px (the phone's safe area handles the notch); the wide left gutter is kept only in forced-landscape mode.
 - The floor now fits the space that's actually free: below the top bar, above the palette while building, full height otherwise. It re-fits when Build opens or closes and when the view rotates.
