@@ -46,3 +46,6 @@ Rival chain (from week 3) takes 12% of walk-ins, drifting +1%/week to a 25% cap 
 | base: + 2nd clerk, phone, problem desk, paper ads, loyalty, early loan paydown | −$535 | $2.8k / $11.1k | survives, loan gone ~wk 24, cash never reaches $25k |
 | full: + consult + vaccines + OTC + specialty/fridge + verify upgrade + ads | $8.6k | $8.3k / $1.9k | **wins week 18**, net ≈ $3–4k/week from week 8 |
 Takeaways: profitability comes from the add-on revenue (consults/shots, OTC, specialty) and from keeping the chain's share down with ads; wages alone eat a plain prescription-only store. Cash trough for every strategy is weeks 2–4 while insurers haven't paid yet.
+
+## 2026-10-24 — Inventory (v19)
+Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), vaccine doses $12 (step 10), OTC $4 cost / $9 sale (step 20; shelf capacity 40). Delivery Monday, paid on delivery, must be carried from the bin to its home by staff (receive job, priority above fill for techs). OTC buyers (~30% of walk-ins, +15% with loyalty) detour to the shelf; restock job triggers at ≤30% shelf stock from back-stock. Order suggestions: generics = 1.1×weekly demand minus surplus over 2 days; specialty = 1.3×last week's use + 3; vaccines = 30 when under 25; OTC = 1.2×use + 10 minus on hand.

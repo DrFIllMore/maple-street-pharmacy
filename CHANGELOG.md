@@ -1,5 +1,13 @@
 # Changelog
 
+## v19 — 2026-10-24 — Inventory
+- **Four stock lines:** Generics (prescriptions), Specialty cold-chain (needs contract + fridge, spoils 10%/week), Vaccine doses, OTC goods. Each has on-hand, used-this-week, days left, an order quantity and unit cost. Specialty drug cost is now paid when ordered, not per sale.
+- **OTC shelf holds 40.** Customers who want OTC walk to the shelf, pick an item up (visible in hand) and pay for it at the register. The shelf's displayed stock drops as it sells and reads EMPTY at zero — no sales until restocked.
+- **Deliveries are put away by staff.** Monday's order arrives as boxes by the basket bin; a tech or clerk carries each line to the stock shelf, fridge or OTC shelf before it can be used. Low OTC shelves are restocked from the back by a clerk or tech. Both appear in Flow ("Delivery to put away") and compete for staff time.
+- **Stock order slip** added to the week flow (Results → Feed → Call → **Stock order** → Proposals): a supplier order form with the four lines, −/+ per line, line and total cost, and the Saturday cash forecast recalculating as you change it. Quantities pre-fill from last week's use. The old hidden auto-order and the Supplies −/+ lever are gone; Supplies shows the lines read-only.
+- Also: phones are only skipped when three or more customers are queued (was one); Supplies explains that consult traffic halves without the vaccine contract; the wholesaler's weekly proposal is now a one-off 10% bulk discount for $300.
+- Balance re-run (full strategy): still winning trajectory — 150 served/week by week 10, loan $11.5k, trust 100; week 2–3 cash trough unchanged.
+
 ## v18 — 2026-10-24 — Advisor cast
 - Pharmacy Benefit Manager is now **Benefit Manager**.
 - Each seat has a pool of four advisors with pun names and their own portraits — Financial Advisor: Penny Pillsworth, Bill Co-Payne, Ira Deductible, Cassandra "Cash" Flowers · District Manager: Phil Script, Doug Sage, Max Dose, Rex Scriptor · Benefit Manager: Claire Denied, Rhea Jected, Wanda Formulary, Pryor Authorization · Case Manager: Anita Refill, Patience Waits, Carrie Moore, Gladys Hepps.

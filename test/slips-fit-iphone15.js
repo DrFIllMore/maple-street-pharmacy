@@ -9,6 +9,6 @@ await pg.waitForTimeout(300);
 const fit=()=>pg.evaluate(()=>{const r=document.getElementById('rev');return {sh:r.scrollHeight,ch:r.clientHeight,fits:r.scrollHeight<=r.clientHeight+1};});
 await pg.evaluate(()=>document.getElementById('next').click());await pg.waitForTimeout(300);console.log(tag,'feed',JSON.stringify(await fit()));await pg.screenshot({path:`v176-${tag}-feed.png`});
 await pg.evaluate(()=>document.getElementById('next').click());await pg.waitForTimeout(300);console.log(tag,'inbox',JSON.stringify(await fit()));await pg.screenshot({path:`v176-${tag}-inbox.png`});
-await pg.evaluate(()=>document.getElementById('next').click());await pg.waitForTimeout(300);console.log(tag,'decide',JSON.stringify(await fit()));await pg.screenshot({path:`v176-${tag}-decide.png`});
+await pg.evaluate(()=>document.getElementById('next').click());await pg.waitForTimeout(300);console.log(tag,'stock',JSON.stringify(await fit()));await pg.screenshot({path:`v176-${tag}-stock.png`});await pg.evaluate(()=>document.getElementById('next').click());await pg.waitForTimeout(300);console.log(tag,'decide',JSON.stringify(await fit()));await pg.screenshot({path:`v176-${tag}-decide.png`});
 console.log('errs',errs);await ctx.close();}
 await b.close();})();
