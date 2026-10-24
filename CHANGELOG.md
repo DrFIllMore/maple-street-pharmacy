@@ -1,5 +1,11 @@
 # Changelog
 
+## v12.2 — 2026-10-24
+- Every palette tile now carries a one-line "what it does" under its name.
+- Moving shows the picked-up item as a translucent ghost with a facing arrow; tap a spot to preview, tap again (or **Place here**) to set it down. ↻ turns it while held.
+- Items face any of four directions (south / east / north / west); the ↻ button cycles through them. Staff and customer sides follow the facing.
+- Camera: a ⟳ button under the top bar turns the whole view in 90° steps (four angles). The entrance gap shows in the back wall when it's behind you.
+
 ## v12.1 — 2026-10-24
 - Move tool: pick up any placed item (palette **Move**, or tap it → Move) and put it down elsewhere, free; rotate while holding. Pieces in use can't be moved.
 - Starter palette: before opening, only the essentials show (drop-off, register, counter, bin, fill, verify, will-call shelf, chair, wall, door) and the hint names the next thing the checklist needs. Phone/problem/consult desks, OTC and stock shelves and plants unlock when you open.
