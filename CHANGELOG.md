@@ -1,5 +1,8 @@
 # Changelog
 
+## v20.2 — 2026-10-24 — Chairs are solid
+- Nobody walks through a chair any more. A chair tile blocks customers and staff alike; only the person who has claimed that seat may step onto it, so a row of chairs is a wall for everyone else and paths go around it. A chair counts as reachable when a walkable tile next to it is. Build changes no longer nudge someone off the chair they are sitting in.
+
 ## v20.1 — 2026-10-24 — Learn it the hard way
 - Removed every on-floor hint about the open pharmacy: no red tiles, no banner, no checklist item, no palette hint, no Flow warning, and the counter description no longer explains the consequence. The chat log still reports what happened ("X wandered into the pharmacy area", "someone walked out with stock worth $Y") without telling you the fix. The District Manager, the Gazette and the neighborhood feed are where the advice lives.
 

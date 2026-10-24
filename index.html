@@ -274,7 +274,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20.1 · 2026-10-24';
+const BUILD='v20.2 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -303,7 +303,7 @@ const TYPES={
   phone:{short:'Takes phone-in Rx',name:'Phone desk',cost:700,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Phone-in prescriptions get answered here.'},
   problem:{short:'Fixes rejected claims',name:'Problem desk',cost:800,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Rejected claims get worked here automatically.'},
   consult:{short:'Shots & reviews · wall it in',name:'Consult desk',cost:1500,w:2,d:1,block:'all',sides:'both',cat:'station',desc:'Shots and med reviews. After placing, the floor shows where walls and a door go to make it private.'},
-  chair:{short:'Waiting lasts longer',name:'Chair',cost:100,w:1,d:1,block:'none',seat:true,cat:'furniture',desc:'Seated people wait longer before giving up.'},
+  chair:{short:'Waiting lasts longer',name:'Chair',cost:100,w:1,d:1,block:'none',seat:true,cat:'furniture',desc:'Seated people wait longer before giving up. Nobody walks through a chair — leave a path around the seating.'},
   otc:{short:'Extra sales on the way out',name:'OTC shelf',cost:900,w:2,d:1,block:'all',sides:'patient',cat:'furniture',desc:'Cold medicine and vitamins. Customers buy on the way out.'},
   medshelf:{short:'Looks the part, +trust',name:'Stock shelf',cost:400,w:2,d:1,block:'all',cat:'furniture',desc:'Makes the back room look like a pharmacy. Small trust bonus.'},
   fridge:{short:'Cold storage for specialty meds',name:'Fridge',cost:1200,w:1,d:1,block:'all',cat:'station',desc:'Keeps specialty medicines. Needed for the specialty contract (Supplies).'},
@@ -350,7 +350,7 @@ function staffTile(o){const T=TYPES[o.type];if(T.sides==='both')return backTile(
 function patientTile(o){const T=TYPES[o.type];if(T.sides==='both'||T.sides==='patient')return frontTile(o);return null;}
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<D;
 function rebuildGrid(){grid=[];for(let y=0;y<D;y++){grid[y]=[];for(let x=0;x<W;x++)grid[y][x]={o:null,bp:false,bs:false,seat:null};}
-  for(const o of S.objs){const T=TYPES[o.type];for(const [x,y] of footprint(o)){if(!inb(x,y))continue;const c=grid[y][x];c.o=o.id;if(T.block==='all'){c.bp=true;c.bs=true;}else if(T.block==='patients'){c.bp=true;}if(T.seat)c.seat=o.id;}}
+  for(const o of S.objs){const T=TYPES[o.type];for(const [x,y] of footprint(o)){if(!inb(x,y))continue;const c=grid[y][x];c.o=o.id;if(T.block==='all'){c.bp=true;c.bs=true;}else if(T.block==='patients'){c.bp=true;}if(T.seat){c.seat=o.id;c.bp=true;c.bs=true;/* a chair is solid; only the person sitting in it may step onto it */}}}
   grid[DOOR.y][DOOR.x].bp=false;grid[DOOR.y][DOOR.x].bs=false;
   reach=new Set();const q=[[DOOR.x,DOOR.y]];reach.add(DOOR.x+','+DOOR.y);while(q.length){const [x,y]=q.shift();for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(!inb(nx,ny)||grid[ny][nx].bp)continue;const k=nx+','+ny;if(!reach.has(k)){reach.add(k);q.push([nx,ny]);}}}findExposed();
   S.gridVer++;}
@@ -372,14 +372,15 @@ function pickUp(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing ther
 function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if(((rot&1)?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;o.x=x;o.y=y;o.rot=rot;S.objs.push(o);justPlaced={id:o.id,t:performance.now()};held=null;ghostAt=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
 function turnObj(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';const i=S.objs.indexOf(o);S.objs.splice(i,1);rebuildGrid();const r0=o.rot||0;for(let k=1;k<4;k++){const r=(r0+k)&3;if(TYPES[o.type].two&&((r^r0)&1)===0)continue;if(!canPlace(o.type,o.x,o.y,r)){o.rot=r;S.objs.splice(i,0,o);rebuildGrid();nudgeAll();SFX.click();saveGame();return null;}}S.objs.splice(i,0,o);rebuildGrid();return 'No room to turn it here. Move it instead.';}
 function cancelMove(){ghostAt=null;if(!held)return;const o=held.o;o.x=held.ox;o.y=held.oy;o.rot=held.orot;S.objs.push(o);held=null;rebuildGrid();}
-function nudgeAll(){for(const a of [...S.staff,...S.patients]){a.path=null;a.pv=-1;const tx=Math.floor(a.x),ty=Math.floor(a.y);if(inb(tx,ty)&&(a.role?grid[ty][tx].bs:grid[ty][tx].bp)){const t=nearestFree(tx,ty,!!a.role);if(t){a.x=t[0]+.5;a.y=t[1]+.5;}}}}
+function nudgeAll(){for(const a of [...S.staff,...S.patients]){a.path=null;a.pv=-1;const tx=Math.floor(a.x),ty=Math.floor(a.y);if(inb(tx,ty)&&!a.role&&grid[ty][tx].seat&&a.seat===grid[ty][tx].o)continue;if(inb(tx,ty)&&(a.role?grid[ty][tx].bs:grid[ty][tx].bp)){const t=nearestFree(tx,ty,!!a.role);if(t){a.x=t[0]+.5;a.y=t[1]+.5;}}}}
 function nearestFree(x,y,staff){for(let r=1;r<6;r++)for(let dx=-r;dx<=r;dx++)for(let dy=-r;dy<=r;dy++){const nx=x+dx,ny=y+dy;if((staff?passS(nx,ny):passP(nx,ny)))return [nx,ny];}return null;}
 const objsOf=t=>S.objs.filter(o=>o.type===t);
+const adjReach=(x,y)=>[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>reach.has((x+dx)+','+(y+dy)));
 const objById=id=>S.objs.find(o=>o.id===id);
 function enclosed(o){/* consult privacy: flood from patient tile over patient-walkable tiles, stop at 30 */const pt=patientTile(o);if(!pt)return false;const seen=new Set([pt.join(',')]);const q=[pt];while(q.length&&seen.size<=30){const [x,y]=q.shift();for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(!passP(nx,ny))continue;const c=grid[ny][nx];if(c.o&&objById(c.o)&&objById(c.o).type==='door')continue;const k=nx+','+ny;if(!seen.has(k)){seen.add(k);q.push([nx,ny]);}}}return seen.size<=30;}
 
 /* ============ pathfinding (A*, 8-neighbour, no corner cutting) ============ */
-function astar(sx,sy,tx,ty,staff){if(!inb(tx,ty))return null;const pass=staff?passS:passP;if(!pass(tx,ty))return null;if(sx===tx&&sy===ty)return [];
+function astar(sx,sy,tx,ty,staff){if(!inb(tx,ty))return null;const pass0=staff?passS:passP;const pass=(x,y)=>pass0(x,y)||(!staff&&x===tx&&y===ty&&inb(x,y)&&!!grid[y][x].seat);if(!pass(tx,ty))return null;if(sx===tx&&sy===ty)return [];
   const key=(x,y)=>y*W+x;const open=[[0,sx,sy]];const g=new Map([[key(sx,sy),0]]);const came=new Map();const closed=new Set();
   const h=(x,y)=>Math.hypot(x-tx,y-ty);let it=0;
   while(open.length&&it++<4000){open.sort((a,b)=>a[0]-b[0]);const [,x,y]=open.shift();const k=key(x,y);if(closed.has(k))continue;closed.add(k);
@@ -405,7 +406,7 @@ function readiness(){const r=[];const ok=(c,t)=>r.push({ok:!!c,t});
   ok(win.some(o=>{const p=patientTile(o),s=staffTile(o);return p&&reach.has(p.join(','))&&s&&passS(s[0],s[1]);}),'Drop-off window customers can reach, with room behind it');
   ok(reg.some(o=>{const p=patientTile(o),s=staffTile(o);return p&&reach.has(p.join(','))&&s&&passS(s[0],s[1]);}),'Register customers can reach, with room behind it');
   ok(objsOf('bin').some(o=>passS(...staffTile(o))),'Basket bin');ok(objsOf('fill').some(o=>passS(...staffTile(o))),'Fill station');ok(objsOf('verify').some(o=>passS(...staffTile(o))),'Verify terminal');ok(objsOf('shelf').some(o=>passS(...staffTile(o))),'Will-call shelf');
-  ok(objsOf('chair').filter(o=>reach.has(o.x+','+o.y)).length>=2,'Two chairs customers can reach');
+  ok(objsOf('chair').filter(o=>adjReach(o.x,o.y)).length>=2,'Two chairs customers can reach');
   ok(S.staff.some(w=>w.role==='tech'),'A technician');ok(S.staff.some(w=>w.role==='clerk'),'A clerk');
   return r;}
 
@@ -442,7 +443,7 @@ function returnForPickup(sc){const r=pickQueue('register');if(!r)return;
   const p=spawnPerson('pickup',sc);sc.patient=p.id;p.state='pending';p.delay=Math.floor(rnd(4,14));p.q=r;}
 function routeViaOtc(p){const sh=p.otc?objsOf('otc').find(o=>(o.stock||0)>0&&reach.has(patientTile(o).join(','))):null;if(sh){p.state='toOtc';p.otcT=sh.id;p.otcWait=0;}else p.state='toQueue';}
 function fx(o,text,kind){const t=o.x!==undefined?[o.x+(TYPES[o.type]?((o.rot&1)?TYPES[o.type].d:TYPES[o.type].w)/2:.5),o.y+.5]:[o[0],o[1]];S.fx.push({x:t[0],y:t[1],text,kind,t:0});if(S.fx.length>14)S.fx.shift();if(text==='claim rejected')glog('money','Claim rejected by the insurer.','rej',6);}
-function freeSeat(p){const taken=new Set(S.patients.map(o=>o.seat));const cs=objsOf('chair').filter(c=>reach.has(c.x+','+c.y)&&!taken.has(c.id));if(!cs.length)return null;cs.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return cs[0];}
+function freeSeat(p){const taken=new Set(S.patients.map(o=>o.seat));const cs=objsOf('chair').filter(c=>adjReach(c.x,c.y)&&!taken.has(c.id));if(!cs.length)return null;cs.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return cs[0];}
 function seat(p){const c=freeSeat(p);if(c){p.seat=c.id;p.state='toSeat';goTo(p,c.x,c.y);return;}const tiles=[...reach].map(k=>k.split(',').map(Number)).filter(([x,y])=>!grid[y][x].o);const t=tiles.length?pick(tiles):[DOOR.x-1,DOOR.y];p.seat=null;p.state='toSeat';goTo(p,t[0],t[1]);}
 
 function sendBack(p){const pr=p.prev||{};p.escort=null;p.inT=0;if(pr.state==='queued'&&pr.q&&objById(pr.q)){p.q=pr.q;p.qt=Math.floor(p.qt*.5);p.seq=S.sid++;p.state='toQueue';}else{p.state='waiting';seat(p);}p.prev=null;}
