@@ -1,5 +1,11 @@
 # Changelog
 
+## v15.2 — 2026-10-24
+- Week and clock moved to the top-left of the top bar.
+- Speed buttons (⏸ ▶ ▶▶) sit together with the view-rotate button (now a circular-arrow 360° icon) in one cluster under the bar at top-right. The bottom clock pill is gone.
+- The icon strip is now a taskbar along the bottom edge, stretching from the chat box's right edge to the right gutter (Windows-style), one row with labels.
+- Staff panel split into three tabs: **Workers** (roster by role, energy, mood, wage, hire), **Schedule** (shifts grid), **Performance** (jobs done and busy % per worker this week, plus where people wait).
+
 ## v15.1 — 2026-10-24
 - Fix: game rotated itself even though the screen was already landscape. Rotation is now decided purely from the viewport's real shape (taller than wide → rotate), never from the phone's reported orientation, which can be stale after an orientation-lock request. Also re-checks on orientationchange and screen.orientation change events.
 

@@ -42,9 +42,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .bar .goal .trk{display:block;width:calc(90px*var(--k));height:7px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:3px}.bar .goal .trk i{display:block;height:100%;background:var(--accent)}
 .clock{right:var(--gr);bottom:calc(8px + max(0px,env(safe-area-inset-bottom,0px)));height:calc(44px*var(--k));border-radius:10px;display:flex;align-items:center;gap:4px;padding:0 5px 0 12px;font-size:var(--barF);z-index:7}
 .clock b{font-family:var(--mono);font-weight:700;font-size:1.1em;margin-right:6px;white-space:nowrap}.clock .spd{width:calc(40px*var(--k));height:calc(34px*var(--k));border-radius:7px;background:rgba(0,0,0,.08);display:inline-flex;align-items:center;justify-content:center;font-size:1.15em;margin-left:3px}.clock .spd.on{background:var(--accent);color:#fff}
-.app.building .clock,.app.titled .clock,.app.building .strip,.app.titled .strip{display:none}
-.strip{right:var(--gr);bottom:calc(58px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));display:grid;grid-template-columns:repeat(5,auto);gap:2px;padding:3px;border-radius:10px;z-index:7}
-.sb{width:calc(44px*var(--k));height:calc(38px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:calc(8.5px*var(--k));font-weight:800;color:var(--ink-2);position:relative;line-height:1}.sb span{font-size:calc(17px*var(--k));margin-bottom:2px}.sb.on{background:var(--accent);color:#fff}.sb i{position:absolute;top:2px;right:4px;background:var(--bad);color:#fff;font-style:normal;font-size:9px;border-radius:8px;padding:0 4px;font-weight:800}
+.app.building .strip,.app.titled .strip{display:none}
+.strip{left:calc(var(--gl) + var(--chatX) - var(--glR) + var(--chatW) + 8px);right:var(--gr);bottom:calc(var(--chatY) + max(0px,env(safe-area-inset-bottom,0px)));height:calc(56px*var(--k));display:flex;justify-content:space-around;align-items:center;gap:2px;padding:3px 4px;border-radius:10px;z-index:7}
+.app.rot .strip{left:calc(var(--chatX) + var(--chatW) + 8px)}
+.sb{flex:1;min-width:0;height:calc(48px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:calc(8.5px*var(--k));font-weight:800;color:var(--ink-2);position:relative;line-height:1}.sb span{font-size:calc(17px*var(--k));margin-bottom:2px}.sb.on{background:var(--accent);color:#fff}.sb i{position:absolute;top:2px;right:4px;background:var(--bad);color:#fff;font-style:normal;font-size:9px;border-radius:8px;padding:0 4px;font-weight:800}
 button,.hud{touch-action:manipulation}
 .bar .st b.owed{color:var(--owed)}.bar .st b.neg{color:var(--bad)}.bar .st b.pos{color:var(--good)}
 .bb{height:100%;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:var(--barF)}
@@ -70,6 +71,7 @@ button,.hud{touch-action:manipulation}
 .sheet p{margin:0;font-size:.9em;color:var(--ink-2);font-weight:600}
 .sheet .x{position:absolute;right:4px;top:4px;width:40px;height:36px;font-size:18px;color:var(--ink-2)}
 .rows{display:grid;gap:4px}
+.srow.perf{grid-template-columns:1.2fr auto 70px 1fr}
 .srow{display:grid;grid-template-columns:1.3fr 70px 1fr auto auto;gap:6px;align-items:center;font-size:.86em;padding:3px 0;border-bottom:1px dashed var(--line)}.srow .sname small{color:var(--ink-2)}.srow .smood{color:var(--ink-2);font-weight:700;font-size:.9em}.srow .swage{font-family:var(--mono);font-weight:600}.srow .a{height:26px;padding:0 8px;border-radius:6px;background:var(--line);font-size:.8em}
 .hire{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.hire .a{height:auto;padding:6px 8px;border-radius:8px;background:var(--accent);color:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-size:.85em;text-align:left}.hire .a small{font-weight:600;opacity:.9;font-size:.85em}.hire .a:disabled{opacity:.45}
 .kv{display:grid;gap:3px;font-size:.9em}.kv div{display:flex;align-items:center;gap:8px}.kv span{color:var(--ink-2);font-weight:700;min-width:52px}.kv b{font-weight:700}.ebar{flex:1;max-width:110px;height:8px;border-radius:4px;background:var(--line);overflow:hidden;display:inline-block}.ebar i{display:block;height:100%}
@@ -143,12 +145,15 @@ button,.hud{touch-action:manipulation}
 .pal[disabled]{opacity:.4}
 .palette .hint{font-size:11px;color:var(--ink-2);font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .palette .pb{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;flex:none}
-.camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;font-weight:800;line-height:1;z-index:6;color:var(--ink)}
+.viewc{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);height:calc(44px*var(--k));border-radius:10px;display:flex;align-items:center;gap:4px;padding:0 5px;z-index:6}
+.viewc .spd{width:calc(40px*var(--k));height:calc(34px*var(--k));border-radius:7px;background:rgba(0,0,0,.08);display:inline-flex;align-items:center;justify-content:center;font-size:1.15em;color:var(--ink)}.viewc .spd.on{background:var(--accent);color:#fff}.viewc .cam{flex-direction:column;gap:0;margin-left:6px;width:calc(46px*var(--k))}.viewc .cam small{font-size:8px;font-weight:800;line-height:1}
+.app.building .viewc,.app.titled .viewc{display:none}
+.bar .when b{white-space:nowrap}
 .palette .pb.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .rxhead{display:flex;align-items:center;gap:8px;border-bottom:2px solid #2a2620;padding:0 0 5px;margin-bottom:2px;font-size:.78em;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#2a2620}.rxhead .rx{font-family:Georgia,'Times New Roman',serif;font-size:1.9em;line-height:1;letter-spacing:0;text-transform:none;font-weight:700;color:#0b5c47}.rxhead .dt{margin-left:auto;font-family:var(--mono);font-weight:500;letter-spacing:0;text-transform:none;color:#6b645a}
 .rxfoot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;border-top:1px solid #c9b58d;padding-top:5px;margin-top:4px;font-size:.72em;color:#6b645a;font-weight:700;letter-spacing:.04em;text-transform:uppercase}.rxfoot .sig{flex:1;border-bottom:1px solid #2a2620;height:16px;font-family:Georgia,serif;font-style:italic;font-size:1.4em;text-transform:none;letter-spacing:0;color:#2a2620;font-weight:400;line-height:1;padding-left:8px}
 .paper{--ink:#2a2620;--ink-2:#6b645a;--line:#d9ccb0;--panel-solid:#fffaf0;--panel-rgb:255,250,240;--accent-soft:#e3f1e9;--accent-ink:#0b5c47;color:#2a2620;background:#fbf6ea;border-left:6px solid #0b5c47!important}
-.drawer{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);bottom:calc(146px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));width:min(44%,400px);display:flex;border:1px solid #c9b58d;border-radius:12px;overflow:hidden;z-index:9;font-size:var(--sheetF);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.drawer{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);bottom:calc(var(--chatY) + 64px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));width:min(44%,400px);display:flex;border:1px solid #c9b58d;border-radius:12px;overflow:hidden;z-index:9;font-size:var(--sheetF);box-shadow:0 10px 30px rgba(0,0,0,.35)}
 .drawer h2{font-size:1.15em;font-weight:800}.drawer h2 small{font-size:.72em;font-weight:700}.drawer .foot{font-size:.85em;line-height:1.35;font-weight:600}
 .rev h2{font-size:1.45em}.rev h2 small{font-size:.6em}.rev .sub{font-size:.95em;line-height:1.4;font-weight:600}
 .verdict{font-size:.9em;color:var(--ink-2);font-weight:700}.verdict.bad{color:var(--bad)}.verdict.good{color:var(--accent-ink)}
@@ -187,6 +192,7 @@ button,.hud{touch-action:manipulation}
 <div class="app" id="app">
   <canvas id="cv"></canvas>
   <div class="hud bar" id="bar">
+    <span class="st when"><small>Week</small><b id="wkT">1</b></span>
     <span class="sp"></span>
     <span class="st"><small>Cash</small><b id="cash"></b></span>
     <span class="st"><small>Insurers owe</small><b id="owed" class="owed"></b></span>
@@ -207,7 +213,6 @@ button,.hud{touch-action:manipulation}
     <button class="sb" data-tab="promo"><span>📢</span>Promote</button>
     <button class="sb" data-tab="feed" id="feedBtn"><span>📣</span>Feed<i id="feedN" hidden>new</i></button>
   </div>
-  <div class="hud clock" id="clock"><b id="wkT">Week 1</b><span id="spd"></span></div>
   <div class="hud menu" id="menu" hidden>
     <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mDbg">Debug report</button>
   </div>
@@ -217,7 +222,7 @@ button,.hud{touch-action:manipulation}
     <div class="ll" id="chatLines"></div>
     <div class="grip" id="chatGrip" aria-label="Resize"></div>
   </div>
-  <button class="hud camb" id="camBtn" aria-label="Rotate view" title="Rotate view">⟳ View</button>
+  <div class="hud viewc" id="viewc"><span id="spd"></span><button class="spd cam" id="camBtn" aria-label="Rotate view 90°" title="Rotate view"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><small>360°</small></button></div>
   <div class="hud panel palette" id="palette" hidden>
     <div class="row"><div class="items" id="palItems"></div></div>
     <div class="row"><span class="hint" id="palHint">Pick something to build, then tap the floor.</span><button class="pb" id="palRot">↻</button><button class="pb primary" id="palDone">Ready to open?</button></div>
@@ -244,7 +249,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v15.1 · 2026-10-24';
+const BUILD='v15.2 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -573,7 +578,7 @@ function makeFeed(){const w=S.wk,posts=[];const ev=w.ev||[];const likes=(base)=>
     if(st.fatigue>=5)posts.push({kind:'staff',head:`${st.name} is exhausted`,bad:true,who:st.name,role:st.role,text:pick([`Six days straight. My feet have opinions. A day off would be nice.`,`Closing again tonight. Can we talk about the schedule?`]),likes:likes(4),want:'A day off in Shifts; tired staff work slower.'});
     else if(idle>.6&&w.served>20)posts.push({kind:'staff',head:`${st.name} had nothing to do`,who:st.name,role:st.role,text:pick([`Reorganized the shelf twice today. Then alphabetized it. Send customers.`,`Quiet week. Not complaining. Okay, a little.`]),likes:likes(3),want:'Half days in Shifts save money while it\'s slow.'});
     else if(st.role==='tech'&&w.maxTray>=5)posts.push({kind:'staff',head:'Baskets waiting on your check',bad:true,who:st.name,role:st.role,text:`Filled 20 baskets and they sat in the tray waiting on the check. @You we need you at verify more.`,likes:likes(5),want:'You\'re the bottleneck: fewer phone calls for you, or hire a pharmacist.'});
-    st.wkTicks=0;st.wkIdle=0;}
+    st.wkTicks=0;st.wkIdle=0;st.wkJobs=0;}
   if(S.mods.raise===99&&!S.feedRaiseSaid){S.feedRaiseSaid=true;posts.push({kind:'staff',head:'Team morale up',who:S.staff.find(x=>!x.isYou)?.name||'The team',role:'clerk',text:`Boss gave us the raise. Drinks on us Friday. 🎉`,likes:likes(12),good:true});}
   const bad=posts.filter(p=>p.bad).length,good=posts.filter(p=>p.good).length;
   const captions=w.built.length>=3?['New layout is in. Come see the place.','Busy week of building. Opinions welcome.']:w.lost>=10?['Rough week. We hear you. Fixing it.','Saturday got away from us.']:w.served>=130?['Record week. Thank you, Maple Street.','Lines, but the good kind.']:['Another week on Maple Street.','Saturday afternoon at the pharmacy.','The chairs were full again today.'];
@@ -717,16 +722,16 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
     body=`<h2>Rejected claims <small>${open.length?`${open.length} · expire in 3 days`:'none open'}</small></h2>${open.map(c=>`<div class="clm"><div><b>${fmt(PLANS[c.planKey]?PLANS[c.planKey].rate:34)}</b> · ${c.plan}<small>${c.reason} · ${c.name}</small></div><button class="a pri" data-cl="${c.id}" data-a="appeal">Appeal</button><button class="a" data-cl="${c.id}" data-a="cash">Cash ${fmt(S.cashPrice)}</button><button class="a" data-cl="${c.id}" data-a="wo">Drop</button></div>`).join('')}
       ${closed.length?`<div class="lbl">Recent</div>${closed.map(c=>`<div class="clm" style="opacity:.75"><div>${c.plan} · ${c.name}<small>${c.reason} · ${c.status}</small></div></div>`).join('')}`:''}
       <div class="foot">${objsOf('problem').length?'Your problem desk handles most of these on its own.':'Appeal: ~70% paid, two weeks later. Cash: patient pays now, some walk. Drop: gone.'}${objsOf('problem').length?'':' A problem desk does this for you.'}</div>`;}
-  if(officeTab==='schedule'){const hdr=DAYS.map(d=>`<span>${d.slice(0,2)}</span>`).join('');const groups=[['rph','Pharmacists'],['tech','Technicians'],['clerk','Clerks']];
-    const roster=groups.map(([r,n])=>{const ws=S.staff.filter(w=>w.role===r);return `<div class="lbl">${n} <span class="sub">· ${ws.length}</span></div>${ws.map(w=>{const [md,mj]=workerMood(w);return `<div class="srow"><span class="sname">${mj} <b>${w.name}</b>${w.isYou?' <small>owner</small>':''}</span>${energyBar(w)}<span class="smood">${md}</span><b class="swage">${w.isYou?'—':fmt(wageOf(w))}</b>${w.isYou?'<span></span>':`<button class="a" data-fire="${w.id}">let go</button>`}</div>`;}).join('')||'<div class="foot">none</div>'}`;}).join('');
-    body=`<h2>Staff <small>${fmt(wages())}/week</small></h2>${roster}
-      <div class="lbl">Hire</div><div class="hire">${['tech','clerk','rph'].map(r=>`<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'verifies, consults, covers anything'}</small></button>`).join('')}</div>
-      <div class="lbl">Shifts <span class="sub">· tap a day: Full · AM · PM · Off</span></div><div class="sched"><div class="sh"><span></span>${hdr}<span>wage</span></div>${S.staff.filter(w=>!w.isYou).map(w=>{const s=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);return `<div class="sh"><span><b>${w.name}</b><br><span class="sub">${ROLE[w.role]} · tired ${w.fatigue}/6</span></span>${s.map((v,i)=>`<button class="cell ${v}" data-w="${w.id}" data-d="${i}">${v==='F'?'Full':v==='A'?'AM':v==='P'?'PM':'Off'}</button>`).join('')}<span class="cost">${fmt(wageOf(w))}</span></div>`;}).join('')||'<p class="sub">No staff yet. Hire from the ⋯ menu.</p>'}</div><div class="foot">Half days cost 55%. Six full days in a row slows people down; a day off resets them. You work every day.</div>${(()=>{const last=ds[ds.length-1]||{};const u=last.util||{};const col=v=>v>.85?'bad':v<.3?'':'good';const load=(l,v,fix)=>{const p=Math.round((v||0)*100);return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${col(v||0)}">${p>85?fix:p<30?'mostly idle':'fine'}</span></div></div>`;};return ds.length?`<div class="tile"><small>Where people wait · yesterday</small>${load('Drop-off',u.intake,'another window or clerk')}${load('Fill',u.fill,'upgrade or second tech')}${load('Verify',u.verify,'hire a pharmacist')}${load('Registers',u.pickup,'another register')}</div>`:'';})()}`;}
-  if(officeTab==='flow'){body=flowHtml();}
-  if(officeTab==='promo'){const rv=S.rivalOn?Math.round((S.promo.pricematch>0?0:S.rival)*100):0;
-    body=`<h2>Promote <small>bring people in</small></h2>
-      <div class="tile"><div class="pay"><div><span>Walk-ins boost right now</span><b class="${promoBoost()?'pos':''}">+${Math.round(promoBoost()*100)}%</b></div><div><span>Chain across the street takes</span><b class="${rv?'neg':''}">${S.rivalOn?rv+'%':'— (not yet)'}</b></div></div>${S.rivalOn?`<div class="verdict ${rv>15?'bad':''}">${rv>15?'They\'re eating your lunch. A price-match week wins people back.':rv?'Manageable. Ads keep their share from growing.':'You\'ve got the block this week.'}</div>`:''}</div>
-      ${Object.keys(PROMOS).map(k=>{const P=PROMOS[k];const on=k==='loyalty'?S.loyalty:S.promo[k]>0;return `<div class="lever"><div><div class="n">${P.n} ${on?`<span class="stamp pos">${k==='loyalty'?'running':S.promo[k]+' wk left'}</span>`:''}</div><div class="h">${P.h}</div></div><button class="a pri" data-promo="${k}" ${on||S.cash<P.cost?'disabled':''}>${fmt(P.cost)}</button></div>`;}).join('')}`;}
+  if(officeTab==='schedule'){const hdr=DAYS.map(d=>`<span>${d.slice(0,2)}</span>`).join('');const groups=[['rph','Pharmacists'],['tech','Technicians'],['clerk','Clerks']];S.staffTab=S.staffTab||'workers';
+    const tabs=`<div class="tabs2">${[['workers','Workers'],['shifts','Schedule'],['perf','Performance']].map(([k,n])=>`<button class="${S.staffTab===k?'on':''}" data-stab="${k}">${n}</button>`).join('')}</div>`;
+    let sb='';
+    if(S.staffTab==='workers'){sb=groups.map(([r,n])=>{const ws=S.staff.filter(w=>w.role===r);return `<div class="lbl">${n} <span class="sub">· ${ws.length}</span></div>${ws.map(w=>{const [md,mj]=workerMood(w);return `<div class="srow"><span class="sname">${mj} <b>${w.name}</b>${w.isYou?' <small>owner</small>':''}</span>${energyBar(w)}<span class="smood">${md}</span><b class="swage">${w.isYou?'—':fmt(wageOf(w))}</b>${w.isYou?'<span></span>':`<button class="a" data-fire="${w.id}">let go</button>`}</div>`;}).join('')||'<div class="foot">none</div>'}`;}).join('')
+      +`<div class="lbl">Hire</div><div class="hire">${['tech','clerk','rph'].map(r=>`<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'verifies, consults, covers anything'}</small></button>`).join('')}</div>`;}
+    else if(S.staffTab==='shifts'){sb=`<div class="sched"><div class="sh"><span></span>${hdr}<span>wage</span></div>${S.staff.filter(w=>!w.isYou).map(w=>{const s=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);return `<div class="sh"><span><b>${w.name}</b><br><span class="sub">${ROLE[w.role]}</span></span>${s.map((v,i)=>`<button class="cell ${v}" data-w="${w.id}" data-d="${i}">${v==='F'?'Full':v==='A'?'AM':v==='P'?'PM':'Off'}</button>`).join('')}<span class="cost">${fmt(wageOf(w))}</span></div>`;}).join('')||'<p class="sub">No staff yet.</p>'}</div><div class="foot">Tap a day: Full · AM · PM · Off. Half days cost 55%. Six full days in a row slows people down; a day off resets them. You work every day.</div>`;}
+    else{const last=ds[ds.length-1]||{};const u=last.util||{};const col=v=>v>.85?'bad':v<.3?'':'good';const load=(l,v,fix)=>{const p=Math.round((v||0)*100);return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${col(v||0)}">${p>85?fix:p<30?'mostly idle':'fine'}</span></div></div>`;};
+      sb=`<div class="lbl">This week</div>${S.staff.map(w=>{const idle=w.wkTicks?Math.round(100*w.wkIdle/w.wkTicks):0;const jobs=w.wkJobs||0;const v=idle>60?'bad':idle>35?'':'good';return `<div class="srow perf"><span class="sname"><b>${w.name}</b> <small>${ROLE[w.role]}</small></span><span class="smood">${jobs} jobs</span><span class="ebar"><i style="width:${100-idle}%;background:${idle>60?'var(--bad)':idle>35?'#ef9f27':'var(--good)'}"></i></span><span class="verdict ${v}">${idle>60?'mostly idle':idle>35?'has slack':'busy'} · ${100-idle}%</span></div>`;}).join('')}
+        ${ds.length?`<div class="lbl">Where people wait · yesterday</div><div class="tile">${load('Drop-off',u.intake,'another window or clerk')}${load('Fill',u.fill,'upgrade or second tech')}${load('Verify',u.verify,'hire a pharmacist')}${load('Registers',u.pickup,'another register')}</div>`:'<div class="foot">Station load appears after the first day.</div>'}`;}
+    body=`<h2>Staff <small>${fmt(wages())}/week</small></h2>${tabs}${sb}`;}
   if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;const ups=S.objs.filter(o=>TYPES[o.type].levels&&TYPES[o.type].levels[o.level+1]);
     body=`<h2>Supplies <small>stock · prices · contracts · upgrades</small></h2>
       <div class="tile"><div class="pay"><div><span>Pills on hand</span><b class="${daysLeft<3?'neg':''}">${S.stock} <span class="sub">(~${daysLeft} days)</span></b></div><div><span>Weekly order · arrives Mon</span><b>${S.orderQty} · ${fmt(S.orderQty*S.unitCost*(S.mods.cheap?.9:1))}</b></div>${S.wk.backorder?`<div><span>Sent away empty this week</span><b class="neg">${S.wk.backorder}</b></div>`:''}</div><div class="seg" style="margin-top:4px"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>
@@ -741,6 +746,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   if(officeTab==='pricing_old'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
   el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Insurers',claims:'Claims',schedule:'Roster',inventory:'Supplies',pricing:'Price list',feed:'Neighborhood',flow:'Operations',promo:'Marketing'}[officeTab]);
   el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{payLoan(b.dataset.pay==='all'?S.loan:+b.dataset.pay);renderOffice();renderHud();});
+  el.querySelectorAll('[data-stab]').forEach(b=>b.onclick=()=>{S.staffTab=b.dataset.stab;SFX.click();renderOffice();});
   el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{hireStaff(b.dataset.h);renderOffice();renderHud();});
   el.querySelectorAll('[data-fire]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.fire);fireStaff(w);renderOffice();renderHud();});
   el.querySelectorAll('[data-promo]').forEach(b=>b.onclick=()=>{const e=buyPromo(b.dataset.promo);if(e)toast(e);renderOffice();renderHud();});
@@ -807,7 +813,7 @@ $('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 
 function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
-function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();const t=`Wk ${S.week} · ${S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'between weeks':'building'}`;$('wkT').textContent=t;
+function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();const t=`${S.week} · ${S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'between weeks':'building'}`;$('wkT').textContent=t;
   const sk=`${S.running}|${S.speed}|${S.opened}`;if(sk!==spdKey){spdKey=sk;$('spd').innerHTML=S.running?[[0,'❚❚'],[1,'▶'],[3,'▶▶']].map(([n,g])=>`<button class="spd ${S.speed===n?'on':''}" data-s="${n}" aria-label="speed ${n}">${g}</button>`).join(''):`<button class="spd on" id="goBtn" aria-label="Continue">▶</button>`;}
   $('spd').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{setSpeed(+b.dataset.s);SFX.click();});const gb=$('goBtn');if(gb)gb.onclick=()=>{SFX.click();if(!S.opened){setBuild(true);showChecklist();}else showReview();};
   $('goalI').style.width=Math.round(goalPct()*100)+'%';$('goalSt').hidden=VW<700;
@@ -823,7 +829,7 @@ forceLand=true;
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);
   if(ROT){app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
-function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:6)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
+function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
 function fitWorld(){userCam=false;offShift=0;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
 let rsT,lastVW=0,lastVH=0;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();const big=Math.abs(VW-lastVW)>120||Math.abs(VH-lastVH)>120;if(!userCam||big)fitWorld();lastVW=VW;lastVH=VH;},80);};window.addEventListener('resize',onRs);window.addEventListener('orientationchange',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);if(screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',onRs);
@@ -941,7 +947,7 @@ function frame(ts){perf=ts;const raw=Math.min(.05,(ts-last)/1000||0);last=ts;fps
 function motion(raw){{const dt=raw*(S.speed===3?2.4:1.4);
     for(const w of S.staff){if(w.off){if(w.x<W){goTo(w,DOOR.x,DOOR.y);if(stepAgent(w,dt,9)){w.x=OUT.x;w.y=OUT.y;w.goal=null;}}continue;}
       if(!w.plan){if(!w.goal||Math.random()<.002){const t=idleTile();if(t)goTo(w,t[0],t[1]);}stepAgent(w,dt,5);continue;}
-      let guard=0;while(w.plan&&guard++<6){const st=w.plan.steps[w.step];if(!st){w.plan=null;break;}
+      let guard=0;while(w.plan&&guard++<6){const st=w.plan.steps[w.step];if(!st){w.plan=null;w.wkJobs=(w.wkJobs||0)+1;break;}
         if(st.go){goTo(w,st.go[0],st.go[1]);if(stepAgent(w,dt,9))w.step++;else{if(w.noPath){/* can't reach: abort job */for(const k in busyS)if(busyS[k]===w.id)delete busyS[k];for(const c of w.carry){const b=binOf();c.stage='bin';c.at=b?'bin:'+b.id:null;c.claimed=null;}w.carry=[];w.plan=null;glog('bad',`${w.name} can't reach a station. Something is in the way.`,'noreach',24);}break;}}
         else if(st.fn){st.fn();w.step++;}else break;}}
     for(let i=S.patients.length-1;i>=0;i--){const p=S.patients[i];const spd=p.elderly?4.5:6;
