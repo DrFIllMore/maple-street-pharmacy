@@ -49,3 +49,8 @@ Takeaways: profitability comes from the add-on revenue (consults/shots, OTC, spe
 
 ## 2026-10-24 — Inventory (v19)
 Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), vaccine doses $12 (step 10), OTC $4 cost / $9 sale (step 20; shelf capacity 40). Delivery Monday, paid on delivery, must be carried from the bin to its home by staff (receive job, priority above fill for techs). OTC buyers (~30% of walk-ins, +15% with loyalty) detour to the shelf; restock job triggers at ≤30% shelf stock from back-stock. Order suggestions: generics = 1.1×weekly demand minus surplus over 2 days; specialty = 1.3×last week's use + 3; vaccines = 30 when under 25; OTC = 1.2×use + 10 minus on hand.
+
+## Security (v20)
+- Exposed = a back-room station's staff tile is in the customer-reachable set (`reach`). Recomputed with the grid.
+- Sneak chance per tick per queued/waiting customer: 1% × (1 + exposed/6). Noticed after 3 ticks or on arrival; free clerk/RPh escorts (tech only if nobody else is free). In the back: all staff work at 1/(1+0.5n). Theft from tick 2: 20%/tick unescorted, 8%/tick with an escort on the way; 4–8 generics at unit cost, +1 specialty 30% of the time; −0.5 trust (plus −0.3 per intrusion).
+- Open 3-staff week-1 layout measured: ~7 intrusions, ~10 interceptions, ~1 theft. With a counter line: 0.

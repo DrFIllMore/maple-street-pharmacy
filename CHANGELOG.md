@@ -1,5 +1,13 @@
 # Changelog
 
+## v20 — 2026-10-24 — Counters mean something
+- **Counter redesigned.** It is a thin, half-height counter line with a wooden top that runs through its tile and joins neighbouring counters. It has two orientations (↔ / ↕), not four; Rotate flips between them, in the palette and on a placed piece. Walls work the same way.
+- **The pharmacy can be left open.** Back-room stations (bin, fill, verify, will-call, phone, problem desk, stock shelf, fridge) whose staff side customers can walk to are *exposed*. Build mode and the closed store mark them with red tiles and a banner; once a counter or wall line separates them, a green "PHARMACY CLOSED OFF ✓" banner shows. The checklist lists it as an optional item, and Flow warns when it is open.
+- **Customers wander in.** When the pharmacy is exposed, people in line or waiting occasionally slip into the back. While anyone is in there, every worker's task runs slower (distraction). A free clerk or pharmacist (a tech only if nobody else is free) goes to send them back to the front, which costs that worker's time. A customer left alone in the back for a few minutes may walk out with stock — generics, sometimes a specialty pack — charged at cost, with a trust hit. Each intrusion also costs a little trust.
+- Results count "Walked into the back" and "Stock stolen"; the Gazette headlines repeat theft; the District Manager's one-liner turns to security and his stance goes to disfavour; the feed gets an "anyone can walk behind the counter" post. Tapping a wandering customer explains what they are doing.
+- **Week review never traps you.** Every slip (Results, Feed, Call, Stock order, Proposals) has a Floor ↗ button. Leaving puts a pulsing "Continue week review · Call 3 of 5" pill under the HUD; it, the ▶ button and Continue on the title screen all resume at the same slip. Pages are numbered 1–5 of 5.
+- **Empty floor between weeks.** At closing time the remaining customers are gone and staff go home (anything they were carrying returns to the bin), so the closed store shows only what you built.
+
 ## v19.3 — 2026-10-24 — Thin walls
 - Walls were full-tile blocks, so a consult room looked like a cell. A wall is now a thin partition (about a fifth of a tile) running through the centre of its tile and joining up with neighbouring wall and door tiles into one continuous run, with a small post at corners. End faces that butt against another wall are not drawn, so runs have no seams. A lone wall tile shows as a single panel in the direction it was rotated.
 - Walls standing between the camera and a nearby consult desk are drawn see-through (45%), so the inside of the room stays visible from any of the four views.
