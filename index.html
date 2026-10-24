@@ -270,7 +270,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v17.8 · 2026-10-24';
+const BUILD='v17.9 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -592,7 +592,7 @@ function avFrame(svg,size,tint,klass){return `<span class="av-frame ${klass||''}
 function staffPortrait(w,size){const a=AV.staff[w.name]||AV.staff['New hire'];return avFrame(a&&a.svg,size,ROLE_TINT[w.role]||'#efe6d2','role-'+w.role);}
 function advisorPortrait(k,size){const t={fin:'#e9eef6',dm:'#eef0ea',pbm:'#f5e8ea',cm:'#e8f3ee'}[k];return avFrame(AV.adv[k],size,t);}
 /* ============ advisors (weekly email) ============ */
-const ADVISORS={fin:{name:'Dana Whitfield',title:'Financial advisor',av:'🧮',sig:'Whitfield & Co. Accounting'},dm:{name:'Marcus Hale',title:'District pharmacy manager',av:'📈',sig:'Maple District Office'},pbm:{name:'Priya Raman',title:'Pharmacy Benefit Manager',av:'🏦',sig:'BlueLeaf Pharmacy Network'},cm:{name:'Jordan Okafor',title:'Case manager · patient care',av:'🩺',sig:'Maple Street Community Health'}};
+const ADVISORS={fin:{name:'Dana Whitfield',title:'Financial Advisor',av:'🧮',sig:'Whitfield & Co. Accounting'},dm:{name:'Marcus Hale',title:'District Manager',av:'📈',sig:'Maple District Office'},pbm:{name:'Priya Raman',title:'Pharmacy Benefit Manager',av:'🏦',sig:'BlueLeaf Pharmacy Network'},cm:{name:'Jordan Okafor',title:'Case Manager',av:'🩺',sig:'Maple Street Community Health'}};
 const STANCE={fav:['In favor','👍','fav'],neu:['Neutral','😐','neu'],dis:['Against','👎','dis']};
 function makeInbox(){const w=S.wk,h=S.hist||[],last=h[h.length-1]||{},prev=h[h.length-2];const net=last.net||0,rw=runwayWeeks(),owed=owedTotal(),interest=Math.round(S.loan*LOAN_RATE);const ds=S.days.slice(-6);const u=(ds[ds.length-1]||{}).util||{};const promoSpend=Object.keys(S.promo).filter(k=>S.promo[k]>0).reduce((t,k)=>t+PROMOS[k].cost,0);
   const mails=[];const fact=(t)=>`<b>${t}</b>`;
