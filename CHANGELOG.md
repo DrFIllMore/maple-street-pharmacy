@@ -1,5 +1,11 @@
 # Changelog
 
+## v14 — 2026-10-24 — Neighborhood feed
+- New third slip in the week flow (Results → **Feed** → Decide) and a **Feed** button in the strip (badge when there's a new one).
+- Patient posts come from real events that week: the station where most people gave up (with a named patient and a fix), missed phone-ins, stockouts, a fast happy visit, a consult (private or not). Staff posts come from their state: tired (≥5), idle most of the week, or a tech whose baskets sat waiting on verify — each with what they want.
+- A weekly IG-style photo: an actual snapshot of your floor, a caption chosen from the week, hashtags, likes, and comments drawn from the posts.
+- One **Reply** per week: replying to a complaint recovers a little trust; thanking praise brings a few extra patients next week. A very good week (2+ praise, no complaints, 100+ served) or a very bad one (3+ complaints) goes viral: ±15% demand next week, noted on the week card.
+
 ## v13.3 — 2026-10-24
 - Handwriting font removed; everything is back to Nunito for legibility.
 - Panels, week cards and the item card use a prescription-pad template: ℞ header with the pharmacy name and week/day, a green pad edge, and a "Pharmacist · You · RPh" signature line at the foot.

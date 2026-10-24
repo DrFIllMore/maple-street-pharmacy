@@ -155,6 +155,13 @@ button,.hud{touch-action:manipulation}
 .sw{grid-row:1/3;width:40px;height:22px;border-radius:11px;background:var(--line);position:relative;flex:none}.sw::after{content:'';position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}.sw.on{background:var(--accent)}.sw.on::after{left:20px}
 .clm{display:flex;gap:5px;align-items:center;background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:.9em}.clm>div:first-child{flex:1;min-width:0}.clm b{font-family:var(--mono)}.clm small{display:block;color:var(--ink-2);font-size:.82em;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.clm .a{height:28px;padding:0 9px;border-radius:6px;background:var(--line);font-size:.82em;white-space:nowrap}.clm .a.pri{background:var(--accent);color:#fff}
 .tile{background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:6px 8px;min-width:0}.tile small{display:block;font-size:.72em;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:800}.tile b{display:block;font-family:var(--mono);font-size:1.25em;margin:1px 0 2px}.tile .spark{height:26px}
+.feed{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;align-items:start}.fcol{display:grid;gap:6px}
+.post{display:flex;gap:8px;background:var(--panel-solid);border:1px solid var(--line);border-radius:10px;padding:7px 9px}.post.bad{border-left:4px solid var(--bad)}.post.good{border-left:4px solid var(--accent)}
+.post .av{width:34px;height:34px;border-radius:50%;background:#efe6d2;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}.post .av.st{background:#e4ecf4}.post .av.tech{background:#d6e6fa}.post .av.clerk{background:#d9f2e8}.post .av.rph{background:#f1f1f1}
+.post .pb{flex:1;min-width:0;display:grid;gap:3px}.post .ph{display:flex;align-items:center;gap:6px;font-size:.9em}.post .lk{margin-left:auto;color:var(--ink-2);font-weight:700;font-size:.85em;white-space:nowrap}.post .pt{font-size:.92em;line-height:1.3;font-weight:600}.post .tip{font-size:.8em;color:var(--accent-ink);font-weight:700}.post .rp{justify-self:start;height:26px;padding:0 10px;border-radius:13px;border:1px solid var(--line);background:#fff;font-size:.8em}.post .replied{font-size:.8em;color:var(--accent-ink);font-weight:800}
+.rolechip{font-size:.72em;padding:1px 6px;border-radius:8px;font-weight:800;color:#fff}.rolechip.tech{background:#2f7fd6}.rolechip.clerk{background:#1d9e75}.rolechip.rph{background:#6b645a}
+.ig{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:.86em}.igh{display:flex;align-items:center;gap:6px;padding:6px 8px}.igav{width:22px;height:22px;border-radius:50%;background:#0b5c47;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:13px}.ig img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#e9e2d6}.igc{padding:3px 8px;line-height:1.3}.igc:last-child{padding-bottom:8px}.ig .tags{color:#2f5fa8;font-weight:700}
+.drawer .feed{grid-template-columns:1fr}
 .tabs2{display:flex;gap:4px;flex-wrap:wrap}.tabs2 button{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.9em}.tabs2 button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .seg1{height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.85em}.seg1.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .ubar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.ubar i{display:block;height:100%}
@@ -184,6 +191,7 @@ button,.hud{touch-action:manipulation}
     <button class="sb" data-tab="schedule"><span>🗓</span>Shifts</button>
     <button class="sb" data-tab="inventory"><span>📦</span>Stock</button>
     <button class="sb" data-tab="pricing"><span>🏷</span>Prices</button>
+    <button class="sb" data-tab="feed" id="feedBtn"><span>📣</span>Feed<i id="feedN" hidden>new</i></button>
   </div>
   <div class="hud clock" id="clock"><b id="wkT">Week 1</b><span id="spd"></span></div>
   <div class="hud menu" id="menu" hidden>
@@ -222,7 +230,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v13.3 · 2026-10-24';
+const BUILD='v14 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -273,7 +281,7 @@ function fresh(){return {week:1,day:0,tick:0,speed:0,running:false,opened:false,
   objs:[],gridVer:0,staff:[mkStaff('You','rph',true)],sched:{},
   plans:{blue:true,silver:true,quick:false},cashPrice:48,stock:150,orderQty:150,unitCost:11,
   scripts:[],patients:[],fx:[],claims:[],wk:blank(),days:[],ledger:[],mods:{},seen:[],card:null,choice:null,rent:RENT,hist:[],sid:1};}
-const blank=()=>({served:0,lost:0,consults:0,otc:0,cashIn:0,drug:0,paid:0,fee:0,trust0:0,phoneMissed:0,backorder:0,writeoff:0,annoyed:0});
+const blank=()=>({served:0,lost:0,consults:0,otc:0,cashIn:0,drug:0,paid:0,fee:0,trust0:0,phoneMissed:0,backorder:0,writeoff:0,annoyed:0,ev:[],built:[],maxTray:0});
 function mkStaff(name,role,isYou){return {id:uid(),name,role,isYou:!!isYou,x:OUT.x,y:OUT.y,skin:pick(SKINS),plan:null,step:0,work:0,workMax:0,carry:[],bob:Math.random()*6,fatigue:0,off:false,path:null,goal:null,pv:-1};}
 
 /* ============ grid ============ */
@@ -299,7 +307,7 @@ const passS=(x,y)=>inb(x,y)&&!grid[y][x].bs;
 function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(const [tx,ty] of footprint(o)){if(!inb(tx,ty))return 'Off the floor.';if(tx===DOOR.x&&ty===DOOR.y)return 'That\'s the entrance.';if(grid[ty][tx].o)return 'Something is already there.';}
   if(T.sides){const st=staffTile(o),pt=patientTile(o);if(st&&(!inb(st[0],st[1])||grid[st[1]][st[0]].o))return 'Staff need to stand on the '+(T.sides==='both'?'back':'front')+' side.';if(pt&&(!inb(pt[0],pt[1])||grid[pt[1]][pt[0]].o))return 'Customers need to stand in front.';}
   return null;}
-function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;const nid=uid();S.objs.push({id:nid,type,x,y,rot:rot||0,level:0,t0:performance.now()});justPlaced={id:nid,t:performance.now()};rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
+function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;const nid=uid();S.objs.push({id:nid,type,x,y,rot:rot||0,level:0,t0:performance.now()});justPlaced={id:nid,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push(type);rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
 function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;const o=S.objs[i];const T=TYPES[o.type];if(busyS[id])return 'Someone is using it.';
   for(const sc of S.scripts)if(sc.at&&sc.at.endsWith(':'+id)){const b=objsOf('bin')[0];sc.at=b?'bin:'+b.id:null;if(sc.stage!=='shelf'&&sc.stage!=='claim')sc.stage='bin';}
   S.cash+=T.cost/2;S.objs.splice(i,1);rebuildGrid();nudgeAll();glog('staff',`Removed the ${T.name.toLowerCase()}.`);saveGame();return null;}
@@ -347,7 +355,7 @@ function readiness(){const r=[];const ok=(c,t)=>r.push({ok:!!c,t});
 
 /* ============ economy helpers ============ */
 const acceptedShare=()=>Object.keys(PLANS).reduce((t,k)=>t+(S.plans[k]?PLANS[k].share:PLANS[k].share*.25),0)+CASH_SHARE*(1-(S.cashPrice-48)/40);
-function demandPerDay(){let d=24*acceptedShare()*(.7+S.trust/160);if(S.mods.chain&&S.mods.chainK)d*=S.mods.chainK;if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;return d;}
+function demandPerDay(){let d=24*acceptedShare()*(.7+S.trust/160);if(S.mods.chain&&S.mods.chainK)d*=S.mods.chainK;if(S.mods.viral&&S.mods.viralK)d*=S.mods.viralK;if(S.mods.buzz)d*=1.04;if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;return d;}
 function pickPlan(){const r=Math.random()*acceptedShare();let acc=0;for(const k in PLANS){acc+=S.plans[k]?PLANS[k].share:PLANS[k].share*.25;if(r<acc)return S.plans[k]?k:'cash';}return 'cash';}
 function wageOf(w){if(w.isYou)return 0;const s=S.sched[w.id]||['F','F','F','F','F','F'];const f=s.reduce((t,v)=>t+(v==='F'?1:v==='O'?0:.55),0)/6;return Math.round(WAGES[w.role]*f);}
 const wages=()=>S.staff.reduce((t,w)=>t+wageOf(w),0);
@@ -410,8 +418,8 @@ function closeClaim(id,status){const c=S.claims.find(x=>x.id===id);if(c)c.status
 function writeOff(sc,why){sc.stage='dead';sc.at=null;sc.claimed=null;S.wk.writeoff++;S.trust-=.5;closeClaim(sc.id,'written off');const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.exitMood='sad';p.state='leaving';p.seat=null;p.q=null;}glog('money',`Claim written off (${why}).`,'wo',6);}
 function bagIt(w,sc,shelf){sc.claimed=null;sc.stage='shelf';sc.at=shelf?'shelf:'+shelf.id:null;SFX.paper();if(sc.abandoned)sc.unclaimed=true;else if(!sc.tomorrow)returnForPickup(sc);}
 function jobPickup(w,o,p,sc){claim(w,o,sc);p.state='served';return {name:'pickup',steps:[{go:staffTile(o)},{fn:()=>{w.carry=[sc];sc.at=null;}},{work:1,label:'ringing up'},{fn:()=>{w.carry=[];pay(sc,p,o);release(o,sc);sc.stage='done';p.state='leaving';p.exitMood=(S.day*TICKS_DAY+S.tick-sc.t0)<20?'happy':'content';}}]};}
-function jobConsult(w,o,p){claim(w,o,null);p.state='served';const priv=enclosed(o);return {name:'consult',steps:[{go:staffTile(o)},{work:4/eff(w),label:'consulting'},{fn:()=>{S.cash+=CONSULT;S.wk.cashIn+=CONSULT;S.wk.consults++;S.trust+=priv?.4:.2;fx(o,'+$35','cash');SFX.register();release(o,null);p.state='leaving';p.exitMood='happy';}}]};}
-function pay(sc,p,o){S.wk.served++;S.trust+=.04;let otc=0;if(p.otc&&objsOf('otc').length)otc=OTC*Math.min(2,objsOf('otc').length);
+function jobConsult(w,o,p){claim(w,o,null);p.state='served';const priv=enclosed(o);return {name:'consult',steps:[{go:staffTile(o)},{work:4/eff(w),label:'consulting'},{fn:()=>{S.cash+=CONSULT;S.wk.cashIn+=CONSULT;S.wk.consults++;S.trust+=priv?.4:.2;if(Math.random()<.3)S.wk.ev.push({k:'consult',name:p.name,priv});fx(o,'+$35','cash');SFX.register();release(o,null);p.state='leaving';p.exitMood='happy';}}]};}
+function pay(sc,p,o){S.wk.served++;S.trust+=.04;if((p.qt||0)<4&&(p.wait||0)<8&&Math.random()<.12)S.wk.ev.push({k:'happy',name:p.name,el:p.elderly});let otc=0;if(p.otc&&objsOf('otc').length)otc=OTC*Math.min(2,objsOf('otc').length);
   if(sc.plan&&sc.plan!=='cash'){const pl=PLANS[sc.plan];S.cash+=COPAY+otc;S.wk.cashIn+=COPAY+otc;S.ledger.push({due:S.week+pl.delay,amt:pl.rate,plan:sc.plan});fx(o,`+$${COPAY+otc} · $${pl.rate} owed`,'owed');}
   else{S.cash+=S.cashPrice+otc;S.wk.cashIn+=S.cashPrice+otc;fx(o,`+$${S.cashPrice+otc}`,'cash');}
   if(otc)S.wk.otc+=otc;SFX.register();}
@@ -449,6 +457,7 @@ function tick(){
   watch();if(S.tick%36===0)saveGame();if(S.tick>=TICKS_DAY)endDay();renderHud();}
 function leave(p,mood){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage!=='done'){sc.abandoned=true;if(sc.stage==='withPatient')sc.stage='dead';if(sc.stage==='shelf')sc.unclaimed=true;}
   const where=p.q&&objById(p.q)?(objById(p.q).type==='register'?'at pick-up':'at drop-off'):p.state==='waiting'?'waiting for the fill':p.conf>0?'at the door':'in the store';
+  if(mood!=='content')S.wk.ev.push({k:'gaveup',name:p.name,where,mood,el:p.elderly});
   p.state='leaving';p.q=null;p.seat=null;p.exitMood=mood;p.conf=0;goTo(p,DOOR.x,DOOR.y);
   if(mood!=='content'&&(p.kind!=='consult'||mood==='angry')){S.wk.lost++;S.wk['lost_'+where.replace(/ /g,'_')]=(S.wk['lost_'+where.replace(/ /g,'_')]||0)+1;S.trust-=mood==='angry'?.4:.2;SFX.sigh();glog('bad',`${p.name} gave up ${where}${mood==='confused'?' (couldn\'t get in)':''}.`,'walk',12);}}
 function morning(){for(const sc of S.scripts)if(sc.tomorrow){sc.tomorrow=false;if(sc.stage==='shelf')returnForPickup(sc);else if(sc.stage==='backorder'){const b=binOf();if(S.stock>0&&b){sc.stage='bin';sc.at='bin:'+b.id;}else sc.tomorrow=true;}}
@@ -482,6 +491,7 @@ function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeS
   glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${fmt(loanPay)}${interest?` (+${fmt(interest)} interest)`:''}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
   log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,paid:Math.round(paid),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
   if(S.cash>=GOAL_CASH&&S.trust>=60&&S.loan<=0)S.done='win';else if(S.cash<-OVERDRAFT)S.done='lose';
+  if(!S.done)makeFeed();
   S.card=S.done?null:pickCard();S.choice=null;S.week++;S.orderQty=Math.round(demandPerDay()*6*1.1);saveGame();showReview();}
 
 /* ============ event cards ============ */
@@ -500,6 +510,40 @@ const CARDS=[
 ];
 let adv='';
 function pickCard(){const ok=CARDS.filter(c=>c.when()&&!S.seen.slice(-3).includes(c.id));if(!ok.length)return null;const c=pick(ok);S.seen.push(c.id);return c.id;}
+
+
+/* ============ neighborhood feed ============ */
+const MOODJI={angry:'😠',annoyed:'😤',sad:'😢',sick:'🤒',confused:'😕',happy:'😊',content:'🙂'};
+function snapshotFloor(){try{const z=Z();const cs=[iso(0,0),iso(W,0),iso(W,D),iso(0,D)];const xs=cs.map(c=>c[0]),ys=cs.map(c=>c[1]);const fb={x:Math.max(0,Math.min(...xs)-10),y:Math.max(0,Math.min(...ys)-70*z),w:0,h:0};fb.w=Math.min(VW-fb.x,Math.max(...xs)+10-fb.x);fb.h=Math.min(VH-fb.y,Math.max(...ys)+10-fb.y);const off=document.createElement('canvas');const sw=Math.round(fb.w),sh=Math.round(fb.h);const scale=Math.min(1,640/sw);off.width=Math.round(sw*scale);off.height=Math.round(sh*scale);const o=off.getContext('2d');const dimWas=S.running;S.running=true;drawScene();S.running=dimWas;o.fillStyle='#e9e2d6';o.fillRect(0,0,off.width,off.height);o.drawImage(cv,fb.x*dpr,fb.y*dpr,sw*dpr,sh*dpr,0,0,off.width,off.height);return off.toDataURL('image/jpeg',.62);}catch(e){return null;}}
+function makeFeed(){const w=S.wk,posts=[];const ev=w.ev||[];const likes=(base)=>Math.max(1,Math.round(base*(.5+S.trust/60)*(0.7+Math.random()*.6)));
+  const gave=ev.filter(e=>e.k==='gaveup');const byWhere={};for(const e of gave)byWhere[e.where]=(byWhere[e.where]||0)+1;
+  const worst=Object.entries(byWhere).sort((a,b)=>b[1]-a[1])[0];
+  if(worst){const e=gave.find(x=>x.where===worst[0]);const n=worst[1];posts.push({kind:'patient',who:e.name,av:MOODJI[e.mood]||'😠',text:n>2?`Waited forever ${e.where==='in the store'?'':e.where+' '}and left. ${n} of us walked out this week. ${e.where==='at drop-off'?'Open another window?':e.where==='at pick-up'?'One register on a Saturday?':'Nobody came.'}`:`Gave up ${e.where} today. ${e.el?'I\'m 78, I can\'t stand that long.':'Second time this month.'}`,likes:likes(6+n*3),bad:true,fix:e.where==='at drop-off'?'Another drop-off window or a second clerk.':e.where==='at pick-up'?'Another register, or a clerk on it full time.':e.where==='waiting for the fill'?'Faster fill station or a second tech.':e.where==='at the door'?'The entrance is blocked — check the counters near the door.':'More chairs, faster fill.'});}
+  if(w.phoneMissed>=2)posts.push({kind:'patient',who:pick(PNAMES),av:'😤',text:`Called ${w.phoneMissed>4?'all week':w.phoneMissed+' times'} to refill my mom's prescription. Rings out every time.`,likes:likes(5+w.phoneMissed*2),bad:true,fix:'A phone desk, so calls don\'t depend on a free clerk.'});
+  if(w.backorder>=2)posts.push({kind:'patient',who:pick(PNAMES),av:'😢',text:`"We're out, come back Monday." For blood pressure pills. Really?`,likes:likes(9),bad:true,fix:'Raise the weekly order in Stock.'});
+  const happy=ev.filter(e=>e.k==='happy');if(happy.length&&w.lost<=3){const e=pick(happy);posts.push({kind:'patient',who:e.name,av:'😊',text:pick([`In and out in five minutes and ${S.staff.find(x=>x.role==='clerk')?S.staff.find(x=>x.role==='clerk').name:'the clerk'} remembered my name. ★★★★★`,`They had my refill bagged before I got to the counter. This is my pharmacy now.`,`${e.el?'Finally a pharmacy where nobody rushes me.':'Fast, friendly, and the pharmacist actually explained the dosage.'}`]),likes:likes(14),good:true});}
+  const cons=ev.filter(e=>e.k==='consult');if(cons.length){const e=pick(cons);posts.push({kind:'patient',who:e.name,av:'🙂',text:e.priv?`Got my shot in the little consult room. Private, quick, no line. 👍`:`Got my shot at the consult desk. Would've liked a door — everyone in line heard my weight.`,likes:likes(e.priv?11:4),good:e.priv,fix:e.priv?null:'Wall the consult desk in with a door.'});}
+  for(const st of S.staff){if(st.isYou)continue;const idle=st.wkTicks?st.wkIdle/st.wkTicks:0;
+    if(st.fatigue>=5)posts.push({kind:'staff',who:st.name,role:st.role,text:pick([`Six days straight. My feet have opinions. A day off would be nice.`,`Closing again tonight. Can we talk about the schedule?`]),likes:likes(4),want:'A day off in Shifts; tired staff work slower.'});
+    else if(idle>.6&&w.served>20)posts.push({kind:'staff',who:st.name,role:st.role,text:pick([`Reorganized the shelf twice today. Then alphabetized it. Send customers.`,`Quiet week. Not complaining. Okay, a little.`]),likes:likes(3),want:'Half days in Shifts save money while it\'s slow.'});
+    else if(st.role==='tech'&&w.maxTray>=5)posts.push({kind:'staff',who:st.name,role:st.role,text:`Filled 20 baskets and they sat in the tray waiting on the check. @You we need you at verify more.`,likes:likes(5),want:'You\'re the bottleneck: fewer phone calls for you, or hire a pharmacist.'});
+    st.wkTicks=0;st.wkIdle=0;}
+  if(S.mods.raise===99&&!S.feedRaiseSaid){S.feedRaiseSaid=true;posts.push({kind:'staff',who:S.staff.find(x=>!x.isYou)?.name||'The team',role:'clerk',text:`Boss gave us the raise. Drinks on us Friday. 🎉`,likes:likes(12),good:true});}
+  const bad=posts.filter(p=>p.bad).length,good=posts.filter(p=>p.good).length;
+  const captions=w.built.length>=3?['New layout is in. Come see the place.','Busy week of building. Opinions welcome.']:w.lost>=10?['Rough week. We hear you. Fixing it.','Saturday got away from us.']:w.served>=130?['Record week. Thank you, Maple Street.','Lines, but the good kind.']:['Another week on Maple Street.','Saturday afternoon at the pharmacy.','The chairs were full again today.'];
+  const tags=['#maplestreet','#pharmacylife',...(w.consults>5?['#flushots']:[]),...(w.built.length?['#underconstruction']:[]),...(good>bad?['#neighbors']:['#mondaymotivation'])];
+  const viral=good>=2&&bad===0&&w.served>=100?'up':bad>=3?'down':null;if(viral){S.mods.viral=2;S.mods.viralK=viral==='up'?1.15:.85;}
+  const photo={img:snapshotFloor(),caption:pick(captions),tags,likes:likes(40+(viral==='up'?120:0)),shares:viral?(viral==='up'?'Shared 212 times':'Shared 148 times'):'',comments:posts.slice(0,3).map(p=>({who:p.who,text:p.text.split(/[.!?]/)[0]+(p.bad?'.':'!')}))};
+  S.feed={week:S.week,posts:posts.slice(0,5),photo,viral,replied:null,seen:false};}
+function showFeed(){closeAll();const f=S.feed;if(!f){reviewDecide();return;}f.seen=true;
+  page(`<h2>Neighborhood feed <small>week ${f.week} · ${f.viral==='up'?'<span class="pos">your photo went viral</span>':f.viral==='down'?'<span class="neg">a complaint went viral</span>':'what people are saying'}</small></h2>
+    <div class="feed">${feedPostsHtml(f,true)}</div>
+    <div class="btns"><button class="big ghost" id="back">◀ Results</button><button class="big" id="next">Next: decide ▶</button></div>`);
+  $('back').onclick=()=>{SFX.click();showReview();};$('next').onclick=()=>{SFX.click();reviewDecide();};
+  $('rev').querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{const i=+b.dataset.reply;const p=f.posts[i];f.replied=i;if(p.bad){S.trust+=.8;glog('event',`You replied to ${p.who}. People noticed.`);}else{S.mods.buzz=1;glog('event',`You thanked ${p.who}. A few friends will drop by.`);}SFX.click();renderHud();showFeed();});}
+function feedPostsHtml(f,canReply){const photo=f.photo;const posts=f.posts.map((p,i)=>`<div class="post ${p.bad?'bad':p.good?'good':''}"><div class="av ${p.kind==='staff'?'st '+p.role:''}">${p.kind==='staff'?(p.role==='rph'?'⚕':p.role==='tech'?'💊':'🧾'):p.av}</div><div class="pb"><div class="ph"><b>${p.who}</b>${p.kind==='staff'?`<span class="rolechip ${p.role}">${ROLE[p.role]}</span>`:''}<span class="lk">♥ ${p.likes}</span></div><div class="pt">${p.text}</div>${p.fix||p.want?`<div class="tip">→ ${p.fix||p.want}</div>`:''}${canReply?(f.replied===i?`<div class="replied">✓ You replied</div>`:f.replied===null?`<button class="rp" data-reply="${i}">Reply</button>`:''):''}</div></div>`).join('');
+  const ig=photo?`<div class="ig"><div class="igh"><span class="igav">℞</span><b>maplestreetpharmacy</b><span class="lk">♥ ${photo.likes}${photo.shares?' · '+photo.shares:''}</span></div>${photo.img?`<img src="${photo.img}" alt="This week's floor">`:''}<div class="igc"><b>maplestreetpharmacy</b> ${photo.caption} <span class="tags">${photo.tags.join(' ')}</span></div>${photo.comments.map(c=>`<div class="igc"><b>${c.who.replace(/\s+/g,'').toLowerCase()}</b> ${c.text}</div>`).join('')}</div>`:'';
+  return `<div class="fcol">${posts||'<div class="post"><div class="pb"><div class="pt">Quiet week. Nobody posted.</div></div></div>'}</div>${ig}`;}
 
 /* ============ pages: title, opening checklist, review ============ */
 const rxHead=()=>`<div class="rxhead"><span class="rx">℞</span><span>Maple Street Pharmacy</span><span class="dt">Wk ${S.week}${S.running?' · '+DAYS[S.day].slice(0,3):''}</span></div>`;const rxFoot=(l)=>`<div class="rxfoot"><span>${l||'Pharmacist'}</span><span class="sig">You</span><span>RPh</span></div>`;
@@ -521,23 +565,23 @@ function showReview(){closeAll();const w=S.wk,prev=S.week-1;
   if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}, loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>The bank called</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}. Too much owed, not enough in hand.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
   if(prev<1||!S.opened){reviewDecide();return;}
   const lostWhy=Object.keys(w).filter(k=>k.startsWith('lost_')).map(k=>`${w[k]} ${k.slice(5).replace(/_/g,' ')}`).join(', ');const d=S.trust-w.trust0;const rw=runwayWeeks();
-  page(`<h2>Week ${prev} <small>results · 1 of 2</small></h2>
+  page(`<h2>Week ${prev} <small>results · 1 of 3</small></h2>
     <div class="grid4"><div class="res"><div class="l">Served</div><div class="v">${w.served}</div><div class="n">${w.lost?`<span class="neg">${w.lost} gave up</span> (${lostWhy})`:'nobody gave up'}${w.phoneMissed?`<br><span class="neg">${w.phoneMissed} calls missed</span>`:''}${w.backorder?`<br><span class="neg">${w.backorder} out of stock</span>`:''}</div></div>
       <div class="res"><div class="l">Consults · OTC</div><div class="v">${w.consults}</div><div class="n">${fmt(w.consults*CONSULT+w.otc)} cash</div></div>
       <div class="res"><div class="l">Trust</div><div class="v ${d<0?'neg':'pos'}">${d>=0?'+':''}${Math.round(d)}</div><div class="n">now ${Math.round(S.trust)}</div></div>
       <div class="res"><div class="l">Runway</div><div class="v ${rw<2?'neg':''}">${rw===Infinity?'ok':Math.round(rw*10)/10+'w'}</div><div class="n">${rw===Infinity?'earning more than you burn':'weeks of cash at this pace'}</div></div></div>
     <div class="grid3"><div class="res"><div class="l">Cash in at the counter</div><div class="v pos">+${fmt(w.cashIn)}</div><div class="n">copays, cash sales, consults</div></div><div class="res"><div class="l">Insurers paid you</div><div class="v pos">+${fmt(w.paid)}</div><div class="n">after ${fmt(w.fee)} fees · ${fmt(owedTotal())} still owed${w.writeoff?` · <span class="neg">${w.writeoff} written off</span>`:''}</div></div><div class="res"><div class="l">Costs</div><div class="v neg">−${fmt(w.costs)}</div><div class="n">staff ${fmt(wages())} · drugs ${fmt(w.drug)} · rent ${fmt(S.rent)} · loan ${fmt(w.loanPay)}</div></div></div>
     <div class="res" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span><span class="l">Week ${prev} net</span><br><span class="v ${w.net<0?'neg':'pos'}">${w.net>=0?'+':''}${fmt(w.net)}</span></span><span style="flex:1;min-width:0">${spark()}</span><span style="text-align:right"><span class="l">Cash · loan left</span><br><span class="v">${fmt(S.cash)} · ${fmt(S.loan)}</span></span></div>
-    <div class="btns"><button class="big" id="next">Next: decide ▶</button></div>`);$('next').onclick=()=>{SFX.click();reviewDecide();};}
+    <div class="btns"><button class="big" id="next">Next: ${S.feed&&S.feed.week===prev?'the feed':'decide'} ▶</button></div>`);$('next').onclick=()=>{SFX.click();if(S.feed&&S.feed.week===prev)showFeed();else reviewDecide();};}
 function reviewDecide(){closeAll();const card=CARDS.find(c=>c.id===S.card);const due=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0);
-  page(`<h2>Week ${S.week} <small>${S.opened?'decide · 2 of 2':'opening week'}</small></h2>
+  page(`<h2>Week ${S.week} <small>${S.opened?'decide · 3 of 3':'opening week'}</small></h2>
     ${card?`<div class="card"><div class="t">${card.t}</div><div class="s">${card.s}</div><div class="opts" id="opts">${card.o.map((o,i)=>`<button data-i="${i}">${o[0]}</button>`).join('')}</div></div>`:''}
     ${goalsHtml()}
-    <div class="facts"><div>📋 Expect <b>~${Math.round(demandPerDay())} prescriptions a day</b></div><div>🏦 Insurers pay you <b>${fmt(due)}</b> this week${due?'':' <span class="sub">(first payments take weeks)</span>'}</div><div>📦 Stock <b>${S.stock}</b> · order of ${S.orderQty} arrives Mon <b>−${fmt(S.orderQty*S.unitCost)}</b></div><div>💸 Fixed costs this week <b>−${fmt(wages()+S.rent+LOAN_PAY+Math.round(S.loan*LOAN_RATE))}</b> <span class="sub">(wages, rent, loan + interest)</span></div></div>
+    <div class="facts"><div>📋 Expect <b>~${Math.round(demandPerDay())} prescriptions a day</b>${S.mods.viral?` <span class="sub">(${S.mods.viralK>1?'+15% — your photo went viral':'−15% — a complaint went viral'})</span>`:''}</div><div>🏦 Insurers pay you <b>${fmt(due)}</b> this week${due?'':' <span class="sub">(first payments take weeks)</span>'}</div><div>📦 Stock <b>${S.stock}</b> · order of ${S.orderQty} arrives Mon <b>−${fmt(S.orderQty*S.unitCost)}</b></div><div>💸 Fixed costs this week <b>−${fmt(wages()+S.rent+LOAN_PAY+Math.round(S.loan*LOAN_RATE))}</b> <span class="sub">(wages, rent, loan + interest)</span></div></div>
     <p class="sub">${(()=>{const bills=wages()+S.rent+Math.min(LOAN_PAY,S.loan)+Math.round(S.loan*LOAN_RATE);const est=Math.round(demandPerDay()*6*(COPAY*.8+S.cashPrice*.2)*.9);const sat=S.cash+est+due-bills-S.orderQty*S.unitCost;return sat<0?`At this pace you'd end the week <b class="neg">overdrawn by ${fmt(-sat)}</b>. The bank allows ${fmt(OVERDRAFT)}.`:`At this pace you'd end the week with about <b>${fmt(sat)}</b> in hand.`;})()} People who give up waiting cost trust.</p>
-    <div class="btns">${S.opened&&S.week>1?'<button class="big ghost" id="back">◀ Results</button>':''}<button class="big ghost" id="toOffice">Manage</button><button class="big ghost" id="toFloor">Floor</button><button class="big" id="run" ${card?'disabled':''}>Run week ${S.week} ▶</button></div>`);
+    <div class="btns">${S.opened&&S.week>1?'<button class="big ghost" id="back">◀ Feed</button>':''}<button class="big ghost" id="toOffice">Manage</button><button class="big ghost" id="toFloor">Floor</button><button class="big" id="run" ${card?'disabled':''}>Run week ${S.week} ▶</button></div>`);
   if(card)$('rev').querySelectorAll('#opts button').forEach(b=>b.onclick=()=>{S.choice=+b.dataset.i;$('rev').querySelectorAll('#opts button').forEach(x=>x.classList.toggle('on',x===b));$('run').disabled=false;SFX.click();});
-  const bk=$('back');if(bk)bk.onclick=()=>{SFX.click();showReview();};$('toOffice').onclick=()=>{$('review').hidden=true;openOffice('metrics');};$('toFloor').onclick=()=>{$('review').hidden=true;renderHud();};
+  const bk=$('back');if(bk)bk.onclick=()=>{SFX.click();if(S.feed&&S.feed.week===S.week-1)showFeed();else showReview();};$('toOffice').onclick=()=>{$('review').hidden=true;openOffice('metrics');};$('toFloor').onclick=()=>{$('review').hidden=true;renderHud();};
   $('run').onclick=()=>{if(card&&S.choice!==null){card.o[S.choice][1]();glog('event',`${card.t} You chose: ${card.o[S.choice][0]}.`);}$('review').hidden=true;startWeek();};renderHud();}
 
 /* ============ build mode ============ */
@@ -611,8 +655,9 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   if(officeTab==='schedule'){const hdr=DAYS.map(d=>`<span>${d.slice(0,2)}</span>`).join('');body=`<h2>Shifts <small>tap a day: Full · AM · PM · Off</small></h2><div class="sched"><div class="sh"><span></span>${hdr}<span>wage</span></div>${S.staff.filter(w=>!w.isYou).map(w=>{const s=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);return `<div class="sh"><span><b>${w.name}</b><br><span class="sub">${ROLE[w.role]} · tired ${w.fatigue}/6</span></span>${s.map((v,i)=>`<button class="cell ${v}" data-w="${w.id}" data-d="${i}">${v==='F'?'Full':v==='A'?'AM':v==='P'?'PM':'Off'}</button>`).join('')}<span class="cost">${fmt(wageOf(w))}</span></div>`;}).join('')||'<p class="sub">No staff yet. Hire from the ⋯ menu.</p>'}</div><div class="foot">Half days cost 55%. Six full days in a row slows people down; a day off resets them. You work every day.</div>${(()=>{const last=ds[ds.length-1]||{};const u=last.util||{};const col=v=>v>.85?'bad':v<.3?'':'good';const load=(l,v,fix)=>{const p=Math.round((v||0)*100);return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${col(v||0)}">${p>85?fix:p<30?'mostly idle':'fine'}</span></div></div>`;};return ds.length?`<div class="tile"><small>Where people wait · yesterday</small>${load('Drop-off',u.intake,'another window or clerk')}${load('Fill',u.fill,'upgrade or second tech')}${load('Verify',u.verify,'hire a pharmacist')}${load('Registers',u.pickup,'another register')}</div>`:'';})()}`;}
   if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;body=`<h2>Stock</h2><div class="grid3"><div class="tile"><small>On hand</small><b>${S.stock}</b><div class="n">~${daysLeft} days</div></div><div class="tile"><small>Next order · Mon</small><b>${S.orderQty}</b><div class="n">${fmt(S.orderQty*S.unitCost*(S.mods.cheap?.9:1))}</div></div><div class="tile"><small>Sent away empty</small><b class="${S.wk.backorder?'neg':''}">${S.wk.backorder||0}</b><div class="n">this week</div></div></div>
       <div class="lever"><div><div class="n">Weekly order</div><div class="h">Paid on delivery. Short = stockouts; long = cash tied up.</div></div><div class="seg"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>`;}
+  if(officeTab==='feed'){const f=S.feed;if(f)f.seen=true;body=`<h2>Neighborhood feed <small>${f?'week '+f.week:'nothing yet'}</small></h2>${f?feedPostsHtml(f,false):'<div class="foot">Posts appear after your first full week.</div>'}`;}
   if(officeTab==='pricing'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
-  el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Contracts',claims:'Claims',schedule:'Roster',inventory:'Inventory',pricing:'Price list'}[officeTab]);
+  el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Contracts',claims:'Claims',schedule:'Roster',inventory:'Inventory',pricing:'Price list',feed:'Neighborhood'}[officeTab]);
   el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{payLoan(b.dataset.pay==='all'?S.loan:+b.dataset.pay);renderOffice();renderHud();});
   el.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>{const k=b.dataset.plan;S.plans[k]=!S.plans[k];glog('event',`${PLANS[k].name}: ${S.plans[k]?'accepted':'dropped'}.`);SFX.click();renderOffice();});
   el.querySelectorAll('[data-cl]').forEach(b=>b.onclick=()=>{const sc=S.scripts.find(x=>x.id===+b.dataset.cl);const a=b.dataset.a;if(!sc){closeClaim(+b.dataset.cl,'written off');renderOffice();return;}
@@ -650,7 +695,7 @@ $('chatDown').onclick=e=>{e.stopPropagation();L.chatOpen=false;applyLayout();};$
   let m=null;t.addEventListener('pointerdown',e=>{if(e.target.tagName==='BUTTON')return;t.setPointerCapture(e.pointerId);m={x:e.clientX,y:e.clientY,X:L.chatX,Y:L.chatY};});
   t.addEventListener('pointermove',e=>{if(!m)return;const [dx,dy]=dLocal(e.clientX-m.x,e.clientY-m.y);L.chatX=Math.max(0,Math.min(VW-L.chatW,m.X+dx));L.chatY=Math.max(0,Math.min(VH-L.chatH-8,m.Y-dy));applyLayout();});
   const mu=()=>{m=null;};t.addEventListener('pointerup',mu);t.addEventListener('pointercancel',mu);})();
-function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;const bin=c('bin'),tray=c('tray'),prob=c('problem'),shelf=c('shelf'),ring=c('ringing');
+function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;S.wk.maxTray=Math.max(S.wk.maxTray||0,c('tray'));for(const w of S.staff){if(!w.off){w.wkTicks=(w.wkTicks||0)+1;if(!w.plan)w.wkIdle=(w.wkIdle||0)+1;}}const bin=c('bin'),tray=c('tray'),prob=c('problem'),shelf=c('shelf'),ring=c('ringing');
   const ql=t=>Math.max(0,...objsOf(t).map(o=>S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length));
   const tech=S.staff.find(w=>w.role==='tech'&&!w.off),rph=S.staff.find(w=>w.isYou);
   if(reach.size<=1)glog('bad','The entrance is blocked. Nobody can get in.','door',12);
@@ -682,7 +727,7 @@ function renderHud(){if(!$('office').hidden&&S.running&&S.tick%3===0)renderOffic
   $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());$('trust').textContent=Math.round(S.trust);
   const ws=weekSoFar();$('wnet').textContent=(ws>=0?'+':'')+fmt(ws);$('wnet').className=ws<0?'neg':'pos';$('wnetSt').hidden=!S.running;
   const rw=runwayWeeks();$('runway').textContent=rw===Infinity?'ok':Math.round(rw*10)/10+'w';$('runway').className=rw<2?'neg':'';$('runSt').hidden=VW<860||!S.opened;$('wnetSt').hidden=!S.running||VW<760;
-  const oc=S.claims.filter(c=>c.status==='open').length;$('claimsN').hidden=!oc;$('claimsN').textContent=oc;}
+  const oc=S.claims.filter(c=>c.status==='open').length;$('claimsN').hidden=!oc;$('claimsN').textContent=oc;$('feedN').hidden=!(S.feed&&!S.feed.seen);}
 
 
 /* ============ renderer ============ */
@@ -881,7 +926,7 @@ function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
   if(saved){for(const o of S.objs)o.t0=0;for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,payLoan,openObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,payLoan,openObj,makeFeed,showFeed,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
 })();
