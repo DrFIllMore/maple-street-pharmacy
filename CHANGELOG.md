@@ -1,5 +1,8 @@
 # Changelog
 
+## v16.4 — 2026-10-24
+- Inbox and Feed slips fit one screen with no scrolling: the three advisor emails sit side by side; the feed shows its three strongest posts beside the photo card. Verified to fit at 932×430 and in forced-landscape 430×932.
+
 ## v16.3 — 2026-10-24
 - "Ready to open?" is a centred ℞ slip with a two-column checklist (was a cramped side sheet overlapping the palette).
 - Top bar: "Week N" label with the clock/Closed/Building beneath it, proper left padding; new **Rx today** and **In store** counts.

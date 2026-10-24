@@ -176,6 +176,9 @@ button,.hud{touch-action:manipulation}
 .post{display:flex;gap:8px;background:var(--panel-solid);border:1px solid var(--line);border-radius:10px;padding:7px 9px}.post.bad{border-left:4px solid var(--bad)}.post.good{border-left:4px solid var(--accent)}
 .post .av{width:34px;height:34px;border-radius:50%;background:#efe6d2;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none;overflow:hidden}.post .av.st{border-radius:8px;background:none}.post .av.st{background:#e4ecf4}.post .av.tech{background:#d6e6fa}.post .av.clerk{background:#d9f2e8}.post .av.rph{background:#f1f1f1}
 .post .pb{flex:1;min-width:0;display:grid;gap:3px}.post .ph{display:flex;align-items:center;gap:6px;font-size:.9em}.post .lk{margin-left:auto;color:var(--ink-2);font-weight:700;font-size:.85em;white-space:nowrap}.post .pt{font-size:.92em;line-height:1.3;font-weight:600}.post .tip{font-size:.8em;color:var(--accent-ink);font-weight:700}.post .rp{justify-self:start;height:26px;padding:0 10px;border-radius:13px;border:1px solid var(--line);background:#fff;font-size:.8em}.post .replied{font-size:.8em;color:var(--accent-ink);font-weight:800}
+.rev.wide{width:min(96%,980px);gap:6px}.rev.wide h2{font-size:1.2em}.rev.wide .btns .big{height:36px;font-size:.95em}
+.rev.wide .mails{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:.84em}.rev.wide .mail{padding:7px 9px;gap:3px}.rev.wide .mail .mbody{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.rev.wide .mail .mact{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.rev.wide .mail .msig{display:none}.rev.wide .mail .mav{width:34px;height:34px}.rev.wide .mail .mav .av-frame{width:34px!important;height:34px!important}
+.feed.slip{grid-template-columns:repeat(3,minmax(0,1fr)) 1.05fr;gap:8px;font-size:.84em}.feed.slip .fcol{display:contents}.feed.slip .post{align-content:start}.feed.slip .post .pt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.feed.slip .post .tip{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.feed.slip .ig img{aspect-ratio:16/8}.feed.slip .ig .igc{padding:2px 7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mails{display:grid;gap:8px}.mail{background:var(--panel-solid);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:4px;border-left:4px solid var(--line)}.mail.fav{border-left-color:var(--accent)}.mail.dis{border-left-color:var(--bad)}.mail.neu{border-left-color:#ef9f27}
 .mail .mh{display:flex;align-items:center;gap:8px}.av-frame{display:inline-block;border-radius:22%;overflow:hidden;flex:none;vertical-align:middle;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}.av-frame svg{display:block;width:100%;height:100%}.av-frame.role-rph{box-shadow:inset 0 -4px 0 #7f77dd}.av-frame.role-tech{box-shadow:inset 0 -4px 0 #2f7fd6}.av-frame.role-clerk{box-shadow:inset 0 -4px 0 #1d9e75}
 .mail .mav{flex:none;display:block}.mail .mfrom{display:grid;line-height:1.1}.mail .mfrom small{color:var(--ink-2);font-weight:700;font-size:.78em}.stance{margin-left:auto;font-size:.75em;font-weight:900;padding:2px 7px;border-radius:9px;white-space:nowrap}.stance.fav{background:var(--accent-soft);color:var(--accent-ink)}.stance.dis{background:#fbd0d0;color:#9b1c1c}.stance.neu{background:#faeeda;color:#854f0b}
@@ -259,7 +262,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v16.3 · 2026-10-24';
+const BUILD='v16.4 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -631,8 +634,8 @@ function makeInbox(){const w=S.wk,h=S.hist||[],last=h[h.length-1]||{},prev=h[h.l
   S.inbox={week:S.week,mails,seen:false};}
 function mailsHtml(ib){return `<div class="mails">${ib.mails.map(m=>{const A=ADVISORS[m.k],[sl,sj,sc]=STANCE[m.st];return `<div class="mail ${sc}"><div class="mh"><span class="mav">${advisorPortrait(m.k,46)}</span><div class="mfrom"><b>${A.name}</b><small>${A.title}</small></div><span class="stance ${sc}">${sj} ${sl}</span></div><div class="msub">${m.subject}</div><div class="mbody">${m.body}</div><div class="mact"><b>What I'd do:</b> ${m.act}</div><div class="msig">— ${A.name.split(' ')[0]}, ${A.sig}</div></div>`;}).join('')}</div>`;}
 function showInbox(){closeAll();const ib=S.inbox;if(!ib){reviewDecide();return;}ib.seen=true;
-  page(`<h2>Inbox <small>week ${ib.week} · three advisors, three opinions</small></h2>${mailsHtml(ib)}<div class="foot">They don't agree with each other, and none of them is right by default. They all want you to hit the goal.</div>
-    <div class="btns"><button class="big ghost" id="back">◀ Feed</button><button class="big" id="next">Next: decide ▶</button></div>`);
+  page(`<h2>Inbox <small>week ${ib.week} · three advisors, three opinions — none is right by default</small></h2>${mailsHtml(ib)}
+    <div class="btns"><button class="big ghost" id="back">◀ Feed</button><button class="big" id="next">Next: decide ▶</button></div>`,false,true);
   $('back').onclick=()=>{SFX.click();if(S.feed&&S.feed.week===ib.week)showFeed();else showReview();};$('next').onclick=()=>{SFX.click();reviewDecide();};}
 
 /* ============ neighborhood feed ============ */
@@ -660,8 +663,8 @@ function makeFeed(){const w=S.wk,posts=[];const ev=w.ev||[];const likes=(base)=>
   S.feed={week:S.week,posts:posts.slice(0,5),photo,viral,replied:null,seen:false};}
 function showFeed(){closeAll();const f=S.feed;if(!f){reviewDecide();return;}f.seen=true;
   page(`<h2>Neighborhood feed <small>week ${f.week} · ${f.viral==='up'?'<span class="pos">your photo went viral</span>':f.viral==='down'?'<span class="neg">a complaint went viral</span>':'what people are saying'}</small></h2>
-    <div class="feed">${feedPostsHtml(f,true)}</div>
-    <div class="btns"><button class="big ghost" id="back">◀ Results</button><button class="big" id="next">Next: ${S.inbox&&S.inbox.week===f.week?'inbox':'decide'} ▶</button></div>`);
+    <div class="feed slip">${feedPostsHtml({...f,posts:f.posts.slice(0,3)},true)}</div>
+    <div class="btns"><button class="big ghost" id="back">◀ Results</button><button class="big" id="next">Next: ${S.inbox&&S.inbox.week===f.week?'inbox':'decide'} ▶</button></div>`,false,true);
   $('back').onclick=()=>{SFX.click();showReview();};$('next').onclick=()=>{SFX.click();if(S.inbox&&S.inbox.week===f.week)showInbox();else reviewDecide();};
   $('rev').querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{const i=+b.dataset.reply;const p=f.posts[i];f.replied=i;if(p.bad){S.trust+=.8;glog('event',`You replied to ${p.who}. People noticed.`);}else{S.mods.buzz=1;glog('event',`You thanked ${p.who}. A few friends will drop by.`);}SFX.click();renderHud();showFeed();});}
 function feedPostsHtml(f,canReply){const photo=f.photo;const posts=f.posts.map((p,i)=>`<div class="post ${p.bad?'bad':p.good?'good':''}"><div class="av ${p.kind==='staff'?'st '+p.role:''}">${p.kind==='staff'?(()=>{const sw=S.staff.find(x=>x.name===p.who);return sw?staffPortrait(sw,34):'🧾';})():p.av}</div><div class="pb"><div class="ph"><b>${p.who}</b>${p.kind==='staff'?`<span class="rolechip ${p.role}">${ROLE[p.role]}</span>`:''}<span class="lk">♥ ${p.likes}</span></div>${p.head?`<div class="phead ${p.bad?'neg':p.good?'pos':''}">${p.head}</div>`:''}<div class="pt">${p.text}</div>${p.fix||p.want?`<div class="tip">${p.bad?'<b>Fix:</b>':'<b>Keep it up:</b>'} ${p.fix||p.want}</div>`:''}${canReply?(f.replied===i?`<div class="replied">✓ You replied</div>`:f.replied===null?`<button class="rp" data-reply="${i}">Reply</button>`:''):''}</div></div>`).join('');
@@ -670,7 +673,7 @@ function feedPostsHtml(f,canReply){const photo=f.photo;const posts=f.posts.map((
 
 /* ============ pages: title, opening checklist, review ============ */
 const rxHead=()=>`<div class="rxhead"><span class="rx">℞</span><span>Maple Street Pharmacy</span><span class="dt">Wk ${S.week}${S.running?' · '+DAYS[S.day].slice(0,3):''}</span></div>`;const rxFoot=(l)=>`<div class="rxfoot"><span>${l||'Pharmacist'}</span><span class="sig">You</span><span>RPh</span></div>`;
-function page(html,raw){$('rev').innerHTML=raw?html:rxHead()+html+rxFoot();$('rev').classList.toggle('news',!!raw);$('review').hidden=false;}
+function page(html,raw,wide){const el=$('rev');el.innerHTML=raw?html:rxHead()+html+(wide?'':rxFoot());el.classList.toggle('news',!!raw);el.classList.toggle('wide',!!wide);$('review').hidden=false;}
 function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const Wd=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*Wd,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
   return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${Wd}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;}
 function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)));if(amt<=0)return;S.cash-=amt;S.loan-=amt;glog('money',`Paid ${fmt(amt)} toward the loan. ${fmt(S.loan)} left.`);SFX.cash&&SFX.cash();saveGame();}
