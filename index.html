@@ -271,7 +271,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v19.1 · 2026-10-24';
+const BUILD='v19.2 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -289,7 +289,7 @@ const TICKS_DAY=108,DAYS_WEEK=6,TICK_MS=200;   /* 5 game minutes per tick */
 const W=20,D=14,DOOR={x:19,y:8},OUT={x:21.5,y:8.5};
 const TYPES={
   wall:{short:'Blocks everyone',name:'Wall',cost:60,w:1,d:1,block:'all',cat:'build',desc:'Solid. Rooms need a door.'},
-  door:{short:'Gap in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'An opening in a wall.'},
+  door:{short:'Walk-through in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'Goes in a wall line. Swings toward the side you face it. One door makes a walled consult room private.'},
   counter:{short:'Staff pass, customers don’t',name:'Counter',cost:150,w:1,d:1,block:'patients',cat:'build',desc:'Separates shop from pharmacy. Staff step through; customers don\'t.'},
   dropoff:{short:'Customers hand in Rx',name:'Drop-off window',cost:600,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Customers hand in prescriptions. A clerk works it from behind.'},
   register:{short:'Pay & pick up',name:'Register',cost:500,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Pick-up and payment, worked from behind.',levels:[{n:'Till',t:1},{n:'Card reader',t:.6,cost:800,h:'rings up 40% faster'}]},
@@ -1061,7 +1061,14 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
   if(grow<1){const [cx,cy]=iso(o.x+w/2,o.y+d/2);ctx.save();ctx.translate(cx,cy);ctx.scale(grow,grow);ctx.translate(-cx,-cy);}
   const cx=o.x+w/2,cy=o.y+d/2;
   if(t==='wall')box(o.x,o.y,1,1,1.6,'#c3d3e2');
-  else if(t==='door'){lbox(o,0,0,1,.12,1.6,'#8b6b4a');lbox(o,0,.88,1,.12,1.6,'#8b6b4a');flat(o.x,o.y,1,1,'#b8a888');}
+  else if(t==='door'){/* frame across the wall line (local x), leaf swung open toward the front, brass knob */
+    flat(o.x,o.y,1,1,'#cbbfa4');{const a=lpt(o,.1,.5),b=lpt(o,.9,.5);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=2*z;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+    lbox(o,.0,.42,.14,.16,1.6,'#8b6b4a');lbox(o,.86,.42,.14,.16,1.6,'#8b6b4a');/* jambs */
+    {const H=1.6*TH*2*z;const a=lpt(o,.0,.5),b=lpt(o,1,.5);poly([[a[0],a[1]-H],[b[0],b[1]-H],[b[0],b[1]-H+5*z],[a[0],a[1]-H+5*z]],'#8b6b4a');}/* lintel */
+    {const H=1.45*TH*2*z;const a=lpt(o,.12,.5),b=lpt(o,.55,.92);/* leaf: hinge at a, swung ~60° to the front */
+      poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],'#c98a3a');poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],null,'rgba(0,0,0,.35)');
+      const px=a[0]+(b[0]-a[0])*.5,py=a[1]+(b[1]-a[1])*.5;ctx.fillStyle='#a8622e';ctx.fillRect(px-4*z,py-H*.78,8*z,H*.28);ctx.fillRect(px-4*z,py-H*.42,8*z,H*.28);/* panels */
+      const kx=a[0]+(b[0]-a[0])*.85,ky=a[1]+(b[1]-a[1])*.85-H*.5;ctx.fillStyle='#e8c35a';ctx.beginPath();ctx.arc(kx,ky,2.4*z,0,Math.PI*2);ctx.fill();ctx.fillStyle='#7a5a10';ctx.beginPath();ctx.arc(kx+.6*z,ky+.6*z,.9*z,0,Math.PI*2);ctx.fill();}}
   else if(t==='counter'){box(o.x,o.y,1,1,.85,'#f1e9dc');lbox(o,0,0,1,.12,.9,'#c9a06a');glassLine(o);}
   else if(t==='dropoff'||t==='register'){const q=S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length;tint(o.x,o.y,w,d,q);box(o.x,o.y,w,d,.9,t==='dropoff'?'#c9a06a':'#b9925c');frontStrip(o,'#f1e9dc');const wt=S.scripts.filter(x=>x.at==='wtray:'+o.id).length;if(wt){const p=lw(o,T.w-.4,.3);stack(p[0],p[1],wt,'basket',28);}
     if(t==='register'){lbox(o,T.w-.7,.1,.5,.4,.4,'#2f3340');}else lbox(o,.5,.2,.5,.4,.25,'#5dcaa5');

@@ -1,5 +1,9 @@
 # Changelog
 
+## v19.2 — 2026-10-24 — Door art
+- The door used to look like a lighter wall block. It is now drawn as a door: two jambs and a lintel framing the opening, a wooden leaf swung ~60° into the room on the side it faces, two raised panels and a brass knob. The leaf swings toward the facing side, so rotating the door before placing it shows which way it opens. The palette icon uses the same art.
+- Door description now reads "Walk-through in a wall — goes in a wall line, swings toward the side you face it; one door makes a walled consult room private."
+
 ## v19.1 — 2026-10-24 — Consult room guide
 - Fix: a consult room with a door could never count as private, because the privacy check walked straight through the door into the shop. Doors now close the room for privacy while staying open for walking, so "walls + one door" works as described.
 - The floor shows you what to build: when a consult desk is placed, selected, or while you hold the Wall/Door tool with an unenclosed desk, the tiles that need walls are tinted grey-blue, the one that needs a door is orange and labelled DOOR, and a banner reads "WALLS + ONE DOOR = PRIVATE" until it flips to "PRIVATE ROOM ✓". The palette hint and the item card say the same in words.
