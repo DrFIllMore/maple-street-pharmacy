@@ -1,5 +1,9 @@
 # Changelog
 
+## v16 — 2026-10-24 — Three advisors
+- After every week, three advisors each send one email: **Dana Whitfield** (financial advisor: cash, budget, loan, investment), **Marcus Hale** (district pharmacy manager: volume, walk-outs, trust, upgrades and selling idle stations, pricing), **Priya Raman** (Pharmacy Benefit Manager: write-offs, missed calls, bottlenecks, insurer contracts). Each takes a stance — 👍 In favor · 😐 Neutral · 👎 Against — from your pharmacy's actual state, writes two or three sentences with the key facts in bold, and ends with "What I'd do". They routinely disagree with each other; none is right by default.
+- New **Inbox** slip in the week flow (Results → Feed → Inbox → Decide) and an **Inbox** taskbar button with a badge until read.
+
 ## v15.3 — 2026-10-24
 - Staff lists (Workers, Schedule, Performance) are sorted pharmacists → technicians → clerks, owner first, then by name.
 
