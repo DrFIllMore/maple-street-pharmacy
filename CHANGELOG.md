@@ -1,5 +1,12 @@
 # Changelog
 
+## v14.1 — 2026-10-24 — Promote, Flow, contracts
+- **Feed** posts open with a bold takeaway in red or green ("5 walked out at drop-off", "17 calls missed", "Five-star visit") and a **Fix:** / **Keep it up:** line, so a week's feed scans in seconds.
+- **Promote** panel: Flyers ($300, +10% a week), Local paper ad ($900, +15% for two weeks, +1 trust), Social push ($500, +8% and easier to go viral), Price-match week ($700, takes the chain's customers back), Loyalty cards ($400 once: people wait longer, buy more OTC). From week 3 a chain pharmacy opens across the street and takes 12% of walk-ins, creeping up each week unless you advertise; the panel shows its current bite.
+- **Flow** panel: live view of where every script is — drop-off line, phones, bin, filling, waiting for your check, shelf, pick-up line, seated — each with capacity bar (green/amber/red), the stations and staff covering it, and a one-line "backed up: … try …" verdict. This is the build-more-or-not screen.
+- **Supplies** panel (replaces Stock + Prices): stock and order, cash price, **Vaccines** contract (sign $600 with 50 doses; 50 more for $600; shots pay $40, without doses the consult desk only does $20 med reviews; flu season requires it), **Specialty meds** contract ($2,000; needs a new **Fridge** item; ~8% of scripts pay $90 more and cost $55 in drugs), and a list of available station upgrades. New upgrades: Verify terminal → Barcode scanner ($1,500, checks a third faster); Register → Card reader ($800, rings up 40% faster).
+- Strip reorganised to nine buttons: Build · Flow · Money · Insurers · Claims · Staff · Supplies · Promote · Feed.
+
 ## v14 — 2026-10-24 — Neighborhood feed
 - New third slip in the week flow (Results → **Feed** → Decide) and a **Feed** button in the strip (badge when there's a new one).
 - Patient posts come from real events that week: the station where most people gave up (with a named patient and a fix), missed phone-ins, stockouts, a fast happy visit, a consult (private or not). Staff posts come from their state: tired (≥5), idle most of the week, or a tech whose baskets sat waiting on verify — each with what they want.
