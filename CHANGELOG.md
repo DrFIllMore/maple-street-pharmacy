@@ -1,5 +1,9 @@
 # Changelog
 
+## v17.3 — 2026-10-24 — Fourth advisor
+- **Jordan Okafor, case manager (patient care)** joins the weekly call in place of your own tile. Reads walk-outs (especially older patients), trust movement, consults and privacy, delivery, loyalty and vaccine stock; recommends the promotions and care actions that lift satisfaction — chairs, loyalty cards, walling in the consult desk, saying yes to delivery, keeping doses stocked, a social push.
+- Call layout tightened for four messages; Inbox panel shows four emails.
+
 ## v17.2 — 2026-10-24
 - Weekly call: stance badge is centred at the bottom of each tile, in normal flow (portrait → name → title → badge), so nothing overlaps; mic icon removed.
 
