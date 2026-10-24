@@ -21,3 +21,11 @@ Build and hire any time while the week runs on its own (about 2 minutes at 1×).
 - One-handed vs two-handed landscape play (decides where sheets and the chat sit).
 - Named regulars with stories: in or out for tier 1?
 - Tier 2+ (second store, hospital, biotech) scope.
+
+## Decisions 2026-10-24 (approved: patches A, B, C)
+- Empty start. The player opens with a bare unit and a bank loan, builds the minimum a pharmacy needs, hires, then opens the doors. No patients before opening.
+- Tile-based building anywhere on a 20×14 floor. Walls, counters, and stations are real obstacles; people route around them (A*). The door is the only entrance; blocking it is a real failure with visible consequences.
+- Zones are derived from what the player builds: tiles customers can reach from the door are the shop floor; the rest is staff-only.
+- Patients carry a mood (happy, content, annoyed, angry, sad, sick, confused) shown as a face, driving trust and the chat.
+- The office is the management layer: schedule, insurance contracts, claims queue, inventory, metrics, pricing. The week still runs on its own; the office can be opened any time.
+- The weekly review stays as the summary; the insurance lever moves into the office.
