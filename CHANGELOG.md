@@ -1,5 +1,10 @@
 # Changelog
 
+## v16.5 — 2026-10-24
+- Decide slip (3 of 3) rebuilt as two columns: the week's event card and one forecast sentence on the left; goal bars and four "this week" numbers on the right. Manage button removed (the taskbar is a tap away from Floor). Fits one screen.
+- Advisor email text a size larger.
+- Review slips can't be pinch-zoomed or resized: touch gestures on the overlay are blocked, double-tap zoom disabled.
+
 ## v16.4 — 2026-10-24
 - Inbox and Feed slips fit one screen with no scrolling: the three advisor emails sit side by side; the feed shows its three strongest posts beside the photo card. Verified to fit at 932×430 and in forced-landscape 430×932.
 
