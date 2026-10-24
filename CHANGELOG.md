@@ -1,5 +1,8 @@
 # Changelog
 
+## v17.6 — 2026-10-24
+- Proposal cards share one template and one height: header with icon, From/To and a Required/Optional tag; Re: line (two lines reserved); body (two lines reserved); three-line terms area; equal-width buttons on a dashed signature line. The event card lists its options as terms so no card is shorter than the others.
+
 ## v17.4 — 2026-10-24
 - Meeting chat is four lines: first name, then the single recommendation. Titles live on the tiles only; the explanatory paragraph is gone from the call (it remains in the Inbox emails).
 
