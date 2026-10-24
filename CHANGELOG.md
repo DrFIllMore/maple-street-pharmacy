@@ -1,5 +1,9 @@
 # Changelog
 
+## v16.1 — 2026-10-24 — Portraits
+- Designed SVG portraits replace emoji avatars. Three fixed advisor portraits (Dana: auburn bob, glasses, navy blazer · Marcus: grey buzz cut and beard, shirt and tie · Priya: long dark hair, maroon blouse, gold necklace). Every staff member gets a deterministic portrait from their name: face shape, one of nine hairstyles, hair and eye colour, glasses, beard/moustache, earrings, expression — dressed by role (white coat with purple shirt, blue scrubs, green polo) on a matching tinted card.
+- Portraits appear in the Inbox emails, the Staff panel (Workers, Schedule, Performance), the worker card, and staff posts in the Feed.
+
 ## v16 — 2026-10-24 — Three advisors
 - After every week, three advisors each send one email: **Dana Whitfield** (financial advisor: cash, budget, loan, investment), **Marcus Hale** (district pharmacy manager: volume, walk-outs, trust, upgrades and selling idle stations, pricing), **Priya Raman** (Pharmacy Benefit Manager: write-offs, missed calls, bottlenecks, insurer contracts). Each takes a stance — 👍 In favor · 😐 Neutral · 👎 Against — from your pharmacy's actual state, writes two or three sentences with the key facts in bold, and ends with "What I'd do". They routinely disagree with each other; none is right by default.
 - New **Inbox** slip in the week flow (Results → Feed → Inbox → Decide) and an **Inbox** taskbar button with a badge until read.
