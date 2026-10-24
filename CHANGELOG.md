@@ -1,5 +1,8 @@
 # Changelog
 
+## v17.2 — 2026-10-24
+- Weekly call: stance badge is centred at the bottom of each tile, in normal flow (portrait → name → title → badge), so nothing overlaps; mic icon removed.
+
 ## v17.1 — 2026-10-24
 - Weekly call: stance badge sits top-right of each tile; chat text is one size, larger.
 - Feed simplified to one large floor photo with caption and likes, and three comments in a bigger font with name, takeaway, one line of quote, fix and Reply. Two posts no longer share a customer name.
