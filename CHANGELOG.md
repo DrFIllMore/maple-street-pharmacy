@@ -1,5 +1,10 @@
 # Changelog
 
+## v19.3 — 2026-10-24 — Thin walls
+- Walls were full-tile blocks, so a consult room looked like a cell. A wall is now a thin partition (about a fifth of a tile) running through the centre of its tile and joining up with neighbouring wall and door tiles into one continuous run, with a small post at corners. End faces that butt against another wall are not drawn, so runs have no seams. A lone wall tile shows as a single panel in the direction it was rotated.
+- Walls standing between the camera and a nearby consult desk are drawn see-through (45%), so the inside of the room stays visible from any of the four views.
+- Door frame and leaf slimmed to match the new wall thickness.
+
 ## v19.2 — 2026-10-24 — Door art
 - The door used to look like a lighter wall block. It is now drawn as a door: two jambs and a lintel framing the opening, a wooden leaf swung ~60° into the room on the side it faces, two raised panels and a brass knob. The leaf swings toward the facing side, so rotating the door before placing it shows which way it opens. The palette icon uses the same art.
 - Door description now reads "Walk-through in a wall — goes in a wall line, swings toward the side you face it; one door makes a walled consult room private."

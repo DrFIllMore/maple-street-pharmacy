@@ -271,7 +271,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v19.2 · 2026-10-24';
+const BUILD='v19.3 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1007,6 +1007,13 @@ function fromScreen(sx,sy){const z=cam.z;const a=(sx-cam.x)/(TW*z),b=(sy-cam.y)/
 function shade(hex,k){const n=parseInt(hex.slice(1),16);const f=v=>Math.min(255,((n>>v)&255)*k)|0;return `rgb(${f(16)},${f(8)},${f(0)})`;}
 function poly(pts,col,stroke){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();if(col){ctx.fillStyle=col;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}}
 function box(x,y,w,d,h,col){const H=h*TH*2*Z();const A=vw(x,y),B=vw(x+w,y+d);const x0=Math.min(A[0],B[0]),y0=Math.min(A[1],B[1]),x1=Math.max(A[0],B[0]),y1=Math.max(A[1],B[1]);const p=[isoV(x0,y0),isoV(x1,y0),isoV(x1,y1),isoV(x0,y1)];poly([p[3],p[2],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],shade(col,.72));poly([p[2],p[1],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H]],shade(col,.86));poly([[p[0][0],p[0][1]-H],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],col);}
+function wallBox(x,y,w,d,h,col){/* like box(), but an end face that butts against another wall/door tile is not drawn, so runs read as one continuous partition */
+  const H=h*TH*2*Z();const A=vw(x,y),B=vw(x+w,y+d);const x0=Math.min(A[0],B[0]),y0=Math.min(A[1],B[1]),x1=Math.max(A[0],B[0]),y1=Math.max(A[1],B[1]);const p=[isoV(x0,y0),isoV(x1,y0),isoV(x1,y1),isoV(x0,y1)];
+  const solid=(a,b)=>{const wpos=unvw(a,b);const tx=Math.floor(wpos[0]),ty=Math.floor(wpos[1]);return S.objs.some(q=>(q.type==='wall'||q.type==='door')&&q.x===tx&&q.y===ty);};
+  const sShort=(x1-x0)<.5,eShort=(y1-y0)<.5;
+  if(!(sShort&&solid((x0+x1)/2,y1+.3)))poly([p[3],p[2],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],shade(col,.72));
+  if(!(eShort&&solid(x1+.3,(y0+y1)/2)))poly([p[2],p[1],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H]],shade(col,.86));
+  poly([[p[0][0],p[0][1]-H],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],col);}
 function flat(x,y,w,d,col){poly([iso(x,y),iso(x+w,y),iso(x+w,y+d),iso(x,y+d)],col);}
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
 function label(x,y,t,col,size){const [sx,sy]=iso(x,y);ctx.font=`800 ${(size||10)*Z()}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillStyle=col||'rgba(42,47,42,.55)';ctx.fillText(t,sx,sy);}
@@ -1060,12 +1067,22 @@ function frontStrip(o,col){/* thin strip along the customer-facing edge */const 
 function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const t=o.type;const grow=o.t0?Math.max(0,Math.min(1,(performance.now()-o.t0)/350)):1;
   if(grow<1){const [cx,cy]=iso(o.x+w/2,o.y+d/2);ctx.save();ctx.translate(cx,cy);ctx.scale(grow,grow);ctx.translate(-cx,-cy);}
   const cx=o.x+w/2,cy=o.y+d/2;
-  if(t==='wall')box(o.x,o.y,1,1,1.6,'#c3d3e2');
+  if(t==='wall'){/* thin partition: a slab through the tile centre, joining neighbouring wall/door tiles */
+    const T2=.09,H=1.35,col='#e3e9ef';const nb=(dx,dy)=>S.objs.some(q=>(q.type==='wall'||q.type==='door')&&q.x===o.x+dx&&q.y===o.y+dy);
+    const E=nb(1,0),Wn=nb(-1,0),Sn=nb(0,1),N=nb(0,-1);
+    /* walls in front of a nearby consult desk go see-through so the room stays visible */
+    const dz=depth(o.x,o.y);const front=S.objs.some(q=>q.type==='consult'&&Math.abs(q.x+.5-o.x)<=3&&Math.abs(q.y+.5-o.y)<=3&&depth(q.x+.5,q.y+.5)<dz-.6);
+    ctx.save();if(front)ctx.globalAlpha=.45;
+    if(!(E||Wn||Sn||N)){if(o.rot&1)wallBox(o.x+.5-T2,o.y,T2*2,1,H,col);else wallBox(o.x,o.y+.5-T2,1,T2*2,H,col);}
+    else{
+      if(E&&Wn)wallBox(o.x,o.y+.5-T2,1,T2*2,H,col);else if(E)wallBox(o.x+.5-T2,o.y+.5-T2,.5+T2,T2*2,H,col);else if(Wn)wallBox(o.x,o.y+.5-T2,.5+T2,T2*2,H,col);
+      if(N&&Sn)wallBox(o.x+.5-T2,o.y,T2*2,1,H,col);else if(Sn)wallBox(o.x+.5-T2,o.y+.5-T2,T2*2,.5+T2,H,col);else if(N)wallBox(o.x+.5-T2,o.y,T2*2,.5+T2,H,col);
+      if((E||Wn)&&(N||Sn))wallBox(o.x+.5-T2,o.y+.5-T2,T2*2,T2*2,H+.02,col);/* corner post */}ctx.restore();}
   else if(t==='door'){/* frame across the wall line (local x), leaf swung open toward the front, brass knob */
-    flat(o.x,o.y,1,1,'#cbbfa4');{const a=lpt(o,.1,.5),b=lpt(o,.9,.5);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=2*z;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
-    lbox(o,.0,.42,.14,.16,1.6,'#8b6b4a');lbox(o,.86,.42,.14,.16,1.6,'#8b6b4a');/* jambs */
-    {const H=1.6*TH*2*z;const a=lpt(o,.0,.5),b=lpt(o,1,.5);poly([[a[0],a[1]-H],[b[0],b[1]-H],[b[0],b[1]-H+5*z],[a[0],a[1]-H+5*z]],'#8b6b4a');}/* lintel */
-    {const H=1.45*TH*2*z;const a=lpt(o,.12,.5),b=lpt(o,.55,.92);/* leaf: hinge at a, swung ~60° to the front */
+    {const a=lpt(o,.0,.5),b=lpt(o,1,.5);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=2*z;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}/* threshold */
+    lbox(o,.0,.41,.1,.18,1.4,'#8b6b4a');lbox(o,.9,.41,.1,.18,1.4,'#8b6b4a');/* jambs */
+    {const H=1.4*TH*2*z;const a=lpt(o,.0,.5),b=lpt(o,1,.5);poly([[a[0],a[1]-H],[b[0],b[1]-H],[b[0],b[1]-H+5*z],[a[0],a[1]-H+5*z]],'#8b6b4a');}/* lintel */
+    {const H=1.3*TH*2*z;const a=lpt(o,.1,.5),b=lpt(o,.55,.92);/* leaf: hinge at a, swung ~60° to the front */
       poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],'#c98a3a');poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],null,'rgba(0,0,0,.35)');
       const px=a[0]+(b[0]-a[0])*.5,py=a[1]+(b[1]-a[1])*.5;ctx.fillStyle='#a8622e';ctx.fillRect(px-4*z,py-H*.78,8*z,H*.28);ctx.fillRect(px-4*z,py-H*.42,8*z,H*.28);/* panels */
       const kx=a[0]+(b[0]-a[0])*.85,ky=a[1]+(b[1]-a[1])*.85-H*.5;ctx.fillStyle='#e8c35a';ctx.beginPath();ctx.arc(kx,ky,2.4*z,0,Math.PI*2);ctx.fill();ctx.fillStyle='#7a5a10';ctx.beginPath();ctx.arc(kx+.6*z,ky+.6*z,.9*z,0,Math.PI*2);ctx.fill();}}
