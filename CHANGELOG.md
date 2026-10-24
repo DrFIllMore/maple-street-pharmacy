@@ -1,5 +1,10 @@
 # Changelog
 
+## v18 — 2026-10-24 — Advisor cast
+- Pharmacy Benefit Manager is now **Benefit Manager**.
+- Each seat has a pool of four advisors with pun names and their own portraits — Financial Advisor: Penny Pillsworth, Bill Co-Payne, Ira Deductible, Cassandra "Cash" Flowers · District Manager: Phil Script, Doug Sage, Max Dose, Rex Scriptor · Benefit Manager: Claire Denied, Rhea Jected, Wanda Formulary, Pryor Authorization · Case Manager: Anita Refill, Patience Waits, Carrie Moore, Gladys Hepps.
+- A New game draws one from each pool at random and stores the cast in the save, so advisors stay the same for the whole run; existing saves get a cast on load. 16 advisor portraits generated (avatars.js 209 KB).
+
 ## v17.8 — 2026-10-24
 - Fix: saves made before the v13.1 economy rebalance kept the old insurer rates ($38/$30/$26) because rates are stored with the save. Such saves now load with the current rates ($52/$44/$38). Saves whose rates were changed by an in-game event (BlueLeaf cut) are preserved.
 

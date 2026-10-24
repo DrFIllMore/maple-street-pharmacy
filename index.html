@@ -270,7 +270,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v17.9 · 2026-10-24';
+const BUILD='v18 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -322,7 +322,7 @@ let S;
 function fresh(){return {week:1,day:0,tick:0,speed:0,running:false,opened:false,done:false,cash:LOAN,loan:LOAN,trust:50,
   objs:[],gridVer:0,staff:[mkStaff('You','rph',true)],sched:{},
   plans:{blue:true,silver:true,quick:false},cashPrice:48,stock:150,orderQty:150,unitCost:11,
-  scripts:[],patients:[],fx:[],claims:[],wk:blank(),days:[],ledger:[],mods:{},seen:[],card:null,choice:null,rent:RENT,hist:[],sid:1,promo:{},rival:0,contracts:{},vaxDoses:0,loyalty:false};}
+  scripts:[],patients:[],fx:[],claims:[],wk:blank(),days:[],ledger:[],mods:{},seen:[],card:null,choice:null,rent:RENT,hist:[],sid:1,promo:{},rival:0,contracts:{},vaxDoses:0,loyalty:false,advisors:rollAdvisors()};}
 const blank=()=>({served:0,lost:0,consults:0,otc:0,cashIn:0,drug:0,paid:0,fee:0,trust0:0,phoneMissed:0,backorder:0,writeoff:0,annoyed:0,ev:[],built:[],maxTray:0});
 function mkStaff(name,role,isYou){return {id:uid(),name,role,isYou:!!isYou,x:OUT.x,y:OUT.y,skin:(AV.staff[name]&&AV.staff[name].skin)||pick(SKINS),plan:null,step:0,work:0,workMax:0,carry:[],bob:Math.random()*6,fatigue:0,off:false,path:null,goal:null,pv:-1};}
 
@@ -590,9 +590,16 @@ const AV=window.AVATARS||{adv:{},staff:{}};
 const ROLE_TINT={rph:'#ecebf6',tech:'#e3eefb',clerk:'#e1f3ec'};
 function avFrame(svg,size,tint,klass){return `<span class="av-frame ${klass||''}" style="width:${size}px;height:${size}px;background:${tint}">${svg||''}</span>`;}
 function staffPortrait(w,size){const a=AV.staff[w.name]||AV.staff['New hire'];return avFrame(a&&a.svg,size,ROLE_TINT[w.role]||'#efe6d2','role-'+w.role);}
-function advisorPortrait(k,size){const t={fin:'#e9eef6',dm:'#eef0ea',pbm:'#f5e8ea',cm:'#e8f3ee'}[k];return avFrame(AV.adv[k],size,t);}
+function advisorPortrait(k,size){const t={fin:'#e9eef6',dm:'#eef0ea',pbm:'#f5e8ea',cm:'#e8f3ee'}[k];const A=ADVISORS[k];return avFrame(AV.adv[A?A.av:k]||AV.adv[k],size,t);}
 /* ============ advisors (weekly email) ============ */
-const ADVISORS={fin:{name:'Dana Whitfield',title:'Financial Advisor',av:'🧮',sig:'Whitfield & Co. Accounting'},dm:{name:'Marcus Hale',title:'District Manager',av:'📈',sig:'Maple District Office'},pbm:{name:'Priya Raman',title:'Pharmacy Benefit Manager',av:'🏦',sig:'BlueLeaf Pharmacy Network'},cm:{name:'Jordan Okafor',title:'Case Manager',av:'🩺',sig:'Maple Street Community Health'}};
+/* advisor pools: one name+portrait per seat is drawn at New game and kept for the whole run */
+const ADV_POOL={
+  fin:{title:'Financial Advisor',sig:'Whitfield & Co. Accounting',people:[{name:'Penny Pillsworth',av:'fin1'},{name:'Bill Co-Payne',av:'fin2'},{name:'Ira Deductible',av:'fin3'},{name:'Cassandra "Cash" Flowers',av:'fin4'}]},
+  dm:{title:'District Manager',sig:'Maple District Office',people:[{name:'Phil Script',av:'dm1'},{name:'Doug Sage',av:'dm2'},{name:'Max Dose',av:'dm3'},{name:'Rex Scriptor',av:'dm4'}]},
+  pbm:{title:'Benefit Manager',sig:'BlueLeaf Pharmacy Network',people:[{name:'Claire Denied',av:'pbm1'},{name:'Rhea Jected',av:'pbm2'},{name:'Wanda Formulary',av:'pbm3'},{name:'Pryor Authorization',av:'pbm4'}]},
+  cm:{title:'Case Manager',sig:'Maple Street Community Health',people:[{name:'Anita Refill',av:'cm1'},{name:'Patience Waits',av:'cm2'},{name:'Carrie Moore',av:'cm3'},{name:'Gladys Hepps',av:'cm4'}]}};
+function rollAdvisors(){const o={};for(const k in ADV_POOL){const p=pick(ADV_POOL[k].people);o[k]={name:p.name,av:p.av};}return o;}
+const ADVISORS=new Proxy({},{get(_,k){const pool=ADV_POOL[k];if(!pool)return undefined;const pick_=(S&&S.advisors&&S.advisors[k])||pool.people[0];return {name:pick_.name,title:pool.title,sig:pool.sig,av:pick_.av};}});
 const STANCE={fav:['In favor','👍','fav'],neu:['Neutral','😐','neu'],dis:['Against','👎','dis']};
 function makeInbox(){const w=S.wk,h=S.hist||[],last=h[h.length-1]||{},prev=h[h.length-2];const net=last.net||0,rw=runwayWeeks(),owed=owedTotal(),interest=Math.round(S.loan*LOAN_RATE);const ds=S.days.slice(-6);const u=(ds[ds.length-1]||{}).util||{};const promoSpend=Object.keys(S.promo).filter(k=>S.promo[k]>0).reduce((t,k)=>t+PROMOS[k].cost,0);
   const mails=[];const fact=(t)=>`<b>${t}</b>`;
@@ -1157,7 +1164,7 @@ function showTitle(saved){$('app').classList.add('titled');$('title').hidden=fal
   checkUpdate();}
 function checkUpdate(){if(location.protocol==='file:')return;fetch(location.href.split('#')[0]+(location.search?'&':'?')+'v='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/BUILD='([^']*)'/);if(m&&m[1]!==BUILD){const b=$('tUpd');b.hidden=false;b.textContent='Update to '+m[1]+' · tap to reload';b.onclick=()=>{if(S&&S.week)saveGame();location.reload();};}}).catch(()=>{});}
 function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
-  if(saved){S.promo=S.promo||{};S.contracts=S.contracts||{};S.vaxDoses=S.vaxDoses||0;S.rival=S.rival||0;S.wk.ev=S.wk.ev||[];S.wk.built=S.wk.built||[];for(const o of S.objs)o.t0=0;if(!S.running&&S.opened&&S.inbox&&S.inbox.mails&&S.inbox.mails.length<4&&S.inbox.week===S.week-1){try{makeInbox();S.inbox.week=S.week-1;S.inbox.seen=false;}catch(e){}}for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
+  if(saved){S.promo=S.promo||{};S.contracts=S.contracts||{};S.vaxDoses=S.vaxDoses||0;S.rival=S.rival||0;S.wk.ev=S.wk.ev||[];S.wk.built=S.wk.built||[];S.advisors=S.advisors||rollAdvisors();for(const o of S.objs)o.t0=0;if(!S.running&&S.opened&&S.inbox&&S.inbox.mails&&S.inbox.mails.length<4&&S.inbox.week===S.week-1){try{makeInbox();S.inbox.week=S.week-1;S.inbox.seen=false;}catch(e){}}for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
 window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,payLoan,openObj,openPatient,openWorker,makeInbox,showInbox,makeFeed,showFeed,buyPromo,signContract,flowHtml,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
