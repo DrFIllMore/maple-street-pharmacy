@@ -35,3 +35,6 @@ npm i playwright && npx playwright install webkit
 node test/webkit-smoke.js
 ```
 Loads the game at phone landscape and phone portrait (rotated mode), runs a few seconds of week 1, opens and closes the debug page, and prints any JavaScript errors. Screenshots land in `test/`.
+
+## Credits
+Portraits: [DiceBear](https://www.dicebear.com) style **lorelei** by Lisa Wischofsky, licensed CC0 1.0. Regenerate with `cd tools && npm install && node gen-avatars.js`.

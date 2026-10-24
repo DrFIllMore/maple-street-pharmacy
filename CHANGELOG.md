@@ -1,5 +1,9 @@
 # Changelog
 
+## v16.2 — 2026-10-24 — Illustrated portraits
+- Portraits are now DiceBear **lorelei** illustrations (by Lisa Wischofsky, CC0 1.0) — hand-drawn line art, generated offline by `tools/gen-avatars.js` into `avatars.js` (122 KB). Advisors are hand-specified (Dana: auburn bob, glasses, earrings · Marcus: short grey hair, beard · Priya: long black hair, earrings); every staff name has a fixed portrait, and the floor figure's skin tone now matches it. Role shows as the card tint and a coloured bar under the portrait.
+- The earlier hand-coded SVG faces are gone.
+
 ## v16.1 — 2026-10-24 — Portraits
 - Designed SVG portraits replace emoji avatars. Three fixed advisor portraits (Dana: auburn bob, glasses, navy blazer · Marcus: grey buzz cut and beard, shirt and tie · Priya: long dark hair, maroon blouse, gold necklace). Every staff member gets a deterministic portrait from their name: face shape, one of nine hairstyles, hair and eye colour, glasses, beard/moustache, earrings, expression — dressed by role (white coat with purple shirt, blue scrubs, green polo) on a matching tinted card.
 - Portraits appear in the Inbox emails, the Staff panel (Workers, Schedule, Performance), the worker card, and staff posts in the Feed.
