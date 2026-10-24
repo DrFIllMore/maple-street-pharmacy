@@ -35,3 +35,6 @@ Per script: insurer pays $52 (BlueLeaf, 2 wks, 6% rejected) / $44 (SilverPlan, 3
 Weekly fixed: wages (tech 800, clerk 650, pharmacist 1800), rent 500, loan minimum 400 + 1% interest on balance. Extra loan payments any time from Manage → Money.
 Win: cash ≥ $25,000, loan 0, trust ≥ 60. Lose: cash < −$3,000 at week end.
 Tuning target (verified by `scratchpad/econ.js` WebKit sims): optimized store wins in 16–22 weeks with a cash trough of a few hundred dollars around week 3; mediocre play stalls; neglect declines. The slow-pay insurer tempo (2–3 weeks) is the main source of cash tension.
+
+## 2026-10-24 — v14.1 balance note
+Rival chain (from week 3) takes 12% of walk-ins, drifting +1%/week to a 25% cap unless a paper ad or price-match week is running (−4%/week). Sim with ads + loyalty + vaccine contract + early loan paydown: win at week 16 (trust 100 by week 8, 140–150 served/week). Without any promotion the same build stalls around 105 served/week and a loan of ~$11k at week 10 — advertising is now part of the required strategy.
