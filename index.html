@@ -38,7 +38,11 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .hud{position:absolute;background:rgba(var(--panel-rgb),var(--hudA))}
 .bar{left:var(--gl);right:var(--gr);top:var(--barY);height:var(--barH);border-radius:8px;display:flex;align-items:center;gap:calc(12px*var(--k));padding:0 2px;font-size:var(--barF);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
 .bar .sp{flex:1}
-.bar .st{color:var(--ink-2)}.bar .st b{font-family:var(--mono);font-weight:500;color:var(--ink);margin-left:3px}
+.bar .st{display:flex;flex-direction:column;line-height:1.05;color:var(--ink-2)}.bar .st small{font-size:.78em;font-weight:800;letter-spacing:.05em;text-transform:uppercase}.bar .st b{font-family:var(--mono);font-weight:600;color:var(--ink);font-size:1.12em}
+.bar .goal .trk{display:block;width:calc(90px*var(--k));height:7px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:3px}.bar .goal .trk i{display:block;height:100%;background:var(--accent)}
+.clock{right:var(--gr);bottom:calc(8px + max(0px,env(safe-area-inset-bottom,0px)));height:calc(44px*var(--k));border-radius:10px;display:flex;align-items:center;gap:4px;padding:0 5px 0 12px;font-size:var(--barF);z-index:7}
+.clock b{font-family:var(--mono);font-weight:700;font-size:1.1em;margin-right:6px;white-space:nowrap}.clock .spd{width:calc(40px*var(--k));height:calc(34px*var(--k));border-radius:7px;background:rgba(0,0,0,.08);display:inline-flex;align-items:center;justify-content:center;font-size:1.15em;margin-left:3px}.clock .spd.on{background:var(--accent);color:#fff}
+.app.building .clock,.app.titled .clock{display:none}
 .bar .st b.owed{color:var(--owed)}.bar .st b.neg{color:var(--bad)}.bar .st b.pos{color:var(--good)}
 .bb{height:100%;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:var(--barF)}
 .bb#menuBtn{font-size:calc(var(--barF) + 8px)}
@@ -88,6 +92,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .rev{width:min(var(--revW),100%);max-height:100%;overflow:auto;font-size:var(--revF);display:grid;gap:8px;align-content:start}
 .rev h2{margin:0;font-size:1.45em;font-weight:800;display:flex;align-items:baseline;gap:10px}.rev h2 small{font-size:.6em;color:var(--ink-2);font-weight:700}
 .rev .sub{font-size:.95em;color:var(--ink-2);font-weight:600;margin:0;line-height:1.4}.rev .sub b{color:var(--ink)}
+.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.goals .g{background:var(--panel-solid);border:1px solid var(--line);border-radius:10px;padding:7px 10px;min-width:0}.goals small{display:block;font-size:.72em;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);font-weight:800}.goals b{display:block;font-family:var(--mono);font-size:1.1em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.goals .trk{height:6px;border-radius:3px;background:var(--line);overflow:hidden}.goals .trk i{display:block;height:100%;background:var(--accent)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:.95em;color:var(--ink-2);font-weight:600}.facts b{color:var(--ink)}.facts .sub{font-size:.85em}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .res{background:var(--panel-solid);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
 .res .l{font-size:.78em;color:var(--ink-2);font-weight:700}.res .v{font-family:var(--mono);font-size:1.3em;font-weight:500;font-variant-numeric:tabular-nums}.res .n{font-size:.78em;color:var(--ink-2);font-weight:600;line-height:1.3}
@@ -125,6 +131,17 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .palette .pb{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;flex:none}
 .camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;font-weight:800;line-height:1;z-index:6;color:var(--ink)}
 .palette .pb.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.drawer{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);bottom:calc(60px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));width:min(48%,460px);display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;z-index:9;background:rgba(var(--panel-rgb),.97);font-size:var(--sheetF)}
+.drawer .rail{width:calc(64px*var(--k));border-right:1px solid var(--line);display:flex;flex-direction:column;padding:4px;gap:2px;flex:none}
+.drawer .rail button{height:calc(42px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72em;color:var(--ink-2);position:relative;gap:1px}.drawer .rail button span{font-size:1.5em}.drawer .rail button.on{background:var(--accent-soft);color:var(--accent-ink)}.drawer .rail button i{position:absolute;top:3px;right:8px;background:var(--bad);color:#fff;font-style:normal;font-size:.75em;border-radius:8px;padding:0 4px;font-weight:800}
+.drawer .obody{flex:1;min-width:0;padding:8px 36px 8px 10px;overflow:auto;display:grid;gap:6px;align-content:start}
+.drawer h2{margin:0;font-size:1.15em;display:flex;justify-content:space-between;align-items:baseline;gap:8px}.drawer h2 small{font-size:.72em;color:var(--ink-2);font-weight:700}
+.drawer .x{position:absolute;right:6px;top:6px;width:28px;height:28px;border-radius:50%;background:var(--panel-solid);border:1px solid var(--line);font-size:16px}
+.drawer .foot{font-size:.82em;color:var(--ink-2);font-weight:600;line-height:1.35}
+.ins{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center;background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:7px 10px}.ins .nm{grid-column:2;font-weight:800}.ins .m{grid-column:2;display:flex;gap:10px;flex-wrap:wrap;font-size:.8em;color:var(--ink-2);font-weight:600}.ins .m b{font-family:var(--mono);color:var(--ink)}
+.sw{grid-row:1/3;width:40px;height:22px;border-radius:11px;background:var(--line);position:relative;flex:none}.sw::after{content:'';position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}.sw.on{background:var(--accent)}.sw.on::after{left:20px}
+.clm{display:flex;gap:5px;align-items:center;background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:.9em}.clm>div:first-child{flex:1;min-width:0}.clm b{font-family:var(--mono)}.clm small{display:block;color:var(--ink-2);font-size:.82em;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.clm .a{height:28px;padding:0 9px;border-radius:6px;background:var(--line);font-size:.82em;white-space:nowrap}.clm .a.pri{background:var(--accent);color:#fff}
+.tile{background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:6px 8px;min-width:0}.tile small{display:block;font-size:.72em;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:800}.tile b{display:block;font-family:var(--mono);font-size:1.25em;margin:1px 0 2px}.tile .spark{height:26px}
 .tabs2{display:flex;gap:4px;flex-wrap:wrap}.tabs2 button{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.9em}.tabs2 button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .seg1{height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:.85em}.seg1.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .ubar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.ubar i{display:block;height:100%}
@@ -137,18 +154,19 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 <div class="app" id="app">
   <canvas id="cv"></canvas>
   <div class="hud bar" id="bar">
-    <button class="bb" id="wkBtn" aria-label="Speed"><span id="wkIc">▶</span><span id="wkT">Week 1</span></button>
-    <button class="bb tool" id="buildBtn" aria-label="Build">⚒ Build</button><button class="bb tool" id="officeBtn">Office</button>
+    <button class="bb tool" id="buildBtn" aria-label="Build">⚒ Build</button><button class="bb tool" id="officeBtn">▤ Manage</button>
     <span class="sp"></span>
-    <span class="st">Cash<b id="cash"></b></span>
-    <span class="st">Owed<b id="owed" class="owed"></b></span>
-    <span class="st" id="wnetSt">Week<b id="wnet"></b></span>
-    <span class="st" id="runSt">Runway<b id="runway"></b></span>
-    <span class="st">Trust<b id="trust"></b></span>
+    <span class="st"><small>Cash</small><b id="cash"></b></span>
+    <span class="st"><small>Insurers owe</small><b id="owed" class="owed"></b></span>
+    <span class="st" id="wnetSt"><small>This week</small><b id="wnet"></b></span>
+    <span class="st" id="runSt"><small>Runway</small><b id="runway"></b></span>
+    <span class="st"><small>Trust</small><b id="trust"></b></span>
+    <span class="st goal" id="goalSt"><small>Goal</small><span class="trk"><i id="goalI"></i></span></span>
     <button class="bb" id="menuBtn" aria-label="Menu">⋯</button>
   </div>
+  <div class="hud clock" id="clock"><b id="wkT">Week 1</b><span id="spd"></span></div>
   <div class="hud menu" id="menu" hidden>
-    <button id="mStaff">Staff</button><button id="mOffice">Office</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mDbg">Debug report</button>
+    <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mDbg">Debug report</button>
   </div>
   <div class="hud chat" id="chat">
     <div class="tabs" id="chatTabs"><button data-f="all" class="on">All</button><button data-f="ops">Ops</button><button data-f="money">Money</button><button data-f="staff">Staff</button><button class="chev" id="chatDown" aria-label="Collapse">⌄</button></div>
@@ -162,7 +180,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
     <div class="row"><span class="hint" id="palHint">Pick something to build, then tap the floor.</span><button class="pb" id="palRot">↻</button><button class="pb primary" id="palDone">Ready to open?</button></div>
   </div>
   <div class="hud sheet" id="sheet" hidden></div>
-  <div class="review" id="office" hidden><div class="rev" id="off"></div></div>
+  <div class="hud drawer" id="office" hidden><div class="rail" id="offRail"></div><div class="obody" id="off"></div><button class="x" id="offClose" aria-label="Close">×</button></div>
   <div class="title" id="title" hidden>
     <div class="logo"><i></i></div>
     <h1>Maple Street Pharmacy</h1>
@@ -183,7 +201,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v12.7 · 2026-10-24';
+const BUILD='v13 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -191,6 +209,7 @@ const uid=()=>Math.random().toString(36).slice(2,8);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const SHIRTS=['#d85a30','#378add','#7f77dd','#d4537e','#639922','#ef9f27','#5dcaa5','#888780','#b5d4f4','#f0997b','#f4c0d1','#fac775'];
 const SKINS=['#f3d3b6','#e0b08a','#c78f63','#9c6a43','#6b4630'];
+function freshName(){const used=new Set((S?S.staff:[]).map(w=>w.name));const free=NAMES.filter(n=>!used.has(n));return pick(free.length?free:NAMES);}
 const NAMES=['Dana','Luis','Priya','Theo','Amara','Kenji','Rosa','Owen','Ines','Bo','Grace','Omar','Nia','Felix'];
 const PNAMES=['Mrs. Alvarez','Mr. Chen','Tasha','Grandpa Joe','Ms. Okafor','Derek','Mina','Mr. Patel','Ruby','Sam','Mrs. Nowak','Jordan','Elena','Mr. Brooks','Yuki','Hector','Aunt Bea','Coach Riley'];
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -220,7 +239,7 @@ const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf
 const PALETTE_MORE=['phone','problem','consult','otc','medshelf','plant'];
 const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE]:PALETTE_START;
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
-const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const WAGES={tech:800,clerk:650,rph:1800};
+const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const ROLE_SHORT={tech:'TECH',clerk:'CLERK',rph:'PHARMACIST'};const ROLE_COL={tech:'#5dcaa5',clerk:'#dfe6e0',rph:'#b9a9ff'};const WAGES={tech:800,clerk:650,rph:1800};
 /* insurance plans (contracts) */
 const PLANS={blue:{name:'BlueLeaf',rate:38,delay:2,reject:.06,share:.35,h:'commercial · pays in 2 weeks · 6% rejected'},
              silver:{name:'SilverPlan',rate:30,delay:3,reject:.10,share:.30,h:'seniors · pays in 3 weeks · 10% rejected'},
@@ -259,13 +278,13 @@ const passS=(x,y)=>inb(x,y)&&!grid[y][x].bs;
 function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(const [tx,ty] of footprint(o)){if(!inb(tx,ty))return 'Off the floor.';if(tx===DOOR.x&&ty===DOOR.y)return 'That\'s the entrance.';if(grid[ty][tx].o)return 'Something is already there.';}
   if(T.sides){const st=staffTile(o),pt=patientTile(o);if(st&&(!inb(st[0],st[1])||grid[st[1]][st[0]].o))return 'Staff need to stand on the '+(T.sides==='both'?'back':'front')+' side.';if(pt&&(!inb(pt[0],pt[1])||grid[pt[1]][pt[0]].o))return 'Customers need to stand in front.';}
   return null;}
-function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;S.objs.push({id:uid(),type,x,y,rot:rot||0,level:0,t0:performance.now()});rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
+function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;const nid=uid();S.objs.push({id:nid,type,x,y,rot:rot||0,level:0,t0:performance.now()});justPlaced={id:nid,t:performance.now()};rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
 function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;const o=S.objs[i];const T=TYPES[o.type];if(busyS[id])return 'Someone is using it.';
   for(const sc of S.scripts)if(sc.at&&sc.at.endsWith(':'+id)){const b=objsOf('bin')[0];sc.at=b?'bin:'+b.id:null;if(sc.stage!=='shelf'&&sc.stage!=='claim')sc.stage='bin';}
   S.cash+=T.cost/2;S.objs.splice(i,1);rebuildGrid();nudgeAll();glog('staff',`Removed the ${T.name.toLowerCase()}.`);saveGame();return null;}
 let held=null,ghostAt=null; /* object picked up for moving; ghostAt = proposed tile */
 function pickUp(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';held={o,ox:o.x,oy:o.y,orot:o.rot};S.objs.splice(S.objs.indexOf(o),1);rebuildGrid();nudgeAll();tool='move';rot=o.rot;return null;}
-function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if(((rot&1)?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;o.x=x;o.y=y;o.rot=rot;S.objs.push(o);held=null;ghostAt=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
+function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if(((rot&1)?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;o.x=x;o.y=y;o.rot=rot;S.objs.push(o);justPlaced={id:o.id,t:performance.now()};held=null;ghostAt=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
 function turnObj(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';const i=S.objs.indexOf(o);S.objs.splice(i,1);rebuildGrid();const r0=o.rot||0;for(let k=1;k<4;k++){const r=(r0+k)&3;if(!canPlace(o.type,o.x,o.y,r)){o.rot=r;S.objs.splice(i,0,o);rebuildGrid();nudgeAll();SFX.click();saveGame();return null;}}S.objs.splice(i,0,o);rebuildGrid();return 'No room to turn it here. Move it instead.';}
 function cancelMove(){ghostAt=null;if(!held)return;const o=held.o;o.x=held.ox;o.y=held.oy;o.rot=held.orot;S.objs.push(o);held=null;rebuildGrid();}
 function nudgeAll(){for(const a of [...S.staff,...S.patients]){a.path=null;a.pv=-1;const tx=Math.floor(a.x),ty=Math.floor(a.y);if(inb(tx,ty)&&(a.role?grid[ty][tx].bs:grid[ty][tx].bp)){const t=nearestFree(tx,ty,!!a.role);if(t){a.x=t[0]+.5;a.y=t[1]+.5;}}}}
@@ -362,9 +381,9 @@ function jobVerify(w,o,sc){claim(w,o,sc);const shelf=objsOf('shelf')[0];const pr
     P.push({work:batch.length/eff(w),label:'checking'});
     P.push({fn:()=>{const good=[],bad=[];for(const b of batch){const pl=PLANS[b.plan];if(pl&&Math.random()<pl.reject)bad.push(b);else good.push(b);}release(o,null);
       if(good.length){P.push({fn:()=>{w.carry=good;for(const b of good)b.at=null;}},{go:staffTile(shelf)},{fn:()=>{for(const b of good)bagIt(w,b,shelf);w.carry=[];}});}
-      if(bad.length){for(const b of bad){b.claimed=null;b.reason=pick(['not covered','refill too soon','prior authorization']);const p=S.patients.find(x=>x.id===b.patient);S.claims.push({id:b.id,name:p?p.name:'Phone-in',plan:PLANS[b.plan].name,reason:b.reason,day:S.week*10+S.day,status:'open'});fx(o,'claim rejected','bad');}
+      if(bad.length){for(const b of bad){b.claimed=null;b.reason=pick(['not covered','refill too soon','prior authorization']);const p=S.patients.find(x=>x.id===b.patient);S.claims.push({id:b.id,name:p?p.name:'Phone-in',plan:PLANS[b.plan].name,planKey:b.plan,reason:b.reason,day:S.week*10+S.day,status:'open'});fx(o,'claim rejected','bad');}
         if(prob){P.push({fn:()=>{w.carry=bad;for(const b of bad)b.at=null;}},{go:staffTile(prob)},{fn:()=>{for(const b of bad){b.stage='problem';b.at='problem:'+prob.id;}w.carry=[];}});}
-        else{for(const b of bad){b.stage='claim';b.at='claim:'+o.id;}glog('money',`${bad.length} rejected claim${bad.length>1?'s':''} waiting for your decision in the office.`,'claimq',24);}}}});}});return plan;}
+        else{for(const b of bad){b.stage='claim';b.at='claim:'+o.id;}glog('money',`${bad.length} rejected claim${bad.length>1?'s':''} waiting for your decision in Manage → Claims.`,'claimq',24);}}}});}});return plan;}
 function jobProblem(w,o,sc){claim(w,o,sc);const shelf=objsOf('shelf')[0];const fast=o.type==='problem';return {name:'problem',steps:[{go:staffTile(o)},{fn:()=>{sc.at='slot:'+o.id;}},{work:(fast?2:4)/eff(w),label:'calling insurer'},{fn:()=>{release(o,null);const okp=Math.random()<(fast?.7:.6);if(okp){w.carry=[sc];sc.at=null;w.plan.steps.push({go:staffTile(shelf)},{fn:()=>{bagIt(w,sc,shelf);w.carry=[];}});closeClaim(sc.id,'appealed');}else{writeOff(sc,'appeal failed');}}}]};}
 function closeClaim(id,status){const c=S.claims.find(x=>x.id===id);if(c)c.status=status;}
 function writeOff(sc,why){sc.stage='dead';sc.at=null;sc.claimed=null;S.wk.writeoff++;S.trust-=1;closeClaim(sc.id,'written off');const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.exitMood='sad';p.state='leaving';p.seat=null;p.q=null;}glog('money',`Claim written off (${why}).`,'wo',6);}
@@ -449,7 +468,7 @@ const CARDS=[
   {id:'referral',when:()=>S.week>=2&&!S.mods.referral,t:'A clinic nearby wants to send you about 40 more patients a week.',s:'All insured: more owed to you, more work, more trust.',o:[['Pass',()=>{}],['Take it',()=>{S.mods.referral=4;}]]},
   {id:'chain',when:()=>S.week>=3&&!S.mods.chain,t:'A chain pharmacy opened across the street.',s:'Fewer walk-ins for a month unless you fight for them.',o:[['Ride it out',()=>{S.mods.chain=4;S.mods.chainK=.8;}],['Run a $1,500 promo',()=>{S.cash-=1500;S.mods.chain=4;S.mods.chainK=.93;}]]},
   {id:'rent',when:()=>S.week>=4,t:'Your landlord wants $150 more per week.',s:'Pushing back usually works. Sometimes it doesn\'t.',o:[['Agree',()=>{S.rent+=150;}],['Push back',()=>{if(Math.random()<.6)adv='The landlord backed down.';else{S.rent+=250;adv='The landlord dug in: $250 more.';}}]]},
-  {id:'quick',when:()=>!S.plans.quick&&S.week>=2,t:'QuickPay HMO offers a contract: $26 a script, paid in one week.',s:'Fast money, thin margin. You can drop it later in the office.',o:[['Decline',()=>{}],['Sign',()=>{S.plans.quick=true;}]]},
+  {id:'quick',when:()=>!S.plans.quick&&S.week>=2,t:'QuickPay HMO offers a contract: $26 a script, paid in one week.',s:'Fast money, thin margin. You can drop it later in Manage → Insurers.',o:[['Decline',()=>{}],['Sign',()=>{S.plans.quick=true;}]]},
   {id:'bluecut',when:()=>S.plans.blue&&S.week>=5&&PLANS.blue.rate>=38,t:'BlueLeaf wants to cut your rate from $38 to $34 a script.',s:'Accept, or push back and risk losing the contract for a month.',o:[['Accept',()=>{PLANS.blue.rate=34;}],['Push back',()=>{if(Math.random()<.5)adv='BlueLeaf blinked. Rate stays at $38.';else{S.plans.blue=false;S.mods.blueOut=4;adv='BlueLeaf walked. Their patients are gone for a month.';}}]]},
   {id:'flu',when:()=>objsOf('consult').length&&!S.mods.flu,t:'Flu season is here. People want shots.',s:'Consult visits double for two weeks.',o:[['Noted',()=>{S.mods.flu=2;}]]},
   {id:'raise',when:()=>S.staff.length>=4&&!S.mods.raise,t:'Your team asks for a raise.',s:'$100 more per person each week, or a grumpy month.',o:[['Give it',()=>{S.mods.raise=99;for(const k in WAGES)WAGES[k]+=100;}],['Not now',()=>{S.trust-=2;}]]},
@@ -465,9 +484,11 @@ function pickCard(){const ok=CARDS.filter(c=>c.when()&&!S.seen.slice(-3).include
 function page(html){$('rev').innerHTML=html;$('review').hidden=false;}
 function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const Wd=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*Wd,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
   return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${Wd}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;}
-function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy</h2><p class="sub">The unit is empty. The bank lent you <b>${fmt(LOAN)}</b>, repaid ${fmt(LOAN_PAY)} a week. Build what a pharmacy needs, hire a technician and a clerk, then open the doors.</p>
-  <p class="sub"><b>Tap the hammer</b> to build. Tap a tile to place. Customers come in through the <b>door on the right</b> and can only walk where you leave room; counters keep them out of the back. Staff step through counters.</p>
-  <p class="sub">Goal: ${fmt(30000)} in cash, loan repaid, with the neighborhood's trust. Insurers pay weeks late. Don't run out of cash waiting.</p><div class="btns"><button class="big" id="go">Start building</button></div>`);
+function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Cash goal',`${fmt(S.cash)} / ${fmt(30000)}`,S.cash/30000)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / 60`,S.trust/60)}</div>`;}
+function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy <small>your goal</small></h2>${goalsHtml()}
+  <p class="sub">Fill all three bars to win. Cash at <b>$0</b> and the bank takes the store.</p>
+  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> · <b>${fmt(LOAN_PAY)}</b> a week back</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b> · counters keep them out of the back</div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
+  <div class="btns"><button class="big" id="go">Start building</button></div>`);
   $('go').onclick=()=>{$('review').hidden=true;setBuild(true);renderHud();};}
 function showChecklist(){const r=readiness();const all=r.every(x=>x.ok);
   sheet(`<h3>Ready to open?</h3><div class="rows">${r.map(x=>`<div class="rowb" style="min-height:36px;padding:4px 10px"><span style="color:${x.ok?'var(--good)':'var(--bad)'}">${x.ok?'✓':'•'}</span><span>${x.t}</span></div>`).join('')}</div>
@@ -488,9 +509,10 @@ function showReview(){closeAll();const w=S.wk,prev=S.week-1;
 function reviewDecide(){closeAll();const card=CARDS.find(c=>c.id===S.card);const due=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0);
   page(`<h2>Week ${S.week} <small>${S.opened?'decide · 2 of 2':'opening week'}</small></h2>
     ${card?`<div class="card"><div class="t">${card.t}</div><div class="s">${card.s}</div><div class="opts" id="opts">${card.o.map((o,i)=>`<button data-i="${i}">${o[0]}</button>`).join('')}</div></div>`:''}
-    <p class="sub">Expect about <b>${Math.round(demandPerDay())}</b> prescriptions a day. Insurers will pay <b>${fmt(due)}</b> at the end of this week. Stock on hand <b>${S.stock}</b>, next order <b>${S.orderQty}</b> units (${fmt(S.orderQty*S.unitCost)}) arrives Monday.</p>
-    <p class="sub">Contracts, schedule, claims, stock, and metrics are in the <b>Office</b>. Build and hire from the floor any time.</p>
-    <div class="btns">${S.opened&&S.week>1?'<button class="big ghost" id="back">◀ Results</button>':''}<button class="big ghost" id="toOffice">Office</button><button class="big ghost" id="toFloor">Floor</button><button class="big" id="run" ${card?'disabled':''}>Run week ${S.week} ▶</button></div>`);
+    ${goalsHtml()}
+    <div class="facts"><div>📋 Expect <b>~${Math.round(demandPerDay())} prescriptions a day</b></div><div>🏦 Insurers pay you <b>${fmt(due)}</b> this week${due?'':' <span class="sub">(first payments take weeks)</span>'}</div><div>📦 Stock <b>${S.stock}</b> · order of ${S.orderQty} arrives Mon <b>−${fmt(S.orderQty*S.unitCost)}</b></div><div>💸 Fixed costs this week <b>−${fmt(wages()+S.rent+LOAN_PAY)}</b> <span class="sub">(wages, rent, loan)</span></div></div>
+    <p class="sub">Fill all three bars to win. Cash at $0 and the bank takes the store. People who give up waiting cost trust.</p>
+    <div class="btns">${S.opened&&S.week>1?'<button class="big ghost" id="back">◀ Results</button>':''}<button class="big ghost" id="toOffice">Manage</button><button class="big ghost" id="toFloor">Floor</button><button class="big" id="run" ${card?'disabled':''}>Run week ${S.week} ▶</button></div>`);
   if(card)$('rev').querySelectorAll('#opts button').forEach(b=>b.onclick=()=>{S.choice=+b.dataset.i;$('rev').querySelectorAll('#opts button').forEach(x=>x.classList.toggle('on',x===b));$('run').disabled=false;SFX.click();});
   const bk=$('back');if(bk)bk.onclick=()=>{SFX.click();showReview();};$('toOffice').onclick=()=>{$('review').hidden=true;openOffice('insurance');};$('toFloor').onclick=()=>{$('review').hidden=true;renderHud();};
   $('run').onclick=()=>{if(card&&S.choice!==null){card.o[S.choice][1]();glog('event',`${card.t} You chose: ${card.o[S.choice][0]}.`);}$('review').hidden=true;startWeek();};renderHud();}
@@ -517,7 +539,7 @@ function toast(t){glog('ops',t);}
 /* ============ sheets ============ */
 function sheet(html){const el=$('sheet');el.innerHTML=html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
 function closeSheet(){$('sheet').hidden=true;S.sel=null;}
-function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;$('office').hidden=true;}
+function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;if(!$('office').hidden)closeOffice();}
 function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o.type];const who=S.staff.find(w=>busyS[o.id]===w.id);
   const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.id).length:o.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+o.id||x.at==='claim:'+o.id).length:o.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+o.id).length:o.type==='bin'?S.scripts.filter(x=>x.at==='bin:'+o.id).length:['dropoff','register'].includes(o.type)?S.patients.filter(p=>p.q===o.id&&p.state!=='leaving').length:0;
   const status=who?`${who.name} is ${who.plan&&who.plan.steps[who.step]&&who.plan.steps[who.step].label||'working'} here`:n?`${n} waiting`:'idle';
@@ -525,7 +547,7 @@ function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}. ${priv}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p><div class="rows">
     <button class="rowb" id="mv" ${who?'disabled':''}><span>Move<span class="sub">Pick it up and put it somewhere else.</span></span><span class="cost">free</span></button>
-    <button class="rowb" id="turn" ${who?'disabled':''}><span>Rotate<span class="sub">Facing ${FACE_N[(o.rot||0)&3]}. Staff and customer sides turn with it.</span></span><span class="cost">free</span></button>
+    <button class="rowb" id="turn" ${who?'disabled':''}><span>Rotate<span class="sub">Facing ${FACE_N[(o.rot||0)&3]}. Customers queue from the orange tile, staff stand on the blue one.</span></span><span class="cost">free</span></button>
     ${nxt?`<button class="rowb" id="upg" ${S.cash<nxt.cost?'disabled':''}><span>Upgrade to ${nxt.n}<span class="sub">${nxt.h}</span></span><span class="cost pill">${fmt(nxt.cost)}</span></button>`:''}
     <button class="rowb danger" id="rm" ${who?'disabled':''}><span>Sell<span class="sub">Half the cost comes back.</span></span><span class="cost">+${fmt(T.cost/2)}</span></button></div>`);
   const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;o.level++;SFX.build();glog('staff',`${T.name} upgraded to ${nxt.n}.`);openObj(o);renderHud();};
@@ -540,27 +562,29 @@ function openStaff(){S.sel='staff';SFX.click();$('menu').hidden=true;
 
 /* ============ office ============ */
 let officeTab='metrics';
-function openOffice(tab){closeAll();if(tab)officeTab=tab;S.pausedBy=S.speed;if(S.running)setSpeed(0);$('office').hidden=false;renderOffice();}
-function closeOffice(){$('office').hidden=true;if(S.running&&S.pausedBy)setSpeed(S.pausedBy);renderHud();}
-function renderOffice(){const el=$('off');const tabs=[['metrics','Metrics'],['insurance','Insurance'],['claims',`Claims${S.claims.filter(c=>c.status==='open').length?' ('+S.claims.filter(c=>c.status==='open').length+')':''}`],['schedule','Schedule'],['inventory','Stock'],['pricing','Pricing']];
-  let body='';
-  if(officeTab==='metrics'){const ds=S.days.slice(-18);const line=(key,col,max)=>{if(ds.length<2)return '<p class="sub">Numbers appear after the first day.</p>';const mx=max||Math.max(1,...ds.map(d=>typeof key==='function'?key(d):d[key]));const Wd=300,H=40;const pts=ds.map((d,i)=>{const v=typeof key==='function'?key(d):d[key];return [i/(ds.length-1)*Wd,H-3-(v/mx)*(H-6)];});return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;};
-    const last=ds[ds.length-1]||{};const u=last.util||{};const bar=(v,col)=>`<div class="ubar"><i style="width:${Math.round((v||0)*100)}%;background:${col}"></i></div>`;
-    body=`<div class="grid2"><div class="res"><div class="l">Served per day</div>${line('served','var(--accent)')}<div class="n">${ds.map(d=>d.served).slice(-6).join(' · ')}</div></div><div class="res"><div class="l">Gave up per day</div>${line('lost','#e24b4a')}<div class="n">${ds.map(d=>d.lost).slice(-6).join(' · ')}</div></div>
-      <div class="res"><div class="l">Cash vs owed</div>${line('cash','var(--accent)')}${line('owed','#ba7517')}<div class="n">cash ${fmt(S.cash)} · owed ${fmt(owedTotal())}</div></div><div class="res"><div class="l">Trust</div>${line('trust','#7f77dd',100)}<div class="n">now ${Math.round(S.trust)}</div></div></div>
-      <div class="res"><div class="l">Station load yesterday</div><div class="grid2" style="margin-top:4px"><div><div class="n">Fill ${Math.round((u.fill||0)*100)}%</div>${bar(u.fill,'#1d9e75')}</div><div><div class="n">Verify ${Math.round((u.verify||0)*100)}%</div>${bar(u.verify,'#7f77dd')}</div><div><div class="n">Drop-off ${Math.round((u.intake||0)*100)}%</div>${bar(u.intake,'#ba7517')}</div><div><div class="n">Registers ${Math.round((u.pickup||0)*100)}%</div>${bar(u.pickup,'#378add')}</div></div><div class="n" style="margin-top:4px">Over 85% means a line; under 30% means you're paying for idle capacity.</div></div>`;}
-  if(officeTab==='insurance'){body=`<p class="sub">Each contract decides who walks in, how much you're paid per script, how late, and how often claims bounce. Dropped plans send a quarter of their patients back as cash payers.</p><div class="rows">${Object.keys(PLANS).map(k=>{const p=PLANS[k];const on=S.plans[k];const owed=S.ledger.filter(l=>l.plan===k).reduce((t,l)=>t+l.amt,0);return `<div class="rowb" style="cursor:default"><span><b>${p.name}</b> <span class="sub">${p.h} · ${Math.round(p.share*100)}% of the neighborhood · owes you ${fmt(owed)}</span></span><span class="cost"><button class="seg1 ${on?'on':''}" data-plan="${k}">${on?'Accepted':'Not accepted'}</button></span></div>`;}).join('')}
-    <div class="rowb" style="cursor:default"><span><b>Cash payers</b> <span class="sub">pay ${fmt(S.cashPrice)} on the spot · about ${Math.round(CASH_SHARE*(1-(S.cashPrice-34)/40)*100)}% of the neighborhood at this price</span></span></div></div>`;}
-  if(officeTab==='claims'){const open=S.claims.filter(c=>c.status==='open');const closed=S.claims.filter(c=>c.status!=='open').slice(-6).reverse();
-    body=`<p class="sub">${objsOf('problem').length?'Your problem desk works rejected claims automatically. Anything here needs a decision from you.':'Without a problem desk, every rejected claim needs your decision. They expire in three days.'}</p>
-      ${open.length?`<div class="rows">${open.map(c=>`<div class="rowb" style="cursor:default;flex-wrap:wrap"><span style="flex:1"><b>${c.name}</b> <span class="sub">${c.plan} · ${c.reason}</span></span><span class="cost" style="display:flex;gap:4px"><button class="seg1" data-cl="${c.id}" data-a="appeal">Appeal</button><button class="seg1" data-cl="${c.id}" data-a="cash">Ask cash</button><button class="seg1" data-cl="${c.id}" data-a="wo">Write off</button></span></div>`).join('')}</div>`:'<p class="sub"><b>No open claims.</b></p>'}
-      ${closed.length?`<div class="lbl">Recent</div><div class="rows">${closed.map(c=>`<div class="rowb" style="cursor:default;min-height:34px"><span>${c.name} <span class="sub">${c.plan} · ${c.reason} · ${c.status}</span></span></div>`).join('')}</div>`:''}`;}
-  if(officeTab==='schedule'){const hdr=DAYS.map(d=>`<span>${d.slice(0,3)}</span>`).join('');body=`<p class="sub">Tap a cell to cycle Full · AM · PM · Off. Half days cost 55%. Six full days in a row tire people out (slower work); a day off resets them.</p><div class="sched"><div class="sh"><span></span>${hdr}<span>wage</span></div>${S.staff.filter(w=>!w.isYou).map(w=>{const s=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);return `<div class="sh"><span><b>${w.name}</b><br><span class="sub">${ROLE[w.role]} · tired ${w.fatigue}/6</span></span>${s.map((v,i)=>`<button class="cell ${v}" data-w="${w.id}" data-d="${i}">${v==='F'?'Full':v==='A'?'AM':v==='P'?'PM':'Off'}</button>`).join('')}<span class="cost">${fmt(wageOf(w))}</span></div>`;}).join('')||'<p class="sub">Hire staff first (⋯ menu → Staff).</p>'}</div><p class="sub">You work every day. Owners do.</p>`;}
-  if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;body=`<div class="grid3"><div class="res"><div class="l">Stock on hand</div><div class="v">${S.stock}</div><div class="n">about ${daysLeft} days at ${Math.round(perDay)}/day</div></div><div class="res"><div class="l">Next order (Monday)</div><div class="v">${S.orderQty}</div><div class="n">${fmt(S.orderQty*S.unitCost*(S.mods.cheap?.9:1))} · ${fmt(S.unitCost*(S.mods.cheap?.9:1))} a unit</div></div><div class="res"><div class="l">Backordered this week</div><div class="v ${S.wk.backorder?'neg':''}">${S.wk.backorder||0}</div><div class="n">people sent away empty-handed</div></div></div>
-      <div class="lever"><div><div class="n">Weekly order</div><div class="h">Paid on delivery. Too little means stockouts; too much ties up cash.</div></div><div class="seg"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>`;}
-  if(officeTab==='pricing'){body=`<div class="lever"><div><div class="n">Cash price per script: ${fmt(S.cashPrice)}</div><div class="h">Higher price, fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><p class="sub">OTC items sell for ${fmt(OTC)} each; about a third of walk-ins buy one if you have a shelf.</p>`;}
-  el.innerHTML=`<h2>Office <small>${S.running?'floor paused':'between weeks'}</small><button class="big ghost" id="offClose" style="margin-left:auto">Back to floor</button></h2><div class="tabs2">${tabs.map(([k,n])=>`<button class="${officeTab===k?'on':''}" data-tab="${k}">${n}</button>`).join('')}</div>${body}`;
-  el.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{officeTab=b.dataset.tab;SFX.click();renderOffice();});$('offClose').onclick=closeOffice;
+let offShift=0;
+function openOffice(tab){closeAll();if(tab)officeTab=tab;const was=$('office').hidden;$('office').hidden=false;$('officeBtn').classList.add('on');renderOffice();if(was&&!ROT){const dw=$('office').offsetWidth;const want=Math.round(dw*.45);cam.x-=want-offShift;offShift=want;}}
+function closeOffice(){$('office').hidden=true;$('officeBtn').classList.remove('on');cam.x+=offShift;offShift=0;renderHud();}
+function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==='open').length;
+  const tabs=[['metrics','📈','Money'],['insurance','🏦','Insurers'],['claims','📨','Claims'],['schedule','🗓','Shifts'],['inventory','📦','Stock'],['pricing','🏷','Prices']];
+  $('offRail').innerHTML=tabs.map(([k,ic,n])=>`<button class="${officeTab===k?'on':''}" data-tab="${k}"><span>${ic}</span>${n}${k==='claims'&&oc?`<i>${oc}</i>`:''}</button>`).join('');
+  $('offRail').querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{officeTab=b.dataset.tab;SFX.click();renderOffice();});$('offClose').onclick=()=>{SFX.click();closeOffice();};
+  let body='';const ds=S.days.slice(-18);
+  const line=(key,col,max)=>{if(ds.length<2)return '';const mx=max||Math.max(1,...ds.map(d=>typeof key==='function'?key(d):d[key]));const Wd=200,H=26;const pts=ds.map((d,i)=>{const v=typeof key==='function'?key(d):d[key];return [i/(ds.length-1)*Wd,H-2-(v/mx)*(H-4)];});return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;};
+  if(officeTab==='metrics'){const last=ds[ds.length-1]||{};const u=last.util||{};const col=v=>v>.85?'var(--bad)':v<.3?'#ba7517':'var(--accent)';const bar=(l,v)=>`<div><div class="n" style="display:flex;justify-content:space-between"><span>${l}</span><b>${Math.round((v||0)*100)}%</b></div><div class="ubar"><i style="width:${Math.round((v||0)*100)}%;background:${col(v||0)}"></i></div></div>`;
+    body=`<h2>Money <small>last ${ds.length} days</small></h2><div class="grid2"><div class="tile"><small>Served yesterday</small><b>${last.served??'–'}</b>${line('served','var(--accent)')}</div><div class="tile"><small>Gave up</small><b class="${last.lost?'neg':''}">${last.lost??'–'}</b>${line('lost','#e24b4a')}</div><div class="tile"><small>Cash</small><b>${fmt(S.cash)}</b>${line('cash','var(--accent)')}</div><div class="tile"><small>Insurers owe</small><b class="owed">${fmt(owedTotal())}</b>${line('owed','#ba7517')}</div></div>
+      <div class="tile"><small>Station load yesterday</small><div class="grid2" style="margin-top:4px">${bar('Fill',u.fill)}${bar('Verify',u.verify)}${bar('Drop-off',u.intake)}${bar('Registers',u.pickup)}</div></div><div class="foot">Red = a line forms there. Amber = paying for idle time.</div>`;}
+  if(officeTab==='insurance'){body=`<h2>Insurers <small>on = you take their patients</small></h2>${Object.keys(PLANS).map(k=>{const p=PLANS[k];const on=S.plans[k];const owed=S.ledger.filter(l=>l.plan===k).reduce((t,l)=>t+l.amt,0);return `<div class="ins"><button class="sw ${on?'on':''}" data-plan="${k}" aria-label="toggle"></button><div class="nm">${p.name}${owed?` <span class="sub" style="font-weight:600">· owes you ${fmt(owed)}</span>`:''}</div><div class="m"><span>pays <b>${fmt(p.rate)}</b>/Rx</span><span>in <b>${p.delay} wk${p.delay>1?'s':''}</b></span><span>rejects <b>${Math.round(p.reject*100)}%</b></span><span><b>${Math.round(p.share*100)}%</b> of patients</span></div></div>`;}).join('')}
+    <div class="foot">Turning one off: most of those patients stop coming; a quarter pay cash instead. Cash customers pay ${fmt(S.cashPrice)} today (${Math.round(CASH_SHARE*(1-(S.cashPrice-34)/40)*100)}% of patients).</div>`;}
+  if(officeTab==='claims'){const open=S.claims.filter(c=>c.status==='open');const closed=S.claims.filter(c=>c.status!=='open').slice(-4).reverse();
+    body=`<h2>Rejected claims <small>${open.length?`${open.length} · expire in 3 days`:'none open'}</small></h2>${open.map(c=>`<div class="clm"><div><b>${fmt(PLANS[c.planKey]?PLANS[c.planKey].rate:34)}</b> · ${c.plan}<small>${c.reason} · ${c.name}</small></div><button class="a pri" data-cl="${c.id}" data-a="appeal">Appeal</button><button class="a" data-cl="${c.id}" data-a="cash">Cash ${fmt(S.cashPrice)}</button><button class="a" data-cl="${c.id}" data-a="wo">Drop</button></div>`).join('')}
+      ${closed.length?`<div class="lbl">Recent</div>${closed.map(c=>`<div class="clm" style="opacity:.75"><div>${c.plan} · ${c.name}<small>${c.reason} · ${c.status}</small></div></div>`).join('')}`:''}
+      <div class="foot">${objsOf('problem').length?'Your problem desk handles most of these on its own.':'Appeal: ~70% paid, two weeks later. Cash: patient pays now, some walk. Drop: gone.'}${objsOf('problem').length?'':' A problem desk does this for you.'}</div>`;}
+  if(officeTab==='schedule'){const hdr=DAYS.map(d=>`<span>${d.slice(0,2)}</span>`).join('');body=`<h2>Shifts <small>tap a day: Full · AM · PM · Off</small></h2><div class="sched"><div class="sh"><span></span>${hdr}<span>wage</span></div>${S.staff.filter(w=>!w.isYou).map(w=>{const s=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);return `<div class="sh"><span><b>${w.name}</b><br><span class="sub">${ROLE[w.role]} · tired ${w.fatigue}/6</span></span>${s.map((v,i)=>`<button class="cell ${v}" data-w="${w.id}" data-d="${i}">${v==='F'?'Full':v==='A'?'AM':v==='P'?'PM':'Off'}</button>`).join('')}<span class="cost">${fmt(wageOf(w))}</span></div>`;}).join('')||'<p class="sub">No staff yet. Hire from the ⋯ menu.</p>'}</div><div class="foot">Half days cost 55%. Six full days in a row slows people down; a day off resets them. You work every day.</div>`;}
+  if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;body=`<h2>Stock</h2><div class="grid3"><div class="tile"><small>On hand</small><b>${S.stock}</b><div class="n">~${daysLeft} days</div></div><div class="tile"><small>Next order · Mon</small><b>${S.orderQty}</b><div class="n">${fmt(S.orderQty*S.unitCost*(S.mods.cheap?.9:1))}</div></div><div class="tile"><small>Sent away empty</small><b class="${S.wk.backorder?'neg':''}">${S.wk.backorder||0}</b><div class="n">this week</div></div></div>
+      <div class="lever"><div><div class="n">Weekly order</div><div class="h">Paid on delivery. Short = stockouts; long = cash tied up.</div></div><div class="seg"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>`;}
+  if(officeTab==='pricing'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
+  el.innerHTML=body;
   el.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>{const k=b.dataset.plan;S.plans[k]=!S.plans[k];glog('event',`${PLANS[k].name}: ${S.plans[k]?'accepted':'dropped'}.`);SFX.click();renderOffice();});
   el.querySelectorAll('[data-cl]').forEach(b=>b.onclick=()=>{const sc=S.scripts.find(x=>x.id===+b.dataset.cl);const a=b.dataset.a;if(!sc){closeClaim(+b.dataset.cl,'written off');renderOffice();return;}
     if(a==='appeal'){sc.stage='problem';const v=objsOf('verify')[0];sc.at=v?'claim:'+v.id:null;closeClaim(sc.id,'appealing');glog('money','Appeal sent. A pharmacist will call the insurer.');}
@@ -608,7 +632,7 @@ function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;const bin=
   if(prob>=3)glog('ops',`${prob} rejected claims waiting to be worked.`,'prob',24);if(shelf>=12)glog('ops',`${shelf} bags on the shelf. People haven't come back yet.`,'shelf',36);
   if(S.stock<demandPerDay()*2&&S.stock>0)glog('ops',`Stock is low: ${S.stock} units left.`,'lowstock',72);
   const conf=S.patients.filter(p=>p.conf>0).length;if(conf>=2)glog('bad',`${conf} people can't find their way in.`,'conf',24);
-  const idle=S.staff.filter(w=>!w.plan&&!w.off).length;if(idle>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idle} staff standing around.`,'idle',36);
+  const idleW=S.staff.filter(w=>!w.plan&&!w.off);if(idleW.length>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idleW.map(w=>w.name).join(', ')} have nothing to do right now.`,'idle',36);
   if(owedTotal()>S.cash*1.5&&owedTotal()>2500)glog('ops',`Insurers owe you ${fmt(owedTotal())}; you have ${fmt(S.cash)}.`,'owed',72);}
 function weekSoFar(){const frac=(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK);return S.wk.cashIn-(wages()+S.rent+LOAN_PAY)*frac-S.wk.drug;}
 function runwayWeeks(){const burn=wages()+S.rent+LOAN_PAY+S.orderQty*S.unitCost;const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
@@ -619,13 +643,17 @@ $('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').text
 $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
 $('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
-$('officeBtn').onclick=()=>openOffice();
-function renderHud(){const t=`Wk ${S.week} · ${S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'review':'building'}`;$('wkT').textContent=t;$('wkIc').textContent=!S.running?'▶':S.speed===0?'▶':S.speed===1?'▶▶':'❚❚';
+$('officeBtn').onclick=()=>{if($('office').hidden)openOffice();else closeOffice();SFX.click();};
+function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/30000)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
+function renderHud(){if(!$('office').hidden&&S.running&&S.tick%3===0)renderOffice();const t=`Wk ${S.week} · ${S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'between weeks':'building'}`;$('wkT').textContent=t;
+  $('spd').innerHTML=S.running?[[0,'❚❚'],[1,'▶'],[3,'▶▶']].map(([n,g])=>`<button class="spd ${S.speed===n?'on':''}" data-s="${n}" aria-label="speed ${n}">${g}</button>`).join(''):`<button class="spd on" id="goBtn" aria-label="Continue">▶</button>`;
+  $('spd').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{setSpeed(+b.dataset.s);SFX.click();});const gb=$('goBtn');if(gb)gb.onclick=()=>{SFX.click();if(!S.opened){setBuild(true);showChecklist();}else showReview();};
+  $('goalI').style.width=Math.round(goalPct()*100)+'%';$('goalSt').hidden=VW<700;
   $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());$('trust').textContent=Math.round(S.trust);
   const ws=weekSoFar();$('wnet').textContent=(ws>=0?'+':'')+fmt(ws);$('wnet').className=ws<0?'neg':'pos';$('wnetSt').hidden=!S.running;
-  const rw=runwayWeeks();$('runway').textContent=rw===Infinity?'ok':Math.round(rw*10)/10+'w';$('runway').className=rw<2?'neg':'';$('runSt').hidden=VW<600||!S.opened;
-  const oc=S.claims.filter(c=>c.status==='open').length;$('officeBtn').textContent=oc?`Office · ${oc}`:'Office';$('officeBtn').classList.toggle('alert',!!oc);}
-$('wkBtn').onclick=()=>{if(!S.running){if(!S.opened&&!buildOn){setBuild(true);}return;}setSpeed(S.speed===0?1:S.speed===1?3:0);SFX.click();};
+  const rw=runwayWeeks();$('runway').textContent=rw===Infinity?'ok':Math.round(rw*10)/10+'w';$('runway').className=rw<2?'neg':'';$('runSt').hidden=VW<860||!S.opened;$('wnetSt').hidden=!S.running||VW<760;
+  const oc=S.claims.filter(c=>c.status==='open').length;$('officeBtn').textContent=oc?`▤ Manage · ${oc}`:'▤ Manage';$('officeBtn').classList.toggle('alert',!!oc);}
+
 
 /* ============ renderer ============ */
 const cv=$('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1,r:0};let userCam=false;let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
@@ -633,8 +661,8 @@ try{forceLand=localStorage.getItem('msp-land')!=='off';}catch(e){}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=screen.orientation&&screen.orientation.type?screen.orientation.type.startsWith('portrait'):ih>iw;ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);
   if(ROT){app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
-function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight+10:6)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
-function fitWorld(){userCam=false;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
+function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:6)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
+function fitWorld(){userCam=false;offShift=0;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
 let rsT,lastVW=0,lastVH=0;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();const big=Math.abs(VW-lastVW)>120||Math.abs(VH-lastVH)>120;if(!userCam||big)fitWorld();lastVW=VW;lastVH=VH;},80);};window.addEventListener('resize',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);
 const vw=(x,y)=>cam.r===0?[x,y]:cam.r===1?[D-y,x]:cam.r===2?[W-x,D-y]:[y,W-x];
@@ -663,14 +691,15 @@ function face(x,y,mood){/* RCT-style face in a bubble */const col={happy:'#1d9e7
   if(mood==='confused'){ctx.fillStyle=col;ctx.font='800 10px Nunito,sans-serif';ctx.textAlign='center';ctx.fillText('?',x+9,y-6);}
   if(mood==='sick'){ctx.fillStyle='#639922';ctx.font='800 8px Nunito,sans-serif';ctx.fillText('~',x+9,y-6);}}
 function person(x,y,o){const z=Z();const [sx,sy]=iso(x,y);const bob=(o.busy||o.walking)?Math.sin(perf/90+o.bob)*1.5:0;ctx.save();ctx.translate(sx,sy);ctx.scale(z,z);
-  ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(0,0,9,4,0,0,Math.PI*2);ctx.fill();const by=-6+bob;const slump=o.mood==='sad'||o.mood==='sick'?2:0;
+  ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(0,0,9,4,0,0,Math.PI*2);ctx.fill();const by=-6+bob;
+  if(o.role){const rc=ROLE_COL[o.role];const k=Math.max(1,.9/z);ctx.strokeStyle=rc;ctx.lineWidth=3*k;ctx.beginPath();ctx.ellipse(0,0,14*k,7*k,0,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,14*k+2,7*k+1.5,0,0,Math.PI*2);ctx.stroke();}const slump=o.mood==='sad'||o.mood==='sick'?2:0;
   ctx.fillStyle='#3b3a44';ctx.fillRect(-5,by-10,4,10);ctx.fillRect(1,by-10,4,10);ctx.fillStyle=o.coat||o.shirt;rr(-7,by-28+slump,14,19-slump,4);if(o.coat){ctx.fillStyle=o.shirt;ctx.fillRect(-2,by-27+slump,4,8);}
   if(o.mood==='angry'||o.mood==='annoyed'){ctx.fillStyle=o.skin;ctx.fillRect(-9,by-20,18,3);}
   ctx.fillStyle=o.skin;ctx.beginPath();ctx.arc(0,by-34+slump,7,0,Math.PI*2);ctx.fill();ctx.fillStyle=o.hair||'#3a2a1e';ctx.beginPath();ctx.arc(0,by-36+slump,7,Math.PI,0);ctx.fill();
   if(o.cane){ctx.strokeStyle='#6b4630';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(9,by-20);ctx.lineTo(10,by);ctx.stroke();}
   if(o.sick&&Math.floor(perf/700)%3===0){ctx.fillStyle='rgba(99,153,34,.5)';ctx.font='800 9px Nunito,sans-serif';ctx.textAlign='center';ctx.fillText('*cough*',12,by-30);}
   if(o.carry)for(let i=0;i<(o.carryN||1);i++)basket(11,by-14-i*4,o.carry);
-  if(o.tag){ctx.font='700 9px Nunito,sans-serif';ctx.textAlign='center';ctx.fillStyle='rgba(20,30,25,.8)';ctx.fillText(o.tag,0,13);}
+  if(o.tag){const k=Math.max(1,.9/z);const txt=o.role?`${ROLE_SHORT[o.role]} · ${o.tag}`:o.tag;ctx.save();ctx.scale(k,k);ctx.font='800 8.5px Nunito,sans-serif';ctx.textAlign='center';const wd=ctx.measureText(txt).width+10;const ty=o.role?(by-62+slump)/k:10;ctx.fillStyle=o.role?ROLE_COL[o.role]:'rgba(20,30,25,.8)';rr(-wd/2,ty-9,wd,13,4);if(o.role){ctx.beginPath();ctx.moveTo(-3,ty+4);ctx.lineTo(0,ty+8);ctx.lineTo(3,ty+4);ctx.fill();}ctx.fillStyle=o.role?'#0d2a21':'#fff';ctx.fillText(txt,0,ty+1);ctx.restore();}
   if(o.prog!==undefined){ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.arc(0,by-50,7,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#1d9e75';ctx.beginPath();ctx.arc(0,by-50,7,-Math.PI/2,-Math.PI/2+Math.PI*2*o.prog);ctx.stroke();}
   if(o.mood&&o.mood!=='content')face(0,by-58,o.mood);
   ctx.restore();}
@@ -708,7 +737,9 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
   else if(t==='plant'){box(o.x+.2,o.y+.2,.6,.6,.5,'#b8a888');const [sx,sy]=iso(o.x+.5,o.y+.5);ctx.fillStyle='#3b6d11';for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(sx+Math.cos(i*1.3)*7*z,sy-26*z+Math.sin(i*1.3)*5*z,8*z,5*z,i,0,Math.PI*2);ctx.fill();}}
   if(grow<1)ctx.restore();
   if(S.sel===o.id){ctx.lineWidth=2*z;poly([iso(o.x-.1,o.y-.1),iso(o.x+w+.1,o.y-.1),iso(o.x+w+.1,o.y+d+.1),iso(o.x-.1,o.y+d+.1)],null,'#1d9e75');const f=facing(o);const a=iso(cx,cy),b=iso(cx+f[0]*(w/2+.6),cy+f[1]*(d/2+.6));ctx.strokeStyle='#1d9e75';ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.fillStyle='#1d9e75';ctx.beginPath();ctx.arc(b[0],b[1],4*z,0,Math.PI*2);ctx.fill();}}
-let hover=null;
+let hover=null,justPlaced=null;
+function chip(wx,wy,text,bg,fg){const z=Math.max(Z(),.85);const [sx,sy]=iso(wx,wy);ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';const wd=ctx.measureText(text).width+12*z;ctx.fillStyle=bg;rr(sx-wd/2,sy-7*z,wd,14*z,4*z);ctx.fillStyle=fg;ctx.fillText(text,sx,sy+3.5*z);}
+function sideLabels(o){const T=TYPES[o.type];if(!T.sides)return;const st=staffTile(o),pt=patientTile(o);if(st&&inb(st[0],st[1])){flat(st[0],st[1],1,1,'rgba(93,140,214,.35)');chip(st[0]+.5,st[1]+.5,'STAFF','rgba(93,140,214,.95)','#fff');}if(pt&&inb(pt[0],pt[1])){flat(pt[0],pt[1],1,1,'rgba(239,159,39,.35)');chip(pt[0]+.5,pt[1]+.5,'CUSTOMERS','rgba(239,159,39,.95)','#2a1a00');}}
 function drawScene(){
   ctx.clearRect(0,0,VW,VH);const z=Z();
   for(let x=0;x<W;x++)for(let y=0;y<D;y++){const shop=reach.has(x+','+y);flat(x,y,1,1,shop?((x+y)%2?'#eadcc4':'#e4d5bb'):((x+y)%2?'#dfe6ee':'#d3dce6'));}
@@ -717,15 +748,16 @@ function drawScene(){
   if(dv[0]<1){const g=Math.floor(dv[1]);wallSeg(0,0,0,g,'#bdd6cc');wallSeg(0,g+1,0,VDd,'#bdd6cc');}else wallSeg(0,0,0,VDd,'#bdd6cc');
   /* door on the east edge */flat(DOOR.x,DOOR.y,1,1,'#b8a888');const dA=iso(W,DOOR.y),dB=iso(W,DOOR.y+1);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=3*z;ctx.beginPath();ctx.moveTo(dA[0],dA[1]);ctx.lineTo(dA[0],dA[1]-50*z);ctx.moveTo(dB[0],dB[1]);ctx.lineTo(dB[0],dB[1]-50*z);ctx.stroke();label(DOOR.x+.5,DOOR.y+1.6,'ENTRANCE','rgba(107,74,30,.6)',8);
   let ghost=null;const gpos=tool==='move'?(held?(ghostAt||hover):null):hover;
-  if(buildOn&&tool&&tool!=='erase'&&gpos){const ty=tool==='move'?held.o.type:tool;const T=TYPES[ty];let gx=gpos[0];if(((rot&1)?T.d:T.w)>1&&gx===W-1)gx--;const o={type:ty,x:gx,y:gpos[1],rot,id:'ghost',level:held?held.o.level:0};const ok=!canPlace(ty,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');const st=staffTile(o),pt=patientTile(o);if(st&&inb(st[0],st[1]))flat(st[0],st[1],1,1,'rgba(43,74,107,.25)');if(pt&&inb(pt[0],pt[1]))flat(pt[0],pt[1],1,1,'rgba(107,74,30,.25)');ghost={o,ok};}
+  if(buildOn&&tool&&tool!=='erase'&&gpos){const ty=tool==='move'?held.o.type:tool;const T=TYPES[ty];let gx=gpos[0];if(((rot&1)?T.d:T.w)>1&&gx===W-1)gx--;const o={type:ty,x:gx,y:gpos[1],rot,id:'ghost',level:held?held.o.level:0};const ok=!canPlace(ty,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');ghost={o,ok};}
   if(buildOn){for(let x=0;x<W;x++)for(let y=0;y<D;y++){if(grid[y][x].o)continue;const [sx,sy]=iso(x+.5,y+.5);ctx.fillStyle='rgba(0,0,0,.08)';ctx.beginPath();ctx.arc(sx,sy,1.2*z,0,Math.PI*2);ctx.fill();}}
   const items=[];
   for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;items.push({d:Math.max(...footprint(o).map(([x,y])=>depth(x+.5,y+.5))),f:()=>drawObj(o)});}
   for(const w of S.staff){if(w.off||w.x>=W+1)continue;const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
-    items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{shirt:w.isYou?'#378add':w.role==='tech'?'#1d9e75':w.role==='rph'?'#7f77dd':'#888780',coat:w.role==='rph'?'#f4f4f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket'):null,carryN:w.carry.length,prog})});}
+    items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{role:w.role,shirt:w.isYou?'#378add':w.role==='tech'?'#1d9e75':w.role==='rph'?'#7f77dd':'#888780',coat:w.role==='rph'?'#f4f4f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket'):null,carryN:w.carry.length,prog})});}
   for(const p of S.patients){if(p.state==='pending')continue;const m=moodOf(p);items.push({d:depth(p.x,p.y),f:()=>person(p.x,p.y,{shirt:p.shirt,skin:p.skin,walking:p.walking,bob:p.bob,mood:m,cane:p.elderly,sick:p.sick,hair:p.elderly?'#cfcfcf':'#3a2a1e'})});}
   items.sort((a,b)=>a.d-b.d);for(const it of items)it.f();
-  if(ghost){ctx.save();ctx.globalAlpha=.55;drawObj(ghost.o);ctx.restore();const f=facing(ghost.o),[fw,fd]=dims(ghost.o);const c=[ghost.o.x+fw/2,ghost.o.y+fd/2];const a=iso(c[0],c[1]),b=iso(c[0]+f[0]*1.1,c[1]+f[1]*1.1);ctx.strokeStyle=ghost.ok?'#1d9e75':'#e24b4a';ctx.lineWidth=2.5*z;ctx.beginPath();ctx.moveTo(a[0],a[1]-6*z);ctx.lineTo(b[0],b[1]-6*z);ctx.stroke();ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(b[0],b[1]-6*z,4*z,0,Math.PI*2);ctx.fill();}
+  const selO=S.sel&&S.objs.find(x=>x.id===S.sel);if(selO)sideLabels(selO);if(justPlaced&&performance.now()-justPlaced.t<2200){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo)sideLabels(jo);}
+  if(ghost){ctx.save();ctx.globalAlpha=.55;drawObj(ghost.o);ctx.restore();sideLabels(ghost.o);const f=facing(ghost.o),[fw,fd]=dims(ghost.o);const c=[ghost.o.x+fw/2,ghost.o.y+fd/2];const a=iso(c[0],c[1]),b=iso(c[0]+f[0]*1.1,c[1]+f[1]*1.1);ctx.strokeStyle=ghost.ok?'#1d9e75':'#e24b4a';ctx.lineWidth=2.5*z;ctx.beginPath();ctx.moveTo(a[0],a[1]-6*z);ctx.lineTo(b[0],b[1]-6*z);ctx.stroke();ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(b[0],b[1]-6*z,4*z,0,Math.PI*2);ctx.fill();}
   for(const f of S.fx){const [sx,sy]=iso(f.x,f.y);ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.globalAlpha=Math.max(0,1-f.t/1.6);ctx.fillStyle=f.kind==='cash'?'#1d9e75':f.kind==='bad'?'#e24b4a':'#ba7517';ctx.fillText(f.text,sx,sy-(40+f.t*22)*z);ctx.globalAlpha=1;}
   if(!S.running){ctx.fillStyle='rgba(20,30,40,.18)';ctx.fillRect(0,0,VW,VH);}}
 
@@ -819,7 +851,7 @@ function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
   if(saved){for(const o of S.objs)o.t0=0;for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(pick(NAMES),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
 })();

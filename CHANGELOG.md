@@ -1,5 +1,13 @@
 # Changelog
 
+## v13 — 2026-10-24 — HUD & Manage pass
+- **Goal first.** Intro and every week card open with three progress bars (Cash / $30k, Loan left, Trust / 60) and one line on how you win or lose; the week's facts are four labelled items instead of prose. A thin goal strip sits in the top bar.
+- **Top bar** stats carry small labels (Cash, Insurers owe, This week, Runway, Trust); clock and speed moved to a pill at bottom-right with three large ⏸ ▶ ▶▶ buttons. "This week"/"Runway" hide on narrow screens.
+- **Staff vs customers.** Workers get a role-coloured ring at their feet and a role chip above the head (PHARMACIST · You, TECH · Nia, CLERK · Rosa), drawn at screen size so they stay readable at any zoom. Customers keep their mood faces. Hires get unused names.
+- **Facing made visible.** Placing, moving or selecting a station shows a blue STAFF tile and an orange CUSTOMERS tile; the labels linger two seconds after placing.
+- **Office → Manage.** A drawer over the right side of the live floor (no pause) with an icon rail: Money, Insurers, Claims (badge), Shifts, Stock, Prices. Insurers are toggle cards with four numbers; claims are one row each with Appeal / Cash / Drop; Money uses number tiles with sparklines and colour-coded station load. The camera nudges left while it's open.
+- Chat names idle staff instead of counting them. Build mode gives the floor a bit more height.
+
 ## v12.7 — 2026-10-24
 - Version label on the title screen now changes with every release (was stuck at "v12").
 - Title screen checks the server for a newer build and shows **Update to … · tap to reload** when the phone is running a stale copy. The save is written before reloading.
