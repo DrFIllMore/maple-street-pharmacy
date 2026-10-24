@@ -1,5 +1,9 @@
 # Changelog
 
+## v13.3 — 2026-10-24
+- Handwriting font removed; everything is back to Nunito for legibility.
+- Panels, week cards and the item card use a prescription-pad template: ℞ header with the pharmacy name and week/day, a green pad edge, and a "Pharmacist · You · RPh" signature line at the foot.
+
 ## v13.2 — 2026-10-24
 - Manage is gone as a single screen. Each section is its own icon button in a strip above the clock: Build · Money · Insurers · Claims (badge) · Shifts · Stock · Prices. Tapping one opens a small panel; tapping it again closes it.
 - Money is three lines: cash now, coming in by Saturday, Saturday bills → Saturday night, with the verdict and the loan buttons. What insurers owe moved to Insurers; "where people wait" moved to Shifts.

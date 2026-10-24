@@ -11,13 +11,13 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231d9e75'/%3E%3Crect x='78' y='40' width='24' height='100' rx='6' fill='%23fff'/%3E%3Crect x='40' y='78' width='100' height='24' rx='6' fill='%23fff'/%3E%3C/svg%3E">
 <style>html,body{height:100%;margin:0;background:#141a16}</style>
 <title>Maple Street Pharmacy</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&family=Caveat:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 /* Layout: the floor is ~90% of the screen. One thin status bar on top, one ticker line at the bottom. Every size is a token the Layout panel can change. */
 :root{
   --bg:#cfdad0; --panel-rgb:255,253,247; --panel-solid:#fffdf7; --ink:#243028; --ink-2:#66736b; --line:#c9d3ca;
   --accent:#1d9e75; --accent-ink:#085041; --accent-soft:#e1f5ee; --owed:#ba7517; --bad:#a32d2d; --bad-soft:#fcebeb; --good:#3b6d11;
-  --sans:"Nunito",system-ui,sans-serif; --hand:"Caveat","Nunito",cursive; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"Nunito",system-ui,sans-serif; --hand:"Nunito",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
   --k:1; --barL:87px; --barR:39px; --barY:3px; --barH:41px; --barF:11px; --chatX:85px; --chatY:8px; --chatW:362px; --chatH:108px; --chatF:10px; --sheetW:360px; --sheetF:13px; --rowH:44px; --revW:560px; --revF:13px; --hudA:.9; --glR:87px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -136,18 +136,20 @@ button,.hud{touch-action:manipulation}
 .palette .pb{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;flex:none}
 .camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;font-weight:800;line-height:1;z-index:6;color:var(--ink)}
 .palette .pb.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.paper{--ink:#2a2620;--ink-2:#6b645a;--line:#d9ccb0;--panel-solid:#fffaf0;--panel-rgb:255,250,240;--accent-soft:#e3f1e9;--accent-ink:#0b5c47;color:#2a2620;background:#f6eedc radial-gradient(circle at 20% 0,#fff9ea,transparent 60%)}
+.rxhead{display:flex;align-items:center;gap:8px;border-bottom:2px solid #2a2620;padding:0 0 5px;margin-bottom:2px;font-size:.78em;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#2a2620}.rxhead .rx{font-family:Georgia,'Times New Roman',serif;font-size:1.9em;line-height:1;letter-spacing:0;text-transform:none;font-weight:700;color:#0b5c47}.rxhead .dt{margin-left:auto;font-family:var(--mono);font-weight:500;letter-spacing:0;text-transform:none;color:#6b645a}
+.rxfoot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;border-top:1px solid #c9b58d;padding-top:5px;margin-top:4px;font-size:.72em;color:#6b645a;font-weight:700;letter-spacing:.04em;text-transform:uppercase}.rxfoot .sig{flex:1;border-bottom:1px solid #2a2620;height:16px;font-family:Georgia,serif;font-style:italic;font-size:1.4em;text-transform:none;letter-spacing:0;color:#2a2620;font-weight:400;line-height:1;padding-left:8px}
+.paper{--ink:#2a2620;--ink-2:#6b645a;--line:#d9ccb0;--panel-solid:#fffaf0;--panel-rgb:255,250,240;--accent-soft:#e3f1e9;--accent-ink:#0b5c47;color:#2a2620;background:#fbf6ea;border-left:6px solid #0b5c47!important}
 .drawer{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);bottom:calc(112px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));width:min(44%,400px);display:flex;border:1px solid #c9b58d;border-radius:12px;overflow:hidden;z-index:9;font-size:var(--sheetF);box-shadow:0 10px 30px rgba(0,0,0,.35)}
-.drawer h2,.rev h2,.rev h2 small,.drawer .foot,.rev .sub,.verdict{font-family:var(--hand)}.drawer h2{font-size:1.6em;font-weight:700}.drawer h2 small{font-size:.6em}.drawer .foot{font-size:1.05em;line-height:1.3}
-.rev h2{font-size:1.9em}.rev h2 small{font-size:.5em}.rev .sub{font-size:1.15em;line-height:1.3}
-.verdict{font-size:1.05em;color:var(--ink-2)}.verdict.bad{color:var(--bad)}.verdict.good{color:var(--accent-ink)}
+.drawer h2{font-size:1.15em;font-weight:800}.drawer h2 small{font-size:.72em;font-weight:700}.drawer .foot{font-size:.85em;line-height:1.35;font-weight:600}
+.rev h2{font-size:1.45em}.rev h2 small{font-size:.6em}.rev .sub{font-size:.95em;line-height:1.4;font-weight:600}
+.verdict{font-size:.9em;color:var(--ink-2);font-weight:700}.verdict.bad{color:var(--bad)}.verdict.good{color:var(--accent-ink)}
 .pay{display:grid;gap:4px;font-size:.95em}.pay div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px dashed var(--line)}.pay div:last-child{border:0}.pay b{font-family:var(--mono)}.pay .tot{font-weight:800;font-size:1.1em;border-top:2px solid var(--ink);margin-top:2px;padding-top:5px}
 .stamp{display:inline-block;transform:rotate(-4deg);border:2px solid currentColor;border-radius:4px;padding:0 6px;font-size:.75em;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
 .drawer .rail{width:calc(64px*var(--k));border-right:1px solid #c9b58d;position:relative;display:flex;flex-direction:column;padding:4px;gap:2px;flex:none}
 .drawer .rail button{height:calc(42px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72em;color:var(--ink-2);position:relative;gap:1px}.drawer .rail button span{font-size:1.5em}.drawer .rail button.on{background:var(--accent-soft);color:var(--accent-ink)}.drawer .rail button i{position:absolute;top:3px;right:8px;background:var(--bad);color:#fff;font-style:normal;font-size:.75em;border-radius:8px;padding:0 4px;font-weight:800}
 .drawer .obody{flex:1;min-width:0;padding:8px 36px 8px 12px;overflow:auto;display:grid;gap:6px;align-content:start}
 .drawer h2{margin:0;font-size:1.15em;display:flex;justify-content:space-between;align-items:baseline;gap:8px}.drawer h2 small{font-size:.72em;color:var(--ink-2);font-weight:700}
-.drawer .x{position:absolute;right:6px;top:6px;width:28px;height:28px;border-radius:50%;background:var(--panel-solid);border:1px solid var(--line);font-size:16px}
+.drawer .x,.sheet .x{position:absolute;right:6px;top:6px;width:28px;height:28px;border-radius:50%;background:var(--panel-solid);border:1px solid var(--line);font-size:16px}
 .drawer .foot{font-size:.82em;color:var(--ink-2);font-weight:600;line-height:1.35}
 .ins{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center;background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:7px 10px}.ins .nm{grid-column:2;font-weight:800}.ins .m{grid-column:2;display:flex;gap:10px;flex-wrap:wrap;font-size:.8em;color:var(--ink-2);font-weight:600}.ins .m b{font-family:var(--mono);color:var(--ink)}
 .sw{grid-row:1/3;width:40px;height:22px;border-radius:11px;background:var(--line);position:relative;flex:none}.sw::after{content:'';position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}.sw.on{background:var(--accent)}.sw.on::after{left:20px}
@@ -198,7 +200,7 @@ button,.hud{touch-action:manipulation}
     <div class="row"><div class="items" id="palItems"></div></div>
     <div class="row"><span class="hint" id="palHint">Pick something to build, then tap the floor.</span><button class="pb" id="palRot">↻</button><button class="pb primary" id="palDone">Ready to open?</button></div>
   </div>
-  <div class="hud sheet" id="sheet" hidden></div>
+  <div class="hud sheet paper" id="sheet" hidden></div>
   <div class="hud drawer paper" id="office" hidden><div class="obody" id="off"></div><button class="x" id="offClose" aria-label="Close">×</button></div>
   <div class="title" id="title" hidden>
     <div class="logo"><i></i></div>
@@ -220,7 +222,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v13.2 · 2026-10-24';
+const BUILD='v13.3 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -500,7 +502,8 @@ let adv='';
 function pickCard(){const ok=CARDS.filter(c=>c.when()&&!S.seen.slice(-3).includes(c.id));if(!ok.length)return null;const c=pick(ok);S.seen.push(c.id);return c.id;}
 
 /* ============ pages: title, opening checklist, review ============ */
-function page(html){$('rev').innerHTML=html;$('review').hidden=false;}
+const rxHead=()=>`<div class="rxhead"><span class="rx">℞</span><span>Maple Street Pharmacy</span><span class="dt">Wk ${S.week}${S.running?' · '+DAYS[S.day].slice(0,3):''}</span></div>`;const rxFoot=(l)=>`<div class="rxfoot"><span>${l||'Pharmacist'}</span><span class="sig">You</span><span>RPh</span></div>`;
+function page(html){$('rev').innerHTML=rxHead()+html+rxFoot();$('review').hidden=false;}
 function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const Wd=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*Wd,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
   return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${Wd}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;}
 function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)));if(amt<=0)return;S.cash-=amt;S.loan-=amt;glog('money',`Paid ${fmt(amt)} toward the loan. ${fmt(S.loan)} left.`);SFX.cash&&SFX.cash();saveGame();}
@@ -557,7 +560,7 @@ function startMove(id){closeSheet();if(!buildOn)setBuild(true);const err=pickUp(
 function toast(t){glog('ops',t);}
 
 /* ============ sheets ============ */
-function sheet(html){const el=$('sheet');el.innerHTML=html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
+function sheet(html){const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
 function closeSheet(){$('sheet').hidden=true;S.sel=null;}
 function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;if(!$('office').hidden)closeOffice();}
 function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o.type];const who=S.staff.find(w=>busyS[o.id]===w.id);
@@ -609,7 +612,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;body=`<h2>Stock</h2><div class="grid3"><div class="tile"><small>On hand</small><b>${S.stock}</b><div class="n">~${daysLeft} days</div></div><div class="tile"><small>Next order · Mon</small><b>${S.orderQty}</b><div class="n">${fmt(S.orderQty*S.unitCost*(S.mods.cheap?.9:1))}</div></div><div class="tile"><small>Sent away empty</small><b class="${S.wk.backorder?'neg':''}">${S.wk.backorder||0}</b><div class="n">this week</div></div></div>
       <div class="lever"><div><div class="n">Weekly order</div><div class="h">Paid on delivery. Short = stockouts; long = cash tied up.</div></div><div class="seg"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>`;}
   if(officeTab==='pricing'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
-  el.innerHTML=body;
+  el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Contracts',claims:'Claims',schedule:'Roster',inventory:'Inventory',pricing:'Price list'}[officeTab]);
   el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{payLoan(b.dataset.pay==='all'?S.loan:+b.dataset.pay);renderOffice();renderHud();});
   el.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>{const k=b.dataset.plan;S.plans[k]=!S.plans[k];glog('event',`${PLANS[k].name}: ${S.plans[k]?'accepted':'dropped'}.`);SFX.click();renderOffice();});
   el.querySelectorAll('[data-cl]').forEach(b=>b.onclick=()=>{const sc=S.scripts.find(x=>x.id===+b.dataset.cl);const a=b.dataset.a;if(!sc){closeClaim(+b.dataset.cl,'written off');renderOffice();return;}
