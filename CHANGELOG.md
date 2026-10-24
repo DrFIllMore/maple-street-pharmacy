@@ -1,5 +1,8 @@
 # Changelog
 
+## v17.4 — 2026-10-24
+- Meeting chat is four lines: first name, then the single recommendation. Titles live on the tiles only; the explanatory paragraph is gone from the call (it remains in the Inbox emails).
+
 ## v17.3 — 2026-10-24 — Fourth advisor
 - **Jordan Okafor, case manager (patient care)** joins the weekly call in place of your own tile. Reads walk-outs (especially older patients), trust movement, consults and privacy, delivery, loyalty and vaccine stock; recommends the promotions and care actions that lift satisfaction — chairs, loyalty cards, walling in the consult desk, saying yes to delivery, keeping doses stocked, a social push.
 - Call layout tightened for four messages; Inbox panel shows four emails.
