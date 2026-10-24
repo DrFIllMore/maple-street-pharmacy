@@ -1,5 +1,9 @@
 # Changelog
 
+## v12.5 — 2026-10-24
+- Items now visibly rotate: the customer-facing strip, trays, terminals, chair backs and shelf runs follow the facing, and a selected item shows an arrow for its front.
+- Item card order is Move · Rotate · Upgrade · Sell ("Sell" replaces "Remove" everywhere).
+
 ## v12.4 — 2026-10-24
 - Wording: the facing button is now **Rotate · south/east/north/west**; the item card's action is **Rotate**; the camera button reads **⟳ View**.
 - Camera no longer jumps while placing: the view only re-fits on an explicit action (rotate view, opening/closing Build when you haven't panned). Safari's toolbar show/hide and other small viewport changes keep your pan and zoom. Tap-vs-drag threshold raised to 12px so a tap with a slightly moving finger doesn't pan.
