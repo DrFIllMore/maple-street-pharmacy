@@ -1,5 +1,8 @@
 # Changelog
 
+## v17.8 — 2026-10-24
+- Fix: saves made before the v13.1 economy rebalance kept the old insurer rates ($38/$30/$26) because rates are stored with the save. Such saves now load with the current rates ($52/$44/$38). Saves whose rates were changed by an in-game event (BlueLeaf cut) are preserved.
+
 ## v17.7 — 2026-10-24
 - Fix: on phone-sized forced-landscape screens (e.g. 852×393) the proposal cards grew wider than their columns and overlapped each other — the line-clamped text blocks were forcing the card's minimum width. Cards now clip to their column; From lines wrap to two lines instead of truncating; "To" drops the redundant week. Feed photo trimmed so the feed slip also fits that screen. Added the iPhone 15 Pro viewport to the layout test.
 

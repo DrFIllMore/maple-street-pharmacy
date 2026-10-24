@@ -270,7 +270,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v17.7 · 2026-10-24';
+const BUILD='v17.8 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1146,7 +1146,7 @@ setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();}
 
 /* ============ save / title / start ============ */
 function saveGame(){let objs=S.objs;if(held&&!S.objs.includes(held.o))objs=[...S.objs,{...held.o,x:held.ox,y:held.oy,rot:held.orot}];try{localStorage.setItem('msp-save',JSON.stringify({S:{...S,objs},GL:GL.slice(-120),PLANS}));}catch(e){}}
-function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){GL.push(...(d.GL||[]));if(d.PLANS)for(const k in d.PLANS)Object.assign(PLANS[k],d.PLANS[k]);return d.S;}}catch(e){}return null;}
+function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){GL.push(...(d.GL||[]));if(d.PLANS&&d.PLANS.quick&&d.PLANS.quick.rate>=38){for(const k in d.PLANS)Object.assign(PLANS[k],d.PLANS[k]);}/* saves from the old economy (quick $26) keep the current rates instead */return d.S;}}catch(e){}return null;}
 function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
   $('tSound').onclick=()=>{setSound(!AU.on);$('tSound').textContent='Sound: '+(AU.on?'on':'off');$('mSound').textContent='Sound: '+(AU.on?'on':'off');audioInit();};
   const go=(fresh_)=>{audioInit();setMusic('title');duck();SFX.bell();$('title').hidden=true;$('app').classList.remove('titled');
