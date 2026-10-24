@@ -1,5 +1,17 @@
 # Changelog
 
+## v15 — 2026-10-24 — Floor detail & polish pass
+- **Prescriptions look like prescriptions:** wire baskets carry an amber pill vial, a blue liquid bottle or a cream tube; finished bags are white paper with an ℞ label; the fill station shows a counting tray with pills and vials. Each script has a form (pills / liquid / cream).
+- **Tap people:** tapping a customer shows their mood face, what they're doing and how long ("in line to drop off · 25 min"), and a line of what they're thinking. Tapping a worker shows energy, mood, wage and current task, with **Day off tomorrow**, **Shifts** and **Let go**.
+- **Energy on the floor:** a small green→red bar under every worker's name chip.
+- **Taps at high speed:** the speed buttons and open panels are no longer rebuilt while a finger is down (they were being replaced mid-tap, which ate the click); panels refresh every 8 ticks instead of 3.
+- **Strip** is a two-row grid, half as wide.
+- **Weekly results are a newspaper:** *The Maple Street Gazette* — masthead, dateline, an auto-written headline and lead, and three columns (By the numbers · Money · Around town) plus a classified-style tip.
+- **Build palette shows a picture** of each item, rendered from the game's own art.
+- **Staff** panel: roster grouped by Pharmacists / Technicians / Clerks with energy bar, mood and wage; hire buttons; then shifts; then where people wait. The old pop-up staff list is gone.
+- **Item card** shows use (BUSY 44% / OVERUSED · build another / IDLE), load (4 / 4) and money earned this week; the close button no longer overlaps the header.
+- **Landscape always:** the forced-landscape toggle is removed; the game also asks the browser to lock landscape when it can.
+
 ## v14.1 — 2026-10-24 — Promote, Flow, contracts
 - **Feed** posts open with a bold takeaway in red or green ("5 walked out at drop-off", "17 calls missed", "Five-star visit") and a **Fix:** / **Keep it up:** line, so a week's feed scans in seconds.
 - **Promote** panel: Flyers ($300, +10% a week), Local paper ad ($900, +15% for two weeks, +1 trust), Social push ($500, +8% and easier to go viral), Price-match week ($700, takes the chain's customers back), Loyalty cards ($400 once: people wait longer, buy more OTC). From week 3 a chain pharmacy opens across the street and takes 12% of walk-ins, creeping up each week unless you advertise; the panel shows its current bite.
