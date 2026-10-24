@@ -274,7 +274,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20.4 · 2026-10-24';
+const BUILD='v20.5 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -847,12 +847,14 @@ function toast(t){glog('ops',t);}
 function sheet(html){const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
 function closeSheet(){$('sheet').hidden=true;S.sel=null;}
 function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;if(!$('office').hidden)closeOffice();}
+function loadOf(o){const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.id).length:o.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+o.id||x.at==='claim:'+o.id).length:o.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+o.id).length:o.type==='bin'?S.scripts.filter(x=>x.at==='bin:'+o.id).length:['dropoff','register'].includes(o.type)?S.patients.filter(p=>p.q===o.id&&(p.state==='queued'||p.state==='toQueue')).length:0;
+  const cap=o.type==='fill'?3:o.type==='verify'?4:o.type==='shelf'?16:o.type==='bin'?8:['dropoff','register'].includes(o.type)?4:o.type==='chair'?1:null;return {n,cap};}
 function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o.type];const who=S.staff.find(w=>busyS[o.id]===w.id);
-  const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.id).length:o.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+o.id||x.at==='claim:'+o.id).length:o.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+o.id).length:o.type==='bin'?S.scripts.filter(x=>x.at==='bin:'+o.id).length:['dropoff','register'].includes(o.type)?S.patients.filter(p=>p.q===o.id&&p.state!=='leaving').length:0;
+  const {n}=loadOf(o);
   const status=who?`${who.name} is ${who.plan&&who.plan.steps[who.step]&&who.plan.steps[who.step].label||'working'} here`:n?`${n} waiting`:'idle';
   const lvl=T.levels?T.levels[o.level]:null,nxt=T.levels?T.levels[o.level+1]:null;const priv=o.type==='consult'?(enclosed(o)?'Private room ✓':'Not private yet — build walls on the grey tiles and a door on the orange one.'):'';
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
-  const live=o.tt>20?(o.bt||0)/o.tt:null;const util=o.util!==undefined?o.util:live;const cap=o.type==='fill'?3:o.type==='verify'?4:o.type==='shelf'?16:o.type==='bin'?8:['dropoff','register'].includes(o.type)?4:o.type==='chair'?1:null;
+  const live=o.tt>20?(o.bt||0)/o.tt:null;const util=o.util!==undefined?o.util:live;const {cap}=loadOf(o);
   const ustat=util===null||util===undefined?'':util>=.85?`<span class="ustat bad">OVERUSED ${Math.round(util*100)}% · build another</span>`:util<.2?`<span class="ustat warn">IDLE ${Math.round(util*100)}%</span>`:`<span class="ustat ok">BUSY ${Math.round(util*100)}%</span>`;
   const stats=(T.sides||T.levels||o.type==='bin'||o.type==='shelf'||o.type==='chair'||o.type==='otc')?`<div class="kv"><div><span>Use</span>${ustat||'<b>no data yet</b>'}${o.util!==undefined?' <small class="sub">yesterday</small>':live!==null?' <small class="sub">today</small>':''}</div>${cap?`<div><span>Load</span><span class="ebar"><i style="width:${Math.min(100,Math.round(n/cap*100))}%;background:${n/cap>=.85?'var(--bad)':'var(--good)'}"></i></span><b>${n} / ${cap}</b></div>`:''}${staffingNote(o)}${o.earn||['register','consult','otc'].includes(o.type)?`<div><span>Earned</span><b>${fmt(o.earn||0)}</b> <small class="sub">this week</small></div>`:''}</div>`:'';
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}.${priv?' '+priv:''}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p>${stats}<div class="acts">
@@ -1087,6 +1089,7 @@ function person(x,y,o){const z=Z();const [sx,sy]=iso(x,y);const bob=(o.busy||o.w
   if(o.tag){const k=Math.max(1,.9/z);const txt=o.role?`${ROLE_SHORT[o.role]} · ${o.tag}`:o.tag;ctx.save();ctx.scale(k,k);ctx.font='800 8.5px Nunito,sans-serif';ctx.textAlign='center';const wd=ctx.measureText(txt).width+10;const ty=o.role?(by-62+slump)/k:10;ctx.fillStyle=o.role?ROLE_COL[o.role]:'rgba(20,30,25,.8)';rr(-wd/2,ty-9,wd,13,4);if(o.role){ctx.beginPath();ctx.moveTo(-3,ty+4);ctx.lineTo(0,ty+8);ctx.lineTo(3,ty+4);ctx.fill();const e=1-(o.fatigue||0)/6;ctx.fillStyle='rgba(0,0,0,.35)';rr(-12,ty-13,24,3.5,1.5);ctx.fillStyle=e>.5?'#5dcaa5':e>.25?'#ef9f27':'#e24b4a';rr(-12,ty-13,24*e,3.5,1.5);}ctx.fillStyle=o.role==='tech'?'#fff':o.role?'#0d2a21':'#fff';ctx.fillText(txt,0,ty+1);ctx.restore();}
   if(o.prog!==undefined){ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.arc(0,by-50,7,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#1d9e75';ctx.beginPath();ctx.arc(0,by-50,7,-Math.PI/2,-Math.PI/2+Math.PI*2*o.prog);ctx.stroke();}
   if(o.mood&&o.mood!=='content')face(0,by-58,o.mood);
+  if(o.cue){const k=Math.max(1,.9/z);ctx.save();ctx.scale(k,k);thought(14,(by-78+slump)/k,o.cue==='wait'?'⏳ waiting':'z z',o.cue==='wait'?'#ba7517':null);ctx.restore();}
   ctx.restore();}
 const PILLS=['#e24b4a','#378add','#ef9f27','#1d9e75','#7f77dd','#d4537e'];
 function tint(x,y,w,d,n){if(n<3)return;const a=.18+.1*Math.sin(perf/250);poly([iso(x-.3,y-.3),iso(x+w+.3,y-.3),iso(x+w+.3,y+d+.3),iso(x-.3,y+d+.3)],(n>=6?'rgba(226,75,74,':'rgba(239,159,39,')+a+')');}
@@ -1146,6 +1149,11 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
   if(grow<1)ctx.restore();
   if(S.sel===o.id){ctx.lineWidth=2*z;poly([iso(o.x-.1,o.y-.1),iso(o.x+w+.1,o.y-.1),iso(o.x+w+.1,o.y+d+.1),iso(o.x-.1,o.y+d+.1)],null,'#1d9e75');const f=facing(o);const a=iso(cx,cy),b=iso(cx+f[0]*(w/2+.6),cy+f[1]*(d/2+.6));ctx.strokeStyle='#1d9e75';ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.fillStyle='#1d9e75';ctx.beginPath();ctx.arc(b[0],b[1],4*z,0,Math.PI*2);ctx.fill();}}
 let hover=null,justPlaced=null;
+function floorCues(){/* on-floor status: jammed / idle stations */const z=Z();const pulse=.75+.25*Math.sin(perf/220);
+  for(const o of S.objs){if(!STATION_ROLE[o.type]&&o.type!=='bin'&&o.type!=='shelf')continue;const {n,cap}=loadOf(o);const [w,d]=dims(o);const cx=o.x+w/2,cy=o.y+d/2;
+    if(cap&&n/cap>=.85){/* overloaded: red pulsing ring + badge */ctx.save();ctx.globalAlpha=pulse;poly([iso(o.x-.25,o.y-.25),iso(o.x+w+.25,o.y-.25),iso(o.x+w+.25,o.y+d+.25),iso(o.x-.25,o.y+d+.25)],null,'#e24b4a');ctx.lineWidth=2.5*z;ctx.stroke();ctx.restore();const [sx,sy]=iso(cx,cy);const r=9*Math.max(z,.8);ctx.fillStyle='#e24b4a';ctx.beginPath();ctx.arc(sx,sy-92*z,r,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.font=`900 ${11*Math.max(z,.8)}px Nunito,sans-serif`;ctx.textAlign="center";ctx.fillText("!",sx,sy-92*z+4*Math.max(z,.8));}
+    else if(STATION_ROLE[o.type]&&o.tt>24&&(o.bt||0)/o.tt<.15&&!busyS[o.id]&&n===0){/* idle most of the day so far */const [sx,sy]=iso(cx,cy);ctx.globalAlpha=.55;chip(cx,cy-.9,'idle','rgba(60,70,65,.8)','#fff');ctx.globalAlpha=1;}}}
+function thought(sx,sy,text,bg){/* small thought bubble above a person's tag */ctx.font='900 10px Nunito,sans-serif';ctx.textAlign='center';const wd=ctx.measureText(text).width+12;ctx.fillStyle=bg||'#fff';rr(sx-wd/2,sy-9,wd,16,8);ctx.beginPath();ctx.arc(sx-3,sy+10,2.2,0,Math.PI*2);ctx.arc(sx-6,sy+14.5,1.4,0,Math.PI*2);ctx.fill();ctx.fillStyle=bg?'#fff':'#2a2f2a';ctx.fillText(text,sx,sy+4);}
 function chip(wx,wy,text,bg,fg){const z=Math.max(Z(),.85);const [sx,sy]=iso(wx,wy);ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';const wd=ctx.measureText(text).width+12*z;ctx.fillStyle=bg;rr(sx-wd/2,sy-7*z,wd,14*z,4*z);ctx.fillStyle=fg;ctx.fillText(text,sx,sy+3.5*z);}
 function roomGuide(o){/* suggested walls + door around a consult desk */const [w,d]=dims(o);const f=facing(o);const pt=patientTile(o);if(!pt)return;const x0=Math.min(o.x,pt[0]),y0=Math.min(o.y,pt[1]),x1=Math.max(o.x+w-1,pt[0]),y1=Math.max(o.y+d-1,pt[1]);const door=[pt[0]+f[0],pt[1]+f[1]];
   for(let x=x0-1;x<=x1+1;x++)for(let y=y0-1;y<=y1+1;y++){if(x>=x0&&x<=x1&&y>=y0&&y<=y1)continue;if(!inb(x,y))continue;const c=grid[y][x];const isDoor=x===door[0]&&y===door[1];const have=c.o&&objById(c.o)&&(objById(c.o).type==='wall'||objById(c.o).type==='door');if(have)continue;flat(x,y,1,1,isDoor?'rgba(239,159,39,.45)':'rgba(195,211,226,.55)');if(isDoor)chip(x+.5,y+.5,'DOOR','rgba(239,159,39,.95)','#2a1a00');}
@@ -1164,9 +1172,10 @@ function drawScene(){
   const items=[];
   for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;items.push({d:Math.max(...footprint(o).map(([x,y])=>depth(x+.5,y+.5))),f:()=>drawObj(o)});}
   for(const w of S.staff){if(w.off||w.x>=W+1)continue;const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
-    items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{role:w.role,fatigue:w.fatigue,shirt:w.role==='tech'?'#2f7fd6':w.role==='clerk'?'#1d9e75':'#9aa3b5',coat:w.role==='rph'?'#f6f6f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.carryKind==='box'?'box':(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket')):null,carryN:w.carry.length,prog})});}
+    const cue=S.running&&!st&&(w.idleT||0)>=6?(idleWhy(w).startsWith('waiting')?'wait':'idle'):null;items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{cue,role:w.role,fatigue:w.fatigue,shirt:w.role==='tech'?'#2f7fd6':w.role==='clerk'?'#1d9e75':'#9aa3b5',coat:w.role==='rph'?'#f6f6f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.carryKind==='box'?'box':(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket')):null,carryN:w.carry.length,prog})});}
   for(const p of S.patients){if(p.state==='pending')continue;const m=moodOf(p);items.push({d:depth(p.x,p.y),f:()=>person(p.x,p.y,{shirt:p.shirt,skin:p.skin,walking:p.walking,bob:p.bob,mood:m,cane:p.elderly,sick:p.sick,carry:p.stole?'basket':p.carryOtc?'otc':null,carryN:p.stole?1:(p.carryOtc||0),hair:p.elderly?'#cfcfcf':'#3a2a1e'})});}
   items.sort((a,b)=>a.d-b.d);for(const it of items)it.f();
+  if(S.running)floorCues();
   if(S.inv&&S.inv.recv.length){const bn=binOf();if(bn){const st=staffTile(bn);const [bx,by]=iso(st[0]+.5,st[1]+.9);ctx.save();ctx.translate(bx,by);ctx.scale(z,z);for(let i=0;i<Math.min(4,S.inv.recv.length);i++)basket(-10+i*7,-i*5,'box');ctx.restore();}}
   const selO=S.sel&&S.objs.find(x=>x.id===S.sel);if(selO)sideLabels(selO);if(justPlaced&&performance.now()-justPlaced.t<2200){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo)sideLabels(jo);}
   /* consult room guide: while a consult desk is selected/just placed, or while building walls/doors with an unenclosed desk */

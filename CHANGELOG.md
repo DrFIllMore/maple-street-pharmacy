@@ -1,5 +1,11 @@
 # Changelog
 
+## v20.5 — 2026-10-24 — Cues on the floor
+- **Overloaded station**: a pulsing red outline around the footprint and a red "!" badge above its sign when its load is at 85% or more of capacity (4 in line at a window or register, 3 baskets at a fill station, 4 trays at verify, 8 in the bin, 16 bags on the shelf).
+- **Idle station**: a faint grey "idle" chip over a station that has been used less than 15% of the day so far and has nobody at it.
+- **Idle worker**: a "z z" thought bubble after 30 minutes with nothing to do; an orange "⏳ waiting" bubble when the reason is that every station of their kind is taken.
+- Fix: the Load count on window and register cards (and the new jam cue) counted people who had already been served and were sitting down; it now counts only people in line.
+
 ## v20.4 — 2026-10-24 — One worker per station, said out loud
 - Item cards for every station show a **Staff** row ("Rosa · 1 / 1 · one at a time") and, when a worker of that role is idle because every station of that kind is taken, a red note: "Luis is waiting for a free fill station · build another or upgrade this one".
 - Flow rows say the same: "1 station · one tech each · 1 tech waiting for a free one", "1 window · 2 clerks · 2 clerks waiting for a free one".
