@@ -1,5 +1,9 @@
 # Changelog
 
+## v12.7 — 2026-10-24
+- Version label on the title screen now changes with every release (was stuck at "v12").
+- Title screen checks the server for a newer build and shows **Update to … · tap to reload** when the phone is running a stale copy. The save is written before reloading.
+
 ## v12.6 — 2026-10-24
 - Fix: **Continue** showed a blank beige screen (or mirrored items). The "pop-in" animation timestamp on each item was saved and compared against the new page's clock, producing a negative scale that blew one box up over the whole view. Timestamps are reset on load and the scale is clamped.
 
