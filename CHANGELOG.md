@@ -1,5 +1,9 @@
 # Changelog
 
+## v19.1 — 2026-10-24 — Consult room guide
+- Fix: a consult room with a door could never count as private, because the privacy check walked straight through the door into the shop. Doors now close the room for privacy while staying open for walking, so "walls + one door" works as described.
+- The floor shows you what to build: when a consult desk is placed, selected, or while you hold the Wall/Door tool with an unenclosed desk, the tiles that need walls are tinted grey-blue, the one that needs a door is orange and labelled DOOR, and a banner reads "WALLS + ONE DOOR = PRIVATE" until it flips to "PRIVATE ROOM ✓". The palette hint and the item card say the same in words.
+
 ## v19 — 2026-10-24 — Inventory
 - **Four stock lines:** Generics (prescriptions), Specialty cold-chain (needs contract + fridge, spoils 10%/week), Vaccine doses, OTC goods. Each has on-hand, used-this-week, days left, an order quantity and unit cost. Specialty drug cost is now paid when ordered, not per sale.
 - **OTC shelf holds 40.** Customers who want OTC walk to the shelf, pick an item up (visible in hand) and pay for it at the register. The shelf's displayed stock drops as it sells and reads EMPTY at zero — no sales until restocked.
