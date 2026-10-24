@@ -38,3 +38,11 @@ Tuning target (verified by `scratchpad/econ.js` WebKit sims): optimized store wi
 
 ## 2026-10-24 — v14.1 balance note
 Rival chain (from week 3) takes 12% of walk-ins, drifting +1%/week to a 25% cap unless a paper ad or price-match week is running (−4%/week). Sim with ads + loyalty + vaccine contract + early loan paydown: win at week 16 (trust 100 by week 8, 140–150 served/week). Without any promotion the same build stalls around 105 served/week and a loan of ~$11k at week 10 — advertising is now part of the required strategy.
+
+## 2026-10-24 — Balance check after v15.3 (test/econ-sim.js, 24 weeks)
+| strategy | wk4 cash | wk12 cash / loan | outcome |
+|---|---|---|---|
+| lean: tech + 1 clerk, no phone/problem desk, no promos, minimum loan payment | $10.7k | $17.1k / $17.5k | never wins — trust flat at ~52, chain erodes walk-ins to ~67/wk |
+| base: + 2nd clerk, phone, problem desk, paper ads, loyalty, early loan paydown | −$535 | $2.8k / $11.1k | survives, loan gone ~wk 24, cash never reaches $25k |
+| full: + consult + vaccines + OTC + specialty/fridge + verify upgrade + ads | $8.6k | $8.3k / $1.9k | **wins week 18**, net ≈ $3–4k/week from week 8 |
+Takeaways: profitability comes from the add-on revenue (consults/shots, OTC, specialty) and from keeping the chain's share down with ads; wages alone eat a plain prescription-only store. Cash trough for every strategy is weeks 2–4 while insurers haven't paid yet.
