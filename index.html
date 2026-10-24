@@ -274,7 +274,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20 · 2026-10-24';
+const BUILD='v20.1 · 2026-10-24';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -293,7 +293,7 @@ const W=20,D=14,DOOR={x:19,y:8},OUT={x:21.5,y:8.5};
 const TYPES={
   wall:{two:true,short:'Blocks everyone',name:'Wall',cost:60,w:1,d:1,block:'all',cat:'build',desc:'Solid. Rooms need a door.'},
   door:{short:'Walk-through in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'Goes in a wall line. Swings toward the side you face it. One door makes a walled consult room private.'},
-  counter:{short:'Closes the pharmacy off',name:'Counter',cost:150,w:1,d:1,block:'patients',cat:'build',two:true,desc:'A half-height counter line. Staff step over it; customers can\'t. Run counters or walls between the shop and the fill/verify stations — if customers can reach them, some wander in and a few help themselves.'},
+  counter:{short:'Staff pass, customers don’t',name:'Counter',cost:150,w:1,d:1,block:'patients',cat:'build',two:true,desc:'A half-height counter line. Staff step over it; customers can\'t.'},
   dropoff:{short:'Customers hand in Rx',name:'Drop-off window',cost:600,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Customers hand in prescriptions. A clerk works it from behind.'},
   register:{short:'Pay & pick up',name:'Register',cost:500,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Pick-up and payment, worked from behind.',levels:[{n:'Till',t:1},{n:'Card reader',t:.6,cost:800,h:'rings up 40% faster'}]},
   bin:{short:'New Rx wait for a tech',name:'Basket bin',cost:150,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'New prescriptions wait here for a tech.'},
@@ -407,7 +407,6 @@ function readiness(){const r=[];const ok=(c,t)=>r.push({ok:!!c,t});
   ok(objsOf('bin').some(o=>passS(...staffTile(o))),'Basket bin');ok(objsOf('fill').some(o=>passS(...staffTile(o))),'Fill station');ok(objsOf('verify').some(o=>passS(...staffTile(o))),'Verify terminal');ok(objsOf('shelf').some(o=>passS(...staffTile(o))),'Will-call shelf');
   ok(objsOf('chair').filter(o=>reach.has(o.x+','+o.y)).length>=2,'Two chairs customers can reach');
   ok(S.staff.some(w=>w.role==='tech'),'A technician');ok(S.staff.some(w=>w.role==='clerk'),'A clerk');
-  r.push({ok:secured(),soft:true,t:'Pharmacy closed off from customers (counters or walls) — optional, but they wander in otherwise'});
   return r;}
 
 /* ============ economy helpers ============ */
@@ -531,7 +530,7 @@ function tick(){
     if(p.state==='pending'){p.delay--;if(p.delay<=0){p.seq=S.sid++;routeViaOtc(p);}}
     if(p.conf>0){p.conf++;if(p.conf>8)leave(p,'confused');}
     if(exposed.size&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<.01*(1+exposed.size/6)){p.prev={state:p.state,q:p.q,seat:p.seat};p.seat=null;p.state='sneak';p.snT=0;p.target=pick([...exposed]).split(',').map(Number);p.inT=0;p.escort=null;}
-    if(p.state==='sneak')p.snT++;if(p.state==='inBack'){p.inT++;if(p.inT>=2&&Math.random()<(p.escort?.08:.2)){const units=Math.min(S.stock,Math.floor(rnd(4,9)));let val=units*S.unitCost;S.stock-=units;if(S.inv.brand>0&&Math.random()<.3){S.inv.brand--;val+=SPECIAL_COST;}S.wk.theft++;S.wk.theftVal+=val;p.stole=true;p.state='leaving';p.exitMood='content';p.q=null;goTo(p,DOOR.x,DOOR.y);S.wk.ev.push({k:'theft',name:p.name,val});S.trust-=.5;fx([p.x,p.y],'−'+fmt(val)+' stolen','bad');glog('bad',`Someone walked out of the pharmacy area with stock worth ${fmt(val)}. Close it off with counters or walls.`,'theft',10);SFX.sigh();}}
+    if(p.state==='sneak')p.snT++;if(p.state==='inBack'){p.inT++;if(p.inT>=2&&Math.random()<(p.escort?.08:.2)){const units=Math.min(S.stock,Math.floor(rnd(4,9)));let val=units*S.unitCost;S.stock-=units;if(S.inv.brand>0&&Math.random()<.3){S.inv.brand--;val+=SPECIAL_COST;}S.wk.theft++;S.wk.theftVal+=val;p.stole=true;p.state='leaving';p.exitMood='content';p.q=null;goTo(p,DOOR.x,DOOR.y);S.wk.ev.push({k:'theft',name:p.name,val});S.trust-=.5;fx([p.x,p.y],'−'+fmt(val)+' stolen','bad');glog('bad',`Someone walked out of the pharmacy area with stock worth ${fmt(val)}.`,'theft',10);SFX.sigh();}}
     const m=moodOf(p);if((m==='annoyed'||m==='angry')&&p.state!=='leaving')S.wk.annoyedTicks=(S.wk.annoyedTicks||0)+1;
   }
   S.trust=clamp(S.trust,0,100);
@@ -597,7 +596,7 @@ function pickCard(){const ok=CARDS.filter(c=>c.when()&&!S.seen.slice(-3).include
 
 
 /* ============ operations flow ============ */
-function flowHtml(){const cnt=f=>S.scripts.filter(f).length;const pat=f=>S.patients.filter(f).length;const secLine=exposed.size?`<div class="verdict bad">⚠ Customers can reach the pharmacy area — ${pat(p=>p.state==='inBack'||p.state==='sneak')} inside now, ${S.wk.intrude||0} this week${S.wk.theft?`, ${S.wk.theft} theft${S.wk.theft>1?'s':''}`:''}. Close it with counters or walls.</div>`:'';
+function flowHtml(){const cnt=f=>S.scripts.filter(f).length;const pat=f=>S.patients.filter(f).length;
   const wins=objsOf('dropoff'),regs=objsOf('register'),fills=objsOf('fill'),vers=objsOf('verify'),shelves=objsOf('shelf'),chairs=objsOf('chair');
   const techs=S.staff.filter(w=>w.role==='tech'&&!w.off).length,clerks=S.staff.filter(w=>w.role==='clerk'&&!w.off).length,rphs=S.staff.filter(w=>w.role==='rph'&&!w.off).length;
   const inQ=t=>pat(p=>p.q&&objById(p.q)&&objById(p.q).type===t&&(p.state==='toQueue'||p.state==='queued'));
@@ -614,7 +613,7 @@ function flowHtml(){const cnt=f=>S.scripts.filter(f).length;const pat=f=>S.patie
   const jam=rows.filter(r=>r.n/r.cap>=.85);
   return `<h2>Flow <small>live · where scripts are right now</small></h2>
     <div class="tile">${rows.map(r=>{const p=Math.min(1,r.n/r.cap);const st=p>=.85?'jam':p>=.5?'busy':'ok';return `<div class="flow ${st}"><span class="fl">${r.l}<small>${r.who}</small></span><span class="fb"><i style="width:${Math.round(p*100)}%"></i></span><b>${r.n}</b></div>`;}).join('')}</div>
-    <div class="verdict ${jam.length?'bad':'good'}">${jam.length?`Backed up: ${jam.map(r=>r.l.toLowerCase()).join(', ')}. Try ${jam[0].fix}.`:S.running?'Everything is moving. If lines never form, you may be paying for idle staff.':'Open the doors to see the flow.'}</div>${secLine}`;}
+    <div class="verdict ${jam.length?'bad':'good'}">${jam.length?`Backed up: ${jam.map(r=>r.l.toLowerCase()).join(', ')}. Try ${jam[0].fix}.`:S.running?'Everything is moving. If lines never form, you may be paying for idle staff.':'Open the doors to see the flow.'}</div>`;}
 
 
 /* ============ portraits (DiceBear lorelei, CC0) ============ */
@@ -765,7 +764,7 @@ function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)
 function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Cash goal',`${fmt(S.cash)} / ${fmt(GOAL_CASH)}`,S.cash/GOAL_CASH)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / 60`,S.trust/60)}</div>`;}
 function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy <small>your goal</small></h2>${goalsHtml()}
   <p class="sub">Fill all three bars to win. The bank allows a <b>${fmt(OVERDRAFT)}</b> overdraft; go past it and they take the store.</p>
-  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · <b>${fmt(LOAN_PAY)}</b> minimum back, pay extra any time</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b> · a counter line keeps them out of the pharmacy</div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
+  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · <b>${fmt(LOAN_PAY)}</b> minimum back, pay extra any time</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b></div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
   <div class="btns"><button class="big" id="go">Start building</button></div>`);
   $('go').onclick=()=>{$('review').hidden=true;setBuild(true);renderHud();};}
 function showChecklist(){const r=readiness();const all=r.every(x=>x.ok||x.soft);
@@ -832,7 +831,7 @@ function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<
   $('palRot').textContent=(tool&&TYPES[tool]&&TYPES[tool].two)?'Rotate · '+((rot&1)?'↕':'↔'):'Rotate · '+FACE_N[rot&3];$('palRot').onclick=()=>{rot=(rot+1)&3;renderPalette();SFX.click();};
   $('palDone').onclick=()=>{if(held&&ghostAt){const err=putDown(ghostAt[0],ghostAt[1]);if(err)toast(err);renderPalette();palHint();return;}if(!S.opened)showChecklist();else setBuild(false);};$('palDone').textContent=held?'Place here':S.opened?'Done':'Ready to open?';
   $('camBtn').onclick=rotateCam;}
-function palHint(){let t;if(tool==='erase')t='Tap something to sell it.';else if(exposed.size&&(tool==='counter'||tool==='wall'))t='Red tiles: customers can walk up to these stations. Run a counter or wall line so they can\'t.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". Rotate turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Use Rotate to face it another way.':'');
+function palHint(){let t;if(tool==='erase')t='Tap something to sell it.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". Rotate turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Use Rotate to face it another way.':'');
   else if(!S.opened){const need=readiness().find(r=>!r.ok&&Object.keys(NEXT_HINT).some(k=>r.t.startsWith(k)));t=need?`Next: ${need.t.replace(/ customers can reach.*|$/,'')}. Tap it below, then tap the floor.`:'Everything is placed. Tap "Ready to open?"';}
   else t='Pick something to build, then tap the floor.';$('palHint').textContent=t;}
 function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}if(err)toast(err);renderPalette();palHint();return;}
@@ -861,7 +860,7 @@ function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o
   $('mv').onclick=()=>startMove(o.id);
   $('rm').onclick=()=>{const err=removeObj(o.id);if(err)toast(err);closeSheet();renderHud();};}
 const MOODWORDS={happy:['Quick today. Thanks!','Nice people here.','That was easy.'],content:['Just waiting my turn.','Fine so far.'],annoyed:['This line…','Been here a while.','Is anyone working the window?'],angry:['That\'s it, I\'m leaving.','Twenty minutes for this?','Never again.'],sad:['They couldn\'t fill mine.','Guess I\'ll try the chain.'],sick:['Just want to go home.','*cough* Please hurry.'],confused:['Where do I go?','Is that the entrance?','Is this the line?']};
-function patientDoing(p){const o=p.q&&objById(p.q);if(p.state==='queued'||p.state==='toQueue')return `in line ${o&&o.type==='register'?'to pick up':'to drop off'} · ${Math.round(p.qt*5)} min`;if(p.state==='waiting'||p.state==='toSeat')return `waiting for the fill · ${Math.round(p.wait*5)} min`;if(p.state==='toRoom'||p.state==='atRoom')return 'here for a consult';if(p.state==='sneak')return 'wandering toward the pharmacy area';if(p.state==='inBack')return `in the pharmacy area · ${Math.round(p.inT*5)} min · staff need to send them back`;if(p.state==='leaving')return p.stole?'leaving — with stock that isn\'t theirs':'leaving';return 'just walked in';}
+function patientDoing(p){const o=p.q&&objById(p.q);if(p.state==='queued'||p.state==='toQueue')return `in line ${o&&o.type==='register'?'to pick up':'to drop off'} · ${Math.round(p.qt*5)} min`;if(p.state==='waiting'||p.state==='toSeat')return `waiting for the fill · ${Math.round(p.wait*5)} min`;if(p.state==='toRoom'||p.state==='atRoom')return 'here for a consult';if(p.state==='sneak')return 'wandering toward the pharmacy area';if(p.state==='inBack')return `in the pharmacy area · ${Math.round(p.inT*5)} min`;if(p.state==='leaving')return p.stole?'leaving — with stock that isn\'t theirs':'leaving';return 'just walked in';}
 function openPatient(p){S.sel=null;SFX.click();const m=moodOf(p);sheet(`<h3>${MOODJI[m]||'🙂'} ${p.name} <small>${p.elderly?'senior · ':''}${p.sick?'unwell · ':''}${p.kind==='consult'?'consult':'prescription'}</small></h3><p>${patientDoing(p)}.</p><p class="quote">“${pick(MOODWORDS[m]||MOODWORDS.content)}”</p>`);}
 function workerMood(w){if(w.off)return ['off shift','🏠'];if(w.fatigue>=5)return ['exhausted','😩'];if(w.fatigue>=4)return ['tired','😮‍💨'];const idle=w.wkTicks?w.wkIdle/w.wkTicks:0;if(idle>.6&&w.wkTicks>60)return ['bored','🥱'];if(S.mods.raise===99)return ['happy (got the raise)','😊'];return ['doing fine','🙂'];}
 function energyBar(w){const e=1-w.fatigue/6;return `<span class="ebar"><i style="width:${Math.round(e*100)}%;background:${e>.5?'var(--good)':e>.25?'#ef9f27':'var(--bad)'}"></i></span>`;}
@@ -1158,8 +1157,6 @@ function drawScene(){
   items.sort((a,b)=>a.d-b.d);for(const it of items)it.f();
   if(S.inv&&S.inv.recv.length){const bn=binOf();if(bn){const st=staffTile(bn);const [bx,by]=iso(st[0]+.5,st[1]+.9);ctx.save();ctx.translate(bx,by);ctx.scale(z,z);for(let i=0;i<Math.min(4,S.inv.recv.length);i++)basket(-10+i*7,-i*5,'box');ctx.restore();}}
   const selO=S.sel&&S.objs.find(x=>x.id===S.sel);if(selO)sideLabels(selO);if(justPlaced&&performance.now()-justPlaced.t<2200){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo)sideLabels(jo);}
-  if(exposed.size&&(buildOn||!S.running)){for(const k of exposed){const [x,y]=k.split(',').map(Number);flat(x,y,1,1,'rgba(226,75,74,.38)');}const txt='⚠ CUSTOMERS CAN REACH THE PHARMACY (red tiles) · close it with counters or walls';const br=$('bar').getBoundingClientRect(),ar=$('app').getBoundingClientRect();const by=(ROT?ar.right-br.left:br.bottom-ar.top)+10+($('resume').hidden?0:44);ctx.font='900 12px Nunito,sans-serif';ctx.textAlign='center';const wd=Math.min(VW-16,ctx.measureText(txt).width+22);ctx.fillStyle='rgba(226,75,74,.95)';rr(VW/2-wd/2,by,wd,24,12);ctx.fillStyle='#fff';ctx.fillText(txt,VW/2,by+16.5);}
-  else if(secured()&&buildOn&&BACK_TYPES.some(t=>objsOf(t).length)){/* secured: small green chip on the first back station */const txt='PHARMACY CLOSED OFF ✓';const br=$('bar').getBoundingClientRect(),ar=$('app').getBoundingClientRect();const by=(ROT?ar.right-br.left:br.bottom-ar.top)+10+($('resume').hidden?0:44);ctx.font='900 12px Nunito,sans-serif';ctx.textAlign='center';const wd=ctx.measureText(txt).width+22;ctx.fillStyle='rgba(29,158,117,.95)';rr(VW/2-wd/2,by,wd,24,12);ctx.fillStyle='#fff';ctx.fillText(txt,VW/2,by+16.5);}
   /* consult room guide: while a consult desk is selected/just placed, or while building walls/doors with an unenclosed desk */
   {const guideFor=new Set();if(selO&&selO.type==='consult')guideFor.add(selO.id);if(justPlaced&&performance.now()-justPlaced.t<8000){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo&&jo.type==='consult')guideFor.add(jo.id);}if(buildOn&&(tool==='wall'||tool==='door'))for(const c of objsOf('consult'))if(!enclosed(c))guideFor.add(c.id);for(const id of guideFor){const c=objById(id);if(c)roomGuide(c);}}
   if(ghost){ctx.save();ctx.globalAlpha=.55;drawObj(ghost.o);ctx.restore();sideLabels(ghost.o);if(ghost.o.type==='consult')roomGuide(ghost.o);const f=facing(ghost.o),[fw,fd]=dims(ghost.o);const c=[ghost.o.x+fw/2,ghost.o.y+fd/2];const a=iso(c[0],c[1]),b=iso(c[0]+f[0]*1.1,c[1]+f[1]*1.1);ctx.strokeStyle=ghost.ok?'#1d9e75':'#e24b4a';ctx.lineWidth=2.5*z;ctx.beginPath();ctx.moveTo(a[0],a[1]-6*z);ctx.lineTo(b[0],b[1]-6*z);ctx.stroke();ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(b[0],b[1]-6*z,4*z,0,Math.PI*2);ctx.fill();}
@@ -1182,7 +1179,7 @@ function motion(raw){{const dt=raw*(S.speed===3?2.4:1.4);
       else if(p.state==='toOtc'){const sh=objById(p.otcT);if(!sh||(sh.stock||0)<=0){p.state='toQueue';continue;}const pt=patientTile(sh);goTo(p,pt[0],pt[1]);if(stepAgent(p,dt,spd)){p.otcWait+=dt;if(p.otcWait>.8){sh.stock--;p.carryOtc=(p.carryOtc||0)+1;sh.earn=(sh.earn||0);p.state='toQueue';}}else if(p.noPath)p.state='toQueue';}
       else if(p.state==='toSeat'){if(stepAgent(p,dt,spd))p.state='waiting';else if(p.noPath){seat(p);}}
       else if(p.state==='toRoom'){const rooms=objsOf('consult').filter(o=>reach.has(patientTile(o).join(',')));if(!rooms.length){leave(p,'confused');continue;}const o=rooms[0];p.room=o.id;const pt=patientTile(o);goTo(p,pt[0],pt[1]);if(stepAgent(p,dt,spd))p.state='atRoom';else if(p.noPath&&!p.conf)p.conf=1;}
-      else if(p.state==='sneak'){if(!exposed.has(p.target.join(','))){sendBack(p);continue;}goTo(p,p.target[0],p.target[1]);if(stepAgent(p,dt,spd)){p.state='inBack';p.inT=0;S.wk.intrude++;S.trust-=.3;fx([p.x,p.y],'in the pharmacy!','bad');glog('bad',`${p.name} wandered into the pharmacy area. Staff will be slower until someone sends them back.`,'intrude',8);}else if(p.noPath)sendBack(p);}
+      else if(p.state==='sneak'){if(!exposed.has(p.target.join(','))){sendBack(p);continue;}goTo(p,p.target[0],p.target[1]);if(stepAgent(p,dt,spd)){p.state='inBack';p.inT=0;S.wk.intrude++;S.trust-=.3;fx([p.x,p.y],'in the pharmacy!','bad');glog('bad',`${p.name} wandered into the pharmacy area.`,'intrude',8);}else if(p.noPath)sendBack(p);}
       else if(p.state==='inBack'){/* lingers; theft or escort handled in tick/jobs */}
       else if(p.state==='enter'){goTo(p,DOOR.x,DOOR.y);stepAgent(p,dt,spd);}
       else if(p.state==='leaving'){goTo(p,DOOR.x,DOOR.y);if(stepAgent(p,dt,spd+.8)||p.noPath){if(p.noPath&&p.x<W){/* trapped: fade away through nearest wall */}S.patients.splice(i,1);}}}

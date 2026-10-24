@@ -1,5 +1,8 @@
 # Changelog
 
+## v20.1 — 2026-10-24 — Learn it the hard way
+- Removed every on-floor hint about the open pharmacy: no red tiles, no banner, no checklist item, no palette hint, no Flow warning, and the counter description no longer explains the consequence. The chat log still reports what happened ("X wandered into the pharmacy area", "someone walked out with stock worth $Y") without telling you the fix. The District Manager, the Gazette and the neighborhood feed are where the advice lives.
+
 ## v20 — 2026-10-24 — Counters mean something
 - **Counter redesigned.** It is a thin, half-height counter line with a wooden top that runs through its tile and joins neighbouring counters. It has two orientations (↔ / ↕), not four; Rotate flips between them, in the palette and on a placed piece. Walls work the same way.
 - **The pharmacy can be left open.** Back-room stations (bin, fill, verify, will-call, phone, problem desk, stock shelf, fridge) whose staff side customers can walk to are *exposed*. Build mode and the closed store mark them with red tiles and a banner; once a counter or wall line separates them, a green "PHARMACY CLOSED OFF ✓" banner shows. The checklist lists it as an optional item, and Flow warns when it is open.
