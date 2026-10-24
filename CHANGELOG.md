@@ -1,5 +1,11 @@
 # Changelog
 
+## v13.1 — 2026-10-24 — Economy check & notebook look
+- **Fixed a game-breaking bug:** the "chain pharmacy" event's demand factor was treated as a countdown and deleted a week later, turning demand, orders and cash into NaN (the floor emptied, cash showed blank). Found by running 12-week simulations.
+- **Economy rebalanced so the loan can actually be repaid with good play.** Before: $400/week fixed repayment = 50 weeks minimum, and a well-run store netted ≈ $0/week. Now: insurer rates $52 / $44 / $38 per script (copay $12, cash price $48, drugs $11), loan carries 1% weekly interest and can be paid down early from Manage → Money (keeps $1,000 back). Win = $25,000 cash + loan repaid + trust 60; lose = past a $3,000 overdraft. Write-offs cost 0.5 trust (was 1).
+  Simulated results: full build with phone + problem desk + consult + OTC and early loan paydown wins around week 16–22 after dipping to ≈$400 cash in week 3; a no-frills store pays the loan off by week 23 but never reaches the cash goal; one clerk and no phone desk bleeds trust and stalls.
+- **Manage and week cards look like the pharmacist's clipboard,** not a dashboard: paper panel, handwritten headings and notes. Money is now a payday forecast — cash now, counter sales to come, insurers paying Saturday, Saturday bills, and a plain verdict ("Saturday you'd have about $11,018. Room to invest or pay down the loan."), then what insurers still owe and when, the loan box, and "where people wait" with a fix suggested for any station over 85%.
+
 ## v13 — 2026-10-24 — HUD & Manage pass
 - **Goal first.** Intro and every week card open with three progress bars (Cash / $30k, Loan left, Trust / 60) and one line on how you win or lose; the week's facts are four labelled items instead of prose. A thin goal strip sits in the top bar.
 - **Top bar** stats carry small labels (Cash, Insurers owe, This week, Runway, Trust); clock and speed moved to a pill at bottom-right with three large ⏸ ▶ ▶▶ buttons. "This week"/"Runway" hide on narrow screens.

@@ -29,3 +29,9 @@ Build and hire any time while the week runs on its own (about 2 minutes at 1×).
 - Patients carry a mood (happy, content, annoyed, angry, sad, sick, confused) shown as a face, driving trust and the chat.
 - The office is the management layer: schedule, insurance contracts, claims queue, inventory, metrics, pricing. The week still runs on its own; the office can be opened any time.
 - The weekly review stays as the summary; the insurance lever moves into the office.
+
+## 2026-10-24 — Economy model (v13.1)
+Per script: insurer pays $52 (BlueLeaf, 2 wks, 6% rejected) / $44 (SilverPlan, 3 wks, 10%) / $38 (QuickPay, 1 wk, 4%) plus $12 copay; cash payers $48 (36–60 settable). Drug cost $11. Consult $40, OTC $9.
+Weekly fixed: wages (tech 800, clerk 650, pharmacist 1800), rent 500, loan minimum 400 + 1% interest on balance. Extra loan payments any time from Manage → Money.
+Win: cash ≥ $25,000, loan 0, trust ≥ 60. Lose: cash < −$3,000 at week end.
+Tuning target (verified by `scratchpad/econ.js` WebKit sims): optimized store wins in 16–22 weeks with a cash trough of a few hundred dollars around week 3; mediocre play stalls; neglect declines. The slow-pay insurer tempo (2–3 weeks) is the main source of cash tension.

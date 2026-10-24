@@ -11,13 +11,13 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231d9e75'/%3E%3Crect x='78' y='40' width='24' height='100' rx='6' fill='%23fff'/%3E%3Crect x='40' y='78' width='100' height='24' rx='6' fill='%23fff'/%3E%3C/svg%3E">
 <style>html,body{height:100%;margin:0;background:#141a16}</style>
 <title>Maple Street Pharmacy</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&family=Caveat:wght@600;700&display=swap">
 <style>
 /* Layout: the floor is ~90% of the screen. One thin status bar on top, one ticker line at the bottom. Every size is a token the Layout panel can change. */
 :root{
   --bg:#cfdad0; --panel-rgb:255,253,247; --panel-solid:#fffdf7; --ink:#243028; --ink-2:#66736b; --line:#c9d3ca;
   --accent:#1d9e75; --accent-ink:#085041; --accent-soft:#e1f5ee; --owed:#ba7517; --bad:#a32d2d; --bad-soft:#fcebeb; --good:#3b6d11;
-  --sans:"Nunito",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"Nunito",system-ui,sans-serif; --hand:"Caveat","Nunito",cursive; --mono:"IBM Plex Mono",ui-monospace,monospace;
   --k:1; --barL:87px; --barR:39px; --barY:3px; --barH:41px; --barF:11px; --chatX:85px; --chatY:8px; --chatW:362px; --chatH:108px; --chatF:10px; --sheetW:360px; --sheetF:13px; --rowH:44px; --revW:560px; --revF:13px; --hudA:.9; --glR:87px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -88,7 +88,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .app.titled .bar,.app.titled .chat,.app.titled .menu{visibility:hidden}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @media (max-height:480px){.title h1{font-size:28px}.title .logo{width:52px;height:52px}.title{gap:6px}}
-.review{position:absolute;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:8px 8px 8px var(--gl);z-index:10}
+.review{position:absolute;inset:0;background:rgba(14,26,20,.55);display:flex;align-items:center;justify-content:center;padding:8px 8px 8px var(--gl);z-index:10}
+.rev.paper{padding:14px 16px;border-radius:12px;border:1px solid #c9b58d;box-shadow:0 14px 40px rgba(0,0,0,.4)}
 .rev{width:min(var(--revW),100%);max-height:100%;overflow:auto;font-size:var(--revF);display:grid;gap:8px;align-content:start}
 .rev h2{margin:0;font-size:1.45em;font-weight:800;display:flex;align-items:baseline;gap:10px}.rev h2 small{font-size:.6em;color:var(--ink-2);font-weight:700}
 .rev .sub{font-size:.95em;color:var(--ink-2);font-weight:600;margin:0;line-height:1.4}.rev .sub b{color:var(--ink)}
@@ -131,8 +132,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .palette .pb{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;flex:none}
 .camb{right:calc(var(--gr) + 4px);top:calc(var(--barY) + var(--barH) + 10px);height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--panel-solid);font-size:12px;font-weight:800;line-height:1;z-index:6;color:var(--ink)}
 .palette .pb.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.drawer{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);bottom:calc(60px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));width:min(48%,460px);display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;z-index:9;background:rgba(var(--panel-rgb),.97);font-size:var(--sheetF)}
-.drawer .rail{width:calc(64px*var(--k));border-right:1px solid var(--line);display:flex;flex-direction:column;padding:4px;gap:2px;flex:none}
+.paper{--ink:#2a2620;--ink-2:#6b645a;--line:#d9ccb0;--panel-solid:#fffaf0;--panel-rgb:255,250,240;--accent-soft:#e3f1e9;--accent-ink:#0b5c47;color:#2a2620;background:#f6eedc radial-gradient(circle at 20% 0,#fff9ea,transparent 60%)}
+.drawer{right:var(--gr);top:calc(var(--barY) + var(--barH) + 6px);bottom:calc(60px*var(--k) + max(0px,env(safe-area-inset-bottom,0px)));width:min(48%,460px);display:flex;border:1px solid #c9b58d;border-radius:12px;overflow:hidden;z-index:9;font-size:var(--sheetF);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.drawer::before{content:'';position:absolute;left:0;top:0;bottom:0;width:calc(64px*var(--k));background:#eadfc4;pointer-events:none}
+.drawer h2,.rev h2,.rev h2 small,.drawer .foot,.rev .sub,.verdict{font-family:var(--hand)}.drawer h2{font-size:1.6em;font-weight:700}.drawer h2 small{font-size:.6em}.drawer .foot{font-size:1.05em;line-height:1.3}
+.rev h2{font-size:1.9em}.rev h2 small{font-size:.5em}.rev .sub{font-size:1.15em;line-height:1.3}
+.verdict{font-size:1.05em;color:var(--ink-2)}.verdict.bad{color:var(--bad)}.verdict.good{color:var(--accent-ink)}
+.pay{display:grid;gap:4px;font-size:.95em}.pay div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px dashed var(--line)}.pay div:last-child{border:0}.pay b{font-family:var(--mono)}.pay .tot{font-weight:800;font-size:1.1em;border-top:2px solid var(--ink);margin-top:2px;padding-top:5px}
+.stamp{display:inline-block;transform:rotate(-4deg);border:2px solid currentColor;border-radius:4px;padding:0 6px;font-size:.75em;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.drawer .rail{width:calc(64px*var(--k));border-right:1px solid #c9b58d;position:relative;display:flex;flex-direction:column;padding:4px;gap:2px;flex:none}
 .drawer .rail button{height:calc(42px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72em;color:var(--ink-2);position:relative;gap:1px}.drawer .rail button span{font-size:1.5em}.drawer .rail button.on{background:var(--accent-soft);color:var(--accent-ink)}.drawer .rail button i{position:absolute;top:3px;right:8px;background:var(--bad);color:#fff;font-style:normal;font-size:.75em;border-radius:8px;padding:0 4px;font-weight:800}
 .drawer .obody{flex:1;min-width:0;padding:8px 36px 8px 10px;overflow:auto;display:grid;gap:6px;align-content:start}
 .drawer h2{margin:0;font-size:1.15em;display:flex;justify-content:space-between;align-items:baseline;gap:8px}.drawer h2 small{font-size:.72em;color:var(--ink-2);font-weight:700}
@@ -180,7 +188,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
     <div class="row"><span class="hint" id="palHint">Pick something to build, then tap the floor.</span><button class="pb" id="palRot">↻</button><button class="pb primary" id="palDone">Ready to open?</button></div>
   </div>
   <div class="hud sheet" id="sheet" hidden></div>
-  <div class="hud drawer" id="office" hidden><div class="rail" id="offRail"></div><div class="obody" id="off"></div><button class="x" id="offClose" aria-label="Close">×</button></div>
+  <div class="hud drawer paper" id="office" hidden><div class="rail" id="offRail"></div><div class="obody" id="off"></div><button class="x" id="offClose" aria-label="Close">×</button></div>
   <div class="title" id="title" hidden>
     <div class="logo"><i></i></div>
     <h1>Maple Street Pharmacy</h1>
@@ -189,7 +197,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
     <div class="small"><button id="tSound">Sound: on</button></div>
     <div class="ver" id="tVer"></div>
   </div>
-  <div class="review" id="review" hidden><div class="rev" id="rev"></div></div>
+  <div class="review" id="review" hidden><div class="rev paper" id="rev"></div></div>
   <div class="review dbgp" id="dbg" hidden><div class="rev">
     <h2>Debug report <button class="big ghost" id="dbgClose" style="margin-left:auto">Close</button></h2>
     <div class="env" id="dbgEnv"></div><div class="lines" id="dbgLines"></div>
@@ -241,16 +249,16 @@ const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE]:PALETTE_START;
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
 const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const ROLE_SHORT={tech:'TECH',clerk:'CLERK',rph:'PHARMACIST'};const ROLE_COL={tech:'#5dcaa5',clerk:'#dfe6e0',rph:'#b9a9ff'};const WAGES={tech:800,clerk:650,rph:1800};
 /* insurance plans (contracts) */
-const PLANS={blue:{name:'BlueLeaf',rate:38,delay:2,reject:.06,share:.35,h:'commercial · pays in 2 weeks · 6% rejected'},
-             silver:{name:'SilverPlan',rate:30,delay:3,reject:.10,share:.30,h:'seniors · pays in 3 weeks · 10% rejected'},
-             quick:{name:'QuickPay HMO',rate:26,delay:1,reject:.04,share:.15,h:'local HMO · pays in 1 week · 4% rejected'}};
-const CASH_SHARE=.2,COPAY=10,CONSULT=35,OTC=8,RENT=500,LOAN=20000,LOAN_PAY=400;
+const PLANS={blue:{name:'BlueLeaf',rate:52,delay:2,reject:.06,share:.35,h:'commercial · pays in 2 weeks · 6% rejected'},
+             silver:{name:'SilverPlan',rate:44,delay:3,reject:.10,share:.30,h:'seniors · pays in 3 weeks · 10% rejected'},
+             quick:{name:'QuickPay HMO',rate:38,delay:1,reject:.04,share:.15,h:'local HMO · pays in 1 week · 4% rejected'}};
+const CASH_SHARE=.2,COPAY=12,CONSULT=40,OTC=9,RENT=500,LOAN=20000,LOAN_PAY=400,LOAN_RATE=.01,GOAL_CASH=25000,OVERDRAFT=3000;
 
 /* ============ state ============ */
 let S;
 function fresh(){return {week:1,day:0,tick:0,speed:0,running:false,opened:false,done:false,cash:LOAN,loan:LOAN,trust:50,
   objs:[],gridVer:0,staff:[mkStaff('You','rph',true)],sched:{},
-  plans:{blue:true,silver:true,quick:false},cashPrice:34,stock:150,orderQty:150,unitCost:10,
+  plans:{blue:true,silver:true,quick:false},cashPrice:48,stock:150,orderQty:150,unitCost:11,
   scripts:[],patients:[],fx:[],claims:[],wk:blank(),days:[],ledger:[],mods:{},seen:[],card:null,choice:null,rent:RENT,hist:[],sid:1};}
 const blank=()=>({served:0,lost:0,consults:0,otc:0,cashIn:0,drug:0,paid:0,fee:0,trust0:0,phoneMissed:0,backorder:0,writeoff:0,annoyed:0});
 function mkStaff(name,role,isYou){return {id:uid(),name,role,isYou:!!isYou,x:OUT.x,y:OUT.y,skin:pick(SKINS),plan:null,step:0,work:0,workMax:0,carry:[],bob:Math.random()*6,fatigue:0,off:false,path:null,goal:null,pv:-1};}
@@ -325,8 +333,8 @@ function readiness(){const r=[];const ok=(c,t)=>r.push({ok:!!c,t});
   return r;}
 
 /* ============ economy helpers ============ */
-const acceptedShare=()=>Object.keys(PLANS).reduce((t,k)=>t+(S.plans[k]?PLANS[k].share:PLANS[k].share*.25),0)+CASH_SHARE*(1-(S.cashPrice-34)/40);
-function demandPerDay(){let d=24*acceptedShare()*(.7+S.trust/160);if(S.mods.chain)d*=S.mods.chainK;if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;return d;}
+const acceptedShare=()=>Object.keys(PLANS).reduce((t,k)=>t+(S.plans[k]?PLANS[k].share:PLANS[k].share*.25),0)+CASH_SHARE*(1-(S.cashPrice-48)/40);
+function demandPerDay(){let d=24*acceptedShare()*(.7+S.trust/160);if(S.mods.chain&&S.mods.chainK)d*=S.mods.chainK;if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;return d;}
 function pickPlan(){const r=Math.random()*acceptedShare();let acc=0;for(const k in PLANS){acc+=S.plans[k]?PLANS[k].share:PLANS[k].share*.25;if(r<acc)return S.plans[k]?k:'cash';}return 'cash';}
 function wageOf(w){if(w.isYou)return 0;const s=S.sched[w.id]||['F','F','F','F','F','F'];const f=s.reduce((t,v)=>t+(v==='F'?1:v==='O'?0:.55),0)/6;return Math.round(WAGES[w.role]*f);}
 const wages=()=>S.staff.reduce((t,w)=>t+wageOf(w),0);
@@ -386,7 +394,7 @@ function jobVerify(w,o,sc){claim(w,o,sc);const shelf=objsOf('shelf')[0];const pr
         else{for(const b of bad){b.stage='claim';b.at='claim:'+o.id;}glog('money',`${bad.length} rejected claim${bad.length>1?'s':''} waiting for your decision in Manage → Claims.`,'claimq',24);}}}});}});return plan;}
 function jobProblem(w,o,sc){claim(w,o,sc);const shelf=objsOf('shelf')[0];const fast=o.type==='problem';return {name:'problem',steps:[{go:staffTile(o)},{fn:()=>{sc.at='slot:'+o.id;}},{work:(fast?2:4)/eff(w),label:'calling insurer'},{fn:()=>{release(o,null);const okp=Math.random()<(fast?.7:.6);if(okp){w.carry=[sc];sc.at=null;w.plan.steps.push({go:staffTile(shelf)},{fn:()=>{bagIt(w,sc,shelf);w.carry=[];}});closeClaim(sc.id,'appealed');}else{writeOff(sc,'appeal failed');}}}]};}
 function closeClaim(id,status){const c=S.claims.find(x=>x.id===id);if(c)c.status=status;}
-function writeOff(sc,why){sc.stage='dead';sc.at=null;sc.claimed=null;S.wk.writeoff++;S.trust-=1;closeClaim(sc.id,'written off');const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.exitMood='sad';p.state='leaving';p.seat=null;p.q=null;}glog('money',`Claim written off (${why}).`,'wo',6);}
+function writeOff(sc,why){sc.stage='dead';sc.at=null;sc.claimed=null;S.wk.writeoff++;S.trust-=.5;closeClaim(sc.id,'written off');const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.exitMood='sad';p.state='leaving';p.seat=null;p.q=null;}glog('money',`Claim written off (${why}).`,'wo',6);}
 function bagIt(w,sc,shelf){sc.claimed=null;sc.stage='shelf';sc.at=shelf?'shelf:'+shelf.id:null;SFX.paper();if(sc.abandoned)sc.unclaimed=true;else if(!sc.tomorrow)returnForPickup(sc);}
 function jobPickup(w,o,p,sc){claim(w,o,sc);p.state='served';return {name:'pickup',steps:[{go:staffTile(o)},{fn:()=>{w.carry=[sc];sc.at=null;}},{work:1,label:'ringing up'},{fn:()=>{w.carry=[];pay(sc,p,o);release(o,sc);sc.stage='done';p.state='leaving';p.exitMood=(S.day*TICKS_DAY+S.tick-sc.t0)<20?'happy':'content';}}]};}
 function jobConsult(w,o,p){claim(w,o,null);p.state='served';const priv=enclosed(o);return {name:'consult',steps:[{go:staffTile(o)},{work:4/eff(w),label:'consulting'},{fn:()=>{S.cash+=CONSULT;S.wk.cashIn+=CONSULT;S.wk.consults++;S.trust+=priv?.4:.2;fx(o,'+$35','cash');SFX.register();release(o,null);p.state='leaving';p.exitMood='happy';}}]};}
@@ -453,14 +461,14 @@ function startWeek(){audioInit();cancelMove();if(!S.opened)glog('ops','Open for 
 const feeOf=l=>.06;
 function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();
   let paid=0,fee=0;S.ledger=S.ledger.filter(l=>{if(l.due<=S.week){paid+=l.amt*(1-feeOf(l));fee+=l.amt*feeOf(l);return false;}return true;});
-  S.cash+=paid;S.wk.paid=paid;S.wk.fee=fee;const loanPay=S.loan>0?Math.min(LOAN_PAY,S.loan):0;S.loan-=loanPay;
+  S.cash+=paid;S.wk.paid=paid;S.wk.fee=fee;const interest=Math.round(S.loan*LOAN_RATE);S.loan+=interest;S.wk.interest=interest;const loanPay=S.loan>0?Math.min(LOAN_PAY,S.loan):0;S.loan-=loanPay;
   const costs=wages()+S.rent+S.wk.drug+loanPay+(S.mods.delivery?60:0);S.cash-=costs-S.wk.drug;/* drugs were charged at delivery */S.wk.costs=costs;S.wk.loanPay=loanPay;
   if(S.mods.delivery)S.trust+=1.5;if(S.mods.referral)S.trust+=1;if(objsOf('plant').length)S.trust+=.3*Math.min(3,objsOf('plant').length);
-  for(const k of Object.keys(S.mods)){if(typeof S.mods[k]==='number'&&S.mods[k]<99){S.mods[k]--;if(S.mods[k]<=0)delete S.mods[k];}}
+  for(const k of Object.keys(S.mods)){if(k.endsWith('K'))continue;if(typeof S.mods[k]==='number'&&S.mods[k]<99){S.mods[k]--;if(S.mods[k]<=0){delete S.mods[k];delete S.mods[k+'K'];}}}
   S.trust=clamp(S.trust,0,100);S.wk.net=S.wk.cashIn+paid-costs;(S.hist=S.hist||[]).push({week:S.week,cash:Math.round(S.cash),net:Math.round(S.wk.net),inflow:S.wk.cashIn+paid});
-  glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${fmt(loanPay)}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
+  glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${fmt(loanPay)}${interest?` (+${fmt(interest)} interest)`:''}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
   log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,paid:Math.round(paid),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
-  if(S.cash>=30000&&S.trust>=60&&S.loan<=0)S.done='win';else if(S.cash<-6000)S.done='lose';
+  if(S.cash>=GOAL_CASH&&S.trust>=60&&S.loan<=0)S.done='win';else if(S.cash<-OVERDRAFT)S.done='lose';
   S.card=S.done?null:pickCard();S.choice=null;S.week++;S.orderQty=Math.round(demandPerDay()*6*1.1);saveGame();showReview();}
 
 /* ============ event cards ============ */
@@ -468,8 +476,8 @@ const CARDS=[
   {id:'referral',when:()=>S.week>=2&&!S.mods.referral,t:'A clinic nearby wants to send you about 40 more patients a week.',s:'All insured: more owed to you, more work, more trust.',o:[['Pass',()=>{}],['Take it',()=>{S.mods.referral=4;}]]},
   {id:'chain',when:()=>S.week>=3&&!S.mods.chain,t:'A chain pharmacy opened across the street.',s:'Fewer walk-ins for a month unless you fight for them.',o:[['Ride it out',()=>{S.mods.chain=4;S.mods.chainK=.8;}],['Run a $1,500 promo',()=>{S.cash-=1500;S.mods.chain=4;S.mods.chainK=.93;}]]},
   {id:'rent',when:()=>S.week>=4,t:'Your landlord wants $150 more per week.',s:'Pushing back usually works. Sometimes it doesn\'t.',o:[['Agree',()=>{S.rent+=150;}],['Push back',()=>{if(Math.random()<.6)adv='The landlord backed down.';else{S.rent+=250;adv='The landlord dug in: $250 more.';}}]]},
-  {id:'quick',when:()=>!S.plans.quick&&S.week>=2,t:'QuickPay HMO offers a contract: $26 a script, paid in one week.',s:'Fast money, thin margin. You can drop it later in Manage → Insurers.',o:[['Decline',()=>{}],['Sign',()=>{S.plans.quick=true;}]]},
-  {id:'bluecut',when:()=>S.plans.blue&&S.week>=5&&PLANS.blue.rate>=38,t:'BlueLeaf wants to cut your rate from $38 to $34 a script.',s:'Accept, or push back and risk losing the contract for a month.',o:[['Accept',()=>{PLANS.blue.rate=34;}],['Push back',()=>{if(Math.random()<.5)adv='BlueLeaf blinked. Rate stays at $38.';else{S.plans.blue=false;S.mods.blueOut=4;adv='BlueLeaf walked. Their patients are gone for a month.';}}]]},
+  {id:'quick',when:()=>!S.plans.quick&&S.week>=2,t:'QuickPay HMO offers a contract: $38 a script, paid in one week.',s:'Fast money, thin margin. You can drop it later in Manage → Insurers.',o:[['Decline',()=>{}],['Sign',()=>{S.plans.quick=true;}]]},
+  {id:'bluecut',when:()=>S.plans.blue&&S.week>=5&&PLANS.blue.rate>=52,t:'BlueLeaf wants to cut your rate from $52 to $46 a script.',s:'Accept, or push back and risk losing the contract for a month.',o:[['Accept',()=>{PLANS.blue.rate=46;}],['Push back',()=>{if(Math.random()<.5)adv='BlueLeaf blinked. Rate stays at $52.';else{S.plans.blue=false;S.mods.blueOut=4;adv='BlueLeaf walked. Their patients are gone for a month.';}}]]},
   {id:'flu',when:()=>objsOf('consult').length&&!S.mods.flu,t:'Flu season is here. People want shots.',s:'Consult visits double for two weeks.',o:[['Noted',()=>{S.mods.flu=2;}]]},
   {id:'raise',when:()=>S.staff.length>=4&&!S.mods.raise,t:'Your team asks for a raise.',s:'$100 more per person each week, or a grumpy month.',o:[['Give it',()=>{S.mods.raise=99;for(const k in WAGES)WAGES[k]+=100;}],['Not now',()=>{S.trust-=2;}]]},
   {id:'slowpay',when:()=>owedTotal()>2500&&!S.mods.slowCd,t:'A big insurer is paying late this month.',s:'Wait it out, or take 85% of what\'s owed right now.',o:[['Wait',()=>{S.mods.slowCd=4;for(const l of S.ledger)l.due++;}],['Take the advance',()=>{S.mods.slowCd=4;S.cash+=owedTotal()*.85;S.ledger=[];}]]},
@@ -484,10 +492,11 @@ function pickCard(){const ok=CARDS.filter(c=>c.when()&&!S.seen.slice(-3).include
 function page(html){$('rev').innerHTML=html;$('review').hidden=false;}
 function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const Wd=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*Wd,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
   return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${Wd}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;}
-function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Cash goal',`${fmt(S.cash)} / ${fmt(30000)}`,S.cash/30000)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / 60`,S.trust/60)}</div>`;}
+function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)));if(amt<=0)return;S.cash-=amt;S.loan-=amt;glog('money',`Paid ${fmt(amt)} toward the loan. ${fmt(S.loan)} left.`);SFX.cash&&SFX.cash();saveGame();}
+function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Cash goal',`${fmt(S.cash)} / ${fmt(GOAL_CASH)}`,S.cash/GOAL_CASH)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / 60`,S.trust/60)}</div>`;}
 function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy <small>your goal</small></h2>${goalsHtml()}
-  <p class="sub">Fill all three bars to win. Cash at <b>$0</b> and the bank takes the store.</p>
-  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> · <b>${fmt(LOAN_PAY)}</b> a week back</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b> · counters keep them out of the back</div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
+  <p class="sub">Fill all three bars to win. The bank allows a <b>${fmt(OVERDRAFT)}</b> overdraft; go past it and they take the store.</p>
+  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · <b>${fmt(LOAN_PAY)}</b> minimum back, pay extra any time</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b> · counters keep them out of the back</div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
   <div class="btns"><button class="big" id="go">Start building</button></div>`);
   $('go').onclick=()=>{$('review').hidden=true;setBuild(true);renderHud();};}
 function showChecklist(){const r=readiness();const all=r.every(x=>x.ok);
@@ -510,8 +519,8 @@ function reviewDecide(){closeAll();const card=CARDS.find(c=>c.id===S.card);const
   page(`<h2>Week ${S.week} <small>${S.opened?'decide · 2 of 2':'opening week'}</small></h2>
     ${card?`<div class="card"><div class="t">${card.t}</div><div class="s">${card.s}</div><div class="opts" id="opts">${card.o.map((o,i)=>`<button data-i="${i}">${o[0]}</button>`).join('')}</div></div>`:''}
     ${goalsHtml()}
-    <div class="facts"><div>📋 Expect <b>~${Math.round(demandPerDay())} prescriptions a day</b></div><div>🏦 Insurers pay you <b>${fmt(due)}</b> this week${due?'':' <span class="sub">(first payments take weeks)</span>'}</div><div>📦 Stock <b>${S.stock}</b> · order of ${S.orderQty} arrives Mon <b>−${fmt(S.orderQty*S.unitCost)}</b></div><div>💸 Fixed costs this week <b>−${fmt(wages()+S.rent+LOAN_PAY)}</b> <span class="sub">(wages, rent, loan)</span></div></div>
-    <p class="sub">Fill all three bars to win. Cash at $0 and the bank takes the store. People who give up waiting cost trust.</p>
+    <div class="facts"><div>📋 Expect <b>~${Math.round(demandPerDay())} prescriptions a day</b></div><div>🏦 Insurers pay you <b>${fmt(due)}</b> this week${due?'':' <span class="sub">(first payments take weeks)</span>'}</div><div>📦 Stock <b>${S.stock}</b> · order of ${S.orderQty} arrives Mon <b>−${fmt(S.orderQty*S.unitCost)}</b></div><div>💸 Fixed costs this week <b>−${fmt(wages()+S.rent+LOAN_PAY+Math.round(S.loan*LOAN_RATE))}</b> <span class="sub">(wages, rent, loan + interest)</span></div></div>
+    <p class="sub">${(()=>{const bills=wages()+S.rent+Math.min(LOAN_PAY,S.loan)+Math.round(S.loan*LOAN_RATE);const est=Math.round(demandPerDay()*6*(COPAY*.8+S.cashPrice*.2)*.9);const sat=S.cash+est+due-bills-S.orderQty*S.unitCost;return sat<0?`At this pace you'd end the week <b class="neg">overdrawn by ${fmt(-sat)}</b>. The bank allows ${fmt(OVERDRAFT)}.`:`At this pace you'd end the week with about <b>${fmt(sat)}</b> in hand.`;})()} People who give up waiting cost trust.</p>
     <div class="btns">${S.opened&&S.week>1?'<button class="big ghost" id="back">◀ Results</button>':''}<button class="big ghost" id="toOffice">Manage</button><button class="big ghost" id="toFloor">Floor</button><button class="big" id="run" ${card?'disabled':''}>Run week ${S.week} ▶</button></div>`);
   if(card)$('rev').querySelectorAll('#opts button').forEach(b=>b.onclick=()=>{S.choice=+b.dataset.i;$('rev').querySelectorAll('#opts button').forEach(x=>x.classList.toggle('on',x===b));$('run').disabled=false;SFX.click();});
   const bk=$('back');if(bk)bk.onclick=()=>{SFX.click();showReview();};$('toOffice').onclick=()=>{$('review').hidden=true;openOffice('insurance');};$('toFloor').onclick=()=>{$('review').hidden=true;renderHud();};
@@ -571,11 +580,20 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   $('offRail').querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{officeTab=b.dataset.tab;SFX.click();renderOffice();});$('offClose').onclick=()=>{SFX.click();closeOffice();};
   let body='';const ds=S.days.slice(-18);
   const line=(key,col,max)=>{if(ds.length<2)return '';const mx=max||Math.max(1,...ds.map(d=>typeof key==='function'?key(d):d[key]));const Wd=200,H=26;const pts=ds.map((d,i)=>{const v=typeof key==='function'?key(d):d[key];return [i/(ds.length-1)*Wd,H-2-(v/mx)*(H-4)];});return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;};
-  if(officeTab==='metrics'){const last=ds[ds.length-1]||{};const u=last.util||{};const col=v=>v>.85?'var(--bad)':v<.3?'#ba7517':'var(--accent)';const bar=(l,v)=>`<div><div class="n" style="display:flex;justify-content:space-between"><span>${l}</span><b>${Math.round((v||0)*100)}%</b></div><div class="ubar"><i style="width:${Math.round((v||0)*100)}%;background:${col(v||0)}"></i></div></div>`;
-    body=`<h2>Money <small>last ${ds.length} days</small></h2><div class="grid2"><div class="tile"><small>Served yesterday</small><b>${last.served??'–'}</b>${line('served','var(--accent)')}</div><div class="tile"><small>Gave up</small><b class="${last.lost?'neg':''}">${last.lost??'–'}</b>${line('lost','#e24b4a')}</div><div class="tile"><small>Cash</small><b>${fmt(S.cash)}</b>${line('cash','var(--accent)')}</div><div class="tile"><small>Insurers owe</small><b class="owed">${fmt(owedTotal())}</b>${line('owed','#ba7517')}</div></div>
-      <div class="tile"><small>Station load yesterday</small><div class="grid2" style="margin-top:4px">${bar('Fill',u.fill)}${bar('Verify',u.verify)}${bar('Drop-off',u.intake)}${bar('Registers',u.pickup)}</div></div><div class="foot">Red = a line forms there. Amber = paying for idle time.</div>`;}
+  if(officeTab==='metrics'){const last=ds[ds.length-1]||{};const u=last.util||{};
+    const dueNow=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0),dueNext=S.ledger.filter(l=>l.due===S.week+1).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0),dueLater=owedTotal()*(1-.06)-dueNow-dueNext;
+    const interest=Math.round(S.loan*LOAN_RATE);const bills=wages()+S.rent+Math.min(LOAN_PAY,S.loan)+interest+(S.mods.delivery?60:0);
+    const frac=S.running?Math.max(.1,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK)):0;const counterSoFar=S.wk.cashIn;const counterRest=S.running?Math.round(counterSoFar/frac-counterSoFar):Math.round((S.hist.length?S.hist[S.hist.length-1].inflow-(S.hist[S.hist.length-1].paid||0):2000)*0);
+    const sat=S.cash+counterRest+dueNow-bills;
+    const verdict=sat<-OVERDRAFT?`<span class="verdict bad">Saturday you'd be past the overdraft. Take cash claims, cut a shift, or delay the drug order.</span>`:sat<0?`<span class="verdict bad">Saturday you'd be overdrawn by ${fmt(-sat)}. The bank allows ${fmt(OVERDRAFT)}, but it's thin.</span>`:sat<2000?`<span class="verdict">Saturday you'd have about ${fmt(sat)}. Tight — don't buy anything big this week.</span>`:`<span class="verdict good">Saturday you'd have about ${fmt(sat)}. Room to invest or pay down the loan.</span>`;
+    const load=(l,v,fix)=>{const p=Math.round((v||0)*100);const bad=p>85,low=p<30&&p>0;return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${bad?'bad':low?'':'good'}">${bad?fix:low?'mostly idle':'fine'}</span></div></div>`;};
+    body=`<h2>Money <small>will you make Saturday?</small></h2>
+      <div class="tile"><div class="pay"><div><span>Cash now</span><b>${fmt(S.cash)}</b></div>${S.running?`<div><span>Counter sales, rest of the week (est.)</span><b class="pos">+${fmt(counterRest)}</b></div>`:''}<div><span>Insurers paying this Saturday</span><b class="pos">+${fmt(Math.round(dueNow))}</b></div><div><span>Saturday bills · wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${fmt(Math.min(LOAN_PAY,S.loan))}${interest?' + '+fmt(interest)+' interest':''}${S.mods.delivery?', driver $60':''}</span><b class="neg">−${fmt(bills)}</b></div><div class="tot"><span>Saturday night</span><b class="${sat<0?'neg':''}">${fmt(Math.round(sat))}</b></div></div>${verdict}</div>
+      <div class="tile"><div class="pay"><div><span>Still owed by insurers</span><b class="owed">${fmt(owedTotal())}</b></div><div><span>· next week</span><b>+${fmt(Math.round(dueNext))}</b></div><div><span>· after that</span><b>+${fmt(Math.round(Math.max(0,dueLater)))}</b></div></div></div>
+      <div class="tile"><small>Loan · ${fmt(S.loan)} left · costs ${fmt(interest)} a week in interest</small><div class="seg" style="margin-top:4px"><button data-pay="500" ${S.cash<1500?'disabled':''}>Pay $500</button><button data-pay="2000" ${S.cash<3000?'disabled':''}>Pay $2,000</button><button data-pay="all" ${S.cash-1000<S.loan?'disabled':''}>Pay it off</button></div><div class="foot">Every $1,000 paid saves $10 a week. Always keeps $1,000 back.</div></div>
+      ${ds.length?`<div class="tile"><small>Where people wait · yesterday</small>${load('Drop-off',u.intake,'line forms → another window or clerk')}${load('Fill',u.fill,'baskets pile up → upgrade or second tech')}${load('Verify',u.verify,'you\'re the bottleneck → hire a pharmacist')}${load('Registers',u.pickup,'pick-up line → another register')}<div class="pay"><div><span>Served ${last.served} · gave up ${last.lost}</span><span class="verdict ${last.lost>3?'bad':'good'}">${last.lost>3?'too many walk out':last.lost?'a few walked out':'nobody walked out'}</span></div></div></div>`:''}`;}
   if(officeTab==='insurance'){body=`<h2>Insurers <small>on = you take their patients</small></h2>${Object.keys(PLANS).map(k=>{const p=PLANS[k];const on=S.plans[k];const owed=S.ledger.filter(l=>l.plan===k).reduce((t,l)=>t+l.amt,0);return `<div class="ins"><button class="sw ${on?'on':''}" data-plan="${k}" aria-label="toggle"></button><div class="nm">${p.name}${owed?` <span class="sub" style="font-weight:600">· owes you ${fmt(owed)}</span>`:''}</div><div class="m"><span>pays <b>${fmt(p.rate)}</b>/Rx</span><span>in <b>${p.delay} wk${p.delay>1?'s':''}</b></span><span>rejects <b>${Math.round(p.reject*100)}%</b></span><span><b>${Math.round(p.share*100)}%</b> of patients</span></div></div>`;}).join('')}
-    <div class="foot">Turning one off: most of those patients stop coming; a quarter pay cash instead. Cash customers pay ${fmt(S.cashPrice)} today (${Math.round(CASH_SHARE*(1-(S.cashPrice-34)/40)*100)}% of patients).</div>`;}
+    <div class="foot">Turning one off: most of those patients stop coming; a quarter pay cash instead. Cash customers pay ${fmt(S.cashPrice)} today (${Math.round(CASH_SHARE*(1-(S.cashPrice-48)/40)*100)}% of patients).</div>`;}
   if(officeTab==='claims'){const open=S.claims.filter(c=>c.status==='open');const closed=S.claims.filter(c=>c.status!=='open').slice(-4).reverse();
     body=`<h2>Rejected claims <small>${open.length?`${open.length} · expire in 3 days`:'none open'}</small></h2>${open.map(c=>`<div class="clm"><div><b>${fmt(PLANS[c.planKey]?PLANS[c.planKey].rate:34)}</b> · ${c.plan}<small>${c.reason} · ${c.name}</small></div><button class="a pri" data-cl="${c.id}" data-a="appeal">Appeal</button><button class="a" data-cl="${c.id}" data-a="cash">Cash ${fmt(S.cashPrice)}</button><button class="a" data-cl="${c.id}" data-a="wo">Drop</button></div>`).join('')}
       ${closed.length?`<div class="lbl">Recent</div>${closed.map(c=>`<div class="clm" style="opacity:.75"><div>${c.plan} · ${c.name}<small>${c.reason} · ${c.status}</small></div></div>`).join('')}`:''}
@@ -585,6 +603,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
       <div class="lever"><div><div class="n">Weekly order</div><div class="h">Paid on delivery. Short = stockouts; long = cash tied up.</div></div><div class="seg"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>`;}
   if(officeTab==='pricing'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
   el.innerHTML=body;
+  el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{payLoan(b.dataset.pay==='all'?S.loan:+b.dataset.pay);renderOffice();renderHud();});
   el.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>{const k=b.dataset.plan;S.plans[k]=!S.plans[k];glog('event',`${PLANS[k].name}: ${S.plans[k]?'accepted':'dropped'}.`);SFX.click();renderOffice();});
   el.querySelectorAll('[data-cl]').forEach(b=>b.onclick=()=>{const sc=S.scripts.find(x=>x.id===+b.dataset.cl);const a=b.dataset.a;if(!sc){closeClaim(+b.dataset.cl,'written off');renderOffice();return;}
     if(a==='appeal'){sc.stage='problem';const v=objsOf('verify')[0];sc.at=v?'claim:'+v.id:null;closeClaim(sc.id,'appealing');glog('money','Appeal sent. A pharmacist will call the insurer.');}
@@ -592,7 +611,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
     else writeOff(sc,'your call');SFX.click();renderOffice();});
   el.querySelectorAll('.cell').forEach(b=>b.onclick=()=>{const s=S.sched[b.dataset.w];const i=+b.dataset.d;const order=['F','A','P','O'];s[i]=order[(order.indexOf(s[i])+1)%4];SFX.click();renderOffice();});
   const oM=$('ordM'),oP=$('ordP');if(oM){oM.onclick=()=>{S.orderQty=Math.max(0,S.orderQty-25);renderOffice();};oP.onclick=()=>{S.orderQty+=25;renderOffice();};}
-  const pM=$('prM'),pP=$('prP');if(pM){pM.onclick=()=>{S.cashPrice=Math.max(26,S.cashPrice-2);renderOffice();};pP.onclick=()=>{S.cashPrice=Math.min(46,S.cashPrice+2);renderOffice();};}}
+  const pM=$('prM'),pP=$('prP');if(pM){pM.onclick=()=>{S.cashPrice=Math.max(36,S.cashPrice-2);renderOffice();};pP.onclick=()=>{S.cashPrice=Math.min(60,S.cashPrice+2);renderOffice();};}}
 
 /* ============ layout, chat, hud (kept from v11) ============ */
 const LDEF={barL:87,barR:39,barY:3,barH:41,barF:11,chatX:85,chatY:8,chatW:362,chatH:108,chatF:10,sheetW:360,sheetF:13,rowH:44,revW:560,revF:13,size:1,chatOpen:true,chatShown:true,floor:{x:58/799,y:39/430,w:670/799,h:383/430},glR:87};
@@ -644,7 +663,7 @@ $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.
 $('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 $('officeBtn').onclick=()=>{if($('office').hidden)openOffice();else closeOffice();SFX.click();};
-function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/30000)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
+function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
 function renderHud(){if(!$('office').hidden&&S.running&&S.tick%3===0)renderOffice();const t=`Wk ${S.week} · ${S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'between weeks':'building'}`;$('wkT').textContent=t;
   $('spd').innerHTML=S.running?[[0,'❚❚'],[1,'▶'],[3,'▶▶']].map(([n,g])=>`<button class="spd ${S.speed===n?'on':''}" data-s="${n}" aria-label="speed ${n}">${g}</button>`).join(''):`<button class="spd on" id="goBtn" aria-label="Continue">▶</button>`;
   $('spd').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{setSpeed(+b.dataset.s);SFX.click();});const gb=$('goBtn');if(gb)gb.onclick=()=>{SFX.click();if(!S.opened){setBuild(true);showChecklist();}else showReview();};
@@ -851,7 +870,7 @@ function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
   if(saved){for(const o of S.objs)o.t0=0;for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={GL,LOG,get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,payLoan,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
 })();
