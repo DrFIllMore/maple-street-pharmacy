@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.5 · 2026-10-25
+- Fix: in v23.4 the rotated app relied on 100vh/100vw while the canvas used the visual viewport, so on iPhone the floor could render stretched/offset relative to the HUD. The app box is sized explicitly from the visual viewport again (as in v23.1).
+
 ## v23.4 · 2026-10-25
 - Rotated layout uses the full screen again (v23.1 dimensions). Instead of shrinking the app, the HUD gutters grow to at least the safe-area insets, so no panel, card, prompt or message sits under the Dynamic Island or the home bar; review/inbox panels respect the right gutter too.
 

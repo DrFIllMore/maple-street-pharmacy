@@ -285,7 +285,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.4 · 2026-10-25';
+const BUILD='v23.5 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1109,7 +1109,7 @@ const cv=$('cv');let ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:
 forceLand=true;
 let SA={t:0,b:0,l:0,r:0};function readSafeArea(){let el=$('saprobe');if(!el){el=document.createElement('div');el.id='saprobe';el.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(el);}const cs=getComputedStyle(el);SA={t:parseFloat(cs.paddingTop)||0,r:parseFloat(cs.paddingRight)||0,b:parseFloat(cs.paddingBottom)||0,l:parseFloat(cs.paddingLeft)||0};if(window.__forceSA)SA=window.__forceSA;return SA;}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();
-  if(ROT){/* phone held upright, game rotated: the app keeps the full screen, but the HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (left edge) or the home bar (right edge) */const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8)+'px');VW=ih;VH=iw;}else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');VW=app.clientWidth;VH=app.clientHeight;}}
+  if(ROT){/* phone held upright, game rotated: the app keeps the full screen, but the HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (left edge) or the home bar (right edge) */const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8)+'px');app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 /* JS instead of a @container rule: container-type on the strip crashed iOS/WebKit on reload */(()=>{const st=$('strip');if(!st)return;const fit=()=>{const w=st.clientWidth;if(w)st.classList.toggle('narrow',w<560);};if(window.ResizeObserver)new ResizeObserver(fit).observe(st);window.addEventListener('resize',fit);fit();})();
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
