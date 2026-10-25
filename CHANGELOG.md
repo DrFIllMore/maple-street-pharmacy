@@ -1,5 +1,9 @@
 # Changelog
 
+## v21.5 — 2026-10-25 — The week figure includes the insurers
+- Audited the money: a 4-week reconciliation test (now in `test/cash-reconcile.js`) confirms cash moves by exactly counter cash + insurer payout − wages/rent/loan/drugs every week, and insurers pay on their dated Saturdays. Nothing was lost.
+- What made it *feel* unpaid: the top bar's "This week" was counter cash minus pro-rated bills minus the whole drug order, and ignored the insurer payout that lands Saturday — so it sat deep in the red all week. It is now **Week est.**: counter cash on the current pace, plus what insurers pay this Saturday, minus the week's wages, rent, loan payment, interest and drugs. The Gazette keeps the exact figures.
+
 ## v21.4 — 2026-10-25 — Rooms built before v21.3 get a way in
 - Saves carry the room as it was built. A room placed under v21.1/21.2 (or any hand-built room where the tile behind the desk is walled off) left the pharmacist with no path to the desk, so consult visitors waited and left. On load, any consult desk the pharmacist cannot reach has the wall directly behind it turned into a staff door, with a log line saying so.
 - The consult desk card now states plainly when "the pharmacist can't reach the spot behind the desk — put a staff door in the wall behind it", and the chat log says the same the first time a visitor waits at such a desk.

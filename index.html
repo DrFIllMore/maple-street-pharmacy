@@ -228,7 +228,7 @@ button,.hud{touch-action:manipulation}
     <span class="sp"></span>
     <span class="st"><small>Cash</small><b id="cash"></b></span>
     <span class="st"><small>Insurers owe</small><b id="owed" class="owed"></b></span>
-    <span class="st" id="wnetSt"><small>This week</small><b id="wnet"></b></span>
+    <span class="st" id="wnetSt"><small>Week est.</small><b id="wnet"></b></span>
     <span class="st" id="runSt"><small>Runway</small><b id="runway"></b></span>
     <span class="st"><small>Trust</small><b id="trust"></b></span>
     <span class="st goal" id="goalSt"><small>Goal</small><span class="trk"><i id="goalI"></i></span></span>
@@ -284,7 +284,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v21.4 · 2026-10-25';
+const BUILD='v21.5 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1052,7 +1052,7 @@ function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;S.wk.maxTr
   const conf=S.patients.filter(p=>p.conf>0).length;if(conf>=2)glog('bad',`${conf} people can't find their way in.`,'conf',24);
   const idleW=S.staff.filter(w=>!w.plan&&!w.off);if(idleW.length>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idleW.map(w=>w.name).join(', ')} have nothing to do right now.`,'idle',36);
   if(owedTotal()>S.cash*1.5&&owedTotal()>2500)glog('ops',`Insurers owe you ${fmt(owedTotal())}; you have ${fmt(S.cash)}.`,'owed',72);}
-function weekSoFar(){const frac=(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK);return S.wk.cashIn-(wages()+S.rent+LOAN_PAY)*frac-S.wk.drug;}
+function weekSoFar(){/* projected week net: counter cash on current pace + what insurers pay this Saturday − the week's bills and drugs */const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const counter=S.wk.cashIn/frac;const ins=S.ledger.filter(l=>l.due<=S.week).reduce((t,l)=>t+l.amt*(1-feeOf(l)),0);const bills=wages()+S.rent+Math.min(LOAN_PAY,S.loan)+Math.round(S.loan*LOAN_RATE);return counter+ins-bills-S.wk.drug;}
 function runwayWeeks(){const burn=wages()+S.rent+LOAN_PAY+S.orderQty*S.unitCost;const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
 $('menuBtn').onclick=()=>{const m=$('menu');m.hidden=!m.hidden;SFX.click();};
 $('mStaff').onclick=()=>openOffice('schedule');$('mOffice').onclick=()=>openOffice('metrics');
