@@ -284,7 +284,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v22 · 2026-10-25';
+const BUILD='v22.1 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -327,7 +327,7 @@ const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE]:PALETTE_START;
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
 const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const ROLE_ORDER={rph:0,tech:1,clerk:2};const staffSorted=()=>[...S.staff].sort((a,b)=>(ROLE_ORDER[a.role]-ROLE_ORDER[b.role])||(b.isYou?1:0)-(a.isYou?1:0)||a.name.localeCompare(b.name));const ROLE_SHORT={tech:'TECH',clerk:'CLERK',rph:'PHARMACIST'};const ROLE_COL={tech:'#2f7fd6',clerk:'#1d9e75',rph:'#f6f6f4'};const WAGES={tech:800,clerk:650,rph:1800};
 /* insurance plans (contracts) */
-const PLANS={blue:{name:'BlueLeaf',rate:52,delay:2,days:8,reject:.06,share:.35,h:'commercial · pays 8 days after the sale · 6% rejected'},
+const PLANS={blue:{name:'BlueLeaf',rate:52,delay:2,days:7,reject:.06,share:.35,h:'commercial · pays 7 days after the sale · 6% rejected'},
              silver:{name:'SilverPlan',rate:44,delay:3,days:12,reject:.10,share:.30,h:'seniors · pays 12 days after the sale · 10% rejected'},
              quick:{name:'QuickPay HMO',rate:38,delay:1,days:4,reject:.04,share:.15,h:'local HMO · pays 4 days after the sale · 4% rejected'}};
 const SPECIAL_ADD=90,SPECIAL_COST=55,VAX_SIGN=600,VAX_PACK=50,VAX_PACK_COST=600,SPECIAL_SIGN=2000,REVIEW_FEE=20;
@@ -591,7 +591,7 @@ function setSpeed(n){S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setI
 function startWeek(){audioInit();cancelMove();PROPCACHE=null;S.stage=null;$('resume').hidden=true;if(!S.opened&&!S.speedSet)S.speed=3;if(S.openBuildNext){S.openBuildNext=false;setTimeout(()=>setBuild(true),400);}if(!S.opened)glog('ops','Open for business. The Build menu now has phone desk, problem desk, consult desk, OTC shelf, stock shelf and plants.');for(const o of S.objs)o.earn=0;S.inv.used={gen:0,brand:0,vax:0,otc:0};S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
   for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;w.wkTicks=0;w.wkIdle=0;w.wkJobs=0;}for(const k in busyS)delete busyS[k];for(const sc of S.scripts)sc.claimed=null;hourSnap={served:0,lost:0,cashIn:0,missed:0};
   $('review').hidden=true;$('office').hidden=true;closeSheet();setSpeed(S.speed||1);duck();SFX.bell();
-  if(adv){glog('event',adv);adv='';}const due=dueThisWeek();glog('money',S.week===1?`Week 1 opens. Insurers pay 8–12 days after each sale, so the first checks land around Tuesday of week 2. Expect ~${Math.round(demandPerDay())} prescriptions a day.`:`Week ${S.week} opens. Insurers pay ${fmt(Math.round(due))} this week. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);saveGame();
+  if(adv){glog('event',adv);adv='';}const due=dueThisWeek();glog('money',S.week===1?`Week 1 opens. Insurers pay 7–12 days after each sale, so the first checks land around Monday of week 2. Expect ~${Math.round(demandPerDay())} prescriptions a day.`:`Week ${S.week} opens. Insurers pay ${fmt(Math.round(due))} this week. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);saveGame();
   log('game',`week ${S.week} start`,{staff:S.staff.map(w=>w.role),objs:S.objs.length,cash:Math.round(S.cash),trust:+S.trust.toFixed(1),demand:+demandPerDay().toFixed(1)});}
 const feeOf=l=>.06;
 function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();for(const p of S.patients){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='withPatient')sc.stage='dead';}S.patients=[];S.fx=[];
@@ -819,7 +819,7 @@ function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)
 function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Cash goal',`${fmt(S.cash)} / ${fmt(GOAL_CASH)}`,S.cash/GOAL_CASH)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / 60`,S.trust/60)}</div>`;}
 function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy <small>your goal</small></h2>${goalsHtml()}
   <p class="sub">Fill all three bars to win. The bank allows a <b>${fmt(OVERDRAFT)}</b> overdraft; go past it and they take the store.</p>
-  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · <b>${fmt(LOAN_PAY)}</b> minimum back, pay extra any time</div><div>🧾 Insurers pay <b>8–12 days after each sale</b>; the loan carries you until the checks start</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b></div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
+  <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · <b>${fmt(LOAN_PAY)}</b> minimum back, pay extra any time</div><div>🧾 Insurers pay <b>7–12 days after each sale</b>; the loan carries you until the checks start</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b></div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
   <div class="btns"><button class="big" id="go">Start building</button></div>`);
   $('go').onclick=()=>{$('review').hidden=true;setBuild(true);renderHud();};}
 function showChecklist(){const r=readiness();const all=r.every(x=>x.ok||x.soft);

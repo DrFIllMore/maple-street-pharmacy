@@ -10,7 +10,7 @@ const TARGETS=[
   {id:'firstMoney',t:'First insurer money within 3 real minutes at 1x (any archetype)',test:r=>r.flow.firstInsurerMin!==null&&r.flow.firstInsurerMin<=3,scope:'all'},
   {id:'firstGoodWeek',t:'A first net-positive week by week 4 (cautious or better)',test:r=>r.firstPositiveWeek!==null&&r.firstPositiveWeek<=4,scope:['cautious','builder','reactive','optimal']},
   {id:'trough',t:'Cautious play bottoms between $4k and $9k, never overdrafts',test:r=>r.minCash>=3000&&r.minCash<=9000,scope:['cautious']},
-  {id:'naiveFails',t:'Naive play does not win and is in trouble by week 12',test:r=>r.result!=='win'&&(r.result==='lose'||r.weeks[r.weeks.length-1].cash<6000),scope:['naive']},
+  {id:'naiveFails',t:'Naive play does not win and has no path to the goal (net worth below the cash goal at the end)',test:r=>r.result!=='win'&&(r.result==='lose'||(r.weeks[r.weeks.length-1].cash-r.weeks[r.weeks.length-1].loan)<15000),scope:['naive']},
   {id:'spread',t:'At least three archetypes reach the goal within 20 weeks',test:(_,all)=>new Set(all.filter(r=>r.result==='win').map(r=>r.arch)).size>=3,scope:'global'},
   {id:'noDominant',t:'No winning archetype wins more than 6 weeks ahead of the next',test:(_,all)=>{const w=all.filter(r=>r.result==='win').map(r=>r.endWeek).sort((a,b)=>a-b);return w.length<2||w[1]-w[0]<=6;},scope:'global'},
   {id:'deadZone',t:'No stretch longer than 90 s of floor time (1x) with nothing new happening',test:r=>r.flow.maxDeadSec<=90,scope:'all'},

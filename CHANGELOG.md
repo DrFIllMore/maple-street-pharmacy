@@ -1,5 +1,9 @@
 # Changelog
 
+## v22.1 — 2026-10-25 — Tuned on the second run
+- BlueLeaf pays 7 days after the sale (was 8), so the first check lands on Monday of week 2 — about 2.9 minutes of floor time at 1×.
+- Second robot playtest (loan $16k, hungrier rival, robots repay the loan): **cautious wins week 13–14, builder 14–18, optimal 15**; cautious bottoms at $6.6–7.9k in week 3 (the squeeze is back); naive stagnates (served falling 60 → 48 as the chain eats its share, net worth ~$9–11k, no path to the goal); marketer-only play is a trap (trust 36–52, cash under $5k); reactive pays off the loan but is slow (~week 24). 7 of 8 targets pass. Report: `test/reports/v22-pass2.html`.
+
 ## v22 — 2026-10-25 — Balance pass, measured
 - **Insurers pay daily.** Claims are dated in trading days (BlueLeaf 8, SilverPlan 12, QuickPay 4) and paid the morning they come due: a green "+$520 insurers" floater at the register and a log line; the first check gets a one-time announcement. First money lands around Tuesday of week 2 (~2.5 min of floor time at 1×) instead of the end of week 3. Top bar reads "Insurers owe · $X this wk"; Money tab and Gazette say "this week / next week". Old saves convert.
 - The late-payment event cannot appear before week 4 or before two checks have arrived; the advance is listed first and pays 92%; "Wait" delays everything by one week.
