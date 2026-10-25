@@ -281,7 +281,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20.8 · 2026-10-25';
+const BUILD='v20.9 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -523,7 +523,7 @@ function tick(){
   if(reach.size>1&&objsOf('dropoff').length){const d=demandPerDay()/TICKS_DAY*rush;accW+=d*.5;accP+=d*.25;accE+=d*.25;}
   accC+=(objsOf('consult').length?5*(.6+S.trust/120)*(S.mods.flu?1.8:1)*(S.vaxDoses>0?1:.45)/TICKS_DAY:0);
   while(accW>=1){accW-=1;spawnWalkIn();}while(accP>=1){accP-=1;spawnPhone();}while(accE>=1){accE-=1;spawnE();}while(accC>=1){accC-=1;spawnConsult();}
-  for(const o of S.objs){o.tt=(o.tt||0)+1;if(busyS[o.id]||(['dropoff','register'].includes(o.type)&&S.patients.some(p=>p.q===o.id&&p.state==='queued')))o.bt=(o.bt||0)+1;}
+  for(const o of S.objs){o.tt=(o.tt||0)+1;if(busyS[o.id]||(['dropoff','register'].includes(o.type)&&S.patients.some(p=>p.q===o.id&&p.state==='queued'))||(o.type==='otc'&&S.patients.some(p=>p.otcT===o.id&&p.state==='toOtc'&&p.otcWait>0)))o.bt=(o.bt||0)+1;}
   /* staff shifts */
   for(const w of S.staff){const on=onShift(w);if(w.off&&on){w.off=false;w.x=OUT.x;w.y=OUT.y;w.path=null;}if(!w.off&&!on&&!w.plan){w.off=true;for(const k in busyS)if(busyS[k]===w.id)delete busyS[k];w.goal=null;}}
   for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;w.idleT=0;}else{w.idleT=(w.idleT||0)+1;if(w.idleT===24&&!w.isYou&&S.tick>12)glog('staff',`${w.name} has had nothing to do for two hours: ${idleWhy(w)}.`,'idle'+w.id,108);}}else w.idleT=0;
@@ -549,7 +549,7 @@ function leave(p,mood){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.sta
   if(mood!=='content')S.wk.ev.push({k:'gaveup',name:p.name,where,mood,el:p.elderly});
   p.state='leaving';p.q=null;p.seat=null;p.exitMood=mood;p.conf=0;goTo(p,DOOR.x,DOOR.y);
   if(mood!=='content'&&(p.kind!=='consult'||mood==='angry')){S.wk.lost++;S.wk['lost_'+where.replace(/ /g,'_')]=(S.wk['lost_'+where.replace(/ /g,'_')]||0)+1;S.trust-=mood==='angry'?.4:.2;SFX.sigh();glog('bad',`${p.name} gave up ${where}${mood==='confused'?' (couldn\'t get in)':''}.`,'walk',12);}}
-function morning(){S.dayServed=0;for(const o of S.objs){o.util=o.tt?(o.bt||0)/o.tt:undefined;o.bt=0;o.tt=0;}for(const sc of S.scripts)if(sc.tomorrow){sc.tomorrow=false;if(sc.stage==='shelf')returnForPickup(sc);else if(sc.stage==='backorder'){const b=binOf();if((sc.special?S.inv.brand:S.stock)>0&&b){sc.stage='bin';sc.at='bin:'+b.id;}else sc.tomorrow=true;}}
+function morning(){S.dayServed=0;for(const o of S.objs){o.util=o.tt?(o.bt||0)/o.tt:undefined;o.bt=0;o.tt=0;o.soldY=o.sold||0;o.sold=0;}for(const sc of S.scripts)if(sc.tomorrow){sc.tomorrow=false;if(sc.stage==='shelf')returnForPickup(sc);else if(sc.stage==='backorder'){const b=binOf();if((sc.special?S.inv.brand:S.stock)>0&&b){sc.stage='bin';sc.at='bin:'+b.id;}else sc.tomorrow=true;}}
   if(S.day===0){const cost=orderCost();S.cash-=cost;S.wk.drug+=cost;const lines=Object.keys(INV).filter(k=>(S.inv.order[k]||0)>0);S.inv.recv=lines.map(k=>({line:k,n:S.inv.order[k]}));if(lines.length)glog('money',`Delivery: ${lines.map(k=>S.inv.order[k]+' '+INV[k].n.toLowerCase()).join(', ')} for ${fmt(cost)}. Staff need to put it away.`);else glog('ops','No delivery this week.');}}
 function endDay(){
   const u={};for(const t of ['fill','verify','intake','pickup'])u[t]=Math.min(1,(util[t]||0)/(TICKS_DAY*Math.max(1,t==='fill'?objsOf('fill').length:t==='verify'?objsOf('verify').length:t==='intake'?objsOf('dropoff').length:objsOf('register').length)));for(const k in util)delete util[k];
@@ -858,12 +858,12 @@ function loadOf(o){const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.
   const cap=o.type==='fill'?3:o.type==='verify'?4:o.type==='shelf'?16:o.type==='bin'?8:['dropoff','register'].includes(o.type)?4:o.type==='chair'?1:null;return {n,cap};}
 function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o.type];const who=S.staff.find(w=>busyS[o.id]===w.id);
   const {n}=loadOf(o);
-  const status=who?`${who.name} is ${who.plan&&who.plan.steps[who.step]&&who.plan.steps[who.step].label||'working'} here`:n?`${n} waiting`:'idle';
+  const shoppers=o.type==='otc'?S.patients.filter(p=>p.otcT===o.id&&p.state==='toOtc').length:0;const status=who?`${who.name} is ${who.plan&&who.plan.steps[who.step]&&who.plan.steps[who.step].label||'working'} here`:o.type==='otc'?(shoppers?`${shoppers} customer${shoppers>1?'s':''} browsing`:'self-service · customers shop here on the way out'):n?`${n} waiting`:'idle';
   const lvl=T.levels?T.levels[o.level]:null,nxt=T.levels?T.levels[o.level+1]:null;const priv=o.type==='consult'?(enclosed(o)?'Private room ✓':'Not private yet — build walls on the grey tiles and a door on the orange one.'):'';
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&['dropoff','register','consult'].includes(o.type);
   const live=o.tt>20?(o.bt||0)/o.tt:null;const util=o.util!==undefined?o.util:live;const {cap}=loadOf(o);
-  const ustat=util===null||util===undefined?'':util>=.85?`<span class="ustat bad">OVERUSED ${Math.round(util*100)}% · build another</span>`:util<.2?`<span class="ustat warn">IDLE ${Math.round(util*100)}%</span>`:`<span class="ustat ok">BUSY ${Math.round(util*100)}%</span>`;
-  const stats=(T.sides||T.levels||o.type==='bin'||o.type==='shelf'||o.type==='chair'||o.type==='otc')?`<div class="kv"><div><span>Use</span>${ustat||'<b>no data yet</b>'}${o.util!==undefined?' <small class="sub">yesterday</small>':live!==null?' <small class="sub">today</small>':''}</div>${cap?`<div><span>Load</span><span class="ebar"><i style="width:${Math.min(100,Math.round(n/cap*100))}%;background:${n/cap>=.85?'var(--bad)':'var(--good)'}"></i></span><b>${n} / ${cap}</b></div>`:''}${staffingNote(o)}${o.earn||['register','consult','otc'].includes(o.type)?`<div><span>Earned</span><b>${fmt(o.earn||0)}</b> <small class="sub">this week</small></div>`:''}</div>`:'';
+  const ustat=o.type==='otc'?`<span class="ustat ${(o.sold||0)>0?'ok':'warn'}">SOLD ${o.sold||0} today${o.soldY!==undefined?' · '+o.soldY+' yesterday':''}</span> <small class="sub">stock ${o.stock===undefined?OTC_CAP:o.stock} / ${OTC_CAP}</small>`:util===null||util===undefined?'':util>=.85?`<span class="ustat bad">OVERUSED ${Math.round(util*100)}% · build another</span>`:util<.2?`<span class="ustat warn">IDLE ${Math.round(util*100)}%</span>`:`<span class="ustat ok">BUSY ${Math.round(util*100)}%</span>`;
+  const stats=(T.sides||T.levels||o.type==='bin'||o.type==='shelf'||o.type==='chair'||o.type==='otc')?`<div class="kv"><div><span>${o.type==='otc'?'Sales':'Use'}</span>${ustat||'<b>no data yet</b>'}${o.type==='otc'?'':o.util!==undefined?' <small class="sub">yesterday</small>':live!==null?' <small class="sub">today</small>':''}</div>${cap?`<div><span>Load</span><span class="ebar"><i style="width:${Math.min(100,Math.round(n/cap*100))}%;background:${n/cap>=.85?'var(--bad)':'var(--good)'}"></i></span><b>${n} / ${cap}</b></div>`:''}${staffingNote(o)}${o.earn||['register','consult','otc'].includes(o.type)?`<div><span>Earned</span><b>${fmt(o.earn||0)}</b> <small class="sub">this week</small></div>`:''}</div>`:'';
   sheet(`<h3>${T.name}${lvl?` <small>${lvl.n}</small>`:''}</h3><p>${status}.${priv?' '+priv:''}${unreachable?' <span class="neg">Customers can\'t reach this.</span>':''}</p>${stats}<div class="acts">
     <button id="mv" ${who?'disabled':''}>↔ Move</button><button id="turn" ${who?'disabled':''}>↻ Rotate</button>${nxt?`<button id="upg" class="pri" ${S.cash<nxt.cost?'disabled':''}>⬆ ${nxt.n} <b>${fmt(nxt.cost)}</b></button>`:''}<button id="rm" class="danger" ${who?'disabled':''}>Sell <b>+${fmt(T.cost/2)}</b></button></div>`);
   const u=$('upg');if(u)u.onclick=()=>{S.cash-=nxt.cost;o.level++;SFX.build();glog('staff',`${T.name} upgraded to ${nxt.n}.`);openObj(o);renderHud();};
@@ -1219,7 +1219,7 @@ function motion(raw){{const dt=raw*(S.speed===3?2.4:1.4);
         else if(st.fn){st.fn();w.step++;}else break;}}
     for(let i=S.patients.length-1;i>=0;i--){const p=S.patients[i];const spd=p.elderly?4.5:6;
       if(p.state==='toQueue'||p.state==='queued'){const o=objById(p.q);if(!o){leave(p,'confused');continue;}const k=Math.min(qIndex(p),8);const qt=queueTile(o,k<0?0:k);goTo(p,qt[0],qt[1]);const ok=stepAgent(p,dt,spd);if(p.noPath){if(!p.conf)p.conf=1;}else p.conf=0;if(p.state==='toQueue'&&ok){p.state='queued';p.arrived=true;}else if(p.state==='queued')p.arrived=ok;}
-      else if(p.state==='toOtc'){const sh=objById(p.otcT);if(!sh||(sh.stock||0)<=0){p.state='toQueue';continue;}const pt=patientTile(sh);goTo(p,pt[0],pt[1]);if(stepAgent(p,dt,spd)){p.otcWait+=dt;if(p.otcWait>.8){sh.stock--;p.carryOtc=(p.carryOtc||0)+1;sh.earn=(sh.earn||0);p.state='toQueue';}}else if(p.noPath)p.state='toQueue';}
+      else if(p.state==='toOtc'){const sh=objById(p.otcT);if(!sh||(sh.stock||0)<=0){p.state='toQueue';continue;}const pt=patientTile(sh);goTo(p,pt[0],pt[1]);if(stepAgent(p,dt,spd)){p.otcWait+=dt;if(p.otcWait>.8){sh.stock--;sh.sold=(sh.sold||0)+1;p.carryOtc=(p.carryOtc||0)+1;sh.earn=(sh.earn||0);p.state='toQueue';}}else if(p.noPath)p.state='toQueue';}
       else if(p.state==='toSeat'){if(stepAgent(p,dt,spd))p.state='waiting';else if(p.noPath){seat(p);}}
       else if(p.state==='toRoom'){const rooms=objsOf('consult').filter(o=>reach.has(patientTile(o).join(',')));if(!rooms.length){leave(p,'confused');continue;}const o=rooms[0];p.room=o.id;const pt=patientTile(o);goTo(p,pt[0],pt[1]);if(stepAgent(p,dt,spd))p.state='atRoom';else if(p.noPath&&!p.conf)p.conf=1;}
       else if(p.state==='sneak'){if(!exposed.has(p.target.join(','))){sendBack(p);continue;}goTo(p,p.target[0],p.target[1]);if(stepAgent(p,dt,spd)){p.state='inBack';p.inT=0;S.wk.intrude++;S.trust-=.3;fx([p.x,p.y],'in the pharmacy!','bad');glog('bad',`${p.name} wandered into the pharmacy area.`,'intrude',8);}else if(p.noPath)sendBack(p);}

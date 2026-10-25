@@ -1,5 +1,8 @@
 # Changelog
 
+## v20.9 — 2026-10-25 — OTC shelf card tells the truth
+- The OTC shelf is self-service, so "use" was only counted while staff restocked it — it read IDLE even while customers were buying. Its card now shows **Sales** ("SOLD 5 today · 7 yesterday · stock 33 / 40"), the status line says who is browsing or "self-service", and shoppers at the shelf count toward its utilisation.
+
 ## v20.8 — 2026-10-25 — Promote tab restored
 - Fix: like Flow, the Promote tab lost its contents in the taskbar split (v15.2) and had opened empty ever since. It is back: current walk-in boost, the chain's share, and the five levers (Flyers $300, Local paper ad $900, Social push $500, Price-match week $700, Loyalty cards $400). A new test opens every taskbar tab and checks it renders.
 
