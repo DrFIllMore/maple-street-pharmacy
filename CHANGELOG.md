@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.3 · 2026-10-25
+- Fix: reloading a saved game on iPhone (WebKit) could crash the page. Cause: the `container-type` rule added to the taskbar in v23.2; replaced with a JS class toggle (`.strip.narrow`) driven by a ResizeObserver.
+
 ## v23.2 — 2026-10-25 — Notch-safe, restroom card fixed
 - On a phone held upright (game rotated), the whole game now sits between the status bar/Dynamic Island and the home indicator instead of running under them: the app is shortened by the safe-area insets and no HUD piece or floor is drawn under the black bar. The old 87px left gutter that approximated this is gone, so nothing is wasted. Taskbar labels tighten on narrow widths.
 - Restroom card: shows "FREE / IN USE · 3 today · 11 total" (lifetime count added; a stray "yesterday" removed) and the status line says who is inside or "Free · customers use it while they wait". Trips were being counted; the display reset each morning and hid it.

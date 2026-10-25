@@ -43,9 +43,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .clock{right:var(--gr);bottom:calc(8px + var(--sab));height:calc(44px*var(--k));border-radius:10px;display:flex;align-items:center;gap:4px;padding:0 5px 0 12px;font-size:var(--barF);z-index:7}
 .clock b{font-family:var(--mono);font-weight:700;font-size:1.1em;margin-right:6px;white-space:nowrap}.clock .spd{width:calc(40px*var(--k));height:calc(34px*var(--k));border-radius:7px;background:rgba(0,0,0,.08);display:inline-flex;align-items:center;justify-content:center;font-size:1.15em;margin-left:3px}.clock .spd.on{background:var(--accent);color:#fff}
 .app.building .strip,.app.titled .strip{display:none}
-.strip{container-type:inline-size;left:calc(var(--gl) + var(--chatX) - var(--glR) + var(--chatW) + 8px);right:var(--gr);bottom:calc(var(--chatY) + var(--sab));height:calc(56px*var(--k));display:flex;justify-content:space-around;align-items:center;gap:2px;padding:3px 4px;border-radius:10px;z-index:7}
+.strip{left:calc(var(--gl) + var(--chatX) - var(--glR) + var(--chatW) + 8px);right:var(--gr);bottom:calc(var(--chatY) + var(--sab));height:calc(56px*var(--k));display:flex;justify-content:space-around;align-items:center;gap:2px;padding:3px 4px;border-radius:10px;z-index:7}
 .app.rot .strip{left:calc(var(--chatX) + var(--chatW) + 8px)}
-.sb{flex:1;min-width:0;height:calc(48px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:calc(8.5px*var(--k));font-weight:800;color:var(--ink-2);position:relative;line-height:1;overflow:hidden;white-space:nowrap}.sb>*:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis}@container (max-width:560px){.strip .sb{font-size:calc(7.5px*var(--k))}}.sb span{font-size:calc(17px*var(--k));margin-bottom:2px}.sb.on{background:var(--accent);color:#fff}.sb i{position:absolute;top:2px;right:4px;background:var(--bad);color:#fff;font-style:normal;font-size:9px;border-radius:8px;padding:0 4px;font-weight:800}
+.sb{flex:1;min-width:0;height:calc(48px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:calc(8.5px*var(--k));font-weight:800;color:var(--ink-2);position:relative;line-height:1;overflow:hidden;white-space:nowrap}.sb>*:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis}.strip.narrow .sb{font-size:calc(7.5px*var(--k))}.sb span{font-size:calc(17px*var(--k));margin-bottom:2px}.sb.on{background:var(--accent);color:#fff}.sb i{position:absolute;top:2px;right:4px;background:var(--bad);color:#fff;font-style:normal;font-size:9px;border-radius:8px;padding:0 4px;font-weight:800}
 button,.hud{touch-action:manipulation}
 .bar .st b.owed{color:var(--owed)}.bar .st b.neg{color:var(--bad)}.bar .st b.pos{color:var(--good)}
 .bb{height:100%;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:var(--barF)}
@@ -285,7 +285,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.2 · 2026-10-25';
+const BUILD='v23.3 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1111,6 +1111,7 @@ let SA={t:0,b:0,l:0,r:0};function readSafeArea(){let el=$('saprobe');if(!el){el=
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();
   if(ROT){/* phone held upright, game rotated: the notch/status bar is the app's left edge and the home bar its right edge — keep the whole app out from under them */const w=ih-SA.t-SA.b,h=iw;app.style.width=w+'px';app.style.height=h+'px';app.style.top=SA.t+'px';VW=w;VH=h;}else{app.style.width='';app.style.height='';app.style.top='';VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+/* JS instead of a @container rule: container-type on the strip crashed iOS/WebKit on reload */(()=>{const st=$('strip');if(!st)return;const fit=()=>{const w=st.clientWidth;if(w)st.classList.toggle('narrow',w<560);};if(window.ResizeObserver)new ResizeObserver(fit).observe(st);window.addEventListener('resize',fit);fit();})();
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
 function fitWorld(){userCam=false;offShift=0;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
