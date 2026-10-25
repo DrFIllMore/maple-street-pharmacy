@@ -1,5 +1,9 @@
 # Changelog
 
+## v23.2 — 2026-10-25 — Notch-safe, restroom card fixed
+- On a phone held upright (game rotated), the whole game now sits between the status bar/Dynamic Island and the home indicator instead of running under them: the app is shortened by the safe-area insets and no HUD piece or floor is drawn under the black bar. The old 87px left gutter that approximated this is gone, so nothing is wasted. Taskbar labels tighten on narrow widths.
+- Restroom card: shows "FREE / IN USE · 3 today · 11 total" (lifetime count added; a stray "yesterday" removed) and the status line says who is inside or "Free · customers use it while they wait". Trips were being counted; the display reset each morning and hid it.
+
 ## v23.1 — 2026-10-25 — Margins, measured
 - Insurer rates +$6 (BlueLeaf $58, SilverPlan $50, QuickPay $44) and copay $15 (was $12): about +$8 a script. Three-seed playtest: cautious wins weeks 13–14 every time, builder and optimal in 1 of 3 runs (they overspend), naive never reaches the goal, no dead stretches. 7 of 8 targets pass.
 - Event texts updated to the new rates; old saves adopt the new rates.

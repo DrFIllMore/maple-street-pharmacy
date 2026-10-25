@@ -1,0 +1,11 @@
+const {webkit}=require('playwright');
+(async()=>{const b=await webkit.launch();const ctx=await b.newContext({viewport:{width:393,height:852},deviceScaleFactor:2,isMobile:true,hasTouch:true});const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.addInitScript(()=>{window.__forceSA={t:59,b:34,l:0,r:0};});
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(500);
+await pg.evaluate(()=>document.getElementById('tNew').click());await pg.waitForTimeout(150);await pg.evaluate(()=>document.getElementById('go').click());await pg.waitForTimeout(150);
+await pg.evaluate(()=>{const a=__msp.api;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,8);P('chair',5,8);P('restroom',12,9,0);a.hire('tech');a.hire('clerk');a.setBuild(false);});
+const m=await pg.evaluate(()=>{const r=document.getElementById('app').getBoundingClientRect();const bar=document.getElementById('bar').getBoundingClientRect();const chat=document.querySelector('.chat').getBoundingClientRect();return {app:[r.left,r.top,r.width,r.height].map(Math.round),bar:[bar.left,bar.top,bar.width,bar.height].map(Math.round),chat:[chat.left,chat.top,chat.width,chat.height].map(Math.round)};});
+console.log(JSON.stringify(m));
+await pg.evaluate(()=>{__msp.api.startWeek();__msp.api.setSpeed(0);for(let i=0;i<60;i++){for(let f=0;f<12;f++)__msp.api.motion(.016);__msp.api.tick();}const o=__msp.S.objs.find(x=>x.type==='restroom');__msp.api.openObj(o);});await pg.waitForTimeout(300);
+console.log(await pg.evaluate(()=>document.getElementById('sheet').textContent.replace(/\s+/g,' ').slice(0,200)));
+await pg.screenshot({path:'v232-notch.png'});console.log('errs',errs);await b.close();})();
