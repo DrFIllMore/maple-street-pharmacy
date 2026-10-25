@@ -1,5 +1,9 @@
 # Changelog
 
+## v21.4 — 2026-10-25 — Rooms built before v21.3 get a way in
+- Saves carry the room as it was built. A room placed under v21.1/21.2 (or any hand-built room where the tile behind the desk is walled off) left the pharmacist with no path to the desk, so consult visitors waited and left. On load, any consult desk the pharmacist cannot reach has the wall directly behind it turned into a staff door, with a log line saying so.
+- The consult desk card now states plainly when "the pharmacist can't reach the spot behind the desk — put a staff door in the wall behind it", and the chat log says the same the first time a visitor waits at such a desk.
+
 ## v21.3 — 2026-10-25 — Staff door
 - New Build item **Staff door** ($150): a door only staff can use; customers treat it as wall. Grey-green leaf with a STAFF plaque. It closes a room for privacy like any door and joins wall lines.
 - The **Consult room** is 4×5 again ($2,500) with two doors: a customer door at the front and a staff door directly behind the pharmacist's spot, so the pharmacist comes in from the pharmacy side and never crosses the customer's half. Verified in all four rotations: private, pharmacist can path to the desk, customers can reach the front and cannot get through the staff door, and the staff door does not expose the pharmacy area.
