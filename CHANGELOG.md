@@ -1,5 +1,9 @@
 # Changelog
 
+## v23.1 — 2026-10-25 — Margins, measured
+- Insurer rates +$6 (BlueLeaf $58, SilverPlan $50, QuickPay $44) and copay $15 (was $12): about +$8 a script. Three-seed playtest: cautious wins weeks 13–14 every time, builder and optimal in 1 of 3 runs (they overspend), naive never reaches the goal, no dead stretches. 7 of 8 targets pass.
+- Event texts updated to the new rates; old saves adopt the new rates.
+
 ## v23 — 2026-10-25 — A named owner, a restroom, and equipment that unlocks
 - **The owner has a name.** Each new game picks one (Sam, Jo, Avery, Morgan, Riley, Quinn, Jordan, Casey, Devi, Noor, Tomas, Lena); existing saves get one on load. Tags, slips and the team's feed posts use it; "You" is gone.
 - **Restroom** ($900, unisex, one at a time), available from the start. Some waiting customers need it (older customers twice as often): with a free one they walk over ("IN USE"), come back and rejoin; without one, or if it stays busy, they get restless (patience −40%) and some walk out "needing the restroom". Gazette, feed ("No restroom", promisable), Flow row and the item card all report it.

@@ -285,7 +285,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23 · 2026-10-25';
+const BUILD='v23.1 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -338,11 +338,11 @@ function checkUnlocks(){S.unlocked=S.unlocked||[];S.newItems=S.newItems||[];cons
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
 const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const ROLE_ORDER={rph:0,tech:1,clerk:2};const staffSorted=()=>[...S.staff].sort((a,b)=>(ROLE_ORDER[a.role]-ROLE_ORDER[b.role])||(b.isYou?1:0)-(a.isYou?1:0)||a.name.localeCompare(b.name));const ROLE_SHORT={tech:'TECH',clerk:'CLERK',rph:'PHARMACIST'};const ROLE_COL={tech:'#2f7fd6',clerk:'#1d9e75',rph:'#f6f6f4'};const WAGES={tech:800,clerk:650,rph:1800};
 /* insurance plans (contracts) */
-const PLANS={blue:{name:'BlueLeaf',rate:52,delay:2,days:7,reject:.06,share:.35,h:'commercial · pays 7 days after the sale · 6% rejected'},
-             silver:{name:'SilverPlan',rate:44,delay:3,days:12,reject:.10,share:.30,h:'seniors · pays 12 days after the sale · 10% rejected'},
-             quick:{name:'QuickPay HMO',rate:38,delay:1,days:4,reject:.04,share:.15,h:'local HMO · pays 4 days after the sale · 4% rejected'}};
+const PLANS={blue:{name:'BlueLeaf',rate:58,delay:2,days:7,reject:.06,share:.35,h:'commercial · pays 7 days after the sale · 6% rejected'},
+             silver:{name:'SilverPlan',rate:50,delay:3,days:12,reject:.10,share:.30,h:'seniors · pays 12 days after the sale · 10% rejected'},
+             quick:{name:'QuickPay HMO',rate:44,delay:1,days:4,reject:.04,share:.15,h:'local HMO · pays 4 days after the sale · 4% rejected'}};
 const SPECIAL_ADD=90,SPECIAL_COST=55,VAX_SIGN=600,VAX_PACK=50,VAX_PACK_COST=600,SPECIAL_SIGN=2000,REVIEW_FEE=20;
-const CASH_SHARE=.2,COPAY=12,CONSULT=40,OTC=9,RENT=500,LOAN=16000,LOAN_PAY=400,LOAN_RATE=.01,GOAL_CASH=15000,OVERDRAFT=3000;
+const CASH_SHARE=.2,COPAY=15,CONSULT=40,OTC=9,RENT=500,LOAN=16000,LOAN_PAY=400,LOAN_RATE=.01,GOAL_CASH=15000,OVERDRAFT=3000;
 
 /* ============ state ============ */
 let S;
@@ -630,8 +630,8 @@ const CARDS=[
   {id:'referral',from:'Oakridge Family Clinic',icon:'🏥',when:()=>S.week>=2&&!S.mods.referral,t:'A clinic nearby wants to send you about 40 more patients a week.',s:'All insured: more owed to you, more work, more trust.',o:[['Pass',()=>{}],['Take it',()=>{S.mods.referral=4;}]]},
   {id:'chain',from:'District office · internal memo',icon:'🏢',when:()=>S.week>=3&&!S.rivalOn,t:'A chain pharmacy opened across the street.',s:'Fewer walk-ins for a month unless you fight for them.',o:[['Ride it out',()=>{S.rivalOn=true;S.rival=Math.max(S.rival||0,.16);}],['Run a $1,500 promo',()=>{S.cash-=1500;S.rivalOn=true;S.rival=.04;S.promo.pricematch=2;}]]},
   {id:'rent',from:'Maple Street Properties LLC',icon:'🏠',when:()=>S.week>=4,t:'Your landlord wants $150 more per week.',s:'Pushing back usually works. Sometimes it doesn\'t.',o:[['Agree',()=>{S.rent+=150;}],['Push back',()=>{if(Math.random()<.6)adv='The landlord backed down.';else{S.rent+=250;adv='The landlord dug in: $250 more.';}}]]},
-  {id:'quick',from:'QuickPay HMO · network contracting',icon:'🏦',when:()=>!S.plans.quick&&S.week>=2,t:'QuickPay HMO offers a contract: $38 a script, paid 4 days after the sale.',s:'Fast money, thin margin. You can drop it later in Manage → Insurers.',o:[['Decline',()=>{}],['Sign',()=>{S.plans.quick=true;}]]},
-  {id:'bluecut',from:'BlueLeaf Insurance · provider relations',icon:'🏦',when:()=>S.plans.blue&&S.week>=5&&PLANS.blue.rate>=52,t:'BlueLeaf wants to cut your rate from $52 to $46 a script.',s:'Accept, or push back and risk losing the contract for a month.',o:[['Accept',()=>{PLANS.blue.rate=46;}],['Push back',()=>{if(Math.random()<.5)adv='BlueLeaf blinked. Rate stays at $52.';else{S.plans.blue=false;S.mods.blueOut=4;adv='BlueLeaf walked. Their patients are gone for a month.';}}]]},
+  {id:'quick',from:'QuickPay HMO · network contracting',icon:'🏦',when:()=>!S.plans.quick&&S.week>=2,t:'QuickPay HMO offers a contract: $44 a script, paid 4 days after the sale.',s:'Fast money, thin margin. You can drop it later in Manage → Insurers.',o:[['Decline',()=>{}],['Sign',()=>{S.plans.quick=true;}]]},
+  {id:'bluecut',from:'BlueLeaf Insurance · provider relations',icon:'🏦',when:()=>S.plans.blue&&S.week>=5&&PLANS.blue.rate>=58,t:'BlueLeaf wants to cut your rate from $58 to $52 a script.',s:'Accept, or push back and risk losing the contract for a month.',o:[['Accept',()=>{PLANS.blue.rate=52;}],['Push back',()=>{if(Math.random()<.5)adv='BlueLeaf blinked. Rate stays at $58.';else{S.plans.blue=false;S.mods.blueOut=4;adv='BlueLeaf walked. Their patients are gone for a month.';}}]]},
   {id:'flu',from:'County Health Department',icon:'💉',when:()=>objsOf('consult').length&&S.contracts.vax&&!S.mods.flu,t:'Flu season is here. People want shots.',s:'Consult visits double for two weeks. Make sure you have doses.',o:[['Noted',()=>{S.mods.flu=2;}]]},
   {id:'raise',from:'Your team · internal',icon:'👥',when:()=>S.staff.length>=4&&!S.mods.raise,t:'Your team asks for a raise.',s:'$100 more per person each week, or a grumpy month.',o:[['Give it',()=>{S.mods.raise=99;for(const k in WAGES)WAGES[k]+=100;}],['Not now',()=>{dTrust(-2,'decisions');}]]},
   {id:'slowpay',from:'SilverPlan · accounts payable',icon:'🏦',when:()=>S.week>=4&&(S.remits||0)>=2&&owedTotal()>2500&&!S.mods.slowCd,t:'A big insurer is paying late this month.',s:'Take 92% of what\'s owed right now, or wait: everything outstanding lands a week later.',o:[['Take the advance',()=>{S.mods.slowCd=4;S.cash+=owedTotal()*.92;S.ledger=[];}],['Wait',()=>{S.mods.slowCd=4;for(const l of S.ledger)l.dueDay+=DAYS_WEEK;}]]},
@@ -1367,7 +1367,7 @@ setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();}
 
 /* ============ save / title / start ============ */
 function saveGame(){let objs=S.objs;if(held&&!S.objs.includes(held.o))objs=[...S.objs,{...held.o,x:held.ox,y:held.oy,rot:held.orot}];try{localStorage.setItem('msp-save',JSON.stringify({S:{...S,objs},GL:GL.slice(-120),PLANS}));}catch(e){}}
-function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){GL.push(...(d.GL||[]));if(d.PLANS&&d.PLANS.quick&&d.PLANS.quick.rate>=38){for(const k in d.PLANS)Object.assign(PLANS[k],d.PLANS[k]);}/* saves from the old economy (quick $26) keep the current rates instead */return d.S;}}catch(e){}return null;}
+function loadGame(){try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){GL.push(...(d.GL||[]));if(d.PLANS&&d.PLANS.quick&&d.PLANS.quick.rate>=44){for(const k in d.PLANS)Object.assign(PLANS[k],d.PLANS[k]);}/* saves from the old economy (quick $26) keep the current rates instead */return d.S;}}catch(e){}return null;}
 function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
   $('tSound').onclick=()=>{setSound(!AU.on);$('tSound').textContent='Sound: '+(AU.on?'on':'off');$('mSound').textContent='Sound: '+(AU.on?'on':'off');audioInit();};
   const go=(fresh_)=>{audioInit();setMusic('title');duck();SFX.bell();$('title').hidden=true;$('app').classList.remove('titled');
