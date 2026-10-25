@@ -1,5 +1,12 @@
 # Changelog
 
+## v21 — 2026-10-25 — Replies are promises
+- **Promise system.** Replying to a complaint on the feed now makes a specific public promise tied to that complaint's fix (shorter drop-off line, faster fills, more seating, answered phones, no more backorders, closing the pharmacy off, a private consult room, a day off for the team, quicker checks). The button says what you are promising. Next Saturday the game checks whether you delivered — by building/hiring/upgrading *or* by the outcome (e.g. walk-outs at that spot halved): **kept** = +1.5 trust and a green "Promise kept 👍" follow-up post from the same person; **broken** = −1.5 trust and a red "Promise broken" post. Both count toward going viral. The reply itself is now only +0.3 trust.
+- **Credibility** (hidden, starts 50): +10 per kept promise, −15 per broken one, drifts back toward 50 by 2 a week. It scales what a reply is worth; below 20 the Promise buttons are replaced by "Nobody believes replies any more — keep a promise first"; at 75+ a thanked post brings +8% walk-ins instead of +4%.
+- **Thank** on a positive post only brings walk-ins if trust didn't fall that week.
+- **Case Manager** now grades your promise ("You promised shorter drop-off line and delivered…") and gives an ROI call before you promise: "Worth promising — about $600, pays back in ~5 weeks" or "Don't promise this yet — you can't carry it", or a caution when the complaint is tiny.
+- **Trust ledger.** Every trust change is attributed (served, walk-outs, missed calls, claims written off, consults, security, replies, promises, perks, decisions, staff let go). The Gazette's Trust line shows the week's change to one decimal with the top three causes under it. Consults float "+$60 · +0.4 trust" on the floor.
+
 ## v20.11 — 2026-10-25 — Item lifespan and lifetime earnings
 - Every item card ends with one grey line: **Built wk 2 · 9 days in service · earned $1,240 total** (registers say "billed"). Days count trading days since the item went in; items built before opening count from day one. Existing saves get stamped on load.
 - Card layout tightened so the extra line never pushes it off-screen: compact one-line ℞ header, Move/Rotate as icon buttons so all four actions sit on one row, smaller row gaps, and the card is capped to the free space between the top bar and the chat (scrolls inside only if it must). Checked at 932×430 and iPhone 15 Pro size.

@@ -54,3 +54,8 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Exposed = a back-room station's staff tile is in the customer-reachable set (`reach`). Recomputed with the grid.
 - Sneak chance per tick per queued/waiting customer: 1% × (1 + exposed/6). Noticed after 3 ticks or on arrival; free clerk/RPh escorts (tech only if nobody else is free). In the back: all staff work at 1/(1+0.5n). Theft from tick 2: 20%/tick unescorted, 8%/tick with an escort on the way; 4–8 generics at unit cost, +1 specialty 30% of the time; −0.5 trust (plus −0.3 per intrusion).
 - Open 3-staff week-1 layout measured: ~7 intrusions, ~10 interceptions, ~1 theft. With a counter line: 0.
+
+## Promises & credibility (v21)
+- Reply to a complaint → promise {kind, snapshot of counts, made=week}. Graded at the end of that week: kept if the build/hire/upgrade count rose or the outcome metric met its target (walk-outs at the spot ≤ half, missed calls ≤1, backorders 0, intrusions 0, room enclosed, nobody exhausted, tray peak <5).
+- Kept: +1.5 trust, cred +10, green follow-up post. Broken: −1.5 trust, cred −15, red follow-up. Reply: +0.3 × (cred/50). Cred decays 2/wk toward 50; <20 disables Promise; ≥75 doubles thank-buzz (8%).
+- Trust ledger: S.wk.tw[reason] via dTrust(). Gazette shows top 3.
