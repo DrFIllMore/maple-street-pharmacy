@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.7 · 2026-10-25
+- **Adjust window** (⋯ menu): drag the four green edge handles to set how much of the physical screen the game keeps clear on each side; the whole HUD and floor refit live. Copy puts the insets + screen size on the clipboard to report; Reset clears; the setting persists (`msp-window`) and works in both orientations. Insets are also listed in the Debug report. Test: test/adjust-window.js.
+
 ## v23.6 · 2026-10-25
 - Fix: the drop-off / pick-up line piled everyone onto one tile when the tile behind the first customer was blocked (chairs, plants, a counter), so the queue was invisible while customers still timed out and "gave up at drop-off". The line now bends around obstacles (`queueLine`), never crossing another window's spot. Test: test/queue-line.js.
 

@@ -9,7 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="Maple St Pharmacy">
 <meta name="theme-color" content="#141a16">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231d9e75'/%3E%3Crect x='78' y='40' width='24' height='100' rx='6' fill='%23fff'/%3E%3Crect x='40' y='78' width='100' height='24' rx='6' fill='%23fff'/%3E%3C/svg%3E">
-<style>html,body{height:100%;margin:0;background:#141a16}</style>
+<style>html,body{height:100%;margin:0;background:#141a16}#winAdj{position:fixed;inset:0;z-index:1000;pointer-events:none;font-family:inherit}#winAdj .wh{position:fixed;background:rgba(27,159,118,.85);pointer-events:auto;touch-action:none;box-shadow:0 0 0 2px #fff}#winAdj .wh::after{content:'';position:absolute;inset:-18px}
+#winAdj .wp{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(20,30,25,.92);color:#fff;border-radius:12px;padding:10px 12px;display:grid;gap:6px;font-size:13px;pointer-events:auto;min-width:200px;text-align:center}#winAdj .wp button{font:inherit;font-weight:700;padding:6px 10px;border-radius:8px;border:0;margin:0 3px;background:#1b9f76;color:#fff}#winAdj .wp small{min-height:1em;opacity:.85}
+</style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -248,7 +250,7 @@ button,.hud{touch-action:manipulation}
     <button class="sb" data-tab="inbox" id="inboxBtn"><span>✉️</span>Inbox<i id="inboxN" hidden>4</i></button>
   </div>
   <div class="hud menu" id="menu" hidden>
-    <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mDbg">Debug report</button>
+    <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mWin">Adjust window</button><button id="mDbg">Debug report</button>
   </div>
   <div class="hud chat" id="chat">
     <div class="tabs" id="chatTabs"><button data-f="all" class="on">All</button><button data-f="ops">Ops</button><button data-f="money">Money</button><button data-f="staff">Staff</button><button class="chev" id="chatDown" aria-label="Collapse">⌄</button></div>
@@ -281,11 +283,15 @@ button,.hud{touch-action:manipulation}
   </div></div>
 </div>
 
+  <div id="winAdj" hidden>
+    <div class="wh" data-e="t"></div><div class="wh" data-e="b"></div><div class="wh" data-e="l"></div><div class="wh" data-e="r"></div>
+    <div class="wp"><b>Adjust window</b><span id="winTxt"></span><div><button id="winCopy">Copy</button><button id="winReset">Reset</button><button id="winDone">Done</button></div><small id="winMsg"></small></div>
+  </div>
 <script src="avatars.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.6 · 2026-10-25';
+const BUILD='v23.7 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1090,7 +1096,7 @@ document.querySelectorAll('.sb[data-tab]').forEach(b=>b.onclick=()=>{SFX.click()
 $('mChat').onclick=()=>{L.chatShown=!L.chatShown;$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');applyLayout();renderChat();$('menu').hidden=true;};
 $('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');applyLayout();fitWorld();};
 $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
-$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};
+$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 
 function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
@@ -1110,7 +1116,20 @@ const cv=$('cv');let ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:
 forceLand=true;
 let SA={t:0,b:0,l:0,r:0};function readSafeArea(){let el=$('saprobe');if(!el){el=document.createElement('div');el.id='saprobe';el.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(el);}const cs=getComputedStyle(el);SA={t:parseFloat(cs.paddingTop)||0,r:parseFloat(cs.paddingRight)||0,b:parseFloat(cs.paddingBottom)||0,l:parseFloat(cs.paddingLeft)||0};if(window.__forceSA)SA=window.__forceSA;return SA;}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();
-  if(ROT){/* phone held upright, game rotated: the app keeps the full screen, but the HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (left edge) or the home bar (right edge) */const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8)+'px');app.style.width=ih+'px';app.style.height=iw+'px';VW=ih;VH=iw;}else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');app.style.width='';app.style.height='';VW=app.clientWidth;VH=app.clientHeight;}}
+  const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;
+  if(ROT){/* phone held upright, game rotated. WIN = player-set screen insets (physical top/bottom/left/right). The HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (physical top = app left edge) or the home bar */app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10-WIN.t)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8-WIN.b)+'px');const w=Math.max(200,ih-WIN.t-WIN.b),h=Math.max(150,iw-WIN.l-WIN.r);app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=w+'px';app.style.height=h+'px';VW=w;VH=h;}
+  else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');const any=WIN.t||WIN.b||WIN.l||WIN.r;if(any){app.style.position='fixed';app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=Math.max(200,iw-WIN.l-WIN.r)+'px';app.style.height=Math.max(150,ih-WIN.t-WIN.b)+'px';}else{app.style.position='';app.style.top='';app.style.left='';app.style.width='';app.style.height='';}VW=app.clientWidth;VH=app.clientHeight;}}
+/* ---- player window insets (physical screen pixels kept clear on each edge) ---- */
+let WIN={t:0,b:0,l:0,r:0};try{Object.assign(WIN,JSON.parse(localStorage.getItem('msp-window')||'{}'));}catch(e){}
+function winSave(){try{localStorage.setItem('msp-window',JSON.stringify(WIN));}catch(e){}}
+function winText(){return `window insets top ${WIN.t} bottom ${WIN.b} left ${WIN.l} right ${WIN.r} · screen ${innerWidth}×${innerHeight} @${devicePixelRatio} · safe-area ${SA.t}/${SA.b}/${SA.l}/${SA.r} · rot=${ROT} · app ${VW}×${VH}`;}
+function winRender(){const o=$('winAdj');if(o.hidden)return;const W_=innerWidth,H_=innerHeight,T=6;const hs={t:[WIN.l,WIN.t-T/2,W_-WIN.l-WIN.r,T],b:[WIN.l,H_-WIN.b-T/2,W_-WIN.l-WIN.r,T],l:[WIN.l-T/2,WIN.t,T,H_-WIN.t-WIN.b],r:[W_-WIN.r-T/2,WIN.t,T,H_-WIN.t-WIN.b]};for(const h of o.querySelectorAll('.wh')){const b=hs[h.dataset.e];h.style.left=b[0]+'px';h.style.top=b[1]+'px';h.style.width=b[2]+'px';h.style.height=b[3]+'px';}$('winTxt').textContent=`top ${WIN.t} · bottom ${WIN.b} · left ${WIN.l} · right ${WIN.r}`;}
+function winApply(){fitCanvas();applyLayout();fitWorld();winRender();}
+(()=>{const o=$('winAdj');for(const h of o.querySelectorAll('.wh')){let d=null;h.addEventListener('pointerdown',e=>{h.setPointerCapture(e.pointerId);d={x:e.clientX,y:e.clientY,v:WIN[h.dataset.e]};e.preventDefault();});
+  h.addEventListener('pointermove',e=>{if(!d)return;const k=h.dataset.e;const dx=e.clientX-d.x,dy=e.clientY-d.y;const dv=k==='t'?dy:k==='b'?-dy:k==='l'?dx:-dx;const lim=(k==='t'||k==='b')?innerHeight-200-WIN[k==='t'?'b':'t']:innerWidth-150-WIN[k==='l'?'r':'l'];WIN[k]=Math.round(Math.max(0,Math.min(lim,d.v+dv)));winApply();});
+  const up=()=>{if(d){d=null;winSave();}};h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);}
+  $('winCopy').onclick=()=>copyText(winText(),'winMsg');$('winReset').onclick=()=>{WIN={t:0,b:0,l:0,r:0};winSave();winApply();};$('winDone').onclick=()=>{o.hidden=true;winSave();};
+  window.addEventListener('resize',()=>setTimeout(winRender,120));})();
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 /* JS instead of a @container rule: container-type on the strip crashed iOS/WebKit on reload */(()=>{const st=$('strip');if(!st)return;const fit=()=>{const w=st.clientWidth;if(w)st.classList.toggle('narrow',w<560);};if(window.ResizeObserver)new ResizeObserver(fit).observe(st);window.addEventListener('resize',fit);fit();})();
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
@@ -1359,7 +1378,7 @@ function log(type,msg,data){LOG.push({t:Math.round(performance.now()),type,msg,d
 window.addEventListener('error',e=>log('err',`${e.message} @${(e.filename||'').split('/').pop()}:${e.lineno}:${e.colno}`));
 window.addEventListener('unhandledrejection',e=>log('err','promise: '+(e.reason&&e.reason.message||e.reason)));
 function env(){const app=$('app');const rect=id=>{const el=$(id);if(el.hidden)return 'hidden';const r=el.getBoundingClientRect();return `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)}`;};
-  return [`build ${BUILD} · ${new Date().toISOString()}`,`window ${innerWidth}×${innerHeight} · dpr ${devicePixelRatio} · screen ${screen.width}×${screen.height}`,`orientation ${screen.orientation?screen.orientation.type:'?'} · app ${app.clientWidth}×${app.clientHeight} · rotated ${ROT} · fps ${fps}`,`bar ${rect('bar')} · chat ${rect('chat')} · sheet ${rect('sheet')} · review ${rect('review')} · office ${rect('office')}`,layoutText(),`ua ${navigator.userAgent}`].join('\n');}
+  return [`build ${BUILD} · ${new Date().toISOString()}`,`window ${innerWidth}×${innerHeight} · dpr ${devicePixelRatio} · screen ${screen.width}×${screen.height}`,`orientation ${screen.orientation?screen.orientation.type:'?'} · app ${app.clientWidth}×${app.clientHeight} · rotated ${ROT} · fps ${fps}`,`bar ${rect('bar')} · chat ${rect('chat')} · sheet ${rect('sheet')} · review ${rect('review')} · office ${rect('office')}`,layoutText(),winText(),`ua ${navigator.userAgent}`].join('\n');}
 function snap(){if(!S)return '';const c=st=>S.scripts.filter(x=>x.stage===st).length;return `week ${S.week} day ${S.day} tick ${S.tick} running=${S.running} opened=${S.opened} speed=${S.speed} cash=${Math.round(S.cash)} owed=${owedTotal()} loan=${S.loan} trust=${S.trust.toFixed(1)} stock=${S.stock} plans=${JSON.stringify(S.plans)} price=${S.cashPrice} mods=${JSON.stringify(S.mods)}\nobjs ${S.objs.map(o=>`${o.type}@${o.x},${o.y}${o.rot?'r'+o.rot:''}${o.level?'L'+o.level:''}`).join(' ')} · reach ${reach.size} tiles\nstaff ${S.staff.map(w=>`${w.name}/${w.role}/${w.off?'off':w.plan?w.plan.name+':'+w.step:'idle'}${w.noPath?'!':''}`).join(', ')}\nscripts ring${c('ringing')} with${c('withPatient')} bin${c('bin')} carried${c('carried')} tray${c('tray')} prob${c('problem')} claim${c('claim')} shelf${c('shelf')} back${c('backorder')} · people ${S.patients.length} (${S.patients.map(p=>p.state+(p.conf?'?':'')).join(',')}) · claims open ${S.claims.filter(x=>x.status==='open').length}\nbusy ${JSON.stringify(busyS)} wk=${JSON.stringify(S.wk)} demand/day=${demandPerDay().toFixed(1)}`;}
 function report(){return `=== Maple Street Pharmacy debug ===\n${env()}\n\n--- state ---\n${snap()}\n\n--- activity (${GL.length}) ---\n`+GL.slice(-60).map(e=>`w${e.wk} ${stamp(e)} [${e.type}] ${e.text}`).join('\n')+`\n\n--- log (${LOG.length}) ---\n`+LOG.map(l=>`${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${l.msg}${l.data?' '+JSON.stringify(l.data):''}`).join('\n');}
 function renderDbg(){$('dbgEnv').textContent=env()+'\n'+snap();$('dbgLines').innerHTML=LOG.slice(-80).map(l=>`<div class="${l.type}">${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${String(l.msg).replace(/</g,'&lt;')}${l.data?' '+JSON.stringify(l.data).replace(/</g,'&lt;'):''}</div>`).join('');$('dbgLines').scrollTop=1e6;$('dbgRot').textContent='Force landscape: '+(forceLand?'on':'off');}
