@@ -1,5 +1,9 @@
 # Changelog
 
+## v21.3 — 2026-10-25 — Staff door
+- New Build item **Staff door** ($150): a door only staff can use; customers treat it as wall. Grey-green leaf with a STAFF plaque. It closes a room for privacy like any door and joins wall lines.
+- The **Consult room** is 4×5 again ($2,500) with two doors: a customer door at the front and a staff door directly behind the pharmacist's spot, so the pharmacist comes in from the pharmacy side and never crosses the customer's half. Verified in all four rotations: private, pharmacist can path to the desk, customers can reach the front and cannot get through the staff door, and the staff door does not expose the pharmacy area.
+
 ## v21.2 — 2026-10-25 — The pharmacist can get in
 - Fix: the v21.1 room was 4 wide, so the 2-tile desk sealed off the row behind it and the pharmacist could never reach the desk. The room is now 5×5 ($2,500) with a free column beside the desk: door → customer row → around the desk → behind it. Verified by pathing the pharmacist from the entrance to the desk in every rotation and running live consults.
 - Fix: with two or more consult desks, the pharmacist only ever looked at the nearest desk for a waiting patient; visitors at any other desk were never served. Any free desk with someone waiting is served now.

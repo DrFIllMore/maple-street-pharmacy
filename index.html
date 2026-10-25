@@ -284,7 +284,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v21.2 · 2026-10-25';
+const BUILD='v21.3 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -302,7 +302,8 @@ const TICKS_DAY=108,DAYS_WEEK=6,TICK_MS=200;   /* 5 game minutes per tick */
 const W=20,D=14,DOOR={x:19,y:8},OUT={x:21.5,y:8.5};
 const TYPES={
   wall:{two:true,short:'Blocks everyone',name:'Wall',cost:60,w:1,d:1,block:'all',cat:'build',desc:'Solid. Rooms need a door.'},
-  door:{short:'Walk-through in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'Goes in a wall line. Swings toward the side you face it. One door makes a walled consult room private.'},
+  door:{short:'Walk-through in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'Goes in a wall line. Swings toward the side you face it. Doors keep a walled consult room private.'},
+  sdoor:{short:'Staff only',name:'Staff door',cost:150,w:1,d:1,block:'patients',cat:'build',desc:'A door only staff use; customers treat it as wall. Goes in a wall line, swings toward the side you face it.'},
   counter:{short:'Staff pass, customers don’t',name:'Counter',cost:150,w:1,d:1,block:'patients',cat:'build',two:true,desc:'A half-height counter line. Staff step over it; customers can\'t.'},
   dropoff:{short:'Customers hand in Rx',name:'Drop-off window',cost:600,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Customers hand in prescriptions. A clerk works it from behind. One clerk works it at a time.'},
   register:{short:'Pay & pick up',name:'Register',cost:500,w:2,d:1,block:'patients',sides:'both',cat:'station',desc:'Pick-up and payment, worked from behind. One clerk at a time.',levels:[{n:'Till',t:1},{n:'Card reader',t:.6,cost:800,h:'rings up 40% faster'}]},
@@ -312,7 +313,7 @@ const TYPES={
   shelf:{short:'Finished bags wait',name:'Will-call shelf',cost:500,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'Finished bags wait for pick-up. Holds 16.'},
   phone:{short:'Takes phone-in Rx',name:'Phone desk',cost:700,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Phone-in prescriptions get answered here.'},
   problem:{short:'Fixes rejected claims',name:'Problem desk',cost:800,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Rejected claims get worked here automatically.'},
-  room:{short:'Private consult room, ready-made',name:'Consult room',cost:2500,w:5,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk already walled in with a door: shots and med reviews in private, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
+  room:{short:'Private consult room, ready-made',name:'Consult room',cost:2500,w:4,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk walled in with two doors: customers come in at the front, the pharmacist through a staff-only door at the back. Private from day one, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
   consult:{short:'Shots & reviews · wall it in',name:'Consult desk',cost:1500,w:2,d:1,block:'all',sides:'both',cat:'station',desc:'Shots and med reviews. After placing, the floor shows where walls and a door go to make it private.'},
   chair:{short:'Waiting lasts longer',name:'Chair',cost:100,w:1,d:1,block:'none',seat:true,cat:'furniture',desc:'Seated people wait longer before giving up. Nobody walks through a chair — leave a path around the seating.'},
   otc:{short:'Extra sales on the way out',name:'OTC shelf',cost:900,w:2,d:1,block:'all',sides:'patient',cat:'furniture',desc:'Cold medicine and vitamins. Customers buy on the way out.'},
@@ -320,7 +321,7 @@ const TYPES={
   fridge:{short:'Cold storage for specialty meds',name:'Fridge',cost:1200,w:1,d:1,block:'all',cat:'station',desc:'Keeps specialty medicines. Needed for the specialty contract (Supplies).'},
   plant:{short:'People like plants',name:'Plant',cost:80,w:1,d:1,block:'all',cat:'furniture',desc:'People like plants.'},
 };
-const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','chair','wall','door'];
+const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','chair','wall','door','sdoor'];
 const PALETTE_MORE=['phone','problem','room','consult','otc','medshelf','fridge','plant'];
 const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE]:PALETTE_START;
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
@@ -377,12 +378,12 @@ function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(c
   return null;}
 const dayIdx=()=>S.opened?(S.week-1)*DAYS_WEEK+(S.running?S.day:0):0;/* trading days since opening; the build week counts from 0 */
 /* consult room prefab: 4×5 local box, desk facing +ly; pharmacist row behind, customer row in front, door below that */
-function roomParts(o){/* 5×5 local box: desk at (1..2,2) facing +ly, a free column at lx=3 so the pharmacist can walk around the desk to the row behind it, door at (1,4) on the customer side */const r=(o.rot||0)&3;const M=(lx,ly)=>r===0?[o.x+lx,o.y+ly]:r===1?[o.x+ly,o.y+4-lx]:r===2?[o.x+4-lx,o.y+4-ly]:[o.x+4-ly,o.y+lx];/* local +ly is the desk's front: south, east, north, west — same as FACES */const parts=[];
+function roomParts(o){/* 4×5 local box: desk at (1..2,2) facing +ly; customer row in front with a door at (1,4); pharmacist row behind with a staff-only door at (1,0) */const r=(o.rot||0)&3;const M=(lx,ly)=>r===0?[o.x+lx,o.y+ly]:r===1?[o.x+ly,o.y+3-lx]:r===2?[o.x+3-lx,o.y+4-ly]:[o.x+4-ly,o.y+lx];/* local +ly is the desk's front: south, east, north, west — same as FACES */const parts=[];
   const a=M(1,2),b=M(2,2);parts.push({type:'consult',x:Math.min(a[0],b[0]),y:Math.min(a[1],b[1]),rot:r});
-  for(let lx=0;lx<5;lx++)for(let ly=0;ly<5;ly++){const edge=lx===0||lx===4||ly===0||ly===4;if(!edge)continue;const [wx,wy]=M(lx,ly);if(lx===1&&ly===4)parts.push({type:'door',x:wx,y:wy,rot:r});else parts.push({type:'wall',x:wx,y:wy,rot:(r&1)?1:0});}
+  for(let lx=0;lx<4;lx++)for(let ly=0;ly<5;ly++){const edge=lx===0||lx===3||ly===0||ly===4;if(!edge)continue;const [wx,wy]=M(lx,ly);if(lx===1&&ly===4)parts.push({type:'door',x:wx,y:wy,rot:r});else if(lx===1&&ly===0)parts.push({type:'sdoor',x:wx,y:wy,rot:(r+2)&3});else parts.push({type:'wall',x:wx,y:wy,rot:(r&1)?1:0});}
   return parts;}
 function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;
-  if(T.prefab){const gid=uid();let desk=null;for(const pt of roomParts({x,y,rot})){const id=uid();const ob={id,type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0,t0:performance.now(),born:dayIdx(),bornWk:S.week,earnAll:0,group:gid};S.objs.push(ob);if(pt.type==='consult')desk=ob;}justPlaced={id:desk.id,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push('consult');rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}: desk, walls and a door. Private from day one.`);SFX.build();saveGame();return null;}
+  if(T.prefab){const gid=uid();let desk=null;for(const pt of roomParts({x,y,rot})){const id=uid();const ob={id,type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0,t0:performance.now(),born:dayIdx(),bornWk:S.week,earnAll:0,group:gid};S.objs.push(ob);if(pt.type==='consult')desk=ob;}justPlaced={id:desk.id,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push('consult');rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}: desk, walls, a customer door in front and a staff door behind. Private from day one.`);SFX.build();saveGame();return null;}
   const nid=uid();S.objs.push({id:nid,type,x,y,rot:rot||0,level:0,t0:performance.now(),stock:type==='otc'?OTC_CAP:undefined,born:dayIdx(),bornWk:S.week,earnAll:0});justPlaced={id:nid,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push(type);rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
 function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;const o=S.objs[i];const T=TYPES[o.type];if(busyS[id])return 'Someone is using it.';
   for(const sc of S.scripts)if(sc.at&&sc.at.endsWith(':'+id)){const b=objsOf('bin')[0];sc.at=b?'bin:'+b.id:null;if(sc.stage!=='shelf'&&sc.stage!=='claim')sc.stage='bin';}
@@ -397,7 +398,7 @@ function nearestFree(x,y,staff){for(let r=1;r<6;r++)for(let dx=-r;dx<=r;dx++)for
 const objsOf=t=>S.objs.filter(o=>o.type===t);
 const adjReach=(x,y)=>[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>reach.has((x+dx)+','+(y+dy)));
 const objById=id=>S.objs.find(o=>o.id===id);
-function enclosed(o){/* consult privacy: flood from patient tile over patient-walkable tiles, stop at 30 */const pt=patientTile(o);if(!pt)return false;const seen=new Set([pt.join(',')]);const q=[pt];while(q.length&&seen.size<=30){const [x,y]=q.shift();for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(!passP(nx,ny))continue;const c=grid[ny][nx];if(c.o&&objById(c.o)&&objById(c.o).type==='door')continue;const k=nx+','+ny;if(!seen.has(k)){seen.add(k);q.push([nx,ny]);}}}return seen.size<=30;}
+function enclosed(o){/* consult privacy: flood from patient tile over patient-walkable tiles, stop at 30 */const pt=patientTile(o);if(!pt)return false;const seen=new Set([pt.join(',')]);const q=[pt];while(q.length&&seen.size<=30){const [x,y]=q.shift();for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(!passP(nx,ny))continue;const c=grid[ny][nx];if(c.o&&objById(c.o)&&(objById(c.o).type==='door'||objById(c.o).type==='sdoor'))continue;const k=nx+','+ny;if(!seen.has(k)){seen.add(k);q.push([nx,ny]);}}}return seen.size<=30;}
 
 /* ============ pathfinding (A*, 8-neighbour, no corner cutting) ============ */
 function astar(sx,sy,tx,ty,staff){if(!inb(tx,ty))return null;const pass0=staff?passS:passP;const pass=(x,y)=>pass0(x,y)||(!staff&&x===tx&&y===ty&&inb(x,y)&&!!grid[y][x].seat);if(!pass(tx,ty))return null;if(sx===tx&&sy===ty)return [];
@@ -869,7 +870,7 @@ let buildOn=false,tool=null,rot=0;let ptrDown=false,spdKey='';document.addEventL
 $('floorX').onclick=toFloor;
 function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();if(!userCam)fitWorld();}
 const ICONS={};
-function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}if(T.w>=4){cam.z=.25;cam.x=38;cam.y=18;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
+function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}if(T.w>=4){cam.z=.27;cam.x=43;cam.y=18;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
 function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><img src="${iconFor(t)}" alt=""><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Sell</b><em>Half the cost back</em><small>½ back</small></button>`;
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
@@ -1096,7 +1097,7 @@ let extraObjs=[];const allObjs=()=>extraObjs.length?[...S.objs,...extraObjs]:S.o
 function wallBox(x,y,w,d,h,col){return wallBoxT(x,y,w,d,h,col,null);}
 function wallBoxT(x,y,w,d,h,col,kind){/* like box(), but an end face that butts against another wall/door tile is not drawn, so runs read as one continuous partition */
   const H=h*TH*2*Z();const A=vw(x,y),B=vw(x+w,y+d);const x0=Math.min(A[0],B[0]),y0=Math.min(A[1],B[1]),x1=Math.max(A[0],B[0]),y1=Math.max(A[1],B[1]);const p=[isoV(x0,y0),isoV(x1,y0),isoV(x1,y1),isoV(x0,y1)];
-  const solid=(a,b)=>{const wpos=unvw(a,b);const tx=Math.floor(wpos[0]),ty=Math.floor(wpos[1]);return allObjs().some(q=>(kind?q.type===kind:(q.type==='wall'||q.type==='door'))&&q.x===tx&&q.y===ty);};
+  const solid=(a,b)=>{const wpos=unvw(a,b);const tx=Math.floor(wpos[0]),ty=Math.floor(wpos[1]);return allObjs().some(q=>(kind?q.type===kind:(q.type==='wall'||q.type==='door'||q.type==='sdoor'))&&q.x===tx&&q.y===ty);};
   const sShort=(x1-x0)<.5,eShort=(y1-y0)<.5;
   if(!(sShort&&solid((x0+x1)/2,y1+.3)))poly([p[3],p[2],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],shade(col,.72));
   if(!(eShort&&solid(x1+.3,(y0+y1)/2)))poly([p[2],p[1],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H]],shade(col,.86));
@@ -1158,7 +1159,7 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
   const cx=o.x+w/2,cy=o.y+d/2;
   if(t==='room'){/* prefab ghost / palette icon: draw its parts, joined like the real thing */const parts=roomParts(o).map(pt=>({...pt,id:'ghost',level:0}));extraObjs=parts;for(const pt of parts.sort((p,q)=>depth(p.x+.5,p.y+.5)-depth(q.x+.5,q.y+.5)))drawObj(pt);extraObjs=[];if(grow<1)ctx.restore();return;}
   if(t==='wall'){/* thin partition: a slab through the tile centre, joining neighbouring wall/door tiles */
-    const T2=.09,H=1.35,col='#e3e9ef';const nb=(dx,dy)=>allObjs().some(q=>(q.type==='wall'||q.type==='door')&&q.x===o.x+dx&&q.y===o.y+dy);
+    const T2=.09,H=1.35,col='#e3e9ef';const nb=(dx,dy)=>allObjs().some(q=>(q.type==='wall'||q.type==='door'||q.type==='sdoor')&&q.x===o.x+dx&&q.y===o.y+dy);
     const E=nb(1,0),Wn=nb(-1,0),Sn=nb(0,1),N=nb(0,-1);
     /* walls in front of a nearby consult desk go see-through so the room stays visible */
     const dz=depth(o.x,o.y);const front=S.objs.some(q=>q.type==='consult'&&Math.abs(q.x+.5-o.x)<=3&&Math.abs(q.y+.5-o.y)<=3&&depth(q.x+.5,q.y+.5)<dz-.6);
@@ -1168,13 +1169,13 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
       if(E&&Wn)wallBox(o.x,o.y+.5-T2,1,T2*2,H,col);else if(E)wallBox(o.x+.5-T2,o.y+.5-T2,.5+T2,T2*2,H,col);else if(Wn)wallBox(o.x,o.y+.5-T2,.5+T2,T2*2,H,col);
       if(N&&Sn)wallBox(o.x+.5-T2,o.y,T2*2,1,H,col);else if(Sn)wallBox(o.x+.5-T2,o.y+.5-T2,T2*2,.5+T2,H,col);else if(N)wallBox(o.x+.5-T2,o.y,T2*2,.5+T2,H,col);
       if((E||Wn)&&(N||Sn))wallBox(o.x+.5-T2,o.y+.5-T2,T2*2,T2*2,H+.02,col);/* corner post */}ctx.restore();}
-  else if(t==='door'){/* frame across the wall line (local x), leaf swung open toward the front, brass knob */
+  else if(t==='door'||t==='sdoor'){/* frame across the wall line (local x), leaf swung open toward the front, brass knob; staff door is grey-green with a plaque */const leaf=t==='sdoor'?'#7f8f86':'#c98a3a',panel=t==='sdoor'?'#66776e':'#a8622e';
     {const a=lpt(o,.0,.5),b=lpt(o,1,.5);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=2*z;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}/* threshold */
     lbox(o,.0,.41,.1,.18,1.4,'#8b6b4a');lbox(o,.9,.41,.1,.18,1.4,'#8b6b4a');/* jambs */
     {const H=1.4*TH*2*z;const a=lpt(o,.0,.5),b=lpt(o,1,.5);poly([[a[0],a[1]-H],[b[0],b[1]-H],[b[0],b[1]-H+5*z],[a[0],a[1]-H+5*z]],'#8b6b4a');}/* lintel */
     {const H=1.3*TH*2*z;const a=lpt(o,.1,.5),b=lpt(o,.55,.92);/* leaf: hinge at a, swung ~60° to the front */
-      poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],'#c98a3a');poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],null,'rgba(0,0,0,.35)');
-      const px=a[0]+(b[0]-a[0])*.5,py=a[1]+(b[1]-a[1])*.5;ctx.fillStyle='#a8622e';ctx.fillRect(px-4*z,py-H*.78,8*z,H*.28);ctx.fillRect(px-4*z,py-H*.42,8*z,H*.28);/* panels */
+      poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],leaf);poly([[a[0],a[1]],[b[0],b[1]],[b[0],b[1]-H],[a[0],a[1]-H]],null,'rgba(0,0,0,.35)');
+      const px=a[0]+(b[0]-a[0])*.5,py=a[1]+(b[1]-a[1])*.5;if(t==='sdoor'){ctx.fillStyle='#f4f1ea';ctx.fillRect(px-5*z,py-H*.86,10*z,4.5*z);ctx.fillStyle='#2a2f2a';ctx.font=`900 ${3.2*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('STAFF',px,py-H*.86+3.4*z);}ctx.fillStyle=panel;ctx.fillRect(px-4*z,py-H*.78,8*z,H*.28);ctx.fillRect(px-4*z,py-H*.42,8*z,H*.28);/* panels */
       const kx=a[0]+(b[0]-a[0])*.85,ky=a[1]+(b[1]-a[1])*.85-H*.5;ctx.fillStyle='#e8c35a';ctx.beginPath();ctx.arc(kx,ky,2.4*z,0,Math.PI*2);ctx.fill();ctx.fillStyle='#7a5a10';ctx.beginPath();ctx.arc(kx+.6*z,ky+.6*z,.9*z,0,Math.PI*2);ctx.fill();}}
   else if(t==='counter'){const T2=.16,H=.8;const nb=(dx,dy)=>S.objs.some(q=>q.type==='counter'&&q.x===o.x+dx&&q.y===o.y+dy);const E=nb(1,0),Wn=nb(-1,0),Sn=nb(0,1),N=nb(0,-1);
     const seg=(x,y,w,d)=>{wallBoxT(x,y,w,d,H,'#f1e9dc','counter');/* wood top */const A=iso(x,y),B=iso(x+w,y),C=iso(x+w,y+d),Dd=iso(x,y+d);const hh=H*TH*2*z;poly([[A[0],A[1]-hh],[B[0],B[1]-hh],[C[0],C[1]-hh],[Dd[0],Dd[1]-hh]],'#c9a06a');};
@@ -1209,7 +1210,7 @@ function floorCues(){/* on-floor status: jammed / idle stations */const z=Z();co
 function thought(sx,sy,text,bg){/* small thought bubble above a person's tag */ctx.font='900 10px Nunito,sans-serif';ctx.textAlign='center';const wd=textW(text)+12;ctx.fillStyle=bg||'#fff';rr(sx-wd/2,sy-9,wd,16,8);ctx.beginPath();ctx.arc(sx-3,sy+10,2.2,0,Math.PI*2);ctx.arc(sx-6,sy+14.5,1.4,0,Math.PI*2);ctx.fill();ctx.fillStyle=bg?'#fff':'#2a2f2a';ctx.fillText(text,sx,sy+4);}
 function chip(wx,wy,text,bg,fg){const z=Math.max(Z(),.85);const [sx,sy]=iso(wx,wy);ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';const wd=textW(text)+12*z;ctx.fillStyle=bg;rr(sx-wd/2,sy-7*z,wd,14*z,4*z);ctx.fillStyle=fg;ctx.fillText(text,sx,sy+3.5*z);}
 function roomGuide(o){/* suggested walls + door around a consult desk */const [w,d]=dims(o);const f=facing(o);const pt=patientTile(o);if(!pt)return;const x0=Math.min(o.x,pt[0]),y0=Math.min(o.y,pt[1]),x1=Math.max(o.x+w-1,pt[0]),y1=Math.max(o.y+d-1,pt[1]);const door=[pt[0]+f[0],pt[1]+f[1]];
-  for(let x=x0-1;x<=x1+1;x++)for(let y=y0-1;y<=y1+1;y++){if(x>=x0&&x<=x1&&y>=y0&&y<=y1)continue;if(!inb(x,y))continue;const c=grid[y][x];const isDoor=x===door[0]&&y===door[1];const have=c.o&&objById(c.o)&&(objById(c.o).type==='wall'||objById(c.o).type==='door');if(have)continue;flat(x,y,1,1,isDoor?'rgba(239,159,39,.45)':'rgba(195,211,226,.55)');if(isDoor)chip(x+.5,y+.5,'DOOR','rgba(239,159,39,.95)','#2a1a00');}
+  for(let x=x0-1;x<=x1+1;x++)for(let y=y0-1;y<=y1+1;y++){if(x>=x0&&x<=x1&&y>=y0&&y<=y1)continue;if(!inb(x,y))continue;const c=grid[y][x];const isDoor=x===door[0]&&y===door[1];const have=c.o&&objById(c.o)&&['wall','door','sdoor'].includes(objById(c.o).type);if(have)continue;flat(x,y,1,1,isDoor?'rgba(239,159,39,.45)':'rgba(195,211,226,.55)');if(isDoor)chip(x+.5,y+.5,'DOOR','rgba(239,159,39,.95)','#2a1a00');}
   const z=Z();const [sx,sy]=iso(x0+(x1-x0+1)/2,y0-1.2);ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';const txt=enclosed(o)?'PRIVATE ROOM ✓':'WALLS + ONE DOOR = PRIVATE';const wd=ctx.measureText(txt).width+12*z;ctx.fillStyle=enclosed(o)?'rgba(29,158,117,.95)':'rgba(42,47,42,.85)';rr(sx-wd/2,sy-30*z,wd,14*z,4*z);ctx.fillStyle='#fff';ctx.fillText(txt,sx,sy-19.5*z);}
 function sideLabels(o){const T=TYPES[o.type];if(!T.sides)return;const st=staffTile(o),pt=patientTile(o);if(st&&inb(st[0],st[1])){flat(st[0],st[1],1,1,'rgba(93,140,214,.35)');chip(st[0]+.5,st[1]+.5,'STAFF','rgba(93,140,214,.95)','#fff');}if(pt&&inb(pt[0],pt[1])){flat(pt[0],pt[1],1,1,'rgba(239,159,39,.35)');chip(pt[0]+.5,pt[1]+.5,'CUSTOMERS','rgba(239,159,39,.95)','#2a1a00');}}
 /* static floor (tiles, outer walls, entrance) is rendered once per camera/grid state into an offscreen canvas */

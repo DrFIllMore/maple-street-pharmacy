@@ -4,7 +4,7 @@ await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.w
 await pg.evaluate(()=>document.getElementById('tNew').click());await pg.waitForTimeout(150);await pg.evaluate(()=>document.getElementById('go').click());await pg.waitForTimeout(150);
 // shop + a room in each rotation; check the pharmacist can path to each desk's staff tile from the entrance
 const r=await pg.evaluate(()=>{const a=__msp.api;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,8);P('chair',5,8);
- const out=[];const pos=[[0,6,0],[6,8,1],[12,6,2],[7,0,3]];for(const [x,y,rot] of pos){const err=P('room',x,y,rot);if(err){out.push({rot,err});continue;}const c=__msp.S.objs.filter(o=>o.type==='consult').pop();const st=a.staffTile(c),pt=a.patientTile(c);out.push({rot,err,priv:a.enclosedTest(c),staffPath:!!a.pathTest(19,8,st[0],st[1],true),patientPath:!!a.pathTest(19,8,pt[0],pt[1],false)});}
+ const out=[];const pos=[[0,6,0],[6,8,1],[12,6,2],[14,0,3]];for(const [x,y,rot] of pos){const err=P('room',x,y,rot);if(err){out.push({rot,err});continue;}const c=__msp.S.objs.filter(o=>o.type==='consult').pop();const st=a.staffTile(c),pt=a.patientTile(c);out.push({rot,err,priv:a.enclosedTest(c),staffPath:!!a.pathTest(19,8,st[0],st[1],true),patientPath:!!a.pathTest(19,8,pt[0],pt[1],false),patientToStaff:!!a.pathTest(19,8,st[0],st[1],false),exposed:a.exposedN()});}
  a.hire('tech');a.hire('clerk');a.setBuild(false);return out;});
 console.log(JSON.stringify(r));
 // run a day and count consults served
