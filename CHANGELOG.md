@@ -1,5 +1,12 @@
 # Changelog
 
+## v20.6 — 2026-10-25 — Energy %, home spots, bigger tap targets, faster frames
+- Worker energy is a percentage everywhere (card, staff list, day-off memo) instead of "4/6".
+- Idle workers no longer wander to random back-room tiles (which read as "everyone went to the far wall" after a reload). Each worker keeps a home spot next to their own station — techs by the fill bench, clerks behind the windows, the pharmacist by the verify terminal — and returns to it between tasks, one spot per person.
+- Tapping a person: the hit area is now the whole figure plus its name tag, and a person always wins over the station they are standing at.
+- The pharmacist also leaves the fill bench to an idle tech (same rule as the windows), which stops two techs showing "waiting" while the owner counts pills.
+- Performance: the static floor (tiles, outer walls, entrance) is drawn once per camera position into an offscreen canvas and blitted each frame (floor cost −80%, full frame about −35%); text widths for tags and chips are cached; A* uses a binary heap instead of re-sorting its open list; nothing is drawn under the title screen or while the tab is hidden; when the store is paused or closed the canvas redraws at ~15 fps unless you are touching it or building.
+
 ## v20.5 — 2026-10-24 — Cues on the floor
 - **Overloaded station**: a pulsing red outline around the footprint and a red "!" badge above its sign when its load is at 85% or more of capacity (4 in line at a window or register, 3 baskets at a fill station, 4 trays at verify, 8 in the bin, 16 bags on the shelf).
 - **Idle station**: a faint grey "idle" chip over a station that has been used less than 15% of the day so far and has nobody at it.
