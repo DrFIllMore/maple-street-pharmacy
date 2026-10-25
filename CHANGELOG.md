@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.6 · 2026-10-25
+- Fix: the drop-off / pick-up line piled everyone onto one tile when the tile behind the first customer was blocked (chairs, plants, a counter), so the queue was invisible while customers still timed out and "gave up at drop-off". The line now bends around obstacles (`queueLine`), never crossing another window's spot. Test: test/queue-line.js.
+
 ## v23.5 · 2026-10-25
 - Fix: in v23.4 the rotated app relied on 100vh/100vw while the canvas used the visual viewport, so on iPhone the floor could render stretched/offset relative to the HUD. The app box is sized explicitly from the visual viewport again (as in v23.1).
 

@@ -285,7 +285,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.5 · 2026-10-25';
+const BUILD='v23.6 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -476,7 +476,8 @@ function spawnPhone(){const sc=newScript('phone');sc.stage='ringing';sc.ring=0;S
 function spawnE(){const b=objsOf('bin')[0];const sc=newScript('e');sc.stage='bin';sc.at=b?'bin:'+b.id:null;if(b)fx(b,'e-script','owed');}
 function spawnConsult(){if(!objsOf('consult').length)return;const p=spawnPerson('consult',null);p.state='toRoom';}
 function pickQueue(type){const os=objsOf(type).filter(o=>{const p=patientTile(o);return p&&reach.has(p.join(','));});if(!os.length)return null;return os.map(o=>[o,S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length]).sort((a,b)=>a[1]-b[1])[0][0].id;}
-function queueTile(o,k){const [px,py]=patientTile(o);const [fx_,fy]=facing(o);let x=px,y=py;for(let i=0;i<k;i++){const nx=x+fx_,ny=y+fy;if(!passP(nx,ny))break;x=nx;y=ny;}return [x,y];}
+/* the line leads away from the window; when the next tile is blocked (chairs, plants, another counter) it bends sideways instead of piling everyone onto one tile */function queueLine(o){if(o._ql&&o._qlv===S.gridVer)return o._ql;const [px,py]=patientTile(o);const taken=new Set();for(const q of S.objs)if(q!==o&&(q.type==='dropoff'||q.type==='register')){const t=patientTile(q);if(t)taken.add(t.join(','));}const line=[[px,py]];const used=new Set([px+','+py]);let dir=facing(o),x=px,y=py;for(let i=0;i<9;i++){const cands=[dir,[dir[1],-dir[0]],[-dir[1],dir[0]]];let f=null;for(const d of cands){const nx=x+d[0],ny=y+d[1],k=nx+','+ny;if(passP(nx,ny)&&!used.has(k)&&!taken.has(k)&&reach.has(k)){f=[nx,ny,d];break;}}if(!f)break;x=f[0];y=f[1];dir=f[2];line.push([x,y]);used.add(x+','+y);}o._ql=line;o._qlv=S.gridVer;return line;}
+function queueTile(o,k){const l=queueLine(o);return l[Math.min(k,l.length-1)];}
 const qIndex=p=>S.patients.filter(o=>o.q===p.q&&(o.state==='toQueue'||o.state==='queued')).sort((a,b)=>a.seq-b.seq).indexOf(p);
 function returnForPickup(sc){const r=pickQueue('register');if(!r)return;
   if(sc.src==='walk'){const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.q=r;p.qt=0;p.seat=null;p.seq=S.sid++;routeViaOtc(p);return;}}
