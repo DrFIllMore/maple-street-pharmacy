@@ -1,5 +1,13 @@
 # Changelog
 
+## v22 — 2026-10-25 — Balance pass, measured
+- **Insurers pay daily.** Claims are dated in trading days (BlueLeaf 8, SilverPlan 12, QuickPay 4) and paid the morning they come due: a green "+$520 insurers" floater at the register and a log line; the first check gets a one-time announcement. First money lands around Tuesday of week 2 (~2.5 min of floor time at 1×) instead of the end of week 3. Top bar reads "Insurers owe · $X this wk"; Money tab and Gazette say "this week / next week". Old saves convert.
+- The late-payment event cannot appear before week 4 or before two checks have arrived; the advance is listed first and pays 92%; "Wait" delays everything by one week.
+- **Service matters more:** demand = 24 × share × (0.4 + trust/100). A trust-95 store draws ~75% more than a trust-40 store (was ~30%).
+- **Goal $15k** (was $25k) with the loan repaid and trust 60; **loan and starting cash $16k** (was $20k) to keep an early squeeze now that checks arrive sooner. The rival chain erodes an un-promoted store harder (share up to 35%, +1.5%/week).
+- Pacing: the store opens at ▶▶ speed unless you have picked a speed; the intro says insurers pay 8–12 days after a sale; week 1's opening log says when the first checks land.
+- Playtest (robots, 20 weeks): optimal wins week 14–15, cautious week 17; every archetype is net-positive by week 2; no dead stretches. Second tuning run in `test/reports/`.
+
 ## v21.6 — 2026-10-25 — Playtest harness, and the cascade it found
 - **New: `test/playtest.js`** — six robot players (naive, cautious, builder, marketer, reactive, optimal) each play 20 weeks on fixed seeds, deciding only from what the game shows them (feed, advisors, floor cues, cash). It scores the run against written targets (first insurer money ≤ 3 min, a positive week by week 4, cautious bottoms at $4–9k, naive must not prosper, ≥3 archetypes can win, no dominant strategy, no dead stretch > 90 s, losses are warned) and writes an HTML report with cash curves. Reports live in `test/reports/`.
 - **Fix (found by the harness): claim cascade.** If a staff member could not path to a station mid-job (e.g. a room placed where it cut off a staff tile), the aborted verify job dropped *rejected* prescriptions back in the bin; they were refilled, re-rejected, filed a duplicate claim each time, and every duplicate expired as a write-off — single weeks with 100–200 write-offs and 50–100 points of trust lost. Now: rejected scripts on an aborted job wait in Claims, a script can only have one open claim, the log names the unreachable station, and placing/moving/rotating anything that would cut staff off from a station is refused (walls and counters warn instead, since you may be mid-room).

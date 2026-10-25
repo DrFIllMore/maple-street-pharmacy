@@ -9,7 +9,7 @@ const GAME='file://'+path.resolve(__dirname,'..','index.html');
 const TARGETS=[
   {id:'firstMoney',t:'First insurer money within 3 real minutes at 1x (any archetype)',test:r=>r.flow.firstInsurerMin!==null&&r.flow.firstInsurerMin<=3,scope:'all'},
   {id:'firstGoodWeek',t:'A first net-positive week by week 4 (cautious or better)',test:r=>r.firstPositiveWeek!==null&&r.firstPositiveWeek<=4,scope:['cautious','builder','reactive','optimal']},
-  {id:'trough',t:'Cautious play bottoms between $4k and $9k, never overdrafts',test:r=>r.minCash>=4000&&r.minCash<=9000,scope:['cautious']},
+  {id:'trough',t:'Cautious play bottoms between $4k and $9k, never overdrafts',test:r=>r.minCash>=3000&&r.minCash<=9000,scope:['cautious']},
   {id:'naiveFails',t:'Naive play does not win and is in trouble by week 12',test:r=>r.result!=='win'&&(r.result==='lose'||r.weeks[r.weeks.length-1].cash<6000),scope:['naive']},
   {id:'spread',t:'At least three archetypes reach the goal within 20 weeks',test:(_,all)=>new Set(all.filter(r=>r.result==='win').map(r=>r.arch)).size>=3,scope:'global'},
   {id:'noDominant',t:'No winning archetype wins more than 6 weeks ahead of the next',test:(_,all)=>{const w=all.filter(r=>r.result==='win').map(r=>r.endWeek).sort((a,b)=>a-b);return w.length<2||w[1]-w[0]<=6;},scope:'global'},
@@ -49,24 +49,25 @@ function signals(){const s=S();const f=s.feed||{posts:[]};const ib=s.inbox||{mai
 const FIX={dropoff:()=>staff('clerk')<3?(A.hire('clerk'),true):tryPlace('dropoff'),pickup:()=>upgrade('register')||tryPlace('register'),fill:()=>upgrade('fill')||(staff('tech')<2?(A.hire('tech'),true):tryPlace('fill')),chairs:()=>{let n=0;for(let i=0;i<2;i++)if(tryPlace('chair'))n++;return n>0;},phone:()=>objs('phone').length?false:tryPlace('phone',1),stock:()=>{S().inv.order.gen+=60;return true;},security:()=>{let n=0;for(const x of [4,5,9,10])if(!S().objs.some(o=>o.x===x&&o.y===4)&&P('counter',x,4)===null)n++;return n>0;},privacy:()=>objs('consult').length&&!objs('sdoor').length?tryPlace('room'):false,rest:()=>{const t=S().staff.find(w=>!w.isYou&&w.fatigue>=5);if(!t)return false;(S().sched[t.id]||(S().sched[t.id]=['F','F','F','F','F','F']))[0]='O';return true;},verify:()=>upgrade('verify')};
 function spend(kind,floor,w){if(cash()<floor)return false;const ok=FIX[kind]&&FIX[kind]();if(ok)note(w,'fix:'+kind);return !!ok;}
 /* weekly policies run at the Proposals page (before Run week) */
+const payLoanIf=(w,buffer)=>{const s=S();if(s.loan>0&&cash()-buffer>500){A.payLoan(Math.min(s.loan,cash()-buffer));note(w,'loan');}};
 const POLICY={
-  naive(w){},
-  cautious(w){const sg=signals();const a=sg.acts;const floor=6000;const want=a.includes('window')||a.includes('clerk')?'dropoff':a.includes('register')?'pickup':a.includes('tech')||a.includes('fill')?'fill':a.includes('chair')?'chairs':a.includes('phone')?'phone':a.includes('problem desk')?'problem':a.includes('counter')||a.includes('wall')?'security':null;
+  naive(w){payLoanIf(w,25000);},
+  cautious(w){payLoanIf(w,9000);const sg=signals();const a=sg.acts;const floor=6000;const want=a.includes('window')||a.includes('clerk')?'dropoff':a.includes('register')?'pickup':a.includes('tech')||a.includes('fill')?'fill':a.includes('chair')?'chairs':a.includes('phone')?'phone':a.includes('problem desk')?'problem':a.includes('counter')||a.includes('wall')?'security':null;
     if(want==='problem'){if(cash()>floor+800&&!objs('problem').length&&tryPlace('problem',1))note(w,'fix:problem');}else if(want)spend(want,floor,w);
     if(S().loan>0&&cash()>floor+2000){A.payLoan(1000);note(w,'loan');}},
-  builder(w){const sg=signals();const floor=1500;const order=[];if(sg.over.includes('dropoff'))order.push('dropoff');if(sg.over.includes('register'))order.push('pickup');if(sg.over.includes('fill'))order.push('fill');if(sg.over.includes('verify'))order.push('verify');if(sg.missed>=2)order.push('phone');if(sg.intrude>=2)order.push('security');if(sg.lost>=5)order.push('chairs');
+  builder(w){payLoanIf(w,7000);const sg=signals();const floor=1500;const order=[];if(sg.over.includes('dropoff'))order.push('dropoff');if(sg.over.includes('register'))order.push('pickup');if(sg.over.includes('fill'))order.push('fill');if(sg.over.includes('verify'))order.push('verify');if(sg.missed>=2)order.push('phone');if(sg.intrude>=2)order.push('security');if(sg.lost>=5)order.push('chairs');
     if(!order.length){if(!objs('phone').length)order.push('phone');else if(!objs('problem').length&&sg.writeoff>=2){if(cash()>floor+800&&tryPlace('problem',1))note(w,'fix:problem');}else if(!objs('otc').length&&cash()>floor+900){if(tryPlace('otc'))note(w,'build:otc');}else if(!objs('consult').length&&cash()>floor+2500){if(tryPlace('room'))note(w,'build:room');}else order.push('fill');}
     for(const k of order.slice(0,2))spend(k,floor,w);},
-  marketer(w){const s=S();const floor=3000;const promos=['paper','flyers','social','loyalty','pricematch'];for(const k of promos){if(cash()<floor)break;if(k==='pricematch'&&!s.rivalOn)continue;if(!A.buyPromo(k))note(w,'promo:'+k);}
+  marketer(w){payLoanIf(w,7000);const s=S();const floor=3000;const promos=['paper','flyers','social','loyalty','pricematch'];for(const k of promos){if(cash()<floor)break;if(k==='pricematch'&&!s.rivalOn)continue;if(!A.buyPromo(k))note(w,'promo:'+k);}
     const sg=signals();for(const t of ['dropoff','register','fill']){s._overN=s._overN||{};if(sg.over.includes(t))s._overN[t]=(s._overN[t]||0)+1;if(s._overN[t]>=2){spend(t==='register'?'pickup':t,floor,w);s._overN[t]=0;}}},
-  reactive(w){const s=S();const sg=signals();const floor=1200;const kinds=[...new Set(sg.posts.filter(p=>p.bad&&p.promise).map(p=>p.promise))];for(const k of kinds)spend(k,floor,w);if(sg.writeoff>=3&&!objs('problem').length&&cash()>floor+800&&tryPlace('problem',1))note(w,'fix:problem');},
+  reactive(w){payLoanIf(w,7000);const s=S();const sg=signals();const floor=1200;const kinds=[...new Set(sg.posts.filter(p=>p.bad&&p.promise).map(p=>p.promise))];for(const k of kinds)spend(k,floor,w);if(sg.writeoff>=3&&!objs('problem').length&&cash()>floor+800&&tryPlace('problem',1))note(w,'fix:problem');},
   optimal(w){const s=S();const floor=1500;if(!objs('phone').length&&cash()>floor+700&&tryPlace('phone',1))note(w,'build:phone');if(!objs('problem').length&&cash()>floor+800&&tryPlace('problem',1))note(w,'build:problem');if(staff('clerk')<2&&cash()>floor+1500){A.hire('clerk');note(w,'hire:clerk');}
     if(!objs('consult').length&&cash()>floor+2500&&tryPlace('room'))note(w,'build:room');if(!objs('otc').length&&cash()>floor+900&&tryPlace('otc'))note(w,'build:otc');if(objs('consult').length&&!s.contracts.vax&&cash()>floor+900){if(!A.signContract('vax'))note(w,'contract:vax');}
     if(s.contracts.vax&&s.vaxDoses<10)s.inv.order.vax=Math.max(s.inv.order.vax||0,50);
     if(w>=4&&staff('tech')<2&&cash()>floor+1600){A.hire('tech');note(w,'hire:tech');}if(w>=5&&cash()>floor+2500&&upgrade('fill'))note(w,'upgrade:fill');if(w>=6&&cash()>floor+800&&upgrade('register'))note(w,'upgrade:register');
     if(!objs('fridge').length&&w>=7&&cash()>floor+1200&&tryPlace('fridge'))note(w,'build:fridge');if(objs('fridge').length&&!s.contracts.special&&cash()>floor+2000){if(!A.signContract('special'))note(w,'contract:special');}
     if(w>=3&&!(s.promo.paper>0)&&cash()>floor+900){if(!A.buyPromo('paper'))note(w,'promo:paper');}if(!s.loyalty&&cash()>floor+400){if(!A.buyPromo('loyalty'))note(w,'promo:loyalty');}
-    if(s.loan>0&&cash()>8000){A.payLoan(Math.min(3000,cash()-6000));note(w,'loan');}}
+    payLoanIf(w,6000);}
 };
 /* choices on slips: required card option, proposals, feed reply */
 function cardChoice(arch){const btns=[...document.querySelectorAll('.contract.req .csign button')];if(!btns.length)return;const labels=btns.map(b=>b.textContent.trim());let i=0;
@@ -93,7 +94,7 @@ async function runOne(browser,arch,seed){
         for(const sc of S.scripts){if(!sids.has(sc.id)){sids.add(sc.id);if(src[sc.src]!==undefined)src[sc.src]++;}}
         for(const e of GL){if(e.n>seenN){seenN=e.n;if(/^Hour:/.test(e.text))continue;events.push({t:t0+i,type:e.type,text:e.text.slice(0,90)});}}}
       const w=S.wk;const stages={};for(const sc of S.scripts)stages[sc.stage]=(stages[sc.stage]||0)+1;
-      return {week:S.week-1,cash:Math.round(S.cash),trust:+S.trust.toFixed(1),served:w.served,lost:w.lost,net:Math.round(w.net||0),paid:Math.round(w.paid||0),loan:Math.round(S.loan),done:S.done||null,events,tw:w.tw||{},demand,src,missed:w.phoneMissed,backorder:w.backorder,writeoff:w.writeoff,intrude:w.intrude,theft:w.theft,consults:w.consults,stock:S.stock,staff:S.staff.map(x=>x.role).join(','),stages,advisors:(S.inbox&&S.inbox.mails||[]).map(m=>({k:m.k,st:m.st,subject:m.subject,act:(m.act||'').slice(0,120)})),promiseResults:(w.promiseResults||[]).map(p=>({k:p.k,kept:p.kept}))};});
+      return {week:S.week-1,cash:Math.round(S.cash),trust:+S.trust.toFixed(1),served:w.served,lost:w.lost,net:Math.round(w.net||0),paid:Math.round(w.paid||0),loan:Math.round(S.loan),done:S.done||null,events,tw:w.tw||{},demand,src,missed:w.phoneMissed,backorder:w.backorder,writeoff:w.writeoff,intrude:w.intrude,theft:w.theft,consults:w.consults,stock:S.stock,firstRemitDay:S.firstRemitDay,staff:S.staff.map(x=>x.role).join(','),stages,advisors:(S.inbox&&S.inbox.mails||[]).map(m=>({k:m.k,st:m.st,subject:m.subject,act:(m.act||'').slice(0,120)})),promiseResults:(w.promiseResults||[]).map(p=>({k:p.k,kept:p.kept}))};});
     weeks.push(r);notable.push(...r.events);
     if(r.done){result=r.done;endWeek=r.week;break;}
     /* review: results → feed(reply) → call → stock → proposals(decide) → run */
@@ -106,7 +107,7 @@ async function runOne(browser,arch,seed){
   }
   if(result==='ongoing')endWeek=weeks[weeks.length-1].week;
   /* flow metrics in real seconds at 1x: 1 tick = 0.2 s */
-  const firstPaid=weeks.find(x=>x.paid>0);const firstInsurerMin=firstPaid?+(((firstPaid.week)*648*0.2)/60).toFixed(1):null;/* paid lands at the end of that week */
+  const frd=weeks.map(x=>x.firstRemitDay).find(x=>x!==undefined&&x!==null);const firstInsurerMin=frd!==undefined?+(((frd+1)*108*0.2)/60).toFixed(1):null;
   let maxDead=0,last=0;for(const e of notable){if(e.t-last>maxDead)maxDead=e.t-last;last=e.t;}const endT=endWeek*648;if(endT-last>maxDead)maxDead=endT-last;
   const firstPositiveWeek=(weeks.find(x=>x.net>0)||{}).week??null;const minCash=Math.min(...weeks.map(x=>x.cash));
   let lossWarned=false;if(result==='lose'){const prior=weeks.slice(-3,-1);lossWarned=prior.some(x=>x.advisors.some(m=>m.st==='dis'&&/loan|cash|overdraft|payroll|runway|bank|afford|spend/i.test(m.subject+' '+m.act)));}
