@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.8 · 2026-10-25
+- Adjust window uses − / + buttons per edge (tap = 4 px, hold to repeat) instead of edge drags, which collided with iOS edge-swipe gestures. The green edge lines remain as indicators only.
+
 ## v23.7 · 2026-10-25
 - **Adjust window** (⋯ menu): drag the four green edge handles to set how much of the physical screen the game keeps clear on each side; the whole HUD and floor refit live. Copy puts the insets + screen size on the clipboard to report; Reset clears; the setting persists (`msp-window`) and works in both orientations. Insets are also listed in the Debug report. Test: test/adjust-window.js.
 

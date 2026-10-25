@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Maple St Pharmacy">
 <meta name="theme-color" content="#141a16">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231d9e75'/%3E%3Crect x='78' y='40' width='24' height='100' rx='6' fill='%23fff'/%3E%3Crect x='40' y='78' width='100' height='24' rx='6' fill='%23fff'/%3E%3C/svg%3E">
-<style>html,body{height:100%;margin:0;background:#141a16}#winAdj{position:fixed;inset:0;z-index:1000;pointer-events:none;font-family:inherit}#winAdj .wh{position:fixed;background:rgba(27,159,118,.85);pointer-events:auto;touch-action:none;box-shadow:0 0 0 2px #fff}#winAdj .wh::after{content:'';position:absolute;inset:-18px}
+<style>html,body{height:100%;margin:0;background:#141a16}#winAdj{position:fixed;inset:0;z-index:1000;pointer-events:none;font-family:inherit}#winAdj .wh{position:fixed;background:rgba(27,159,118,.85);pointer-events:none;box-shadow:0 0 0 2px #fff}#winAdj .wrows{display:grid;grid-template-columns:auto auto 3ch auto;gap:4px 8px;align-items:center;justify-content:center;text-align:left}#winAdj .wrows b{font-weight:600}#winAdj .wrows button.pm{width:40px;height:34px;padding:0;font-size:20px;line-height:1;margin:0;touch-action:manipulation}
 #winAdj .wp{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(20,30,25,.92);color:#fff;border-radius:12px;padding:10px 12px;display:grid;gap:6px;font-size:13px;pointer-events:auto;min-width:200px;text-align:center}#winAdj .wp button{font:inherit;font-weight:700;padding:6px 10px;border-radius:8px;border:0;margin:0 3px;background:#1b9f76;color:#fff}#winAdj .wp small{min-height:1em;opacity:.85}
 </style>
 <title>Maple Street Pharmacy</title>
@@ -285,13 +285,13 @@ button,.hud{touch-action:manipulation}
 
   <div id="winAdj" hidden>
     <div class="wh" data-e="t"></div><div class="wh" data-e="b"></div><div class="wh" data-e="l"></div><div class="wh" data-e="r"></div>
-    <div class="wp"><b>Adjust window</b><span id="winTxt"></span><div><button id="winCopy">Copy</button><button id="winReset">Reset</button><button id="winDone">Done</button></div><small id="winMsg"></small></div>
+    <div class="wp"><b>Adjust window</b><div class="wrows" id="winRows"></div><div><button id="winCopy">Copy</button><button id="winReset">Reset</button><button id="winDone">Done</button></div><small id="winMsg"></small></div>
   </div>
 <script src="avatars.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.7 · 2026-10-25';
+const BUILD='v23.8 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1123,11 +1123,14 @@ function applyOrientation(){const app=$('app');const vv=window.visualViewport;co
 let WIN={t:0,b:0,l:0,r:0};try{Object.assign(WIN,JSON.parse(localStorage.getItem('msp-window')||'{}'));}catch(e){}
 function winSave(){try{localStorage.setItem('msp-window',JSON.stringify(WIN));}catch(e){}}
 function winText(){return `window insets top ${WIN.t} bottom ${WIN.b} left ${WIN.l} right ${WIN.r} · screen ${innerWidth}×${innerHeight} @${devicePixelRatio} · safe-area ${SA.t}/${SA.b}/${SA.l}/${SA.r} · rot=${ROT} · app ${VW}×${VH}`;}
-function winRender(){const o=$('winAdj');if(o.hidden)return;const W_=innerWidth,H_=innerHeight,T=6;const hs={t:[WIN.l,WIN.t-T/2,W_-WIN.l-WIN.r,T],b:[WIN.l,H_-WIN.b-T/2,W_-WIN.l-WIN.r,T],l:[WIN.l-T/2,WIN.t,T,H_-WIN.t-WIN.b],r:[W_-WIN.r-T/2,WIN.t,T,H_-WIN.t-WIN.b]};for(const h of o.querySelectorAll('.wh')){const b=hs[h.dataset.e];h.style.left=b[0]+'px';h.style.top=b[1]+'px';h.style.width=b[2]+'px';h.style.height=b[3]+'px';}$('winTxt').textContent=`top ${WIN.t} · bottom ${WIN.b} · left ${WIN.l} · right ${WIN.r}`;}
+function winRender(){const o=$('winAdj');if(o.hidden)return;const W_=innerWidth,H_=innerHeight,T=6;const hs={t:[WIN.l,WIN.t-T/2,W_-WIN.l-WIN.r,T],b:[WIN.l,H_-WIN.b-T/2,W_-WIN.l-WIN.r,T],l:[WIN.l-T/2,WIN.t,T,H_-WIN.t-WIN.b],r:[W_-WIN.r-T/2,WIN.t,T,H_-WIN.t-WIN.b]};for(const h of o.querySelectorAll('.wh')){const b=hs[h.dataset.e];h.style.left=b[0]+'px';h.style.top=b[1]+'px';h.style.width=b[2]+'px';h.style.height=b[3]+'px';}for(const k of ['t','b','l','r'])$('winV'+k).textContent=WIN[k];}
 function winApply(){fitCanvas();applyLayout();fitWorld();winRender();}
-(()=>{const o=$('winAdj');for(const h of o.querySelectorAll('.wh')){let d=null;h.addEventListener('pointerdown',e=>{h.setPointerCapture(e.pointerId);d={x:e.clientX,y:e.clientY,v:WIN[h.dataset.e]};e.preventDefault();});
-  h.addEventListener('pointermove',e=>{if(!d)return;const k=h.dataset.e;const dx=e.clientX-d.x,dy=e.clientY-d.y;const dv=k==='t'?dy:k==='b'?-dy:k==='l'?dx:-dx;const lim=(k==='t'||k==='b')?innerHeight-200-WIN[k==='t'?'b':'t']:innerWidth-150-WIN[k==='l'?'r':'l'];WIN[k]=Math.round(Math.max(0,Math.min(lim,d.v+dv)));winApply();});
-  const up=()=>{if(d){d=null;winSave();}};h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);}
+(()=>{const o=$('winAdj');const names={t:'Top',b:'Bottom',l:'Left',r:'Right'};$('winRows').innerHTML=Object.keys(names).map(k=>`<b>${names[k]}</b><button class="pm" data-k="${k}" data-d="-1" aria-label="${names[k]} less">−</button><span id="winV${k}">0</span><button class="pm" data-k="${k}" data-d="1" aria-label="${names[k]} more">+</button>`).join('');
+  const bump=(k,d)=>{const lim=(k==='t'||k==='b')?Math.max(innerWidth,innerHeight)-200-WIN[k==='t'?'b':'t']:Math.max(innerWidth,innerHeight)-150-WIN[k==='l'?'r':'l'];WIN[k]=Math.round(Math.max(0,Math.min(lim,WIN[k]+d*4)));winApply();};
+  /* tap = 4px; hold = repeats. Buttons instead of edge drags: swiping from the screen edge opens iOS system gestures */
+  for(const bt of o.querySelectorAll('button.pm')){let tm=null,iv=null;const k=bt.dataset.k,d=+bt.dataset.d;const stop=()=>{clearTimeout(tm);clearInterval(iv);tm=iv=null;if(bt._held){bt._held=false;winSave();}};
+    bt.addEventListener('pointerdown',e=>{e.preventDefault();bt.setPointerCapture(e.pointerId);bump(k,d);bt._held=true;tm=setTimeout(()=>{iv=setInterval(()=>bump(k,d),70);},350);});
+    for(const ev of ['pointerup','pointercancel','pointerleave'])bt.addEventListener(ev,stop);}
   $('winCopy').onclick=()=>copyText(winText(),'winMsg');$('winReset').onclick=()=>{WIN={t:0,b:0,l:0,r:0};winSave();winApply();};$('winDone').onclick=()=>{o.hidden=true;winSave();};
   window.addEventListener('resize',()=>setTimeout(winRender,120));})();
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
