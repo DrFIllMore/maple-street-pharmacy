@@ -3,7 +3,7 @@
    Produces <out>.json and <out>.html. Nothing in the game is changed. */
 const {webkit}=require('playwright');const fs=require('fs');const path=require('path');
 const WEEKS=+process.argv[2]||20,SEEDS=+process.argv[3]||2,OUT=process.argv[4]||path.join(__dirname,'playtest-report');
-const GAME='file://'+path.resolve(__dirname,'..','index.html');
+const GAME='file://'+(process.env.GAME||path.resolve(__dirname,'..','index.html'));
 
 /* ---------- design targets (what "good" means) ---------- */
 const TARGETS=[
@@ -41,12 +41,12 @@ const log=[];const note=(w,what)=>log.push({week:w,what});
 function upgrade(type){const T=__msp.TYPES[type];const o=objs(type).find(q=>T.levels&&T.levels[(q.level||0)+1]);if(!o)return false;const nx=T.levels[o.level+1];if(cash()<nx.cost)return false;S().cash-=nx.cost;o.level++;return true;}
 function freeSpot(w,d){for(let y=5;y<13;y++)for(let x=0;x<19;x++){if(!A.canPlace||!A.canPlace(w,x,y))continue;return [x,y];}return null;}
 function tryPlace(type,rot){const err0=null;for(let y=0;y<14;y++)for(let x=0;x<20;x++){const e=P(type,x,y,rot||0);if(!e)return [x,y];}return null;}
-function baseSetup(){for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,8);P('chair',5,8);A.hire('tech');A.hire('clerk');}
+function baseSetup(){for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,8);P('chair',5,8);if(__msp.TYPES.restroom)P('restroom',12,9,0);A.hire('tech');A.hire('clerk');}
 /* what the game is telling the player this week */
 function signals(){const s=S();const f=s.feed||{posts:[]};const ib=s.inbox||{mails:[]};const acts=(ib.mails||[]).map(m=>(m.act||'')+' '+(m.subject||'')).join(' | ').toLowerCase();const posts=(f.posts||[]);
   const over=s.objs.filter(o=>o.util!==undefined&&o.util>=.85).map(o=>o.type);
   return {acts,posts,over,lost:s.wk.lost,theft:s.wk.theft||0,intrude:s.wk.intrude||0,writeoff:s.wk.writeoff||0,missed:s.wk.phoneMissed||0,rival:s.rivalOn};}
-const FIX={dropoff:()=>staff('clerk')<3?(A.hire('clerk'),true):tryPlace('dropoff'),pickup:()=>upgrade('register')||tryPlace('register'),fill:()=>upgrade('fill')||(staff('tech')<2?(A.hire('tech'),true):tryPlace('fill')),chairs:()=>{let n=0;for(let i=0;i<2;i++)if(tryPlace('chair'))n++;return n>0;},phone:()=>objs('phone').length?false:tryPlace('phone',1),stock:()=>{S().inv.order.gen+=60;return true;},security:()=>{let n=0;for(const x of [4,5,9,10])if(!S().objs.some(o=>o.x===x&&o.y===4)&&P('counter',x,4)===null)n++;return n>0;},privacy:()=>objs('consult').length&&!objs('sdoor').length?tryPlace('room'):false,rest:()=>{const t=S().staff.find(w=>!w.isYou&&w.fatigue>=5);if(!t)return false;(S().sched[t.id]||(S().sched[t.id]=['F','F','F','F','F','F']))[0]='O';return true;},verify:()=>upgrade('verify')};
+const FIX={dropoff:()=>staff('clerk')<3?(A.hire('clerk'),true):tryPlace('dropoff'),pickup:()=>upgrade('register')||tryPlace('register'),fill:()=>upgrade('fill')||(staff('tech')<2?(A.hire('tech'),true):tryPlace('fill')),chairs:()=>{let n=0;for(let i=0;i<2;i++)if(tryPlace('chair'))n++;return n>0;},phone:()=>objs('phone').length?false:tryPlace('phone',1),stock:()=>{S().inv.order.gen+=60;return true;},security:()=>{let n=0;for(const x of [4,5,9,10])if(!S().objs.some(o=>o.x===x&&o.y===4)&&P('counter',x,4)===null)n++;return n>0;},privacy:()=>objs('consult').length&&!objs('sdoor').length?tryPlace('room'):false,restroom:()=>tryPlace('restroom'),rest:()=>{const t=S().staff.find(w=>!w.isYou&&w.fatigue>=5);if(!t)return false;(S().sched[t.id]||(S().sched[t.id]=['F','F','F','F','F','F']))[0]='O';return true;},verify:()=>upgrade('verify')};
 function spend(kind,floor,w){if(cash()<floor)return false;const ok=FIX[kind]&&FIX[kind]();if(ok)note(w,'fix:'+kind);return !!ok;}
 /* weekly policies run at the Proposals page (before Run week) */
 const payLoanIf=(w,buffer)=>{const s=S();if(s.loan>0&&cash()-buffer>500){A.payLoan(Math.min(s.loan,cash()-buffer));note(w,'loan');}};

@@ -1,5 +1,13 @@
 # Changelog
 
+## v23 — 2026-10-25 — A named owner, a restroom, and equipment that unlocks
+- **The owner has a name.** Each new game picks one (Sam, Jo, Avery, Morgan, Riley, Quinn, Jordan, Casey, Devi, Noor, Tomas, Lena); existing saves get one on load. Tags, slips and the team's feed posts use it; "You" is gone.
+- **Restroom** ($900, unisex, one at a time), available from the start. Some waiting customers need it (older customers twice as often): with a free one they walk over ("IN USE"), come back and rejoin; without one, or if it stays busy, they get restless (patience −40%) and some walk out "needing the restroom". Gazette, feed ("No restroom", promisable), Flow row and the item card all report it.
+- **Gradual unlocks**, each announced in the Gazette's box and badged NEW in Build until first placed: phone desk + plant after week 1; problem desk after the first written-off claim; OTC shelf at week 3 with trust 55; consult room from week 3 once insurer checks have arrived and cash is $4k; fridge once a consult desk exists and trust is 70; stock shelf at trust 80 or a 150-script week. Nothing can be placed before it unlocks. Existing saves keep everything they already had.
+- Fix: placing a customer-side item (OTC shelf, restroom) was wrongly refused as "staff couldn't reach it".
+- Runway shows "ok" above a year instead of "699 wks".
+- Playtest: measured with the corrected harness (no real-time ticks between weeks), v23 matches v22.1 — cautious wins week 19–20, builder sometimes week 17, reactive loses. The earlier week-13 wins were inflated by stray ticks; the economy is still slower than the targets, which the next pass addresses with numbers.
+
 ## v22.1 — 2026-10-25 — Tuned on the second run
 - BlueLeaf pays 7 days after the sale (was 8), so the first check lands on Monday of week 2 — about 2.9 minutes of floor time at 1×.
 - Second robot playtest (loan $16k, hungrier rival, robots repay the loan): **cautious wins week 13–14, builder 14–18, optimal 15**; cautious bottoms at $6.6–7.9k in week 3 (the squeeze is back); naive stagnates (served falling 60 → 48 as the chain eats its share, net worth ~$9–11k, no path to the goal); marketer-only play is a trap (trust 36–52, cash under $5k); reactive pays off the loan but is slow (~week 24). 7 of 8 targets pass. Report: `test/reports/v22-pass2.html`.
