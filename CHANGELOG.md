@@ -1,5 +1,8 @@
 # Changelog
 
+## v20.8 — 2026-10-25 — Promote tab restored
+- Fix: like Flow, the Promote tab lost its contents in the taskbar split (v15.2) and had opened empty ever since. It is back: current walk-in boost, the chain's share, and the five levers (Flyers $300, Local paper ad $900, Social push $500, Price-match week $700, Loyalty cards $400). A new test opens every taskbar tab and checks it renders.
+
 ## v20.7 — 2026-10-25 — Insurer money made visible, staff tabs tidied
 - Insurers do pay — on a delay (BlueLeaf 2 weeks, SilverPlan 3, QuickPay 1), every Saturday, minus 6%. Checked with a 4-week trace. What hid it: the first two Gazettes say "Insurers paid +$0", and the "insurer paying late" event's *Wait* option pushes every outstanding payment back a week. Now the top bar reads "Insurers owe · $1,955 Sat" (what lands this Saturday), the Gazette has a "Due next Saturday" line, and the first insured sale logs a one-time explanation of copay vs. the insurer's share.
 - Schedule tab: fixed column tracks so a long name can no longer push the Mo–Sa cells out of line; names truncate, roles shortened (Tech / Clerk / RPh).

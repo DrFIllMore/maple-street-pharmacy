@@ -281,7 +281,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v20.7 · 2026-10-25';
+const BUILD='v20.8 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -938,6 +938,10 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
       sb=`<div class="perfwrap"><div class="pcol"><div class="perfhead"><span>This week · busy time</span><span>jobs</span></div>${staffSorted().map(w=>{const idle=w.wkTicks?Math.round(100*w.wkIdle/w.wkTicks):0;const jobs=w.wkJobs||0;const v=idle>60?'bad':idle>35?'':'good';return `<div class="srow perf"><span class="sname"><span class="pp">${staffPortrait(w,18)}</span><span class="nm" title="${ROLE[w.role]}"><b>${w.name}</b></span></span><span class="smood">${jobs}</span><span class="ebar"><i style="width:${100-idle}%;background:${idle>60?'var(--bad)':idle>35?'#ef9f27':'var(--good)'}"></i></span><span class="verdict ${v}">${idle>60?'mostly idle':idle>35?'has slack':'busy'} · ${100-idle}%</span></div>`;}).join('')}
 </div><div class="pcol">${ds.length?`<div class="lds"><div class="perfhead lhd"><span>Station load · yesterday</span></div>${load('Drop-off',u.intake,'another window or clerk')}${load('Fill',u.fill,'upgrade or second tech')}${load('Verify',u.verify,'hire a pharmacist')}${load('Registers',u.pickup,'another register')}</div>`:'<div class="foot">Station load appears after the first day.</div>'}</div></div>`;}
     body=`<h2>Staff <small>${fmt(wages())}/week</small></h2>${tabs}${sb}`;}
+  if(officeTab==='promo'){const rv=S.rivalOn?Math.round((S.promo.pricematch>0?0:S.rival)*100):0;
+    body=`<h2>Promote <small>bring people in</small></h2>
+      <div class="tile"><div class="pay"><div><span>Walk-ins boost right now</span><b class="${promoBoost()?'pos':''}">+${Math.round(promoBoost()*100)}%</b></div><div><span>Chain across the street takes</span><b class="${rv?'neg':''}">${S.rivalOn?rv+'%':'— (not yet)'}</b></div></div>${S.rivalOn?`<div class="verdict ${rv>15?'bad':''}">${rv>15?'They\'re eating your lunch. A price-match week wins people back.':rv?'Manageable. Ads keep their share from growing.':'You\'ve got the block this week.'}</div>`:''}</div>
+      ${Object.keys(PROMOS).map(k=>{const P=PROMOS[k];const on=k==='loyalty'?S.loyalty:S.promo[k]>0;return `<div class="lever"><div><div class="n">${P.n} ${on?`<span class="stamp pos">${k==='loyalty'?'running':S.promo[k]+' wk left'}</span>`:''}</div><div class="h">${P.h}</div></div><button class="a pri" data-promo="${k}" ${on||S.cash<P.cost?'disabled':''}>${fmt(P.cost)}</button></div>`;}).join('')}`;}
   if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;const ups=S.objs.filter(o=>TYPES[o.type].levels&&TYPES[o.type].levels[o.level+1]);
     body=`<h2>Supplies <small>stock · prices · contracts · upgrades</small></h2>
       <div class="tile"><div class="pay">${['gen','brand','vax','otc'].map(k=>`<div><span>${INV[k].n}</span><b>${invOn(k)} <span class="sub">· order ${S.inv.order[k]||0}</span></b></div>`).join('')}${S.inv.recv.length?`<div><span class="neg">Waiting to be put away</span><b class="neg">${S.inv.recv.length} box${S.inv.recv.length>1?'es':''}</b></div>`:''}</div><div class="foot">Change next Monday's order on the Stock slip between weeks.</div></div>
