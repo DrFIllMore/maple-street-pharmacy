@@ -1,5 +1,9 @@
 # Changelog
 
+## v21.2 — 2026-10-25 — The pharmacist can get in
+- Fix: the v21.1 room was 4 wide, so the 2-tile desk sealed off the row behind it and the pharmacist could never reach the desk. The room is now 5×5 ($2,500) with a free column beside the desk: door → customer row → around the desk → behind it. Verified by pathing the pharmacist from the entrance to the desk in every rotation and running live consults.
+- Fix: with two or more consult desks, the pharmacist only ever looked at the nearest desk for a waiting patient; visitors at any other desk were never served. Any free desk with someone waiting is served now.
+
 ## v21.1 — 2026-10-25 — Consult room, ready-made
 - New Build item **Consult room** ($2,400): a consult desk already walled in with a door, placed in one tap and rotatable like any other item (4×5 footprint: pharmacist row behind the desk, customer row in front, door on the customer side). It is private from the moment it lands, so the +0.4-trust consults start immediately with no wall/door assembly. The ghost preview shows the whole room joined up.
 - The plain consult desk, walls and doors remain for custom rooms and for sectioning off the pharmacy; the on-floor room guide still applies to those. The parts of a placed room are ordinary objects afterwards (movable and sellable one by one).

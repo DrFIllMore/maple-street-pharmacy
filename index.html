@@ -284,7 +284,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v21.1 · 2026-10-25';
+const BUILD='v21.2 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -312,7 +312,7 @@ const TYPES={
   shelf:{short:'Finished bags wait',name:'Will-call shelf',cost:500,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'Finished bags wait for pick-up. Holds 16.'},
   phone:{short:'Takes phone-in Rx',name:'Phone desk',cost:700,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Phone-in prescriptions get answered here.'},
   problem:{short:'Fixes rejected claims',name:'Problem desk',cost:800,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Rejected claims get worked here automatically.'},
-  room:{short:'Private consult room, ready-made',name:'Consult room',cost:2400,w:4,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk already walled in with a door: shots and med reviews in private, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
+  room:{short:'Private consult room, ready-made',name:'Consult room',cost:2500,w:5,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk already walled in with a door: shots and med reviews in private, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
   consult:{short:'Shots & reviews · wall it in',name:'Consult desk',cost:1500,w:2,d:1,block:'all',sides:'both',cat:'station',desc:'Shots and med reviews. After placing, the floor shows where walls and a door go to make it private.'},
   chair:{short:'Waiting lasts longer',name:'Chair',cost:100,w:1,d:1,block:'none',seat:true,cat:'furniture',desc:'Seated people wait longer before giving up. Nobody walks through a chair — leave a path around the seating.'},
   otc:{short:'Extra sales on the way out',name:'OTC shelf',cost:900,w:2,d:1,block:'all',sides:'patient',cat:'furniture',desc:'Cold medicine and vitamins. Customers buy on the way out.'},
@@ -377,9 +377,9 @@ function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(c
   return null;}
 const dayIdx=()=>S.opened?(S.week-1)*DAYS_WEEK+(S.running?S.day:0):0;/* trading days since opening; the build week counts from 0 */
 /* consult room prefab: 4×5 local box, desk facing +ly; pharmacist row behind, customer row in front, door below that */
-function roomParts(o){const r=(o.rot||0)&3;const M=(lx,ly)=>r===0?[o.x+lx,o.y+ly]:r===1?[o.x+ly,o.y+3-lx]:r===2?[o.x+3-lx,o.y+4-ly]:[o.x+4-ly,o.y+lx];/* local +ly is the desk's front: south, east, north, west — same as FACES */const parts=[];
+function roomParts(o){/* 5×5 local box: desk at (1..2,2) facing +ly, a free column at lx=3 so the pharmacist can walk around the desk to the row behind it, door at (1,4) on the customer side */const r=(o.rot||0)&3;const M=(lx,ly)=>r===0?[o.x+lx,o.y+ly]:r===1?[o.x+ly,o.y+4-lx]:r===2?[o.x+4-lx,o.y+4-ly]:[o.x+4-ly,o.y+lx];/* local +ly is the desk's front: south, east, north, west — same as FACES */const parts=[];
   const a=M(1,2),b=M(2,2);parts.push({type:'consult',x:Math.min(a[0],b[0]),y:Math.min(a[1],b[1]),rot:r});
-  for(let lx=0;lx<4;lx++)for(let ly=0;ly<5;ly++){const edge=lx===0||lx===3||ly===0||ly===4;if(!edge)continue;const [wx,wy]=M(lx,ly);if(lx===1&&ly===4)parts.push({type:'door',x:wx,y:wy,rot:r});else parts.push({type:'wall',x:wx,y:wy,rot:(r&1)?1:0});}
+  for(let lx=0;lx<5;lx++)for(let ly=0;ly<5;ly++){const edge=lx===0||lx===4||ly===0||ly===4;if(!edge)continue;const [wx,wy]=M(lx,ly);if(lx===1&&ly===4)parts.push({type:'door',x:wx,y:wy,rot:r});else parts.push({type:'wall',x:wx,y:wy,rot:(r&1)?1:0});}
   return parts;}
 function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;
   if(T.prefab){const gid=uid();let desk=null;for(const pt of roomParts({x,y,rot})){const id=uid();const ob={id,type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0,t0:performance.now(),born:dayIdx(),bornWk:S.week,earnAll:0,group:gid};S.objs.push(ob);if(pt.type==='consult')desk=ob;}justPlaced={id:desk.id,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push('consult');rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}: desk, walls and a door. Private from day one.`);SFX.build();saveGame();return null;}
@@ -483,7 +483,7 @@ function findJob(w){let pri=PRI[w.role];if(w.role!=='tech'){const qd=objsOf('dro
     if(kind==='verify'){const sc=S.scripts.filter(x=>x.stage==='tray'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const o=freeObj('verify',w);if(o)return jobVerify(w,o,sc);}}
     if(kind==='problem'){const sc=S.scripts.filter(x=>x.stage==='problem'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const o=freeObj('problem',w)||(w.role==='rph'?freeObj('verify',w):null);if(o)return jobProblem(w,o,sc);}}
     if(kind==='pickup'){for(const o of objsOf('register')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.state==='queued'&&x.arrived&&qIndex(x)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='shelf'&&!sc.claimed)return jobPickup(w,o,p,sc);}}}
-    if(kind==='consult'){const o=freeObj('consult',w);if(o){const p=S.patients.find(x=>x.kind==='consult'&&x.state==='atRoom'&&x.room===o.id);if(p)return jobConsult(w,o,p);}}
+    if(kind==='consult'){for(const o of objsOf('consult').filter(q=>!busyS[q.id]&&passS(...staffTile(q))).sort((q1,q2)=>dist(staffTile(q1),w)-dist(staffTile(q2),w))){const p=S.patients.find(x=>x.kind==='consult'&&x.state==='atRoom'&&x.room===o.id);if(p)return jobConsult(w,o,p);}}
   }return null;}
 function claim(w,o,sc){busyS[o.id]=w.id;if(sc)sc.claimed=w.id;}function release(o,sc){delete busyS[o.id];if(sc)sc.claimed=null;}
 const binOf=()=>objsOf('bin')[0];
@@ -869,7 +869,7 @@ let buildOn=false,tool=null,rot=0;let ptrDown=false,spdKey='';document.addEventL
 $('floorX').onclick=toFloor;
 function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();if(!userCam)fitWorld();}
 const ICONS={};
-function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}if(T.w>=4){cam.z=.27;cam.x=43;cam.y=18;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
+function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}if(T.w>=4){cam.z=.25;cam.x=38;cam.y=18;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
 function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><img src="${iconFor(t)}" alt=""><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Sell</b><em>Half the cost back</em><small>½ back</small></button>`;
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
@@ -1345,7 +1345,7 @@ function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();
   if(saved){S.promo=S.promo||{};S.contracts=S.contracts||{};S.vaxDoses=S.vaxDoses||0;S.rival=S.rival||0;S.wk.ev=S.wk.ev||[];S.wk.built=S.wk.built||[];S.advisors=S.advisors||rollAdvisors();if(!S.inv){S.inv=freshInv();S.inv.order.gen=S.orderQty||150;for(const o of S.objs)if(o.type==='otc'&&o.stock===undefined)o.stock=OTC_CAP;}for(const o of S.objs){o.t0=0;if(o.born===undefined){o.born=dayIdx();o.bornWk=S.opened?S.week:0;o.earnAll=o.earnAll||o.earn||0;}}if(!S.running&&S.opened&&S.inbox&&S.inbox.mails&&S.inbox.mails.length<4&&S.inbox.week===S.week-1){try{makeInbox();S.inbox.week=S.week-1;S.inbox.seen=false;}catch(e){}}for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={GL,LOG,busy:()=>({...busyS}),draw:()=>drawScene(),get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,payLoan,openObj,enclosedTest:(o)=>enclosed(o),exposedN:()=>exposed.size,resumeReview,openPatient,openWorker,makeInbox,showInbox,makeFeed,showFeed,buyPromo,signContract,flowHtml,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={GL,LOG,busy:()=>({...busyS}),draw:()=>drawScene(),get S(){return S;},get L(){return L;},api:{place,removeObj,turnObj,payLoan,openObj,enclosedTest:(o)=>enclosed(o),exposedN:()=>exposed.size,resumeReview,pathTest:(sx,sy,tx,ty,staff)=>astar(sx,sy,tx,ty,staff),openPatient,openWorker,makeInbox,showInbox,makeFeed,showFeed,buyPromo,signContract,flowHtml,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault());
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
