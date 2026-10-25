@@ -86,7 +86,7 @@ async function runOne(browser,arch,seed){
   await pg.goto(GAME);await pg.waitForTimeout(300);
   await pg.evaluate(()=>document.getElementById('tNew').click());await pg.waitForTimeout(100);await pg.evaluate(()=>document.getElementById('go').click());await pg.waitForTimeout(100);
   await pg.evaluate(a=>{window.__agent=eval(a);__agent.baseSetup();__msp.api.setBuild(false);},AGENT);
-  await pg.evaluate(()=>{__msp.api.startWeek();});
+  await pg.evaluate(()=>{__msp.api.startWeek();__msp.api.setSpeed(0);});
   const weeks=[];let result='ongoing',endWeek=null;const notable=[];const decisions=[];
   for(let w=1;w<=WEEKS;w++){
     const r=await pg.evaluate(()=>{const S=__msp.S;const GL=__msp.GL;let seenN=(GL[GL.length-1]||{}).n||0;const events=[];const t0=(S.week-1)*648;const demand=[];const src={walk:0,phone:0,e:0,consult:0};const sids=new Set();
@@ -103,7 +103,7 @@ async function runOne(browser,arch,seed){
     const card=await pg.evaluate(a=>__agent.cardChoice(a),arch);if(card)decisions.push({week:r.week,what:'card:'+card});
     const taken=await pg.evaluate(a=>__agent.proposals(a),arch);for(const t of taken)decisions.push({week:r.week,what:'proposal:'+t});
     const acts=await pg.evaluate(a=>{__agent.POLICY[a](__msp.S.week);const l=__agent.log.splice(0);return l;},arch);for(const a of acts)decisions.push(a);
-    await pg.waitForTimeout(40);const run=await pg.$('#run');if(!run){result='stuck';endWeek=r.week;break;}await pg.evaluate(()=>document.getElementById('run').click());await pg.waitForTimeout(60);
+    await pg.waitForTimeout(40);const run=await pg.$('#run');if(!run){result='stuck';endWeek=r.week;break;}await pg.evaluate(()=>{document.getElementById('run').click();__msp.api.setSpeed(0);/* no real-time ticks between measured weeks */});await pg.waitForTimeout(60);
   }
   if(result==='ongoing')endWeek=weeks[weeks.length-1].week;
   /* flow metrics in real seconds at 1x: 1 tick = 0.2 s */
