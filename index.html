@@ -284,7 +284,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v21 · 2026-10-25';
+const BUILD='v21.1 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -312,6 +312,7 @@ const TYPES={
   shelf:{short:'Finished bags wait',name:'Will-call shelf',cost:500,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'Finished bags wait for pick-up. Holds 16.'},
   phone:{short:'Takes phone-in Rx',name:'Phone desk',cost:700,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Phone-in prescriptions get answered here.'},
   problem:{short:'Fixes rejected claims',name:'Problem desk',cost:800,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Rejected claims get worked here automatically.'},
+  room:{short:'Private consult room, ready-made',name:'Consult room',cost:2400,w:4,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk already walled in with a door: shots and med reviews in private, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
   consult:{short:'Shots & reviews · wall it in',name:'Consult desk',cost:1500,w:2,d:1,block:'all',sides:'both',cat:'station',desc:'Shots and med reviews. After placing, the floor shows where walls and a door go to make it private.'},
   chair:{short:'Waiting lasts longer',name:'Chair',cost:100,w:1,d:1,block:'none',seat:true,cat:'furniture',desc:'Seated people wait longer before giving up. Nobody walks through a chair — leave a path around the seating.'},
   otc:{short:'Extra sales on the way out',name:'OTC shelf',cost:900,w:2,d:1,block:'all',sides:'patient',cat:'furniture',desc:'Cold medicine and vitamins. Customers buy on the way out.'},
@@ -320,7 +321,7 @@ const TYPES={
   plant:{short:'People like plants',name:'Plant',cost:80,w:1,d:1,block:'all',cat:'furniture',desc:'People like plants.'},
 };
 const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','chair','wall','door'];
-const PALETTE_MORE=['phone','problem','consult','otc','medshelf','fridge','plant'];
+const PALETTE_MORE=['phone','problem','room','consult','otc','medshelf','fridge','plant'];
 const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE]:PALETTE_START;
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
 const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const ROLE_ORDER={rph:0,tech:1,clerk:2};const staffSorted=()=>[...S.staff].sort((a,b)=>(ROLE_ORDER[a.role]-ROLE_ORDER[b.role])||(b.isYou?1:0)-(a.isYou?1:0)||a.name.localeCompare(b.name));const ROLE_SHORT={tech:'TECH',clerk:'CLERK',rph:'PHARMACIST'};const ROLE_COL={tech:'#2f7fd6',clerk:'#1d9e75',rph:'#f6f6f4'};const WAGES={tech:800,clerk:650,rph:1800};
@@ -375,7 +376,14 @@ function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(c
   if(T.sides){const st=staffTile(o),pt=patientTile(o);if(st&&(!inb(st[0],st[1])||grid[st[1]][st[0]].o))return 'Staff need to stand on the '+(T.sides==='both'?'back':'front')+' side.';if(pt&&(!inb(pt[0],pt[1])||grid[pt[1]][pt[0]].o))return 'Customers need to stand in front.';}
   return null;}
 const dayIdx=()=>S.opened?(S.week-1)*DAYS_WEEK+(S.running?S.day:0):0;/* trading days since opening; the build week counts from 0 */
-function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;const nid=uid();S.objs.push({id:nid,type,x,y,rot:rot||0,level:0,t0:performance.now(),stock:type==='otc'?OTC_CAP:undefined,born:dayIdx(),bornWk:S.week,earnAll:0});justPlaced={id:nid,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push(type);rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
+/* consult room prefab: 4×5 local box, desk facing +ly; pharmacist row behind, customer row in front, door below that */
+function roomParts(o){const r=(o.rot||0)&3;const M=(lx,ly)=>r===0?[o.x+lx,o.y+ly]:r===1?[o.x+ly,o.y+3-lx]:r===2?[o.x+3-lx,o.y+4-ly]:[o.x+4-ly,o.y+lx];/* local +ly is the desk's front: south, east, north, west — same as FACES */const parts=[];
+  const a=M(1,2),b=M(2,2);parts.push({type:'consult',x:Math.min(a[0],b[0]),y:Math.min(a[1],b[1]),rot:r});
+  for(let lx=0;lx<4;lx++)for(let ly=0;ly<5;ly++){const edge=lx===0||lx===3||ly===0||ly===4;if(!edge)continue;const [wx,wy]=M(lx,ly);if(lx===1&&ly===4)parts.push({type:'door',x:wx,y:wy,rot:r});else parts.push({type:'wall',x:wx,y:wy,rot:(r&1)?1:0});}
+  return parts;}
+function place(type,x,y,rot){const err=canPlace(type,x,y,rot);if(err)return err;const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;
+  if(T.prefab){const gid=uid();let desk=null;for(const pt of roomParts({x,y,rot})){const id=uid();const ob={id,type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0,t0:performance.now(),born:dayIdx(),bornWk:S.week,earnAll:0,group:gid};S.objs.push(ob);if(pt.type==='consult')desk=ob;}justPlaced={id:desk.id,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push('consult');rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}: desk, walls and a door. Private from day one.`);SFX.build();saveGame();return null;}
+  const nid=uid();S.objs.push({id:nid,type,x,y,rot:rot||0,level:0,t0:performance.now(),stock:type==='otc'?OTC_CAP:undefined,born:dayIdx(),bornWk:S.week,earnAll:0});justPlaced={id:nid,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push(type);rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}.`);SFX.build();saveGame();return null;}
 function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;const o=S.objs[i];const T=TYPES[o.type];if(busyS[id])return 'Someone is using it.';
   for(const sc of S.scripts)if(sc.at&&sc.at.endsWith(':'+id)){const b=objsOf('bin')[0];sc.at=b?'bin:'+b.id:null;if(sc.stage!=='shelf'&&sc.stage!=='claim')sc.stage='bin';}
   S.cash+=T.cost/2;S.objs.splice(i,1);rebuildGrid();nudgeAll();glog('staff',`Removed the ${T.name.toLowerCase()}.`);saveGame();return null;}
@@ -861,7 +869,7 @@ let buildOn=false,tool=null,rot=0;let ptrDown=false,spdKey='';document.addEventL
 $('floorX').onclick=toFloor;
 function setBuild(on){if(!on)cancelMove();buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();if(!userCam)fitWorld();}
 const ICONS={};
-function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
+function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}if(T.w>=4){cam.z=.27;cam.x=43;cam.y=18;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
 function renderPalette(){const el=$('palItems');el.innerHTML=palette().map(t=>`<button class="pal ${tool===t?'on':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}><img src="${iconFor(t)}" alt=""><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Sell</b><em>Half the cost back</em><small>½ back</small></button>`;
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
@@ -874,7 +882,7 @@ function palHint(){let t;if(tool==='erase')t='Tap something to sell it.';else if
 function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}if(err)toast(err);renderPalette();palHint();return;}
   if(tool==='erase'){const c=inb(tx,ty)?grid[ty][tx]:null;if(c&&c.o){const err=removeObj(c.o);if(err)toast(err);}return;}
   if(!tool)return;const T=TYPES[tool];const o={type:tool,x:tx,y:ty,rot};/* center 2-wide items under the finger */if(((rot&1)?T.d:T.w)>1&&tx===W-1)o.x=tx-1;
-  const err=place(tool,o.x,o.y,rot);if(err)toast(err);else{renderPalette();if(tool==='consult'){$('palHint').textContent='Now ring it with walls and put one door on the orange tile. Private = more trust per visit.';}if(tool==='wall'||tool==='counter'||tool==='chair')return;/* keep tool for painting */}}
+  const err=place(tool,o.x,o.y,rot);if(err)toast(err);else{renderPalette();if(tool==='consult'){$('palHint').textContent='Now ring it with walls and put one door on the orange tile. Private = more trust per visit. (Or sell it and place a ready-made Consult room.)';}if(tool==='room'){$('palHint').textContent='Consult room placed: private from the start. The pharmacist works it; customers enter through the door.';}if(tool==='wall'||tool==='counter'||tool==='chair')return;/* keep tool for painting */}}
 function startMove(id){closeSheet();if(!buildOn)setBuild(true);const err=pickUp(id);if(err)toast(err);renderPalette();palHint();}
 function toast(t){glog('ops',t);}
 
@@ -1084,10 +1092,11 @@ function fromScreen(sx,sy){const z=cam.z;const a=(sx-cam.x)/(TW*z),b=(sy-cam.y)/
 function shade(hex,k){const n=parseInt(hex.slice(1),16);const f=v=>Math.min(255,((n>>v)&255)*k)|0;return `rgb(${f(16)},${f(8)},${f(0)})`;}
 function poly(pts,col,stroke){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();if(col){ctx.fillStyle=col;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}}
 function box(x,y,w,d,h,col){const H=h*TH*2*Z();const A=vw(x,y),B=vw(x+w,y+d);const x0=Math.min(A[0],B[0]),y0=Math.min(A[1],B[1]),x1=Math.max(A[0],B[0]),y1=Math.max(A[1],B[1]);const p=[isoV(x0,y0),isoV(x1,y0),isoV(x1,y1),isoV(x0,y1)];poly([p[3],p[2],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],shade(col,.72));poly([p[2],p[1],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H]],shade(col,.86));poly([[p[0][0],p[0][1]-H],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],col);}
+let extraObjs=[];const allObjs=()=>extraObjs.length?[...S.objs,...extraObjs]:S.objs;/* ghost parts of a prefab join up like placed ones */
 function wallBox(x,y,w,d,h,col){return wallBoxT(x,y,w,d,h,col,null);}
 function wallBoxT(x,y,w,d,h,col,kind){/* like box(), but an end face that butts against another wall/door tile is not drawn, so runs read as one continuous partition */
   const H=h*TH*2*Z();const A=vw(x,y),B=vw(x+w,y+d);const x0=Math.min(A[0],B[0]),y0=Math.min(A[1],B[1]),x1=Math.max(A[0],B[0]),y1=Math.max(A[1],B[1]);const p=[isoV(x0,y0),isoV(x1,y0),isoV(x1,y1),isoV(x0,y1)];
-  const solid=(a,b)=>{const wpos=unvw(a,b);const tx=Math.floor(wpos[0]),ty=Math.floor(wpos[1]);return S.objs.some(q=>(kind?q.type===kind:(q.type==='wall'||q.type==='door'))&&q.x===tx&&q.y===ty);};
+  const solid=(a,b)=>{const wpos=unvw(a,b);const tx=Math.floor(wpos[0]),ty=Math.floor(wpos[1]);return allObjs().some(q=>(kind?q.type===kind:(q.type==='wall'||q.type==='door'))&&q.x===tx&&q.y===ty);};
   const sShort=(x1-x0)<.5,eShort=(y1-y0)<.5;
   if(!(sShort&&solid((x0+x1)/2,y1+.3)))poly([p[3],p[2],[p[2][0],p[2][1]-H],[p[3][0],p[3][1]-H]],shade(col,.72));
   if(!(eShort&&solid(x1+.3,(y0+y1)/2)))poly([p[2],p[1],[p[1][0],p[1][1]-H],[p[2][0],p[2][1]-H]],shade(col,.86));
@@ -1147,8 +1156,9 @@ function frontStrip(o,col){/* thin strip along the customer-facing edge */const 
 function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const t=o.type;const grow=o.t0?Math.max(0,Math.min(1,(performance.now()-o.t0)/350)):1;
   if(grow<1){const [cx,cy]=iso(o.x+w/2,o.y+d/2);ctx.save();ctx.translate(cx,cy);ctx.scale(grow,grow);ctx.translate(-cx,-cy);}
   const cx=o.x+w/2,cy=o.y+d/2;
+  if(t==='room'){/* prefab ghost / palette icon: draw its parts, joined like the real thing */const parts=roomParts(o).map(pt=>({...pt,id:'ghost',level:0}));extraObjs=parts;for(const pt of parts.sort((p,q)=>depth(p.x+.5,p.y+.5)-depth(q.x+.5,q.y+.5)))drawObj(pt);extraObjs=[];if(grow<1)ctx.restore();return;}
   if(t==='wall'){/* thin partition: a slab through the tile centre, joining neighbouring wall/door tiles */
-    const T2=.09,H=1.35,col='#e3e9ef';const nb=(dx,dy)=>S.objs.some(q=>(q.type==='wall'||q.type==='door')&&q.x===o.x+dx&&q.y===o.y+dy);
+    const T2=.09,H=1.35,col='#e3e9ef';const nb=(dx,dy)=>allObjs().some(q=>(q.type==='wall'||q.type==='door')&&q.x===o.x+dx&&q.y===o.y+dy);
     const E=nb(1,0),Wn=nb(-1,0),Sn=nb(0,1),N=nb(0,-1);
     /* walls in front of a nearby consult desk go see-through so the room stays visible */
     const dz=depth(o.x,o.y);const front=S.objs.some(q=>q.type==='consult'&&Math.abs(q.x+.5-o.x)<=3&&Math.abs(q.y+.5-o.y)<=3&&depth(q.x+.5,q.y+.5)<dz-.6);

@@ -1,5 +1,9 @@
 # Changelog
 
+## v21.1 — 2026-10-25 — Consult room, ready-made
+- New Build item **Consult room** ($2,400): a consult desk already walled in with a door, placed in one tap and rotatable like any other item (4×5 footprint: pharmacist row behind the desk, customer row in front, door on the customer side). It is private from the moment it lands, so the +0.4-trust consults start immediately with no wall/door assembly. The ghost preview shows the whole room joined up.
+- The plain consult desk, walls and doors remain for custom rooms and for sectioning off the pharmacy; the on-floor room guide still applies to those. The parts of a placed room are ordinary objects afterwards (movable and sellable one by one).
+
 ## v21 — 2026-10-25 — Replies are promises
 - **Promise system.** Replying to a complaint on the feed now makes a specific public promise tied to that complaint's fix (shorter drop-off line, faster fills, more seating, answered phones, no more backorders, closing the pharmacy off, a private consult room, a day off for the team, quicker checks). The button says what you are promising. Next Saturday the game checks whether you delivered — by building/hiring/upgrading *or* by the outcome (e.g. walk-outs at that spot halved): **kept** = +1.5 trust and a green "Promise kept 👍" follow-up post from the same person; **broken** = −1.5 trust and a red "Promise broken" post. Both count toward going viral. The reply itself is now only +0.3 trust.
 - **Credibility** (hidden, starts 50): +10 per kept promise, −15 per broken one, drifts back toward 50 by 2 a week. It scales what a reply is worth; below 20 the Promise buttons are replaced by "Nobody believes replies any more — keep a promise first"; at 75+ a thanked post brings +8% walk-ins instead of +4%.
