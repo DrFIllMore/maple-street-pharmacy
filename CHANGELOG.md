@@ -1,5 +1,11 @@
 # Changelog
 
+## v20.7 — 2026-10-25 — Insurer money made visible, staff tabs tidied
+- Insurers do pay — on a delay (BlueLeaf 2 weeks, SilverPlan 3, QuickPay 1), every Saturday, minus 6%. Checked with a 4-week trace. What hid it: the first two Gazettes say "Insurers paid +$0", and the "insurer paying late" event's *Wait* option pushes every outstanding payment back a week. Now the top bar reads "Insurers owe · $1,955 Sat" (what lands this Saturday), the Gazette has a "Due next Saturday" line, and the first insured sale logs a one-time explanation of copay vs. the insurer's share.
+- Schedule tab: fixed column tracks so a long name can no longer push the Mo–Sa cells out of line; names truncate, roles shortened (Tech / Clerk / RPh).
+- Performance tab fits one screen on both phone layouts: compact single-line worker rows (jobs · busy bar · verdict) and a one-line station-load strip (Drop-off · Fill · Verify · Registers). The drawer drops its slip footer and tightens spacing automatically before it would ever need to scroll.
+- Fix: the per-worker weekly stats were being zeroed while the week's feed was generated, so the Performance tab between weeks showed "0 jobs · busy 100%" for everyone but the owner (and the "idle worker" memo could never fire). Stats now reset when the next week starts.
+
 ## v20.6 — 2026-10-25 — Energy %, home spots, bigger tap targets, faster frames
 - Worker energy is a percentage everywhere (card, staff list, day-off memo) instead of "4/6".
 - Idle workers no longer wander to random back-room tiles (which read as "everyone went to the far wall" after a reload). Each worker keeps a home spot next to their own station — techs by the fill bench, clerks behind the windows, the pharmacist by the verify terminal — and returns to it between tasks, one spot per person.
