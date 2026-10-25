@@ -1,5 +1,9 @@
 # Changelog
 
+## v20.11 — 2026-10-25 — Item lifespan and lifetime earnings
+- Every item card ends with one grey line: **Built wk 2 · 9 days in service · earned $1,240 total** (registers say "billed"). Days count trading days since the item went in; items built before opening count from day one. Existing saves get stamped on load.
+- Card layout tightened so the extra line never pushes it off-screen: compact one-line ℞ header, Move/Rotate as icon buttons so all four actions sit on one row, smaller row gaps, and the card is capped to the free space between the top bar and the chat (scrolls inside only if it must). Checked at 932×430 and iPhone 15 Pro size.
+
 ## v20.10 — 2026-10-25 — Item cards audited
 - Went through every item's card after two simulated days. Fixes: basket bin and will-call shelf were "IDLE 0%" forever (use was only counted while staff touched them) — they now report **Fill level** as the average share of capacity over the day ("HOLDING 25%", "NEAR FULL · build another"); chairs report **Occupied** time; passive items (counter, wall, door, plant, stock shelf, fridge) no longer say "idle" and instead state what they do or hold ("Holds generics · 255 on hand", "+0.3 trust a week from 1 plant"); the register's money row is labelled **Billed · copays + insurer share** since most of it arrives later; "You is working here" → "You are".
 
