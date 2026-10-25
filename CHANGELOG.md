@@ -1,5 +1,8 @@
 # Changelog
 
+## v20.10 — 2026-10-25 — Item cards audited
+- Went through every item's card after two simulated days. Fixes: basket bin and will-call shelf were "IDLE 0%" forever (use was only counted while staff touched them) — they now report **Fill level** as the average share of capacity over the day ("HOLDING 25%", "NEAR FULL · build another"); chairs report **Occupied** time; passive items (counter, wall, door, plant, stock shelf, fridge) no longer say "idle" and instead state what they do or hold ("Holds generics · 255 on hand", "+0.3 trust a week from 1 plant"); the register's money row is labelled **Billed · copays + insurer share** since most of it arrives later; "You is working here" → "You are".
+
 ## v20.9 — 2026-10-25 — OTC shelf card tells the truth
 - The OTC shelf is self-service, so "use" was only counted while staff restocked it — it read IDLE even while customers were buying. Its card now shows **Sales** ("SOLD 5 today · 7 yesterday · stock 33 / 40"), the status line says who is browsing or "self-service", and shoppers at the shelf count toward its utilisation.
 
