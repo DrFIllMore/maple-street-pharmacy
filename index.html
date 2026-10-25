@@ -31,7 +31,7 @@
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px));padding-block:0;-webkit-tap-highlight-color:transparent}
 .app{height:100%;position:relative;overflow:hidden;--gl:12px;--gr:12px;--sab:env(safe-area-inset-bottom,0px)}
-.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:12px;--gr:12px;--sab:0px}/* the app itself is kept clear of the notch and home bar, so no extra gutters */
+.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:var(--glR);--gr:var(--barR);--sab:0px}/* the app itself is kept clear of the notch and home bar, so no extra gutters */
 canvas{display:block;width:100%;height:100%;touch-action:none}
 button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
@@ -108,7 +108,7 @@ button,.hud{touch-action:manipulation}
 .app.titled .bar,.app.titled .chat,.app.titled .menu{visibility:hidden}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @media (max-height:480px){.title h1{font-size:28px}.title .logo{width:52px;height:52px}.title{gap:6px}}
-.review{position:absolute;inset:0;touch-action:none;background:rgba(14,26,20,.55);display:flex;align-items:center;justify-content:center;padding:8px 8px 8px var(--gl);z-index:10}
+.review{position:absolute;inset:0;touch-action:none;background:rgba(14,26,20,.55);display:flex;align-items:center;justify-content:center;padding:8px max(8px,var(--gr)) 8px var(--gl);z-index:10}
 .rev.news{background:#f4efe3;color:#1f1b16;border-left:0!important;font-family:Georgia,'Times New Roman',serif}.mast{text-align:center;border-bottom:3px double #1f1b16;padding-bottom:4px}.mast .mt{font-size:1.9em;font-weight:700;letter-spacing:.02em;line-height:1.1}.mast .ml{display:flex;justify-content:space-between;font-family:var(--sans);font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#5b554c;border-top:1px solid #1f1b16;margin-top:4px;padding-top:3px}
 .rev.news .hl{margin:4px 0 0;font-size:1.65em;line-height:1.1;font-weight:700}.rev.news .lead{margin:0;font-size:.98em;line-height:1.45}.rev.news .twhy{display:flex;flex-wrap:wrap;gap:1px 10px;font-family:Nunito,sans-serif;font-size:.74em;font-weight:700;color:#5a5248;padding:3px 0 0;line-height:1.3}.rev.news .twhy span{white-space:nowrap}.rev.news .lead b{font-weight:700}
 .cols{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:12px;border-top:1px solid #1f1b16;padding-top:6px}.cols .col{min-width:0}.cols .ch{font-family:var(--sans);font-size:.72em;font-weight:900;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #1f1b16;margin-bottom:4px}.nl{font-family:var(--sans);font-size:.85em;display:grid;gap:2px}.nl div{display:flex;justify-content:space-between;gap:6px;border-bottom:1px dotted #bfb6a6;padding:1px 0}.nl b{font-family:var(--mono);font-weight:600}.nl .tot{border-top:1px solid #1f1b16;border-bottom:0;margin-top:2px;padding-top:3px;font-weight:800}.ad{margin-top:6px;border:1px solid #1f1b16;padding:5px 7px;font-size:.82em;line-height:1.3;font-family:var(--sans)}
@@ -285,7 +285,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.3 · 2026-10-25';
+const BUILD='v23.4 · 2026-10-25';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1109,7 +1109,7 @@ const cv=$('cv');let ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:
 forceLand=true;
 let SA={t:0,b:0,l:0,r:0};function readSafeArea(){let el=$('saprobe');if(!el){el=document.createElement('div');el.id='saprobe';el.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(el);}const cs=getComputedStyle(el);SA={t:parseFloat(cs.paddingTop)||0,r:parseFloat(cs.paddingRight)||0,b:parseFloat(cs.paddingBottom)||0,l:parseFloat(cs.paddingLeft)||0};if(window.__forceSA)SA=window.__forceSA;return SA;}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();
-  if(ROT){/* phone held upright, game rotated: the notch/status bar is the app's left edge and the home bar its right edge — keep the whole app out from under them */const w=ih-SA.t-SA.b,h=iw;app.style.width=w+'px';app.style.height=h+'px';app.style.top=SA.t+'px';VW=w;VH=h;}else{app.style.width='';app.style.height='';app.style.top='';VW=app.clientWidth;VH=app.clientHeight;}}
+  if(ROT){/* phone held upright, game rotated: the app keeps the full screen, but the HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (left edge) or the home bar (right edge) */const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8)+'px');VW=ih;VH=iw;}else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');VW=app.clientWidth;VH=app.clientHeight;}}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 /* JS instead of a @container rule: container-type on the strip crashed iOS/WebKit on reload */(()=>{const st=$('strip');if(!st)return;const fit=()=>{const w=st.clientWidth;if(w)st.classList.toggle('narrow',w<560);};if(window.ResizeObserver)new ResizeObserver(fit).observe(st);window.addEventListener('resize',fit);fit();})();
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}

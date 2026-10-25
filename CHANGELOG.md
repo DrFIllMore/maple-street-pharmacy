@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.4 · 2026-10-25
+- Rotated layout uses the full screen again (v23.1 dimensions). Instead of shrinking the app, the HUD gutters grow to at least the safe-area insets, so no panel, card, prompt or message sits under the Dynamic Island or the home bar; review/inbox panels respect the right gutter too.
+
 ## v23.3 · 2026-10-25
 - Fix: reloading a saved game on iPhone (WebKit) could crash the page. Cause: the `container-type` rule added to the taskbar in v23.2; replaced with a JS class toggle (`.strip.narrow`) driven by a ResizeObserver.
 
