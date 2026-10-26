@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.10 · 2026-10-26
+- Energy and morale bars are now the same size and shape (morale is the battery box without the nub); the ♥ moved next to the morale number.
+
 ## v24.9 · 2026-10-26
 - Energy is drawn as a small battery (outline + nub, fill colour by band); morale is a bar led by a ♥ in the morale colour. Same look on the Team rows and the worker card.
 

@@ -39,6 +39,7 @@
 .batt{position:relative;display:block;height:9px;border:1.5px solid #8c8577;border-radius:3px;padding:1px;margin-right:3px;box-sizing:border-box;background:#fff}.batt::after{content:'';position:absolute;right:-4px;top:50%;width:2px;height:4px;transform:translateY(-50%);background:#8c8577;border-radius:0 1px 1px 0}.batt i{display:block;height:100%;border-radius:1px;min-width:1px}
 .hb{display:flex;align-items:center;gap:3px;min-width:0}.hb .hrt{font-size:10px;line-height:1;flex:none;font-family:system-ui,sans-serif}.hb .mb{flex:1}
 .kv .batt{flex:1;max-width:120px}.kv .hb{flex:1;max-width:120px}
+.batt.mo::after{display:none}.tm .em b .hrt{font-size:.85em;margin-right:1px;font-family:system-ui,sans-serif}.tm .em{grid-template-columns:1fr 36px}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -320,7 +321,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.9 · 2026-10-26';
+const BUILD='v24.10 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -997,9 +998,10 @@ function patientDoing(p){const o=p.q&&objById(p.q);if(p.state==='queued'||p.stat
 function openPatient(p){S.sel=null;SFX.click();const m=moodOf(p);sheet(`<h3>${MOODJI[m]||'🙂'} ${p.name} <small>${p.elderly?'senior · ':''}${p.sick?'unwell · ':''}${p.kind==='consult'?'consult':'prescription'}</small></h3><p>${patientDoing(p)}.</p><p class="quote">“${pick(MOODWORDS[m]||MOODWORDS.content)}”</p>`);}
 function workerMood(w){if(w.sick>0)return ['out sick','🤒'];if(w.notice>0)return [`quitting in ${w.notice}d`,'🚪'];if(!w.isYou&&!w.floater&&(w.morale??80)<MO.complain)return ['disgruntled','😤'];if(w.floater)return [w.off?'not booked today':'covering','🩺'];if(w.off)return ['off shift','🏠'];const b=enBand(w);if(b==='empty'||b==='risk')return ['at risk · angry','😠'];if(b==='exhausted')return ['exhausted','😩'];if(b==='tired')return ['tired','😮‍💨'];const idle=w.wkTicks?w.wkIdle/w.wkTicks:0;if(idle>.6&&w.wkTicks>60)return ['bored','🥱'];if(S.mods.raise===99)return ['happy (got the raise)','😊'];return ['doing fine','🙂'];}
 const energyPct=w=>Math.round(w.energy??100);
-function moraleBar(w){const e=(w.morale??80)/100;const c=e>=.5?'#378add':e>=.3?'#ef9f27':'var(--bad)';return `<span class="hb"><span class="hrt" style="color:${c}">♥</span><span class="mb"><i style="width:${Math.round(e*100)}%;background:${c}"></i></span></span>`;}
+function moraleBar(w){const e=(w.morale??80)/100;const c=e>=.5?'#378add':e>=.3?'#ef9f27':'var(--bad)';return moraleBox(Math.round(e*100),c);}
 function energyBar(w){const e=(w.energy??100)/100;return battery(Math.round(e*100),e>=.5?'var(--good)':e>=.25?'#ef9f27':'var(--bad)');}
 const battery=(p,c)=>`<span class="batt"><i style="width:${p}%;background:${c}"></i></span>`;
+const moraleBox=(p,c)=>`<span class="batt mo"><i style="width:${p}%;background:${c}"></i></span>`;/* same size as the battery, no nub */
 const STATION_ROLE={fill:'tech',verify:'rph',dropoff:'clerk',register:'clerk',phone:'clerk',problem:'rph',consult:'rph'};
 function staffingNote(o){/* one worker per station: who is on it, and whether someone of that role is idle waiting for it */const role=STATION_ROLE[o.type];if(!role)return '';const who=S.staff.find(w=>busyS[o.id]===w.id);const same=objsOf(o.type);const onRole=S.staff.filter(w=>w.role===role&&!w.off&&w.x<W);const idleRole=onRole.filter(w=>!w.plan);const allBusy=same.every(q=>busyS[q.id]);
   const line=`<div><span>Staff</span><b>${who?who.name:'nobody'} · ${who?1:0} / 1</b> <small class="sub">one at a time</small></div>`;
@@ -1010,7 +1012,7 @@ function idleWhy(w){const can=o=>passS(...staffTile(o));
   if(w.role==='clerk'){const ws=[...objsOf('dropoff'),...objsOf('register')];if(!ws.some(can))return 'can\'t get behind a window';if(!S.patients.some(p=>p.state==='queued'))return 'no one in line right now';if(ws.every(o=>busyS[o.id]))return 'waiting — every window is taken';return 'between tasks';}
   if(w.role==='rph'){if(!objsOf('verify').some(can))return 'can\'t reach the verify terminal';if(!S.scripts.some(x=>x.stage==='tray'&&!x.claimed))return 'nothing to check right now';return 'between tasks';}return 'nothing to do';}
 function openWorker(w){S.sel=null;SFX.click();const [md,mj]=workerMood(w);const task=w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle · '+idleWhy(w);const tmr=(S.sched[w.id]||['F','F','F','F','F','F'])[(S.day+1)%6];
-  sheet(`<h3><span class="pp" style="margin-right:8px">${staffPortrait(w,46)}</span>${w.name} <small>${roleName(w)}${w.isYou?' · owner':''} · ${mj}</small></h3><div class="kv"><div><span>Energy</span>${energyBar(w)}<b>${energyPct(w)}%</b></div>${w.isYou||w.floater?'':`<div><span>Morale</span>${moraleBar(w)}<b>${Math.round(w.morale??80)}</b></div>`}<div><span>Mood</span><b>${md}</b></div><div><span>Wage</span><b>${w.isYou?'—':w.floater?fmt(FLOAT_DAY)+'/day':fmt(wageOf(w))+'/wk'+(w.raise?' · raised':'')}</b></div>${w.isYou||w.floater?'':`<div><span>Experience</span><b>${w.tenure||0} wk · +${Math.round(expBonus(w)*100)}% speed</b></div>`}<div><span>Now</span><b>${task}</b></div></div>
+  sheet(`<h3><span class="pp" style="margin-right:8px">${staffPortrait(w,46)}</span>${w.name} <small>${roleName(w)}${w.isYou?' · owner':''} · ${mj}</small></h3><div class="kv"><div><span>Energy</span>${energyBar(w)}<b>${energyPct(w)}%</b></div>${w.isYou||w.floater?'':`<div><span>Morale</span>${moraleBar(w)}<b>♥ ${Math.round(w.morale??80)}</b></div>`}<div><span>Mood</span><b>${md}</b></div><div><span>Wage</span><b>${w.isYou?'—':w.floater?fmt(FLOAT_DAY)+'/day':fmt(wageOf(w))+'/wk'+(w.raise?' · raised':'')}</b></div>${w.isYou||w.floater?'':`<div><span>Experience</span><b>${w.tenure||0} wk · +${Math.round(expBonus(w)*100)}% speed</b></div>`}<div><span>Now</span><b>${task}</b></div></div>
     <div class="acts"><button id="dayoff" ${tmr==='O'?'disabled':''}>${tmr==='O'?'Off tomorrow':'Day off tomorrow'}</button><button id="shifts">Shifts</button>${w.isYou||w.floater?'':`<button id="bonus" ${S.cash<BONUS?'disabled':''}>Bonus ${fmt(BONUS)}</button><button id="raise">Raise +10%</button>`}${w.isYou?'':'<button id="fire" class="danger">Let go</button>'}</div>`);
   if(!w.isYou&&!w.floater){$('bonus').onclick=()=>{const e=giveBonus(w);if(e)toast(e);openWorker(w);renderHud();};$('raise').onclick=()=>{giveRaise(w);openWorker(w);};}
   $('dayoff').onclick=()=>{const e=setShift(w,(S.day+1)%6,'O');if(e){toast(e);return;}SFX.click();glog('staff',`${w.name} gets tomorrow off.`);openWorker(w);};
@@ -1127,7 +1129,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
       const rows=staffSorted().map(w=>{const sc=S.sched[w.id]||(S.sched[w.id]=w.floater?['O','O','O','O','O','O']:['F','F','F','F','F','F']);const e=Math.round(w.energy??100),m=Math.round(w.morale??80);const [st,sc2]=status(w);
         const cells=sc.map((v,i)=>{const sick=w.sick>0&&S.running&&i>=S.day&&i<S.day+w.sick;return `<button class="cell ${sick?'S':v}${S.running&&i===S.day?' today':''}" data-w="${w.id}" data-d="${i}" ${sick?'disabled':''}>${sick?'Sick':v==='F'?'Full':v==='A'?'AM':v==='P'?'PM':'Off'}</button>`;}).join('');
         return `<div class="tm"><span class="who"><span class="pp">${staffPortrait(w,28)}</span><span class="nm"><b>${w.name}</b><small>${title(w)}</small><small class="st ${sc2}">${st}</small></span></span>
-          <span class="em">${battery(w.floater?100:e,w.floater?'#c9c2b2':enCol(e))}<b style="color:${w.floater?'var(--ink-2)':enCol(e)}">${w.floater?'—':e+'%'}</b>${w.isYou||w.floater?'':`<span class="hb"><span class="hrt" style="color:${moCol(m)}">♥</span><span class="mb"><i style="width:${m}%;background:${moCol(m)}"></i></span></span><b style="color:${moCol(m)}">${m}</b>`}</span>
+          <span class="em">${battery(w.floater?100:e,w.floater?'#c9c2b2':enCol(e))}<b style="color:${w.floater?'var(--ink-2)':enCol(e)}">${w.floater?'—':e+'%'}</b>${w.isYou||w.floater?'':`${moraleBox(m,moCol(m))}<b style="color:${moCol(m)}"><span class="hrt">♥</span>${m}</b>`}</span>
           ${cells}<span class="wg">${wage(w)}</span><button class="a more" data-more="${w.id}" aria-label="More about ${w.name}">⋯</button></div>`;}).join('');
       sb=`<div class="team">${head}${rows}</div><div class="foot">Tap a day to cycle Full · AM · PM · Off (half days 55% wage). Energy: busy day −29, quiet −14, night +23, day off +45. ⋯ = bonus, raise, let go.</div>`
         +`<div class="lbl">Hire <span class="sub">· ${fmt(HIRE_FEE)} agency fee, starts next day</span></div><div class="hire">${['tech','clerk','rph'].map(r=>`<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'verifies, consults, covers anything'}</small></button>`).join('')}${S.staff.some(w=>w.floater)?'':`<button class="a" data-h="float">Floater RPh · ${fmt(FLOAT_DAY)}/day<small>book days above · gray coat · no fee</small></button>`}</div>`;}
