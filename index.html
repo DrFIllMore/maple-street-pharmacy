@@ -41,6 +41,12 @@
 .kv .batt{flex:1;max-width:120px}.kv .hb{flex:1;max-width:120px}
 .batt.mo::after{display:none}.tm .em b .hrt{font-size:.85em;margin-right:1px;font-family:system-ui,sans-serif}.tm .em{grid-template-columns:1fr 36px}
 .bar .fitx{display:none!important}
+.esum{font-size:.84em;background:rgba(0,0,0,.035);border-radius:8px;padding:5px 8px;margin:2px 0 6px}
+.eq{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(36px,1fr) 34px 52px 56px 78px;gap:6px;align-items:center;padding:3px 0;border-bottom:1px dashed var(--line);font-size:.84em}
+.eq.hd span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eq.hd{padding:6px 0 2px;border-bottom:1px solid var(--line);font-size:.66em;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:800}
+.eq .nm{display:grid;min-width:0;line-height:1.1}.eq .nm b,.eq .nm small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eq .nm small{font-size:.78em;color:var(--ink-2);font-weight:700}
+.eq .n{text-align:right;font-family:var(--mono);font-weight:800;white-space:nowrap}.eq .vd{text-align:center;font-size:.76em;font-weight:800;border-radius:6px;padding:1px 2px;background:rgba(0,0,0,.05);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eq .vd.good{color:var(--good)}.eq .vd.warn{color:#b8730f}.eq .vd.bad{color:var(--bad)}
+.esup{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:.8em;color:var(--ink-2);font-weight:700;padding:3px 0}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -323,7 +329,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.11 · 2026-10-26';
+const BUILD='v24.12 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -550,7 +556,7 @@ function findJob(w){let pri=PRI[w.role];if(!w.isYou&&!w.floater&&(w.morale??80)<
     if(kind==='pickup'){for(const o of objsOf('register')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.state==='queued'&&x.arrived&&qIndex(x)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='shelf'&&!sc.claimed)return jobPickup(w,o,p,sc);}}}
     if(kind==='consult'){for(const o of objsOf('consult').filter(q=>!busyS[q.id]&&passS(...staffTile(q))).sort((q1,q2)=>dist(staffTile(q1),w)-dist(staffTile(q2),w))){const p=S.patients.find(x=>x.kind==='consult'&&x.state==='atRoom'&&x.room===o.id);if(p)return jobConsult(w,o,p);}}
   }return null;}
-function claim(w,o,sc){busyS[o.id]=w.id;if(sc)sc.claimed=w.id;}function release(o,sc){delete busyS[o.id];if(sc)sc.claimed=null;}
+function claim(w,o,sc){busyS[o.id]=w.id;if(sc)sc.claimed=w.id;o.wkJobs=(o.wkJobs||0)+1;}function release(o,sc){delete busyS[o.id];if(sc)sc.claimed=null;}
 const binOf=()=>objsOf('bin')[0];
 function jobIntake(w,o,p,sc){claim(w,o,sc);p.state='served';return {name:'intake',steps:[{go:staffTile(o)},{work:1,label:'taking Rx'},{fn:()=>{sc.stage='bin';sc.at='wtray:'+o.id;sc.claimed=null;seat(p);release(o,null);SFX.paper();}}]};}
 function recvDest(line){if(line==='otc')return objsOf('otc').find(o=>(o.stock||0)<OTC_CAP)||objsOf('otc')[0]||null;if(line==='brand')return objsOf('fridge')[0]||null;if(line==='vax')return objsOf('fridge')[0]||objsOf('consult')[0]||null;return objsOf('medshelf')[0]||objsOf('fill')[0]||null;}
@@ -601,7 +607,7 @@ function tick(){
   if(reach.size>1&&objsOf('dropoff').length&&!S.closedToday){const d=demandPerDay()/TICKS_DAY*rush;accW+=d*.5;accP+=d*.25;accE+=d*.25;}
   accC+=(objsOf('consult').length&&!S.closedToday?5*(.6+S.trust/120)*(S.mods.flu?1.8:1)*(S.vaxDoses>0?1:.45)/TICKS_DAY:0);
   while(accW>=1){accW-=1;spawnWalkIn();}while(accP>=1){accP-=1;spawnPhone();}while(accE>=1){accE-=1;spawnE();}while(accC>=1){accC-=1;spawnConsult();}
-  for(const o of S.objs){o.tt=(o.tt||0)+1;if(busyS[o.id]||(['dropoff','register'].includes(o.type)&&S.patients.some(p=>p.q===o.id&&p.state==='queued'))||(o.type==='otc'&&S.patients.some(p=>p.otcT===o.id&&p.state==='toOtc'&&p.otcWait>0))||(o.type==='chair'&&S.patients.some(p=>p.seat===o.id&&p.state==='waiting'))||(o.type==='restroom'&&o.occ))o.bt=(o.bt||0)+1;else if(o.type==='bin'||o.type==='shelf'){const {n,cap}=loadOf(o);o.bt=(o.bt||0)+Math.min(1,n/cap);}}
+  for(const o of S.objs){o.tt=(o.tt||0)+1;if(S.running){o.wkTt=(o.wkTt||0)+1;o.wkBt0=o.bt||0;}if(busyS[o.id]||(['dropoff','register'].includes(o.type)&&S.patients.some(p=>p.q===o.id&&p.state==='queued'))||(o.type==='otc'&&S.patients.some(p=>p.otcT===o.id&&p.state==='toOtc'&&p.otcWait>0))||(o.type==='chair'&&S.patients.some(p=>p.seat===o.id&&p.state==='waiting'))||(o.type==='restroom'&&o.occ))o.bt=(o.bt||0)+1;else if(o.type==='bin'||o.type==='shelf'){const {n,cap}=loadOf(o);o.bt=(o.bt||0)+Math.min(1,n/cap);}if(S.running)o.wkBt=(o.wkBt||0)+((o.bt||0)-(o.wkBt0||0));}
   /* staff shifts */
   for(const w of S.staff){const on=onShift(w)&&!S.closedToday;if(w.off&&on){w.off=false;w.x=OUT.x;w.y=OUT.y;w.path=null;}if(!w.off&&!on&&!w.plan){w.off=true;for(const k in busyS)if(busyS[k]===w.id)delete busyS[k];w.goal=null;}}
   for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;w.idleT=0;}else{w.idleT=(w.idleT||0)+1;if(w.idleT===24&&!w.isYou&&S.tick>12)glog('staff',`${w.name} has had nothing to do for two hours: ${idleWhy(w)}.`,'idle'+w.id,108);}}else w.idleT=0;
@@ -618,7 +624,7 @@ function tick(){
     if(p.conf>0){p.conf++;if(p.conf>8)leave(p,'confused');}
     if(!p.loo&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<(p.elderly?.006:.003)){const loo=objsOf('restroom').find(o=>!o.occ&&reach.has(patientTile(o).join(',')));if(loo){p.loo='going';p.prev={state:p.state,q:p.q,seat:p.seat};p.seat=null;p.state='toLoo';p.looT=loo.id;p.looW=0;}else{p.loo='denied';p.patience*=.6;S.wk.looDenied=(S.wk.looDenied||0)+1;if(Math.random()<.3){leave(p,'annoyed');continue;}}}
     if(p.state==='toLoo'&&p.arrivedLoo){const o=objById(p.looT);if(!o){p.loo='denied';sendBack(p);}else if(o.occ&&o.occ!==p.id){p.looW++;if(p.looW>4){p.loo='denied';p.patience*=.6;S.wk.looDenied=(S.wk.looDenied||0)+1;sendBack(p);}}else{o.occ=p.id;p.state='inLoo';p.inT=0;}}
-    if(p.state==='inLoo'){p.inT++;if(p.inT>=3){const o=objById(p.looT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;}p.loo='done';sendBack(p);}}
+    if(p.state==='inLoo'){p.inT++;if(p.inT>=3){const o=objById(p.looT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;o.usesWk=(o.usesWk||0)+1;}p.loo='done';sendBack(p);}}
     if(exposed.size&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<.01*(1+exposed.size/6)){p.prev={state:p.state,q:p.q,seat:p.seat};p.seat=null;p.state='sneak';p.snT=0;p.target=pick([...exposed]).split(',').map(Number);p.inT=0;p.escort=null;}
     if(p.state==='sneak')p.snT++;if(p.state==='inBack'){p.inT++;if(p.inT>=2&&Math.random()<(p.escort?.08:.2)){const units=Math.min(S.stock,Math.floor(rnd(4,9)));let val=units*S.unitCost;S.stock-=units;if(S.inv.brand>0&&Math.random()<.3){S.inv.brand--;val+=SPECIAL_COST;}S.wk.theft++;S.wk.theftVal+=val;p.stole=true;p.state='leaving';p.exitMood='content';p.q=null;goTo(p,DOOR.x,DOOR.y);S.wk.ev.push({k:'theft',name:p.name,val});dTrust(-.5,'security');fx([p.x,p.y],'−'+fmt(val)+' stolen','bad');glog('bad',`Someone walked out of the pharmacy area with stock worth ${fmt(val)}.`,'theft',10);SFX.sigh();}}
     const m=moodOf(p);if((m==='annoyed'||m==='angry')&&p.state!=='leaving')S.wk.annoyedTicks=(S.wk.annoyedTicks||0)+1;
@@ -656,7 +662,7 @@ function endDay(){
 /* ============ week ============ */
 let timer=null;
 function setSpeed(n){S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setInterval(tick,TICK_MS/n);renderHud();}
-function startWeek(){audioInit();cancelMove();PROPCACHE=null;S.stage=null;$('resume').hidden=true;if(!S.opened&&!S.speedSet)S.speed=3;if(S.openBuildNext){S.openBuildNext=false;setTimeout(()=>setBuild(true),400);}if(!S.opened)glog('ops','Open for business. New equipment unlocks as the store earns it — the Gazette announces each one.');for(const o of S.objs)o.earn=0;S.inv.used={gen:0,brand:0,vax:0,otc:0};S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
+function startWeek(){audioInit();cancelMove();PROPCACHE=null;S.stage=null;$('resume').hidden=true;if(!S.opened&&!S.speedSet)S.speed=3;if(S.openBuildNext){S.openBuildNext=false;setTimeout(()=>setBuild(true),400);}if(!S.opened)glog('ops','Open for business. New equipment unlocks as the store earns it — the Gazette announces each one.');for(const o of S.objs){o.earn=0;o.wkTt=0;o.wkBt=0;o.wkJobs=0;o.usesWk=0;}S.inv.used={gen:0,brand:0,vax:0,otc:0};S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
   for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;w.wkTicks=0;w.wkIdle=0;w.wkJobs=0;w.wkAct={};}for(const k in busyS)delete busyS[k];for(const sc of S.scripts)sc.claimed=null;hourSnap={served:0,lost:0,cashIn:0,missed:0};
   $('review').hidden=true;$('office').hidden=true;closeSheet();setSpeed(S.speed||1);duck();SFX.bell();
   if(adv){glog('event',adv);adv='';}const due=dueThisWeek();glog('money',S.week===1?`Week 1 opens. Insurers pay 7–12 days after each sale, so the first checks land around Monday of week 2. Expect ~${Math.round(demandPerDay())} prescriptions a day.`:`Week ${S.week} opens. Insurers pay ${fmt(Math.round(due))} this week. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);saveGame();
@@ -1084,6 +1090,26 @@ function capacityHtml(){const ws=staffSorted().filter(w=>(w.wkTicks||0)>0);if(!w
     <div class="cp hd"><span>Who</span><span>Where their time went</span><span class="n">Idle</span><span class="n">Jobs/h</span><span class="n">Off-role</span></div>${rows}
     ${notes.length?`<div class="cnotes">${notes.map(n=>`<div>• ${n}</div>`).join('')}</div>`:''}
     <div class="foot">Off-role = time outside their own area (clerk: counter · tech: fill, stock · pharmacist: check, consult). Idle under 10% means no slack left.</div>`;}
+const moneyTabs=()=>`<div class="tabs2">${[['money','Cash'],['equip','Equipment']].map(([k,n])=>`<button class="${(S.moneyTab||'money')===k?'on':''}" data-mtab="${k}">${n}</button>`).join('')}</div>`;
+/* Equipment: one row per item. Earners show money; workstations show jobs (the sale is credited at the register, so fill/verify have no $ of their own); support items are summed. */
+function invested(o){const T=TYPES[o.type];let c=T.cost||0;if(T.levels)for(let i=1;i<=(o.level||0);i++)c+=T.levels[i].cost||0;return c;}
+function equipHtml(){const EARN=['register','otc','consult'],WORK=['dropoff','bin','fill','verify','shelf','phone','problem','fridge'],SUPPORT=['chair','restroom','plant','medshelf'];
+  const busy=o=>o.wkTt?Math.round(100*(o.wkBt||0)/o.wkTt):null;const SN={dropoff:'Drop-off',register:'Register',bin:'Basket bin',fill:'Fill',verify:'Verify',shelf:'Will-call shelf',phone:'Phone desk',problem:'Problem desk',fridge:'Fridge',otc:'OTC shelf',consult:'Consult desk'};const STORE=['bin','shelf','fridge'];const nm=o=>{const T=TYPES[o.type];const same=objsOf(o.type);return (SN[o.type]||T.name)+(same.length>1?' '+(same.indexOf(o)+1):'')+(T.levels&&o.level?` · ${T.levels[o.level].n}`:'');};
+  const bcol=b=>b===null?'#c9c2b2':b>85?'var(--bad)':b<20?'#9aa39d':'var(--good)';
+  const earners=S.objs.filter(o=>EARN.includes(o.type)).map(o=>{const inv=invested(o),all=o.earnAll||0,wk=o.earn||0;const left=inv-all;const pb=left<=0?['paid off','good']:wk>0?[`pays back ~${Math.ceil(left/wk)} wk`,'']:['not earning','bad'];const b=busy(o);
+    return {o,html:`<div class="eq"><span class="nm"><b>${nm(o)}</b><small>${o.wkJobs||0} jobs</small></span><span class="mb"><i style="width:${b||0}%;background:${bcol(b)}"></i></span><span class="n">${b===null?'—':b+'%'}</span><span class="n pos">${fmt(wk)}</span><span class="n">${fmt(all)}</span><span class="vd ${pb[1]}">${pb[0]}</span></div>`,wk};}).sort((a,b)=>b.wk-a.wk);
+  const works=S.objs.filter(o=>WORK.includes(o.type)).map(o=>{const b=busy(o);const st=STORE.includes(o.type);const v=b===null?['—','']:st?(b>85?['full','bad']:['storage','']):b>85?['jammed','bad']:b<20?['idle','warn']:['fine','good'];
+    return `<div class="eq"><span class="nm"><b>${nm(o)}</b><small>cost ${fmt(invested(o))}</small></span><span class="mb"><i style="width:${b||0}%;background:${bcol(b)}"></i></span><span class="n">${b===null?'—':b+'%'}</span><span class="n">${st?'':o.wkJobs||0}</span><span class="n"></span><span class="vd ${v[1]}">${v[0]}</span></div>`;}).join('');
+  const sup=[];const ch=objsOf('chair');if(ch.length){const b=Math.round(ch.reduce((t,o)=>t+(busy(o)||0),0)/ch.length);sup.push(`${ch.length} chair${ch.length>1?'s':''} · ${b}% occupied`);}
+  for(const o of objsOf('restroom'))sup.push(`Restroom · ${o.usesWk||0} trips`);const pl=objsOf('plant').length;if(pl)sup.push(`${pl} plant${pl>1?'s':''} · +${(Math.min(3,pl)*.3).toFixed(1)} trust/wk`);
+  const walls=S.objs.filter(o=>['wall','counter','door','sdoor','room'].includes(o.type)).length;if(walls)sup.push(`${walls} walls, counters & doors · keep the back private`);
+  const best=earners[0];const idle=S.objs.filter(o=>WORK.includes(o.type)&&!STORE.includes(o.type)&&busy(o)!==null&&busy(o)<20).sort((a,b)=>busy(a)-busy(b))[0];const jam=S.objs.filter(o=>[...WORK,...EARN].includes(o.type)&&!STORE.includes(o.type)&&busy(o)>85).sort((a,b)=>busy(b)-busy(a))[0];
+  const sum=[best&&best.wk>0?`Best earner: <b>${nm(best.o)}</b> ${fmt(best.wk)}`:'',jam?`Jammed: <b class="neg">${nm(jam)}</b> ${busy(jam)}%`:'',idle?`Idle: <b>${nm(idle)}</b> ${busy(idle)}%`:''].filter(Boolean).join(' · ');
+  return `${sum?`<div class="esum">${sum}</div>`:''}
+    <div class="eq hd"><span>Earners</span><span>Busy</span><span class="n"></span><span class="n">Week</span><span class="n">Total</span><span>Payback</span></div>${earners.map(e=>e.html).join('')||'<div class="foot">Nothing that takes money yet.</div>'}
+    <div class="eq hd"><span>Stations</span><span>Busy</span><span class="n"></span><span class="n">Jobs</span><span class="n"></span><span></span></div>${works||'<div class="foot">No workstations yet.</div>'}
+    ${sup.length?`<div class="eq hd"><span>Support</span></div><div class="esup">${sup.map(x=>`<span>${x}</span>`).join('')}</div>`:''}
+    <div class="foot">This week so far. Sales are credited at the register (and OTC shelf / consult desk), so workstations show jobs instead of dollars.</div>`;}
 function openStaff(){openOffice('schedule');}
 function openStaff_old(){S.sel='staff';SFX.click();$('menu').hidden=true;
   sheet(`<h3>Staff <small>${fmt(wages())}/week</small></h3><div class="rows">${S.staff.map(w=>`<button class="rowb" data-f="${w.id}" ${w.isYou?'disabled':''}><span>${w.name}<span class="sub">${ROLE[w.role]} · ${w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle'} · energy ${energyPct(w)}%</span></span><span class="cost">${w.isYou?'owner':'let go'}</span></button>`).join('')}</div>
@@ -1094,9 +1120,9 @@ function openStaff_old(){S.sel='staff';SFX.click();$('menu').hidden=true;
 /* ============ office ============ */
 let officeTab='metrics';
 let offShift=0;
-function openOffice(tab){const same=!$('office').hidden&&tab===officeTab;closeAll();if(same)return;if(tab)officeTab=tab;const was=$('office').hidden;$('office').hidden=false;$('office').classList.toggle('wide',officeTab==='schedule');renderOffice();if(was&&!ROT){const dw=$('office').offsetWidth;const want=Math.round(dw*.45);cam.x-=want-offShift;offShift=want;}}
+function openOffice(tab){const same=!$('office').hidden&&tab===officeTab;closeAll();if(same)return;if(tab)officeTab=tab;const was=$('office').hidden;$('office').hidden=false;renderOffice();if(was&&!ROT){const dw=$('office').offsetWidth;const want=Math.round(dw*.45);cam.x-=want-offShift;offShift=want;}}
 function closeOffice(){$('office').hidden=true;document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.remove('on'));cam.x+=offShift;offShift=0;renderHud();}
-function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==='open').length;
+function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedule'||(officeTab==='metrics'&&S.moneyTab==='equip'));const el=$('off');const oc=S.claims.filter(c=>c.status==='open').length;
   const tabs=[['metrics','📈','Money'],['insurance','🏦','Insurers'],['claims','📨','Claims'],['schedule','🗓','Shifts'],['inventory','📦','Stock'],['pricing','🏷','Prices']];
   document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===officeTab));$('offClose').onclick=()=>{SFX.click();closeOffice();};
   let body='';const ds=S.days.slice(-18);
@@ -1109,10 +1135,11 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
     const sat=S.cash+counterRest+dueNow-bills;
     const verdict=sat<-OVERDRAFT?`<span class="verdict bad">Saturday you'd be past the overdraft. Take cash claims, cut a shift, or delay the drug order.</span>`:sat<0?`<span class="verdict bad">Saturday you'd be overdrawn by ${fmt(-sat)}. The bank allows ${fmt(OVERDRAFT)}, but it's thin.</span>`:sat<2000?`<span class="verdict">Saturday you'd have about ${fmt(sat)}. Tight — don't buy anything big this week.</span>`:`<span class="verdict good">Saturday you'd have about ${fmt(sat)}. Room to invest or pay down the loan.</span>`;
     const load=(l,v,fix)=>{const p=Math.round((v||0)*100);const bad=p>85,low=p<30&&p>0;return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${bad?'bad':low?'':'good'}">${bad?fix:low?'mostly idle':'fine'}</span></div></div>`;};
-    body=`<h2>Money <small>will you make Saturday?</small></h2>
+    body=`<h2>Money <small>will you make Saturday?</small></h2>${moneyTabs()}
       <div class="tile"><div class="pay"><div><span>Cash now</span><b>${fmt(S.cash)}</b></div><div><span>Coming in this week${S.running?' (est.)':''}</span><b class="pos">+${fmt(Math.round(counterRest+dueNow))}</b></div><div><span>Saturday bills</span><b class="neg">−${fmt(bills)}</b></div><div class="tot"><span>Saturday night</span><b class="${sat<0?'neg':''}">${fmt(Math.round(sat))}</b></div></div>${verdict}</div>
       <div class="tile"><small>Loan · ${fmt(S.loan)} left · ${fmt(interest)} a week in interest</small><div class="seg" style="margin-top:4px"><button data-pay="500" ${S.cash<1500?'disabled':''}>Pay $500</button><button data-pay="2000" ${S.cash<3000?'disabled':''}>Pay $2,000</button><button data-pay="all" ${S.cash-1000<S.loan?'disabled':''}>Pay it off</button></div><div class="foot">Every $1,000 paid saves $10 a week.</div></div>`;
     S._queues=ds.length?`<div class="tile"><small>Where people wait · yesterday</small>${load('Drop-off',u.intake,'line forms → another window or clerk')}${load('Fill',u.fill,'baskets pile up → upgrade or second tech')}${load('Verify',u.verify,'you\'re the bottleneck → hire a pharmacist')}${load('Registers',u.pickup,'pick-up line → another register')}</div>`:'';}
+  if(officeTab==='metrics'&&S.moneyTab==='equip')body=`<h2>Money <small>what each item earns and does</small></h2>${moneyTabs()}${equipHtml()}`;
   if(officeTab==='insurance'){body=`<h2>Insurers <small>on = you take their patients</small></h2>${Object.keys(PLANS).map(k=>{const p=PLANS[k];const on=S.plans[k];const owed=S.ledger.filter(l=>l.plan===k).reduce((t,l)=>t+l.amt,0);return `<div class="ins"><button class="sw ${on?'on':''}" data-plan="${k}" aria-label="toggle"></button><div class="nm">${p.name}${owed?` <span class="sub" style="font-weight:600">· owes you ${fmt(owed)}</span>`:''}</div><div class="m"><span>pays <b>${fmt(p.rate)}</b>/Rx</span><span>in <b>${p.delay} wk${p.delay>1?'s':''}</b></span><span>rejects <b>${Math.round(p.reject*100)}%</b></span><span><b>${Math.round(p.share*100)}%</b> of patients</span></div></div>`;}).join('')}
     <div class="tile"><div class="pay"><div><span>They owe you</span><b class="owed">${fmt(owedTotal())}</b></div><div><span>· paying this week</span><b>+${fmt(Math.round(dueThisWeek()))}</b></div><div><span>· next week</span><b>+${fmt(Math.round(dueNextWeek()))}</b></div></div></div>
     <div class="foot">Off = most of their patients stop coming; a quarter pay cash (${fmt(S.cashPrice)}) instead.</div>`;}
@@ -1157,6 +1184,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{payLoan(b.dataset.pay==='all'?S.loan:+b.dataset.pay);renderOffice();renderHud();});
     el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(b.dataset.h==='float'){const f=floaterGet();glog('staff',`${f.name} is your floater pharmacist: ${fmt(FLOAT_DAY)} per booked day (${fmt(FLOAT_HALF)} half day). Book days in Schedule.`);}else hireStaff(b.dataset.h);renderOffice();renderHud();});
   el.querySelectorAll('[data-off]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.off);const e=setShift(w,(S.day+1)%6,'O');if(e){toast(e);return;}SFX.click();glog('staff',`${w.name} gets tomorrow off.`);renderOffice();});
+  el.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{S.moneyTab=b.dataset.mtab;SFX.click();renderOffice();});
   el.querySelectorAll('[data-stab]').forEach(b=>b.onclick=()=>{S.staffTab=b.dataset.stab;SFX.click();renderOffice();});
   el.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.more);openWorker(w);});
   el.querySelectorAll('[data-fire]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.fire);fireStaff(w);renderOffice();renderHud();});

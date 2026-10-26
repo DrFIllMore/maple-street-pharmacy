@@ -1,5 +1,13 @@
 # Changelog
 
+## v24.12 · 2026-10-26 — Money › Equipment
+- Money has two tabs: **Cash** (the existing forecast) and **Equipment**. Equipment lists every item for the week so far:
+  - **Earners** (register, OTC shelf, consult desk): jobs, busy %, $ this week, $ lifetime, payback ("paid off" / "pays back ~N wk" / "not earning").
+  - **Stations** (drop-off, fill, verify, phone, problem desk; bin, will-call shelf, fridge as storage): busy %, jobs, verdict fine / idle / jammed (storage: storage / full), cost.
+  - **Support**: chairs occupied %, restroom trips, plants' trust, walls & counters count.
+  - A summary line: best earner, jammed station, idle station.
+- New weekly counters per item (busy ticks, jobs, restroom trips). The drawer widens for this tab.
+
 ## v24.11 · 2026-10-26
 - Top bar: **Rx week** next to In store — the week's running total of prescriptions filled (Rx today shows — between weeks). The bar now fits itself to one line, dropping Runway, then Goal, then Week est. only when there isn't room; the News chip reads just +10% / −15%.
 - Gazette and every cream "paper" panel keep dark inks in dark mode (green, red and amber were light pastels on cream and hard to read).
