@@ -1,0 +1,7 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();
+const vp=process.argv[2]==='desk'?{width:932,height:430}:{width:430,height:873};const ctx=await b.newContext({viewport:vp,deviceScaleFactor:2,isMobile:true,hasTouch:true});const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.addInitScript(()=>{window.__forceSA={t:59,b:34,l:0,r:0};});
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);a.hire('tech');a.hire('tech');a.hire('clerk');a.hire('clerk');a.hire('clerk');a.setBuild(false);a.startWeek();a.setSpeed(0);for(let i=0;i<300;i++){for(let f=0;f<12;f++)a.motion(.016);a.tick();}S.staff[1].energy=8;S.staff[2].energy=33;S.staff[3].morale=25;S.staff[4].sick=2;a.floaterGet();a.bookFloater(4);a.setShift(S.staff[3],2,'A');a.setShift(S.staff[5],5,'O');a.tick();});
+for(const tab of (process.argv[3]||'workers,shifts,perf').split(',')){await pg.evaluate(t=>{__msp.S.staffTab=t;document.getElementById('office').hidden=true;__msp.api.openOffice('schedule');},tab);await pg.waitForTimeout(300);await pg.screenshot({path:`staff-${tab}-${process.argv[2]||'phone'}.png`});}
+console.log(errs);await b.close();})();

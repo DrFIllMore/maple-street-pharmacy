@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.6 · 2026-10-26 — One Staff tab
+- Staff is now **Team | Performance**. Team puts everything on one row per person: portrait, name, title, status (fine / tired / at risk / sick / quitting / on call), energy and morale bars with numbers, the six day cells (tap to cycle Full · AM · PM · Off; sick days show "Sick"; today outlined), weekly wage (floater $/day) and ⋯ for bonus / raise / let go. Hire buttons below. The drawer widens for this tab.
+- Performance rebuilt as aligned tables: name · jobs · busy bar · % · one-word verdict (busy / slack / idle); stations: name · load bar · % · fine / quiet / jammed (fix hint only when jammed).
+
 ## v24.5 · 2026-10-26 — Energy tuned by playtest
 - Drain retuned from three robot runs (20 weeks × 6 styles × 3 seeds): on a job +0.19, hands-on +0.33, night +23 (was .20 / .35 / +22). One-day floater bookings from the cover prompt no longer repeat every week (v24.4).
 - Measured (pt-v245b): careful players win in weeks 12–14 with 0–1 sick days; the understaffed ad-heavy player gets the first sick day in week 4 and 11–13 bad headlines; nobody quits before week 8; naive play wins 1 of 3 seeds at week 19 (borderline, it hired a second pharmacist).
