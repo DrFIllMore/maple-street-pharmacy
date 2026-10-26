@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.0 · 2026-10-26 — Energy
+- Every worker, owner included, has a 0–100 energy battery. It drains while on shift (0.07/tick), more on a job (+0.20) and most hands-on at a station (+0.35): a quiet day ≈ −15, flat out ≈ −30. Nights +22, a day off +45, Sunday +20. A flat-out worker runs empty in 4–5 weeks without rest; a 55%-busy one holds.
+- Speed by band: Fresh ≥50 normal · Tired 25–49 ×0.85 · Exhausted 10–24 ×0.70 · At risk <10 ×0.60 · 0% ×0.40 (still works; sickness comes in v24.1).
+- Alerts: chat lines when someone crosses 50 / 25 / 10; new **Staff** chip in the top bar (ok / tired / N low · lowest %) that opens the Staff screen; floor faces (sad under 25, angry under 10).
+- Staff › Workers is a one-screen dashboard: energy bar, today's load, mood, **day off** button per row. The owner now appears in the Schedule and can take a day off only when another pharmacist covers that day (`setShift`).
+- Feed/Inbox/promise 'rest' use the new bands. Saves convert fatigue → energy.
+
 ## v23.10 · 2026-10-26
 - Top bar and the chat/taskbar row now start on the same line and end on the same line in the rotated layout: the old 87px left gutter (a notch allowance) is gone now that the window inset handles the status bar; chat, sheet and taskbar never start left of the bar. Test: test/bar-alignment.js.
 
