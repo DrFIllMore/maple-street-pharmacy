@@ -1,5 +1,18 @@
 # Changelog
 
+## v24.15 · 2026-10-26 — Audit fixes
+Found by an independent code review plus a 10-week instrumented run (cash reconciles to $0 every week, invariants on energy/morale/sickness/claims/busy stations, mid-game reload).
+- Money: one-day floater cover is now actually paid ($400, in that week's wages). Hiring fees and bonuses appear in the week's costs and net ("Hiring & bonuses" line). A worker hired mid-week is paid only from their start day; someone who quits or is let go is paid for the days worked. The live "Week est." no longer subtracts loan interest (it's added to the loan, not paid).
+- Closing the "No pharmacist today" question with × (or opening another card, or pressing play) now counts as closing for the day — no free day without the trust hit.
+- Gazette stories last the full 3 trading days, including stories that run at week end (those previously had no effect on customers). The "closed mid-week" story can run again after its cooldown. The reporter's honest/spin verdict comes the week after, as promised.
+- Claims expire after 3 trading days (weekends no longer cut that short).
+- Quitting or firing frees every script that person had claimed (they were stranded until next week) and removes their schedule row. A worker who calls in sick drops their job. A closed day doesn't count as a worked day for morale. Pharmacist cover must span morning and afternoon (a half shift no longer counts as a full day).
+- Raises: once per worker per week, capped at +50%.
+- The little energy bar over staff heads now shows real energy (it read the old fatigue field and was always full). "Good week" morale uses the day's real low, not the post-sleep value. Equipment payback uses the average earning rate.
+- After a reload the first "Hour:" line no longer reports the whole week.
+- Performance: one pass over patients per tick instead of one per object; the in-back count computed once per tick; the top-bar fit only re-measures when its contents change; speed buttons rebound only when rebuilt; closed claims trimmed to the last 30.
+- Removed dead code (old staff sheet with a fee-free hire path, an orphaned day-off handler).
+
 ## v24.14 · 2026-10-26 — Feed photos follow the story
 - The game captures moments during the week (in memory): the longest drop-off and pick-up lines (when 4+ wait), a busy midday at the register, and a new item on Monday. At week end the feed photo is composed from the week's top story:
   - **Line complaint** → a tilted phone photo of that line, red "⏱ N in line at drop-off" tag and a timestamp, posted by the customer who complained ("…Is this the DMV?").
