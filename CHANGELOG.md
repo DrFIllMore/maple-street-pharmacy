@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.1 · 2026-10-26 — Sickness, floater, cover
+- Sickness is decided at closing: a worker who finished the day under 10% energy has a 50% chance to call in sick for 2 days (wage still paid; one person at a time). Chat warns the evening before when someone under 25% is losing ground. Sick staff show 🤒 and count in the Staff chip.
+- **Floater pharmacist** (gray coat): part-time cover booked by the day in Staff › Schedule, $400 per full day / $220 half, no weekly wage, never tires. Hire once from the Staff screen; the owner can only take a day off when a pharmacist covers.
+- No pharmacist on a morning (owner sick/off, nobody booked) → the game pauses and asks: **Floater · $400** or **Close today** (no customers, −1 trust, scripts carry to tomorrow). Robots use `S.autoCover` (floater if affordable).
+- Insurer rates +$2 (60 / 52 / 46) to offset the new running cost; saves no longer carry old rates.
+
 ## v24.0 · 2026-10-26 — Energy
 - Every worker, owner included, has a 0–100 energy battery. It drains while on shift (0.07/tick), more on a job (+0.20) and most hands-on at a station (+0.35): a quiet day ≈ −15, flat out ≈ −30. Nights +22, a day off +45, Sunday +20. A flat-out worker runs empty in 4–5 weeks without rest; a 55%-busy one holds.
 - Speed by band: Fresh ≥50 normal · Tired 25–49 ×0.85 · Exhausted 10–24 ×0.70 · At risk <10 ×0.60 · 0% ×0.40 (still works; sickness comes in v24.1).
