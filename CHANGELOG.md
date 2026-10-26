@@ -1,5 +1,10 @@
 # Changelog
 
+## v24.13 · 2026-10-26 — Feed posts, one layout
+- Every post (customer, staff, Gazette) uses the same card: round avatar, name + tag (Customer / Staff / Press), likes on the right, one-line headline, two lines of text, an optional "→ fix" line, and a fixed action column so Promise / Reply / Thank buttons line up. Same component on the review page and in the Feed tab.
+- Gazette posts are a link card (masthead + headline) with a round "G" avatar — no filler text.
+- One post per customer per week (no more Mr. Patel thanking you and complaining in the same week); posts are ordered by what the week was about, so "a complaint went viral" shows the complaints first.
+
 ## v24.12 · 2026-10-26 — Money › Equipment
 - Money has two tabs: **Cash** (the existing forecast) and **Equipment**. Equipment lists every item for the week so far:
   - **Earners** (register, OTC shelf, consult desk): jobs, busy %, $ this week, $ lifetime, payback ("paid off" / "pays back ~N wk" / "not earning").
