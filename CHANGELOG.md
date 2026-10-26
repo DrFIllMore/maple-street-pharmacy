@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.10 · 2026-10-26
+- Top bar and the chat/taskbar row now start on the same line and end on the same line in the rotated layout: the old 87px left gutter (a notch allowance) is gone now that the window inset handles the status bar; chat, sheet and taskbar never start left of the bar. Test: test/bar-alignment.js.
+
 ## v23.9 · 2026-10-26
 - Default window insets from the player's measurement (iPhone 15 Pro Max, Safari): top 72 · left 8 when the phone reports a status-bar safe area; derived as safe-area-top + 13 so other notched phones match. Desktop / no safe area → no insets. Adjust window still overrides; Reset returns to these defaults. Test: test/window-defaults.js.
 

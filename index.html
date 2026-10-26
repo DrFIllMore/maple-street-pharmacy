@@ -33,7 +33,7 @@
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px));padding-block:0;-webkit-tap-highlight-color:transparent}
 .app{height:100%;position:relative;overflow:hidden;--gl:12px;--gr:12px;--sab:env(safe-area-inset-bottom,0px)}
-.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:var(--glR);--gr:var(--barR);--sab:0px}/* the app itself is kept clear of the notch and home bar, so no extra gutters */
+.app.rot{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);--gl:12px;--gr:var(--barR);--sab:0px}/* the app itself is kept clear of the notch and home bar, so no extra gutters */
 canvas{display:block;width:100%;height:100%;touch-action:none}
 button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
@@ -45,7 +45,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .clock{right:var(--gr);bottom:calc(8px + var(--sab));height:calc(44px*var(--k));border-radius:10px;display:flex;align-items:center;gap:4px;padding:0 5px 0 12px;font-size:var(--barF);z-index:7}
 .clock b{font-family:var(--mono);font-weight:700;font-size:1.1em;margin-right:6px;white-space:nowrap}.clock .spd{width:calc(40px*var(--k));height:calc(34px*var(--k));border-radius:7px;background:rgba(0,0,0,.08);display:inline-flex;align-items:center;justify-content:center;font-size:1.15em;margin-left:3px}.clock .spd.on{background:var(--accent);color:#fff}
 .app.building .strip,.app.titled .strip{display:none}
-.strip{left:calc(var(--gl) + var(--chatX) - var(--glR) + var(--chatW) + 8px);right:var(--gr);bottom:calc(var(--chatY) + var(--sab));height:calc(56px*var(--k));display:flex;justify-content:space-around;align-items:center;gap:2px;padding:3px 4px;border-radius:10px;z-index:7}
+.strip{left:calc(max(var(--gl),calc(var(--gl) + var(--chatX) - var(--glR))) + var(--chatW) + 8px);right:var(--gr);bottom:calc(var(--chatY) + var(--sab));height:calc(56px*var(--k));display:flex;justify-content:space-around;align-items:center;gap:2px;padding:3px 4px;border-radius:10px;z-index:7}
 .app.rot .strip{left:calc(var(--chatX) + var(--chatW) + 8px)}
 .sb{flex:1;min-width:0;height:calc(48px*var(--k));border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:calc(8.5px*var(--k));font-weight:800;color:var(--ink-2);position:relative;line-height:1;overflow:hidden;white-space:nowrap}.sb>*:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis}.strip.narrow .sb{font-size:calc(7.5px*var(--k))}.sb span{font-size:calc(17px*var(--k));margin-bottom:2px}.sb.on{background:var(--accent);color:#fff}.sb i{position:absolute;top:2px;right:4px;background:var(--bad);color:#fff;font-style:normal;font-size:9px;border-radius:8px;padding:0 4px;font-weight:800}
 button,.hud{touch-action:manipulation}
@@ -54,7 +54,7 @@ button,.hud{touch-action:manipulation}
 .bb#menuBtn{font-size:calc(var(--barF) + 8px)}
 .menu{right:var(--gr);top:calc(var(--barY) + var(--barH) + 4px);display:grid;border:1px solid var(--line);border-radius:10px;overflow:hidden;z-index:12}
 .menu button{height:40px;padding:0 16px;text-align:left;font-size:13px;border-bottom:1px solid var(--line)}.menu button:last-child{border:0}
-.chat{left:calc(var(--gl) + var(--chatX) - var(--glR));bottom:calc(var(--chatY) + var(--sab));width:var(--chatW);height:var(--chatH);background:rgba(20,30,25,.62);color:#e7ece8;border-radius:10px;font-size:var(--chatF);display:flex;flex-direction:column;z-index:8;touch-action:none}
+.chat{left:max(var(--gl),calc(var(--gl) + var(--chatX) - var(--glR)));bottom:calc(var(--chatY) + var(--sab));width:var(--chatW);height:var(--chatH);background:rgba(20,30,25,.62);color:#e7ece8;border-radius:10px;font-size:var(--chatF);display:flex;flex-direction:column;z-index:8;touch-action:none}
 .chat.collapsed{height:28px}
 .chat .tabs{display:flex;align-items:center;gap:2px;padding:2px 4px 2px 8px;height:28px;flex:none;cursor:move;touch-action:none}
 .chat .tabs button{height:24px;padding:0 8px;border-radius:6px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(231,236,232,.7);font-weight:800}
@@ -67,7 +67,7 @@ button,.hud{touch-action:manipulation}
 .chat .ll div{display:flex;gap:6px}.chat .ts{color:rgba(231,236,232,.55);font-family:var(--mono);font-size:.9em;flex:none}
 .chat .ops,.dot.ops{color:#fac775}.chat .bad,.dot.bad{color:#f09595}.chat .money,.dot.money{color:#c0dd97}.chat .staff,.dot.staff{color:#b5d4f4}.chat .event,.dot.event{color:#cecbf6}
 .chat .grip{position:absolute;right:-12px;top:-12px;width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid #fff;touch-action:none;opacity:.85}
-.sheet{left:calc(var(--gl) + var(--chatX) - var(--glR));bottom:calc(var(--chatY) + var(--chatH) + 14px + var(--sab));width:min(300px,60%);max-width:calc(100% - var(--gl) - 16px);max-height:calc(100% - var(--barH) - var(--barY) - var(--chatY) - var(--chatH) - 28px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px;font-size:var(--sheetF);z-index:9}
+.sheet{left:max(var(--gl),calc(var(--gl) + var(--chatX) - var(--glR)));bottom:calc(var(--chatY) + var(--chatH) + 14px + var(--sab));width:min(300px,60%);max-width:calc(100% - var(--gl) - 16px);max-height:calc(100% - var(--barH) - var(--barY) - var(--chatY) - var(--chatH) - 28px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px;font-size:var(--sheetF);z-index:9}
 
 .sheet h3{margin:0;font-size:1.1em;font-weight:800;padding-right:40px;display:flex;align-items:baseline;gap:8px}.sheet h3 small{font-weight:600;color:var(--ink-2);font-size:.8em}
 .sheet p{margin:0;font-size:.9em;color:var(--ink-2);font-weight:600}
@@ -291,7 +291,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.9 · 2026-10-26';
+const BUILD='v23.10 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1117,7 +1117,7 @@ forceLand=true;
 let SA={t:0,b:0,l:0,r:0};function readSafeArea(){let el=$('saprobe');if(!el){el=document.createElement('div');el.id='saprobe';el.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(el);}const cs=getComputedStyle(el);SA={t:parseFloat(cs.paddingTop)||0,r:parseFloat(cs.paddingRight)||0,b:parseFloat(cs.paddingBottom)||0,l:parseFloat(cs.paddingLeft)||0};if(window.__forceSA)SA=window.__forceSA;return SA;}
 function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();winDefaults();
   const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;
-  if(ROT){/* phone held upright, game rotated. WIN = player-set screen insets (physical top/bottom/left/right). The HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (physical top = app left edge) or the home bar */app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10-WIN.t)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8-WIN.b)+'px');const w=Math.max(200,ih-WIN.t-WIN.b),h=Math.max(150,iw-WIN.l-WIN.r);app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=w+'px';app.style.height=h+'px';VW=w;VH=h;}
+  if(ROT){/* phone held upright, game rotated. WIN = player-set screen insets (physical top/bottom/left/right). The HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (physical top = app left edge) or the home bar */app.style.setProperty('--gl',Math.max(12,SA.t+10-WIN.t)+'px');/* the window inset keeps the app off the status bar, so the top bar and the chat/taskbar row share one 12px gutter */app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8-WIN.b)+'px');const w=Math.max(200,ih-WIN.t-WIN.b),h=Math.max(150,iw-WIN.l-WIN.r);app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=w+'px';app.style.height=h+'px';VW=w;VH=h;}
   else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');const any=WIN.t||WIN.b||WIN.l||WIN.r;if(any){app.style.position='fixed';app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=Math.max(200,iw-WIN.l-WIN.r)+'px';app.style.height=Math.max(150,ih-WIN.t-WIN.b)+'px';}else{app.style.position='';app.style.top='';app.style.left='';app.style.width='';app.style.height='';}VW=app.clientWidth;VH=app.clientHeight;}}
 /* ---- player window insets (physical screen pixels kept clear on each edge) ---- */
 let WIN={t:0,b:0,l:0,r:0,auto:true};try{const sv=JSON.parse(localStorage.getItem('msp-window')||'null');if(sv&&!sv.auto){WIN=sv;}}catch(e){}
