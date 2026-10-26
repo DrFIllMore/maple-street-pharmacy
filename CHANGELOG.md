@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.9 · 2026-10-26
+- Energy is drawn as a small battery (outline + nub, fill colour by band); morale is a bar led by a ♥ in the morale colour. Same look on the Team rows and the worker card.
+
 ## v24.8 · 2026-10-26 — Staff › Capacity
 - New **Capacity** tab beside Team: where each person's on-shift time went this week, filed into seven areas (Counter = drop-off/pick-up/phone · Fill · Stock = deliveries/restock · Check = verify/problems · Consult · Escort · Idle).
 - Top: one team bar with a legend (team-wide % per area). Rows: name · title · hours, a stacked bar with the top two areas written under it, **Idle %** (red ≥50, amber <10 = no slack), **Jobs/h**, **Off-role %** (time outside their own area; red ≥25).
