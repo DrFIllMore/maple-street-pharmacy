@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.18 · 2026-10-26 — Pharmacist checks, tech fills, phones get answered
+Measured with test/ops.js (one week, owner + 1 tech + 1 clerk, every tick logged while phones ring or baskets wait).
+- **Pharmacist priorities:** check and consult first, then problems, then the counter when a clerk can't, and filling last — only when nothing is waiting to be checked or consulted, the lines are short, and a fill station is free that no on-shift tech needs (or the tech is busy elsewhere and 4+ baskets are backing up). Before, the owner spent ~33% of the week filling and the tech stood idle a third of the time baskets were waiting; now the tech is never idle with baskets waiting and the pharmacist's checking time is up ~40%.
+- **Phone desk does something:** with a desk anyone free (clerk, tech, pharmacist) can pick up, and calls nobody reaches go to voicemail and get called back instead of being lost (missed calls 2 → 0 in the test). Without a desk, calls are taken at a free drop-off window by a clerk or the pharmacist, and can still be missed.
+- Energy drain for station work softened (hands-on +0.27, on a job +0.17): a tech who fills all day no longer burns out in two weeks now that nobody else fills for them.
+- Insurer rates back to 58 / 50 / 44 (the +$2 was offsetting energy costs that are now lower). Robot playtest: careful players win in week 12 with 0–1 sick days; naive play wins 2 of 3 only at week 19 by hoarding cash.
+
 ## v24.17 · 2026-10-26 — Every item checked
 Tested every buildable item over a full week (placed, used, rotated, removed) plus a second copy of each station.
 - **Specialty contract** now comes with 10 units in the fridge and a standing order of 10. Before, signing mid-game sent every specialty prescription to backorder for the rest of the week.
