@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.16 · 2026-10-26 — Will-call really holds 16
+- Each will-call shelf now holds 16 bags. Finished bags go to the shelf with the most room, so a second shelf adds space (before, every bag went to the first shelf and the limit wasn't enforced).
+- When every shelf is full, the pharmacist can't start a check: baskets wait in the verify tray, the pharmacist shows "waiting — will-call is full", and the chat says so with the fix (another register, a clerk on pick-up, or another shelf).
+
 ## v24.15 · 2026-10-26 — Audit fixes
 Found by an independent code review plus a 10-week instrumented run (cash reconciles to $0 every week, invariants on energy/morale/sickness/claims/busy stations, mid-game reload).
 - Money: one-day floater cover is now actually paid ($400, in that week's wages). Hiring fees and bonuses appear in the week's costs and net ("Hiring & bonuses" line). A worker hired mid-week is paid only from their start day; someone who quits or is let go is paid for the days worked. The live "Week est." no longer subtracts loan interest (it's added to the loan, not paid).
