@@ -296,7 +296,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.3 · 2026-10-26';
+const BUILD='v24.4 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -616,6 +616,7 @@ function endDay(){
     if(worked&&st.energy<EN.risk&&!S.staff.some(x=>x.sick>0)&&Math.random()<SICK_P){st.sick=SICK_DAYS;S.wk.sick=(S.wk.sick||0)+1;if(!st.isYou)dMorale(st,-10,'got sick');st.sickN=(st.sickN||0)+1;const back=DAYS[(S.day+1+SICK_DAYS)%6]||'Monday';glog('bad',`${st.name} called in sick: out ${SICK_DAYS} days, back ${back}. Wage still paid.`);S.wk.ev=S.wk.ev||[];S.wk.ev.push({k:'sick',who:st.name});}
     else if(worked&&st.energy<EN.exhausted&&(st.dDrain||0)>EN.night)glog('bad',`${st.name} ends the day at ${Math.round(st.energy)}% and is losing ground: at this pace they fall under 10% within two days. A day off (+45) fixes it.`,'enw'+st.id,2);
     st.energy=clamp((st.energy||0)+EN.night+(sh==='O'?EN.dayOff:0),0,100);st.wkMinEn=Math.min(st.wkMinEn??100,st.energy);}
+  for(const f of S.staff)if(f.floater&&f.once&&f.once.includes(S.day)){S.sched[f.id][S.day]='O';f.once=f.once.filter(d=>d!==S.day);}
   noticeStep();
   S.tick=0;S.day++;
   for(const p of S.patients){if(p.state==='leaving'||p.state==='served')continue;const sc=S.scripts.find(x=>x.id===p.script);if(sc&&!['done','withPatient','dead'].includes(sc.stage)){sc.src='phone';sc.patient=null;sc.tomorrow=true;p.state='leaving';p.exitMood='content';p.q=null;p.seat=null;goTo(p,DOOR.x,DOOR.y);}else leave(p,'content');}
@@ -1019,10 +1020,10 @@ function giveRaise(w){w.raise=+((w.raise||1)+.1).toFixed(2);dMorale(w,RAISE_M,'r
 const schedOf=w=>S.sched[w.id]||(w.floater?['O','O','O','O','O','O']:['F','F','F','F','F','F']);
 const rphToday=()=>S.staff.some(w=>w.role==='rph'&&!(w.sick>0)&&(schedOf(w)[S.day]||'F')!=='O');
 function floaterGet(){let f=S.staff.find(w=>w.floater);if(!f){f=mkStaff(freshName(),'rph');f.floater=true;f.portrait='New hire';S.sched[f.id]=['O','O','O','O','O','O'];S.staff.push(f);}return f;}
-function bookFloater(day){const f=floaterGet();S.sched[f.id][day]='F';return f;}
-function checkCover(){if(rphToday())return;if(S.autoCover||!$('sheet')){if(S.cash>=FLOAT_DAY){const f=bookFloater(S.day);glog('staff',`No pharmacist today — a floater (${f.name}) covers for ${fmt(FLOAT_DAY)}.`);}else closeToday();return;}
+function bookFloater(day,once){const f=floaterGet();S.sched[f.id][day]='F';if(once){f.once=f.once||[];if(!f.once.includes(day))f.once.push(day);}return f;}/* once: a one-day booking from the cover prompt — cleared at closing so it doesn't repeat every week */
+function checkCover(){if(rphToday())return;if(S.autoCover||!$('sheet')){if(S.cash>=FLOAT_DAY){const f=bookFloater(S.day,true);glog('staff',`No pharmacist today — a floater (${f.name}) covers for ${fmt(FLOAT_DAY)}.`);}else closeToday();return;}
   const was=S.speed;setSpeed(0);S.closedToday=true;/* nothing happens while you decide */sheet(`<h3>No pharmacist today</h3><p>Nobody can check prescriptions. Book a floater pharmacist for the day, or close.</p><div class="acts"><button id="cvF" class="pri" ${S.cash<FLOAT_DAY?'disabled':''}>Floater · ${fmt(FLOAT_DAY)}</button><button id="cvC" class="danger">Close today</button></div><div class="foot">Closing costs the day's sales and 1 trust. Floaters are booked by the day in Staff › Schedule.</div>`);
-  $('cvF').onclick=()=>{S.closedToday=false;const f=bookFloater(S.day);glog('staff',`${f.name} (floater) covers today for ${fmt(FLOAT_DAY)}.`);closeSheet();setSpeed(was||1);};$('cvC').onclick=()=>{closeToday();closeSheet();setSpeed(was||1);};}
+  $('cvF').onclick=()=>{S.closedToday=false;const f=bookFloater(S.day,true);glog('staff',`${f.name} (floater) covers today for ${fmt(FLOAT_DAY)}.`);closeSheet();setSpeed(was||1);};$('cvC').onclick=()=>{closeToday();closeSheet();setSpeed(was||1);};}
 function closeToday(){S.closedToday=true;S.wk.closed=(S.wk.closed||0)+1;dTrust(-1,'closed days');glog('bad',`Closed today: no pharmacist on duty. No customers, and the word gets around.`);for(const w of S.staff){w.off=true;w.plan=null;w.goal=null;w.x=OUT.x;w.y=OUT.y;}for(const k in busyS)delete busyS[k];for(const p of S.patients){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&!['done','withPatient','dead'].includes(sc.stage)){sc.patient=null;sc.tomorrow=true;}p.state='leaving';p.exitMood='content';p.q=null;p.seat=null;goTo(p,DOOR.x,DOOR.y);}}
 /* one place that changes a shift: the owner may only be off on a day another pharmacist works */
 function rphCover(w,day){return S.staff.some(x=>x!==w&&x.role==='rph'&&!(x.sick>0)&&(schedOf(x)[day]||'F')!=='O');}
