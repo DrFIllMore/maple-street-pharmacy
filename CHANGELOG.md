@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.7 · 2026-10-26
+- Performance tab removed (worker busy time and station load): it repeated the floor cues, the Flow tab and the advisors, and its numbers were a day old. Staff is a single Team view; the Staff chip opens it directly.
+
 ## v24.6 · 2026-10-26 — One Staff tab
 - Staff is now **Team | Performance**. Team puts everything on one row per person: portrait, name, title, status (fine / tired / at risk / sick / quitting / on call), energy and morale bars with numbers, the six day cells (tap to cycle Full · AM · PM · Off; sick days show "Sick"; today outlined), weekly wage (floater $/day) and ⋯ for bonus / raise / let go. Hire buttons below. The drawer widens for this tab.
 - Performance rebuilt as aligned tables: name · jobs · busy bar · % · one-word verdict (busy / slack / idle); stations: name · load bar · % · fine / quiet / jammed (fix hint only when jammed).

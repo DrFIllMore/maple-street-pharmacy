@@ -27,11 +27,6 @@
 .tm .cell{height:30px;padding:0;font-size:.74em;font-weight:800;min-width:0}.tm .cell.today{box-shadow:inset 0 0 0 2px var(--accent)}.cell.A{background:#e6f0fa;color:#24589a}.cell.S{background:#fbe3e3;color:var(--bad)}
 .tm .wg{text-align:right;font-family:var(--mono);font-weight:800;font-size:.9em;white-space:nowrap}.tm .wg small{font-weight:700;color:var(--ink-2)}
 .tm .more{width:26px;height:28px;padding:0;font-size:1.05em;line-height:1}
-.pf{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(40px,1fr) 38px 42px;gap:6px;align-items:center;padding:3px 0;border-bottom:1px dashed var(--line);font-size:.84em}
-.pf.hd{padding:0 0 2px;border-bottom:1px solid var(--line);font-size:.68em;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:800}
-.pf .who{display:flex;align-items:center;gap:6px;min-width:0}.pf .nm{display:grid;min-width:0;line-height:1.1}.pf .nm b,.pf .nm small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pf .nm small{font-size:.78em;color:var(--ink-2);font-weight:700}
-.pf .n{text-align:right;font-family:var(--mono);font-weight:800}.pf .vd{text-align:center;font-size:.78em;font-weight:800;border-radius:6px;padding:1px 0;background:rgba(0,0,0,.05)}.pf .vd.good{color:var(--good)}.pf .vd.warn{color:#b8730f}.pf .vd.bad{color:var(--bad)}
-.pf.sl{grid-template-columns:minmax(0,1fr) minmax(40px,1fr) 38px 50px}.pf .nm .fx{color:var(--bad);white-space:normal}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -89,18 +84,17 @@ button,.hud{touch-action:manipulation}
 .chat .ops,.dot.ops{color:#fac775}.chat .bad,.dot.bad{color:#f09595}.chat .money,.dot.money{color:#c0dd97}.chat .staff,.dot.staff{color:#b5d4f4}.chat .event,.dot.event{color:#cecbf6}
 .chat .grip{position:absolute;right:-12px;top:-12px;width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid #fff;touch-action:none;opacity:.85}
 .sheet{left:max(var(--gl),calc(var(--gl) + var(--chatX) - var(--glR)));bottom:calc(var(--chatY) + var(--chatH) + 14px + var(--sab));width:min(300px,60%);max-width:calc(100% - var(--gl) - 16px);max-height:calc(100% - var(--barH) - var(--barY) - var(--chatY) - var(--chatH) - 28px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px;font-size:var(--sheetF);z-index:9}
-
 .sheet h3{margin:0;font-size:1.1em;font-weight:800;padding-right:40px;display:flex;align-items:baseline;gap:8px}.sheet h3 small{font-weight:600;color:var(--ink-2);font-size:.8em}
 .sheet p{margin:0;font-size:.9em;color:var(--ink-2);font-weight:600}
 .sheet .x{position:absolute;right:4px;top:4px;width:40px;height:36px;font-size:18px;color:var(--ink-2)}
 .rows{display:grid;gap:4px}
-.srow.perf{grid-template-columns:1.2fr auto 70px 1fr}
+
 .drawer #off.tight{gap:2px}.drawer #off.tight .tabs2 button{height:26px}.drawer #off.tight .rxfoot{display:none}
-#off{container-type:inline-size}.perfwrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:4px 12px;align-items:start}.pcol{display:grid;gap:2px;min-width:0}
+
 .lds .lhd{grid-column:1/-1;margin:2px 0 0}
-@container (max-width:430px){.perfwrap{grid-template-columns:1fr;gap:2px}.perfwrap .lds{grid-template-columns:repeat(4,minmax(0,1fr));gap:0 8px}.perfwrap .ld{grid-template-columns:1fr auto;gap:0 4px;padding:1px 0;border-bottom:0}.perfwrap .ld .ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.95em}.perfwrap .ld .ebar{grid-column:1/-1;height:5px}.perfwrap .ld .verdict{display:none}.perfwrap .ld .verdict.bad{display:block;grid-column:1/-1;font-size:.78em}}
+
 .lds{display:grid;gap:2px;font-size:.8em}.ld{display:grid;grid-template-columns:56px 34px 1fr;gap:1px 6px;align-items:center;padding:2px 0;border-bottom:1px dashed var(--line);min-width:0}.ld .ln{font-weight:800}.ld .lp{font-family:var(--mono);font-weight:800;text-align:right}.ld .verdict{grid-column:1/-1;font-size:.82em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.srow.perf{font-size:.8em;padding:1px 0;grid-template-columns:minmax(0,1.25fr) 30px minmax(36px,1fr) auto;gap:5px}.srow.perf .smood{text-align:right;font-family:var(--mono);font-weight:800}.srow.perf .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}.srow.perf .sname .pp{flex:none}.srow.perf .nm small{color:var(--ink-2);font-weight:700}.srow.perf .verdict{white-space:nowrap;font-size:.95em}.perfhead{display:flex;justify-content:space-between;align-items:baseline;font-size:.75em;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);font-weight:800;margin:4px 0 2px}
+
 .srow .sname{display:flex;align-items:center;gap:6px;min-width:0}.pp{display:inline-flex;flex:none}
 .ebw{display:flex;align-items:center;gap:4px}.ebw .ebar{flex:1}.ebw small{font-weight:800;font-size:.8em;color:var(--ink-2)}
 .srow{display:grid;grid-template-columns:1.3fr 92px 1fr auto auto;gap:6px;align-items:center;font-size:.86em;padding:3px 0;border-bottom:1px dashed var(--line)}.srow .sname small{color:var(--ink-2)}.srow .smood{color:var(--ink-2);font-weight:700;font-size:.9em}.srow .swage{font-family:var(--mono);font-weight:600}.srow .a{height:26px;padding:0 8px;border-radius:6px;background:var(--line);font-size:.8em}
@@ -314,7 +308,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.6 · 2026-10-26';
+const BUILD='v24.7 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1084,10 +1078,9 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
     body=`<h2>Rejected claims <small>${open.length?`${open.length} · expire in 3 days`:'none open'}</small></h2>${open.map(c=>`<div class="clm"><div><b>${fmt(PLANS[c.planKey]?PLANS[c.planKey].rate:34)}</b> · ${c.plan}<small>${c.reason} · ${c.name}</small></div><button class="a pri" data-cl="${c.id}" data-a="appeal">Appeal</button><button class="a" data-cl="${c.id}" data-a="cash">Cash ${fmt(S.cashPrice)}</button><button class="a" data-cl="${c.id}" data-a="wo">Drop</button></div>`).join('')}
       ${closed.length?`<div class="lbl">Recent</div>${closed.map(c=>`<div class="clm" style="opacity:.75"><div>${c.plan} · ${c.name}<small>${c.reason} · ${c.status}</small></div></div>`).join('')}`:''}
       <div class="foot">${objsOf('problem').length?'Your problem desk handles most of these on its own.':'Appeal: ~70% paid, two weeks later. Cash: patient pays now, some walk. Drop: gone.'}${objsOf('problem').length?'':' A problem desk does this for you.'}</div>`;}
-  if(officeTab==='schedule'){if(S.staffTab!=='perf')S.staffTab='team';
-    const tabs=`<div class="tabs2">${[['team','Team'],['perf','Performance']].map(([k,n])=>`<button class="${S.staffTab===k?'on':''}" data-stab="${k}">${n}</button>`).join('')}</div>`;
+  if(officeTab==='schedule'){const tabs='';
     let sb='';
-    if(S.staffTab==='team'){
+    {
       const enCol=e=>e>=EN.tired?'var(--good)':e>=EN.exhausted?'#ef9f27':'var(--bad)';const moCol=m=>m>=MO.low?'#378add':m>=MO.complain?'#ef9f27':'var(--bad)';
       const status=w=>w.sick>0?['🤒 sick '+w.sick+'d','bad']:w.notice>0?['🚪 quits in '+w.notice+'d','bad']:w.floater?['🩺 on call','']:(w.energy??100)<EN.risk?['😠 at risk','bad']:(w.energy??100)<EN.exhausted?['😩 exhausted','bad']:!w.isYou&&(w.morale??80)<MO.complain?['😤 disgruntled','bad']:(w.energy??100)<EN.tired?['😮‍💨 tired','warn']:['🙂 fine',''];
       const title=w=>w.isYou?'Owner':w.floater?'Floater':ROLE[w.role];
@@ -1100,10 +1093,6 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
           ${cells}<span class="wg">${wage(w)}</span><button class="a more" data-more="${w.id}" aria-label="More about ${w.name}">⋯</button></div>`;}).join('');
       sb=`<div class="team">${head}${rows}</div><div class="foot">Tap a day to cycle Full · AM · PM · Off (half days 55% wage). Energy: busy day −29, quiet −14, night +23, day off +45. ⋯ = bonus, raise, let go.</div>`
         +`<div class="lbl">Hire <span class="sub">· ${fmt(HIRE_FEE)} agency fee, starts next day</span></div><div class="hire">${['tech','clerk','rph'].map(r=>`<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'verifies, consults, covers anything'}</small></button>`).join('')}${S.staff.some(w=>w.floater)?'':`<button class="a" data-h="float">Floater RPh · ${fmt(FLOAT_DAY)}/day<small>book days above · gray coat · no fee</small></button>`}</div>`;}
-    else{const last=ds[ds.length-1]||{};const u=last.util||{};const col=v=>v>.85?'bad':v<.3?'':'good';const load=(l,v,fix)=>{const p=Math.round((v||0)*100);const c=p>85?'var(--bad)':p<30?'#9aa39d':'var(--good)';return `<div class="pf sl"><span class="nm"><b>${l}</b>${p>85?`<small class="fx">${fix}</small>`:''}</span><span class="mb"><i style="width:${p}%;background:${c}"></i></span><span class="n">${p}%</span><span class="vd ${p>85?'bad':p<30?'':'good'}">${p>85?'jammed':p<30?'quiet':'fine'}</span></div>`;};
-      const prow=w=>{const t=w.wkTicks||0;const busy=t?Math.round(100*(1-(w.wkIdle||0)/t)):null;const v=busy===null?['—','']:busy<40?['idle','bad']:busy<65?['slack','warn']:['busy','good'];const c=busy===null?'#c9c2b2':busy<40?'var(--bad)':busy<65?'#ef9f27':'var(--good)';
-        return `<div class="pf"><span class="who"><span class="pp">${staffPortrait(w,20)}</span><span class="nm"><b>${w.name}</b><small>${w.isYou?'Owner':w.floater?'Floater':ROLE[w.role]}</small></span></span><span class="n">${w.wkJobs||0}</span><span class="mb"><i style="width:${busy||0}%;background:${c}"></i></span><span class="n">${busy===null?'—':busy+'%'}</span><span class="vd ${v[1]}">${v[0]}</span></div>`;};
-      sb=`<div class="perfwrap"><div class="pcol"><div class="pf hd"><span>This week</span><span class="n">Jobs</span><span>Busy time</span><span class="n"></span><span></span></div>${staffSorted().map(prow).join('')}</div><div class="pcol">${ds.length?`<div><div class="pf sl hd"><span>Yesterday</span><span>Station load</span><span class="n"></span><span></span></div>${load('Drop-off',u.intake,'another window or clerk')}${load('Fill',u.fill,'upgrade or second tech')}${load('Verify',u.verify,'hire a pharmacist')}${load('Registers',u.pickup,'another register')}</div>`:'<div class="foot">Station load appears after the first day.</div>'}</div></div>`;}
     body=`<h2>Staff <small>${fmt(wages())}/week</small></h2>${tabs}${sb}`;}
   if(officeTab==='promo'){const rv=S.rivalOn?Math.round((S.promo.pricematch>0?0:S.rival)*100):0;
     body=`<h2>Promote <small>bring people in</small></h2>
@@ -1124,8 +1113,7 @@ function renderOffice(){const el=$('off');const oc=S.claims.filter(c=>c.status==
   if(officeTab==='pricing_old'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
   el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Insurers',claims:'Claims',schedule:'Roster',inventory:'Supplies',pricing:'Price list',feed:'Neighborhood',flow:'Operations',promo:'Marketing',inbox:'Correspondence'}[officeTab]);el.classList.remove('tight');if(el.scrollHeight>el.clientHeight+2)el.classList.add('tight');/* drop the slip footer and tighten gaps before resorting to scrolling */
   el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{payLoan(b.dataset.pay==='all'?S.loan:+b.dataset.pay);renderOffice();renderHud();});
-  el.querySelectorAll('[data-stab]').forEach(b=>b.onclick=()=>{S.staffTab=b.dataset.stab;SFX.click();renderOffice();});
-  el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(b.dataset.h==='float'){const f=floaterGet();glog('staff',`${f.name} is your floater pharmacist: ${fmt(FLOAT_DAY)} per booked day (${fmt(FLOAT_HALF)} half day). Book days in Schedule.`);S.staffTab='shifts';}else hireStaff(b.dataset.h);renderOffice();renderHud();});
+    el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(b.dataset.h==='float'){const f=floaterGet();glog('staff',`${f.name} is your floater pharmacist: ${fmt(FLOAT_DAY)} per booked day (${fmt(FLOAT_HALF)} half day). Book days in Schedule.`);}else hireStaff(b.dataset.h);renderOffice();renderHud();});
   el.querySelectorAll('[data-off]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.off);const e=setShift(w,(S.day+1)%6,'O');if(e){toast(e);return;}SFX.click();glog('staff',`${w.name} gets tomorrow off.`);renderOffice();});
   el.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.more);openWorker(w);});
   el.querySelectorAll('[data-fire]').forEach(b=>b.onclick=()=>{const w=S.staff.find(x=>x.id===b.dataset.fire);fireStaff(w);renderOffice();renderHud();});
@@ -1190,7 +1178,7 @@ document.querySelectorAll('.sb[data-tab]').forEach(b=>b.onclick=()=>{SFX.click()
 $('mChat').onclick=()=>{L.chatShown=!L.chatShown;$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');applyLayout();renderChat();$('menu').hidden=true;};
 $('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');applyLayout();fitWorld();};
 $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
-$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();S.staffTab='workers';openOffice('schedule');};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
+$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();openOffice('schedule');};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 
 function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
