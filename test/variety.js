@@ -1,0 +1,7 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();const pg=await (await b.newContext({viewport:{width:932,height:430}})).newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.addInitScript(()=>{let s=7;Math.random=()=>{s=(s*16807)%2147483647;return s/2147483647;};});
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,7);P('chair',5,7);P('restroom',12,9,0);a.hire('tech');a.hire('clerk');a.setBuild(false);S.autoCover=true;
+ const out=[];for(let wk=1;wk<=8;wk++){if(wk===3){a.place('phone',0,2,1);a.hire('clerk');}if(wk===5){a.place('register',14,4);}a.startWeek();a.setSpeed(0);while(S.running){for(let f=0;f<12;f++)a.motion(.016);a.tick();}const f=S.feed;out.push(`wk${wk} ${f.photo.kind} by ${f.photo.author.name} — "${f.photo.caption}" | lost ${S.hist&&S.hist.length?'' :''}${f.posts.map(p=>p.kind[0]+':'+p.who).join(', ')}`);if(S.done)break;for(let k=0;k<6;k++){const n=document.getElementById('next');if(n)n.click();}const c=document.querySelector('.contract.req .csign button');if(c)c.click();}
+ return out;});
+console.log(r.join('\n'),errs);await b.close();})();

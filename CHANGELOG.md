@@ -1,5 +1,15 @@
 # Changelog
 
+## v24.14 · 2026-10-26 — Feed photos follow the story
+- The game captures moments during the week (in memory): the longest drop-off and pick-up lines (when 4+ wait), a busy midday at the register, and a new item on Monday. At week end the feed photo is composed from the week's top story:
+  - **Line complaint** → a tilted phone photo of that line, red "⏱ N in line at drop-off" tag and a timestamp, posted by the customer who complained ("…Is this the DMV?").
+  - **Bad press** → a newspaper clipping (masthead, headline, grainy photo) shared by a neighbour; **good press** → the pharmacy shares it.
+  - **Staff complaint** → a text post (quote card) by that staff member.
+  - **Viral** → photo with a "🔥 Trending on Maple Street · 212 shares" bar.
+  - **Promise kept / happy customer** → warm-toned counter photo with a heart, posted by that customer.
+  - **New equipment** → photo with a NEW starburst. **Quiet week** → plain text post. Otherwise the floor overview.
+- Each photo post shows its author (avatar, handle, Customer/Staff tag) and likes/shares; captions vary, and the same kind won't usually repeat two weeks running. A line photo is only used when it shows the line people complained about.
+
 ## v24.13 · 2026-10-26 — Feed posts, one layout
 - Every post (customer, staff, Gazette) uses the same card: round avatar, name + tag (Customer / Staff / Press), likes on the right, one-line headline, two lines of text, an optional "→ fix" line, and a fixed action column so Promise / Reply / Thank buttons line up. Same component on the review page and in the Feed tab.
 - Gazette posts are a link card (masthead + headline) with a round "G" avatar — no filler text.
