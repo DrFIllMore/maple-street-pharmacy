@@ -1,5 +1,13 @@
 # Changelog
 
+## v24.17 · 2026-10-26 — Every item checked
+Tested every buildable item over a full week (placed, used, rotated, removed) plus a second copy of each station.
+- **Specialty contract** now comes with 10 units in the fridge and a standing order of 10. Before, signing mid-game sent every specialty prescription to backorder for the rest of the week.
+- **Second basket bin** is used (new scripts go to the emptiest bin); **second verify terminal** gets its share of fills (techs drop at the emptiest tray). Before, the second bin and the second terminal's tray sat empty.
+- **Removing an item** moves its baskets/bags/claims to a twin of the same kind (e.g. bags to the other will-call shelf) instead of stranding them or sending checked bags back to be re-filled. Selling refunds half of everything spent on it, upgrades included (a filling robot returned $600 of $9,700 before); the card's Sell price matches.
+- **Stock shelf** description now says what it does: generics are put away there and +3% customers (it said "small trust bonus", which it never gave).
+- Verified working as described: walls / doors / staff doors / counters (who can pass), drop-off ×2, register, fill ×2 with upgrades, verify ×2, will-call ×2 (16 each), phone desk, problem desk, consult room (+ vaccines), chairs, restroom, OTC shelf (sales + restock), fridge, plants (+0.3 trust each, max 3).
+
 ## v24.16 · 2026-10-26 — Will-call really holds 16
 - Each will-call shelf now holds 16 bags. Finished bags go to the shelf with the most room, so a second shelf adds space (before, every bag went to the first shelf and the limit wasn't enforced).
 - When every shelf is full, the pharmacist can't start a check: baskets wait in the verify tray, the pharmacist shows "waiting — will-call is full", and the chat says so with the fix (another register, a clerk on pick-up, or another shelf).

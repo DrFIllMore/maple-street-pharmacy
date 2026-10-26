@@ -1,0 +1,3 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();const pg=await (await b.newContext({viewport:{width:932,height:430}})).newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+console.log(await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;S.cash=99999;a.place('fill',5,1);const o=S.objs[S.objs.length-1];o.level=2;a.openObj(o);const t=document.querySelector('#rm').textContent;const c0=S.cash;a.removeObj(o.id);return [t,S.cash-c0];}),errs);await b.close();})();
