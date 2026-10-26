@@ -341,7 +341,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.18 · 2026-10-26';
+const BUILD='v24.19 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -398,7 +398,7 @@ const PLANS={blue:{name:'BlueLeaf',rate:58,delay:2,days:7,reject:.06,share:.35,h
              silver:{name:'SilverPlan',rate:50,delay:3,days:12,reject:.10,share:.30,h:'seniors · pays 12 days after the sale · 10% rejected'},
              quick:{name:'QuickPay HMO',rate:44,delay:1,days:4,reject:.04,share:.15,h:'local HMO · pays 4 days after the sale · 4% rejected'}};
 const SPECIAL_ADD=90,SPECIAL_COST=55,VAX_SIGN=600,VAX_PACK=50,VAX_PACK_COST=600,SPECIAL_SIGN=2000,REVIEW_FEE=20;
-const CASH_SHARE=.2,COPAY=15,CONSULT=40,OTC=9,RENT=500,LOAN=16000,LOAN_PAY=400,LOAN_RATE=.01,GOAL_CASH=15000,OVERDRAFT=3000;
+const CASH_SHARE=.2,COPAY=15,CONSULT=40,OTC=9,RENT=500,LOAN=16000,LOAN_PAY=400,LOAN_RATE=.01,GOAL_CASH=20000,GOAL_TRUST=70,OVERDRAFT=3000;
 
 /* ============ state ============ */
 let S;
@@ -702,7 +702,7 @@ function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeS
   S.trust=clamp(S.trust,0,100);S.wk.net=S.wk.cashIn+paid-costs;(S.hist=S.hist||[]).push({week:S.week,cash:Math.round(S.cash),net:Math.round(S.wk.net),inflow:S.wk.cashIn+paid,paid:Math.round(paid),served:S.wk.served,lost:S.wk.lost});
   glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${fmt(loanPay)}${interest?` (+${fmt(interest)} interest)`:''}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
   log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,paid:Math.round(paid),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
-  if(S.cash>=GOAL_CASH&&S.trust>=60&&S.loan<=0)S.done='win';else if(S.cash<-OVERDRAFT)S.done='lose';
+  if(worth()>=GOAL_CASH&&S.cash>=5000&&S.trust>=GOAL_TRUST&&S.loan<=0)S.done='win';else if(S.cash<-OVERDRAFT)S.done='lose';
   for(const k in S.promo){if(S.promo[k]>0)S.promo[k]--;}if(S.week>=3){if(!S.rivalOn){S.rivalOn=true;S.rival=.12;glog('bad','A chain pharmacy opened across the street. It will take some of your walk-ins unless you fight back (Promote).');}else S.rival=Math.max(0,Math.min(.35,S.rival+(S.promo.pricematch>0||S.promo.paper>0?-.04:.015)));}
   S.totWriteoff=(S.totWriteoff||0)+(S.wk.writeoff||0);checkUnlocks();
   if(!S.done){makeFeed();makeInbox();}
@@ -788,12 +788,13 @@ function makeInbox(){const w=S.wk,h=S.hist||[],last=h[h.length-1]||{},prev=h[h.l
     else if(prev&&w.served<prev.served*.85)body.push(`Volume dropped from ${fact(prev.served)} to ${fact(w.served)}. ${S.rivalOn?'The chain is taking the difference.':'Something changed on the floor.'}`);
     else if(w.served>=100&&w.lost<=2)body.push(`${fact(w.served+' served')}, ${fact(w.lost+' lost')}. The floor is working. Now it's about scale.`);
     else body.push(`${fact(w.served+' served')} this week, trust at ${fact(Math.round(S.trust))}. Fine. Fine doesn't pay off a loan.`);
-    const idleObj=S.objs.filter(o=>o.util!==undefined&&o.util<.15&&['register','dropoff','fill','verify'].includes(o.type));
+    const wkBusy=o=>o.wkTt?(o.wkBt||0)/o.wkTt:1;const idleObj=S.objs.filter(o=>['register','dropoff','fill','verify','phone','problem'].includes(o.type)&&o.wkTt>100&&wkBusy(o)<.15).sort((a,b)=>objsOf(b.type).length-objsOf(a.type).length||wkBusy(a)-wkBusy(b));
     if(w.intrude>=2||w.theft)act=`${w.intrude} customers walked into the pharmacy area${w.theft?` and ${w.theft} stole stock (${fmt(w.theftVal)})`:''}. Run a counter or wall line between the shop and the fill station — red tiles in Build show the gap.`;
     else if(w.lost>=8&&worst)act=worst.includes('drop')?'Build a second drop-off window or put a clerk on it full time.':worst.includes('pick')?'Build a second register. A card reader on the first one helps too.':worst.includes('fill')?'Upgrade the fill station or hire a second tech. The queue starts there.':'More chairs, and look at the Flow panel for the real jam.';
     else if(prev&&w.served<prev.served*.85)act=S.rivalOn?'Run a price-match week and a paper ad back to back. Take the block back.':'Check Flow for a blocked path or an idle window.';
+    else if(idleObj.length&&objsOf(idleObj[0].type).length>1)act=`You have ${objsOf(idleObj[0].type).length} ${TYPES[idleObj[0].type].name.toLowerCase()}s and one ran at ${Math.round(wkBusy(idleObj[0])*100)}% all week. Sell the extra (half back) — more equipment doesn't help without the staff and customers to use it.`;
     else if(S.trust>=75&&S.cashPrice<52)act=`Trust is ${Math.round(S.trust)}. Raise the cash price $4; the neighborhood will carry it.`;
-    else if(idleObj.length)act=`Your ${TYPES[idleObj[0].type].name.toLowerCase()} ran at ${Math.round(idleObj[0].util*100)}% yesterday. Sell it and put the cash into something that moves product.`;
+    else if(idleObj.length)act=`Your ${TYPES[idleObj[0].type].name.toLowerCase()} ran at ${Math.round(wkBusy(idleObj[0])*100)}% this week. Sell it and put the cash into something that moves product.`;
     else if(!objsOf('otc').length)act='An OTC shelf by the exit: a third of walk-ins buy something on the way out.';
     else if(!objsOf('consult').length)act='A consult desk and the vaccine contract. Shots are the highest-margin thing you can sell.';
     else act='Push volume: a second clerk at drop-off and an ad in the paper.';
@@ -974,7 +975,7 @@ function toFloor(){$('review').hidden=true;$('floorX').hidden=true;SFX.click();r
 function spark(){const h=S.hist||[];if(h.length<2)return '';const vals=h.map(x=>x.cash);const mn=Math.min(0,...vals),mx=Math.max(...vals,1);const Wd=300,H=46;const pts=vals.map((v,i)=>[i/(vals.length-1)*Wd,H-4-(v-mn)/(mx-mn||1)*(H-8)]);const zero=H-4-(0-mn)/(mx-mn||1)*(H-8);
   return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><line x1="0" y1="${zero}" x2="${Wd}" y2="${zero}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;}
 function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)));if(amt<=0)return;S.cash-=amt;S.loan-=amt;glog('money',`Paid ${fmt(amt)} toward the loan. ${fmt(S.loan)} left.`);SFX.cash&&SFX.cash();saveGame();}
-function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Cash goal',`${fmt(S.cash)} / ${fmt(GOAL_CASH)}`,S.cash/GOAL_CASH)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / 60`,S.trust/60)}</div>`;}
+function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Business value',`${fmt(Math.round(worth()))} / ${fmt(GOAL_CASH)}`,worth()/GOAL_CASH)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / ${GOAL_TRUST}`,S.trust/GOAL_TRUST)}</div>`;}
 function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy <small>your goal</small></h2>${goalsHtml()}
   <p class="sub">Fill all three bars to win. The bank allows a <b>${fmt(OVERDRAFT)}</b> overdraft; go past it and they take the store.</p>
   <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · <b>${fmt(LOAN_PAY)}</b> minimum back, pay extra any time</div><div>🧾 Insurers pay <b>7–12 days after each sale</b>; the loan carries you until the checks start</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b></div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
@@ -986,7 +987,7 @@ function showChecklist(){const r=readiness();const all=r.every(x=>x.ok||x.soft);
     <div class="btns"><button class="big ghost" id="keepBuilding">Keep building</button><button class="big" id="openDoors" ${all?'':'disabled'}>${all?'Open the doors ▶':'Not yet'}</button></div>`);
   $('keepBuilding').onclick=()=>{$('review').hidden=true;SFX.click();};$('openDoors').onclick=()=>{$('review').hidden=true;setBuild(false);reviewDecide();};}
 function showReview(){closeAll();setStage('review');const w=S.wk,prev=S.week-1;
-  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}, loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>The bank called</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}. Too much owed, not enough in hand.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
+  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Business worth ${fmt(Math.round(worth()))} (cash ${fmt(S.cash)}), loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>The bank called</h2><p class="sub">Week ${prev}. Cash ${fmt(S.cash)}. Too much owed, not enough in hand.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
   if(prev<1||!S.opened){reviewDecide();return;}
   const lostWhy=Object.keys(w).filter(k=>k.startsWith('lost_')).map(k=>`${w[k]} ${k.slice(5).replace(/_/g,' ')}`).join(', ');const d=S.trust-w.trust0;const rw=runwayWeeks();
   const net=w.net||0;const paid=w.paid||0;
@@ -1025,7 +1026,7 @@ function reviewDecide(){closeAll();if(S.opened)setStage('decide');const card=CAR
   const doc=(p,idx)=>`<div class="contract ${p.required?'req':''}"><div class="ch2"><span class="cico">${p.icon}</span><div class="chd"><div class="cfrom2">From: <b>${p.from}</b></div><div class="cto">To: Maple Street Pharmacy</div></div>${p.required?'<span class="creq">Required</span>':'<span class="creq opt">Optional</span>'}</div><div class="cre">Re: ${p.title}</div><div class="cbody">${p.body}</div><ul class="cterms">${(p.terms&&p.terms.length?p.terms:p.opts.map(o=>o.label+(o.note?': '+o.note:''))).slice(0,3).map(t=>`<li>${t}</li>`).join('')}</ul><div class="csign" id="opts${idx}">${p.opts.map((o,i)=>`<button data-p="${idx}" data-i="${i}" class="${p.chosen===i?'on':''}">${o.label}</button>`).join('')}</div></div>`;
   page(`<h2>Week ${S.week} <small>${S.opened?'proposals on your desk · 5 of 5':'opening week'}</small></h2>
     <div class="props">${props.map(doc).join('')}</div>
-    <div class="strip2"><span>Cash <b>${fmt(S.cash)}</b> / ${fmt(GOAL_CASH)}</span><span>Loan <b>${fmt(S.loan)}</b></span><span>Trust <b>${Math.round(S.trust)}</b> / 60</span><span class="${sat<0?'neg':''}">${sat<0?`Forecast: overdrawn by ${fmt(-sat)} Saturday`:`Forecast: ${fmt(sat)} in hand Saturday`}</span></div>
+    <div class="strip2"><span>Value <b>${fmt(Math.round(worth()))}</b> / ${fmt(GOAL_CASH)}</span><span>Loan <b>${fmt(S.loan)}</b></span><span>Trust <b>${Math.round(S.trust)}</b> / ${GOAL_TRUST}</span><span class="${sat<0?'neg':''}">${sat<0?`Forecast: overdrawn by ${fmt(-sat)} Saturday`:`Forecast: ${fmt(sat)} in hand Saturday`}</span></div>
     <div class="btns">${S.opened&&S.week>1?'<button class="big ghost" id="back">◀ Stock</button>':''}<button class="big" id="run" ${card&&S.choice===null?'disabled':''}>Run week ${S.week} ▶</button></div>`,false,true);
   $('rev').querySelectorAll('.csign button').forEach(b=>b.onclick=()=>{const p=props[+b.dataset.p],i=+b.dataset.i;if(p.chosen!==undefined&&!p.required)return;p.chosen=i;if(p.required){S.choice=i;}else{const o=p.opts[i];if(o.fn){const err=o.fn();if(err)toast(err);}}SFX.click();reviewDecide();});
 
@@ -1321,7 +1322,9 @@ $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.
 $('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();openOffice('schedule');};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 
-function goalPct(){return Math.min(1,Math.max(0,Math.min(1,S.cash/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/60)*.2));}
+/* business value = cash + what the equipment would sell for (half of what went into it). Investing isn't punished by the goal, overbuilding still is */
+function worth(){return S.cash+S.objs.reduce((t,o)=>t+invested(o)/2,0);}
+function goalPct(){return Math.min(1,Math.max(0,Math.min(1,worth()/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/GOAL_TRUST)*.2));}
 let fitQ=0;/* keep the top bar on one line: drop the least important readouts until it fits */
 let fitSig='';function fitBar(){fitQ=0;const bar=$('bar');if(!bar)return;const sig=bar.textContent.length+'|'+VW+'|'+[...bar.children].map(e=>e.hidden?0:1).join('');if(sig===fitSig)return;fitSig=sig;const order=[$('runSt'),$('goalSt'),$('wnetSt'),$('inT')&&$('inT').parentElement];for(const e of order)if(e)e.classList.remove('fitx');for(const e of order){if(bar.scrollWidth<=bar.clientWidth+1)break;if(e&&!e.hidden)e.classList.add('fitx');}}
 function renderHud(){if(!fitQ){fitQ=1;requestAnimationFrame(fitBar);}if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();$('wkL').textContent=`Week ${S.week}`;$('wkT').textContent=S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'Closed':'Building';$('rxT').textContent=S.running?`${S.dayServed||0}`:'—';$('rxW').textContent=S.wk.served||0;$('inT').textContent=S.running?S.patients.filter(p=>p.state!=='leaving'&&p.state!=='pending'&&p.x<W+1).length:'—';{const lo=S.staff.reduce((m,w)=>Math.min(m,w.energy??100),100);const n=S.staff.filter(w=>(w.energy??100)<EN.exhausted).length;const c=$('stChip');c.classList.toggle('bad',lo<EN.exhausted);c.classList.toggle('warn',lo>=EN.exhausted&&lo<EN.tired);const sk=S.staff.filter(w=>w.sick>0).length;const up=S.staff.filter(w=>!w.isYou&&!w.floater&&((w.morale??80)<MO.complain||w.notice>0)).length;if(up)c.classList.add('bad');$('stChipV').textContent=up&&!sk?`${up} upset`:sk?`${sk} sick`+(lo<EN.exhausted?` · ${Math.round(lo)}%`:''):lo<EN.exhausted?`${n} low · ${Math.round(lo)}%`:lo<EN.tired?`tired · ${Math.round(lo)}%`:'ok';if(sk)c.classList.add('bad');}{const pc=$('prChip');const on=pressActive();pc.hidden=!on;if(on){pc.classList.toggle('bad',S.press.bad);pc.classList.toggle('good',!S.press.bad);$('prChipV').textContent=S.press.bad?'−15%':'+10%';}}

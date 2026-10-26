@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.19 · 2026-10-26 — Goal and balance
+Robot playtest, 6 play styles × 3 runs × 20 weeks (test/reports/v24.19.html).
+- **Goal is now business value, not cash:** cash + what your equipment would sell for (half of what you put into it) ≥ **$20,000**, with at least $5,000 cash, the loan repaid and trust ≥ **70** (was cash ≥ $15k, trust ≥ 60). Investing is no longer punished by the goal; overbuilding still is (half the money is gone, and wages/idle time stay).
+- The district manager now flags overbuilding: a second (third…) station of a kind that sat under 15% busy all week → "sell the extra". Idle checks use the whole week, not yesterday.
+- Result: careful play wins in weeks 11–13; complaint-fixing and heavy-investment play win in weeks 12–17; building blindly wins 1 run in 3 and nearly overdrafts in the others; ads without staff and doing nothing never win (they stall on trust). 11 of 12 design targets pass; the miss is robot-only (robots check staff once a week, so careful robots still see 0–1 sick days).
+
 ## v24.18 · 2026-10-26 — Pharmacist checks, tech fills, phones get answered
 Measured with test/ops.js (one week, owner + 1 tech + 1 clerk, every tick logged while phones ring or baskets wait).
 - **Pharmacist priorities:** check and consult first, then problems, then the counter when a clerk can't, and filling last — only when nothing is waiting to be checked or consulted, the lines are short, and a fill station is free that no on-shift tech needs (or the tech is busy elsewhere and 4+ baskets are backing up). Before, the owner spent ~33% of the week filling and the tech stood idle a third of the time baskets were waiting; now the tech is never idle with baskets waiting and the pharmacist's checking time is up ~40%.
