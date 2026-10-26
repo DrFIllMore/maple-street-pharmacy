@@ -16,7 +16,7 @@ const TARGETS=[
   {id:'deadZone',t:'No stretch longer than 90 s of floor time (1x) with nothing new happening',test:r=>r.flow.maxDeadSec<=90,scope:'all'},
   {id:'warned',t:'When a run is lost, an advisor named the cause in the two weeks before',test:r=>r.result!=='lose'||r.lossWarned,scope:'all'},
   {id:'careNoSick',t:'A player who rests staff under 60% never sees a sick day (cautious, optimal)',test:r=>r.weeks.every(x=>!(x.sick>0)),scope:['cautious','optimal']},
-  {id:'naiveSick',t:'A player who ignores the schedule sees the first sick day in weeks 3–7 (naive)',test:r=>{const f=r.weeks.find(x=>x.sick>0);return !!f&&f.week>=3&&f.week<=7;},scope:['naive']},
+  {id:'ignoreSick',t:'An understaffed player who never rests anyone sees the first sick day in weeks 3–7 (marketer)',test:r=>{const f=r.weeks.find(x=>x.sick>0);return !!f&&f.week>=3&&f.week<=7;},scope:['marketer']},
   {id:'noEarlyQuit',t:'Nobody quits before week 8 for a player who rests staff (cautious, optimal)',test:r=>!r.weeks.some(x=>x.quit>0&&x.week<8),scope:['cautious','optimal']},
   {id:'cautious15',t:'Cautious play reaches the goal by week 15',test:r=>r.result==='win'&&r.endWeek<=15,scope:['cautious']},
 ];

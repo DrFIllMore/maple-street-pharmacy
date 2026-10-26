@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.5 · 2026-10-26 — Energy tuned by playtest
+- Drain retuned from three robot runs (20 weeks × 6 styles × 3 seeds): on a job +0.19, hands-on +0.33, night +23 (was .20 / .35 / +22). One-day floater bookings from the cover prompt no longer repeat every week (v24.4).
+- Measured (pt-v245b): careful players win in weeks 12–14 with 0–1 sick days; the understaffed ad-heavy player gets the first sick day in week 4 and 11–13 bad headlines; nobody quits before week 8; naive play wins 1 of 3 seeds at week 19 (borderline, it hired a second pharmacist).
+
 ## v24.3 · 2026-10-26 — The Gazette as news media
 - A reporter watches the pharmacy. Headlines run for 3 trading days and change behaviour: **bad** = customers −15%, trust −2, team morale −5; **good** = customers +10%, trust +1, morale +5. One story at a time, no topic repeats within a week.
 - Triggers — daily at closing: a mid-week closure; ≥8 walk-outs in a day; 2 sick calls in a week; ≥6 claims written off. Weekly: 2+ staff complaints ("run ragged"); every promise kept; trust up 3+ in a week. Week 1 opens with a positive "New pharmacy opens" piece.
