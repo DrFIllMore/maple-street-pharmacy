@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.11 · 2026-10-26
+- Top bar: **Rx week** next to In store — the week's running total of prescriptions filled (Rx today shows — between weeks). The bar now fits itself to one line, dropping Runway, then Goal, then Week est. only when there isn't room; the News chip reads just +10% / −15%.
+- Gazette and every cream "paper" panel keep dark inks in dark mode (green, red and amber were light pastels on cream and hard to read).
+- Gazette lead is one short line: "98 prescriptions filled, 3 walked out, 2 calls missed. Trust up to 52." Trust reasons are listed one per line.
+- Fix: a fill job could crash the game when scripts were waiting in a bin that had been removed.
+
 ## v24.10 · 2026-10-26
 - Energy and morale bars are now the same size and shape (morale is the battery box without the nub); the ♥ moved next to the morale number.
 
