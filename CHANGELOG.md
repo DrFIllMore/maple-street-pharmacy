@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.3 · 2026-10-26 — The Gazette as news media
+- A reporter watches the pharmacy. Headlines run for 3 trading days and change behaviour: **bad** = customers −15%, trust −2, team morale −5; **good** = customers +10%, trust +1, morale +5. One story at a time, no topic repeats within a week.
+- Triggers — daily at closing: a mid-week closure; ≥8 walk-outs in a day; 2 sick calls in a week; ≥6 claims written off. Weekly: 2+ staff complaints ("run ragged"); every promise kept; trust up 3+ in a week. Week 1 opens with a positive "New pharmacy opens" piece.
+- Top-bar **📰 News** chip while a story is live (tap for the article); the story also appears as a Gazette post in the Feed.
+- Reporter email (from week 3, when 8+ gave up or trust < 55): **Honest** (judged next week: a good story if walk-outs fall 30%, −2 trust if not), **Spin** (nothing if it improves, a bad "claims don't match" story if not), **Decline** (−0.5).
+- Proposal texts updated for the $60/$46 rates; the team-raise proposal now moves morale.
+
 ## v24.2 · 2026-10-26 — Morale, complaints, quitting
 - Morale 0–100 per hired worker (blue bar beside energy). Down: finishing a day under 10% energy (−10), a sick day (−10), a declined day-off request (−10), a co-worker's complaint (−5), a co-worker quitting (−5). Up: a week never below 50% energy (+10), an approved request (+10), **Bonus $150** (+15), **Raise +10% wage** (+20, permanent) — both on the worker card.
 - Under 50: 10% slower and sticks to their own role's jobs. Under 30: "disgruntled" — a complaint post on the Feed at week end (−1 trust each, team morale −5). Under 15: gives 3 days' notice; recovers if morale gets back above 30, otherwise quits (−1 trust, team −5).
