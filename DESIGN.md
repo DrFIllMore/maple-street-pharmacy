@@ -59,3 +59,11 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Reply to a complaint → promise {kind, snapshot of counts, made=week}. Graded at the end of that week: kept if the build/hire/upgrade count rose or the outcome metric met its target (walk-outs at the spot ≤ half, missed calls ≤1, backorders 0, intrusions 0, room enclosed, nobody exhausted, tray peak <5).
 - Kept: +1.5 trust, cred +10, green follow-up post. Broken: −1.5 trust, cred −15, red follow-up. Reply: +0.3 × (cred/50). Cred decays 2/wk toward 50; <20 disables Promise; ≥75 doubles thank-buzz (8%).
 - Trust ledger: S.wk.tw[reason] via dTrust(). Gazette shows top 3.
+
+## Staff energy, morale and the press (v24, 2026-10-26)
+- Energy 0–100 per worker incl. owner. Per 5-min tick on shift: .07 base, +.20 on a job (walking), +.35 hands-on at a station. Night +22, day off +45, Sunday +20. Calibration: ≈55% busy breaks even; flat-out loses ≈7/day → empty in 4–5 weeks. Bands: <50 ×.85, <25 ×.70, <10 ×.60, 0 ×.40.
+- Sickness decided at closing: <10% → 50% chance, 2 days, paid, one person at a time. Owner included. No pharmacist on a morning → prompt: floater $400 or close (−1 trust).
+- Floater pharmacist: part-time, gray coat, booked per day ($400 / $220 half), never tires, counts as cover.
+- Morale 0–100 (hired staff): −10 empty day, −10 sick, −10 declined request, −5 co-worker complaint/quit/bad press; +10 good week, +10 approved, +15 bonus ($150), +20 raise (+10% wage), +5 good press. <50 slower & own-role only; <30 complaint post (−1 trust); <15 three days' notice → quit. Hire fee $300, next-day start; tenure +2%/wk speed up to +20%.
+- Gazette headlines: 3 trading days, bad −15% customers/−2 trust/−5 morale, good +10%/+1/+5; one at a time, topic cooldown 7 days. Reporter email honest/spin/decline graded next week against walk-outs.
+- Robot harness targets added: careNoSick, naiveSick (wk 3–7), noEarlyQuit, cautious15.
