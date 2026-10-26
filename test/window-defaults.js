@@ -1,0 +1,10 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();
+const run=async(sa,saved)=>{const ctx=await b.newContext({viewport:{width:430,height:873},isMobile:true,hasTouch:true});const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+ await pg.addInitScript(({sa,saved})=>{if(sa)window.__forceSA=sa;if(saved)localStorage.setItem('msp-window',JSON.stringify(saved));},{sa,saved});
+ await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+ await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();__msp.api.setBuild(false);});await pg.waitForTimeout(200);
+ const m=await pg.evaluate(()=>{const a=document.getElementById('app').getBoundingClientRect();return {app:[a.left,a.top,a.right,a.bottom].map(Math.round),gl:getComputedStyle(document.getElementById('app')).getPropertyValue('--gl')};});
+ const r2=await pg.evaluate(()=>{document.getElementById('mWin').onclick();document.getElementById('winReset').onclick();const a=document.getElementById('app').getBoundingClientRect();return [a.left,a.top,a.right,a.bottom].map(Math.round);});
+ console.log(JSON.stringify({sa,saved}),JSON.stringify(m),'reset→',JSON.stringify(r2),errs);await ctx.close();};
+await run({t:59,b:34,l:0,r:0},null);await run(null,null);await run({t:59,b:34,l:0,r:0},{t:20,b:0,l:0,r:10});
+await b.close();})();

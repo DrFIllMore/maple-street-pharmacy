@@ -1,5 +1,8 @@
 # Changelog
 
+## v23.9 · 2026-10-26
+- Default window insets from the player's measurement (iPhone 15 Pro Max, Safari): top 72 · left 8 when the phone reports a status-bar safe area; derived as safe-area-top + 13 so other notched phones match. Desktop / no safe area → no insets. Adjust window still overrides; Reset returns to these defaults. Test: test/window-defaults.js.
+
 ## v23.8 · 2026-10-25
 - Adjust window uses − / + buttons per edge (tap = 4 px, hold to repeat) instead of edge drags, which collided with iOS edge-swipe gestures. The green edge lines remain as indicators only.
 

@@ -291,7 +291,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v23.8 · 2026-10-25';
+const BUILD='v23.9 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1115,13 +1115,15 @@ function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&
 const cv=$('cv');let ctx=cv.getContext('2d');const TW=34,TH=17;const cam={x:0,y:0,z:1,r:0};let userCam=false;let VW=800,VH=400,dpr=1,ROT=false,forceLand=true;
 forceLand=true;
 let SA={t:0,b:0,l:0,r:0};function readSafeArea(){let el=$('saprobe');if(!el){el=document.createElement('div');el.id='saprobe';el.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(el);}const cs=getComputedStyle(el);SA={t:parseFloat(cs.paddingTop)||0,r:parseFloat(cs.paddingRight)||0,b:parseFloat(cs.paddingBottom)||0,l:parseFloat(cs.paddingLeft)||0};if(window.__forceSA)SA=window.__forceSA;return SA;}
-function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();
+function applyOrientation(){const app=$('app');const vv=window.visualViewport;const iw=vv?Math.round(vv.width):innerWidth,ih=vv?Math.round(vv.height):innerHeight;const portrait=ih>iw;/* trust the real viewport shape, never the reported orientation */ROT=portrait&&forceLand;app.classList.toggle('rot',ROT);readSafeArea();winDefaults();
   const cs=getComputedStyle(app);const px=v=>parseFloat(cs.getPropertyValue(v))||0;
   if(ROT){/* phone held upright, game rotated. WIN = player-set screen insets (physical top/bottom/left/right). The HUD gutters grow so no panel, prompt or message sits under the Dynamic Island (physical top = app left edge) or the home bar */app.style.setProperty('--gl',Math.max(px('--glR'),SA.t+10-WIN.t)+'px');app.style.setProperty('--gr',Math.max(px('--barR'),SA.b+8-WIN.b)+'px');const w=Math.max(200,ih-WIN.t-WIN.b),h=Math.max(150,iw-WIN.l-WIN.r);app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=w+'px';app.style.height=h+'px';VW=w;VH=h;}
   else{app.style.removeProperty('--gl');app.style.removeProperty('--gr');const any=WIN.t||WIN.b||WIN.l||WIN.r;if(any){app.style.position='fixed';app.style.top=WIN.t+'px';app.style.left=WIN.l+'px';app.style.width=Math.max(200,iw-WIN.l-WIN.r)+'px';app.style.height=Math.max(150,ih-WIN.t-WIN.b)+'px';}else{app.style.position='';app.style.top='';app.style.left='';app.style.width='';app.style.height='';}VW=app.clientWidth;VH=app.clientHeight;}}
 /* ---- player window insets (physical screen pixels kept clear on each edge) ---- */
-let WIN={t:0,b:0,l:0,r:0};try{Object.assign(WIN,JSON.parse(localStorage.getItem('msp-window')||'{}'));}catch(e){}
-function winSave(){try{localStorage.setItem('msp-window',JSON.stringify(WIN));}catch(e){}}
+let WIN={t:0,b:0,l:0,r:0,auto:true};try{const sv=JSON.parse(localStorage.getItem('msp-window')||'null');if(sv&&!sv.auto){WIN=sv;}}catch(e){}
+/* default insets measured by the player on an iPhone 15 Pro Max (Safari): top 72, left 8 with a 59px status inset; scaled from the safe-area so other notched phones get the same clearance. No safe-area (desktop, old phones) → no insets */
+function winDefaults(){if(!WIN.auto)return;WIN.t=SA.t?SA.t+13:0;WIN.l=SA.t?8:0;WIN.b=0;WIN.r=0;}
+function winSave(){delete WIN.auto;try{localStorage.setItem('msp-window',JSON.stringify(WIN));}catch(e){}}
 function winText(){return `window insets top ${WIN.t} bottom ${WIN.b} left ${WIN.l} right ${WIN.r} · screen ${innerWidth}×${innerHeight} @${devicePixelRatio} · safe-area ${SA.t}/${SA.b}/${SA.l}/${SA.r} · rot=${ROT} · app ${VW}×${VH}`;}
 function winRender(){const o=$('winAdj');if(o.hidden)return;const W_=innerWidth,H_=innerHeight,T=6;const hs={t:[WIN.l,WIN.t-T/2,W_-WIN.l-WIN.r,T],b:[WIN.l,H_-WIN.b-T/2,W_-WIN.l-WIN.r,T],l:[WIN.l-T/2,WIN.t,T,H_-WIN.t-WIN.b],r:[W_-WIN.r-T/2,WIN.t,T,H_-WIN.t-WIN.b]};for(const h of o.querySelectorAll('.wh')){const b=hs[h.dataset.e];h.style.left=b[0]+'px';h.style.top=b[1]+'px';h.style.width=b[2]+'px';h.style.height=b[3]+'px';}for(const k of ['t','b','l','r'])$('winV'+k).textContent=WIN[k];}
 function winApply(){fitCanvas();applyLayout();fitWorld();winRender();}
@@ -1131,7 +1133,7 @@ function winApply(){fitCanvas();applyLayout();fitWorld();winRender();}
   for(const bt of o.querySelectorAll('button.pm')){let tm=null,iv=null;const k=bt.dataset.k,d=+bt.dataset.d;const stop=()=>{clearTimeout(tm);clearInterval(iv);tm=iv=null;if(bt._held){bt._held=false;winSave();}};
     bt.addEventListener('pointerdown',e=>{e.preventDefault();bt.setPointerCapture(e.pointerId);bump(k,d);bt._held=true;tm=setTimeout(()=>{iv=setInterval(()=>bump(k,d),70);},350);});
     for(const ev of ['pointerup','pointercancel','pointerleave'])bt.addEventListener(ev,stop);}
-  $('winCopy').onclick=()=>copyText(winText(),'winMsg');$('winReset').onclick=()=>{WIN={t:0,b:0,l:0,r:0};winSave();winApply();};$('winDone').onclick=()=>{o.hidden=true;winSave();};
+  $('winCopy').onclick=()=>copyText(winText(),'winMsg');$('winReset').onclick=()=>{WIN={t:0,b:0,l:0,r:0,auto:true};try{localStorage.removeItem('msp-window');}catch(e){}winApply();};$('winDone').onclick=()=>{o.hidden=true;winSave();};
   window.addEventListener('resize',()=>setTimeout(winRender,120));})();
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 /* JS instead of a @container rule: container-type on the strip crashed iOS/WebKit on reload */(()=>{const st=$('strip');if(!st)return;const fit=()=>{const w=st.clientWidth;if(w)st.classList.toggle('narrow',w<560);};if(window.ResizeObserver)new ResizeObserver(fit).observe(st);window.addEventListener('resize',fit);fit();})();
