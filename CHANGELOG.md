@@ -1,5 +1,10 @@
 # Changelog
 
+## v24.8 · 2026-10-26 — Staff › Capacity
+- New **Capacity** tab beside Team: where each person's on-shift time went this week, filed into seven areas (Counter = drop-off/pick-up/phone · Fill · Stock = deliveries/restock · Check = verify/problems · Consult · Escort · Idle).
+- Top: one team bar with a legend (team-wide % per area). Rows: name · title · hours, a stacked bar with the top two areas written under it, **Idle %** (red ≥50, amber <10 = no slack), **Jobs/h**, **Off-role %** (time outside their own area; red ≥25).
+- Up to three plain notes on what to act on: pharmacist doing counter work, someone idle half the week (with the half-day saving), someone with no slack (bottleneck), or heavy off-role time.
+
 ## v24.7 · 2026-10-26
 - Performance tab removed (worker busy time and station load): it repeated the floor cues, the Flow tab and the advisors, and its numbers were a day old. Staff is a single Team view; the Staff chip opens it directly.
 
