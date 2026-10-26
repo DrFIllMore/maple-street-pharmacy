@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.2 · 2026-10-26 — Morale, complaints, quitting
+- Morale 0–100 per hired worker (blue bar beside energy). Down: finishing a day under 10% energy (−10), a sick day (−10), a declined day-off request (−10), a co-worker's complaint (−5), a co-worker quitting (−5). Up: a week never below 50% energy (+10), an approved request (+10), **Bonus $150** (+15), **Raise +10% wage** (+20, permanent) — both on the worker card.
+- Under 50: 10% slower and sticks to their own role's jobs. Under 30: "disgruntled" — a complaint post on the Feed at week end (−1 trust each, team morale −5). Under 15: gives 3 days' notice; recovers if morale gets back above 30, otherwise quits (−1 trust, team −5).
+- Hiring costs a $300 agency fee and the hire starts the next day. Workers gain +2% speed per week kept (max +20%); a quitter takes it with them.
+- Staff › Workers rows: energy + morale bars, mood, day off, **more** (opens the card with bonus / raise / let go). Chip shows "N upset" when anyone is disgruntled or on notice.
+
 ## v24.1 · 2026-10-26 — Sickness, floater, cover
 - Sickness is decided at closing: a worker who finished the day under 10% energy has a 50% chance to call in sick for 2 days (wage still paid; one person at a time). Chat warns the evening before when someone under 25% is losing ground. Sick staff show 🤒 and count in the Staff chip.
 - **Floater pharmacist** (gray coat): part-time cover booked by the day in Staff › Schedule, $400 per full day / $220 half, no weekly wage, never tires. Hire once from the Staff screen; the owner can only take a day off when a pharmacist covers.
