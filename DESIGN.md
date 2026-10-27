@@ -67,3 +67,8 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Morale 0–100 (hired staff): −10 empty day, −10 sick, −10 declined request, −5 co-worker complaint/quit/bad press; +10 good week, +10 approved, +15 bonus ($150), +20 raise (+10% wage), +5 good press. <50 slower & own-role only; <30 complaint post (−1 trust); <15 three days' notice → quit. Hire fee $300, next-day start; tenure +2%/wk speed up to +20%.
 - Gazette headlines: 3 trading days, bad −15% customers/−2 trust/−5 morale, good +10%/+1/+5; one at a time, topic cooldown 7 days. Reporter email honest/spin/decline graded next week against walk-outs.
 - Robot harness targets added: careNoSick, naiveSick (wk 3–7), noEarlyQuit, cautious15.
+
+## Bank rules (v24.30)
+- Win (checked at Saturday close): business value ≥ $20,000, cash ≥ $5,000, loan 0, trust ≥ 70.
+- Lose: 4 consecutive Saturdays with cash < $0; 4 consecutive missed loan payments (payment taken only when cash ≥ amount due; miss = +$50 late fee); trust ≤ 0 at any day's close.
+- Strikes reset as soon as a Saturday closes clean. Notices appear in the Gazette and chat each week a strike is counted.

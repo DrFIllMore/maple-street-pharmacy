@@ -1,5 +1,14 @@
 # Changelog
 
+## v24.30 · 2026-10-27 — The bank, and a clear goal
+- **Win needs four things at Saturday close**: business value $20,000, **cash in hand $5,000**, loan paid off, trust 70. The cash requirement was hidden before; it is now its own goal bar (Proposals strip and goal panel) and counts toward the top-bar goal meter.
+- **The bank can close the store** (replaces the instant loss at −$3,000):
+  - 4 Saturdays in a row closing below $0 → the bank shuts the pharmacy.
+  - Loan payment is due Saturday and is only paid if cash covers it. A missed payment adds a $50 late fee; 4 misses in a row → foreclosure.
+  - Trust reaches 0 → the store closes at the end of that day.
+- Each strike posts a **First Maple Bank notice** in the Saturday Gazette and the chat ("2 of 4", then a final notice). Trust under 15 also gets a warning. The Saturday forecast says which notice you'd get.
+- Game-over screen names the reason. Playtest: 12 of 12 balance targets pass.
+
 ## v24.29 · 2026-10-27 — Staff card polish
 - **Now** stays on one line with a short status (for example "idle · no verify terminal"). The longer advice moves to a small note under the details. Chat messages still use the full sentence.
 - Labels (Energy … Experience, Now) share one fixed-width column, so values line up and no longer touch the label.
