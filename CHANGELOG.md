@@ -1,5 +1,16 @@
 # Changelog
 
+## v24.42 · 2026-10-27 — Report a problem
+- **⋯ → Report a problem** (was "Debug report"). Type what felt wrong, then:
+  - **Save report file**: a `.json` with the whole saved game, the last 400 chat lines, the debug log, device and layout info, performance counters and your note. On iPhone it opens the share sheet, so you can save to Files or send it straight to your chat with Claude.
+  - **Report on GitHub**: opens a new issue on the repo with a summary (state, staff, last weeks, performance, recent activity).
+  - **Copy as text**: the old text report, with your note on top.
+  - The technical details are folded away under a toggle.
+- **Performance counters**: average and slowest tick time, frames per second (average, lowest, seconds under 30), error count.
+- **`tools/load-report.js`** loads a report into the game and prints a diagnosis: where customers wait, why trust moved, money, staff cost per Rx, the hire preview. It can also simulate more weeks from the exact saved game.
+- **`BUGS.md`**: a running log of reported problems, causes and the build that fixed them. **`reports/`** is where report files go.
+- Hire preview: people who heard the wait and went elsewhere now count against the bottleneck role.
+
 ## v24.41 · 2026-10-27 — Fair trust, come back later, staff cost per Rx
 **Trust follows how well you serve people**
 - Each walk-out now costs −0.1 (−0.15 if angry), down from −0.2/−0.4. Each script served gives +0.02.

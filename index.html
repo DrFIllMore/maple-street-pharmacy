@@ -195,7 +195,7 @@ button,.hud{touch-action:manipulation}
 .spark{width:100%;height:46px;display:block}
 .dbgp .env,.dbgp .lines{font-family:var(--mono);font-size:11px;line-height:1.45;white-space:pre-wrap;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--panel-solid)}
 .dbgp .lines{overflow:auto;max-height:160px}.dbgp .lines .err{color:var(--bad)}.dbgp .lines .game{color:var(--accent-ink)}
-.dbgp textarea{position:absolute;left:-9999px;top:0;width:10px;height:10px}
+.dbgp #dbgTa{position:absolute;left:-9999px;top:0;width:10px;height:10px}
 
 .bb.tool{padding:0 10px;border-radius:8px;height:calc(100% - 8px);margin:4px 0}
 .bb.tool.on{background:var(--accent);color:#fff}
@@ -295,6 +295,8 @@ button,.hud{touch-action:manipulation}
 .gzn{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;border-top:2px solid #1f1b16;border-bottom:1px solid #1f1b16;padding:5px 2px;margin-top:6px;font-family:var(--sans);font-size:.82em}
 .gzn>b{text-transform:uppercase;letter-spacing:.08em;font-size:.85em}.gzn>span{font-weight:700}.gzn>span small{font-weight:400;color:#5b5348;margin-left:5px}.gzn>em{font-style:normal}
 .ig.igbig img{height:clamp(110px,11em,180px)}
+.dbgnote{width:100%;box-sizing:border-box;font:inherit;font-size:.9em;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel-solid);color:var(--ink);resize:vertical}
+.dbghelp{font-size:.82em;color:var(--ink-2);line-height:1.35}.dbghelp #dbgMsg{display:block;color:var(--accent-ink);font-weight:700;margin-top:3px}.dbgdet summary{cursor:pointer;font-weight:700;color:var(--ink-2);font-size:.85em}.dbgdet[open]{display:grid;gap:6px}
 </style>
 </head>
 <body>
@@ -328,7 +330,7 @@ button,.hud{touch-action:manipulation}
     <button class="sb" data-tab="inbox" id="inboxBtn"><span>✉️</span>Inbox<i id="inboxN" hidden>4</i></button>
   </div>
   <div class="hud menu" id="menu" hidden>
-    <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mWin">Adjust window</button><button id="mDbg">Debug report</button>
+    <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mWin">Adjust window</button><button id="mDbg">Report a problem</button>
   </div>
   <div class="hud chat" id="chat">
     <div class="tabs" id="chatTabs"><button data-f="all" class="on">All</button><button data-f="ops">Ops</button><button data-f="money">Money</button><button data-f="staff">Staff</button><button class="chev" id="chatDown" aria-label="Collapse">⌄</button></div>
@@ -353,10 +355,13 @@ button,.hud{touch-action:manipulation}
   </div>
   <div class="review" id="review" hidden><button class="floorx" id="floorX" hidden>Floor ↗</button><div class="rev paper" id="rev"></div></div>
   <button class="resume" id="resume" hidden></button>
-  <div class="review dbgp" id="dbg" hidden><div class="rev">
-    <h2>Debug report <button class="big ghost" id="dbgClose" style="margin-left:auto">Close</button></h2>
-    <div class="env" id="dbgEnv"></div><div class="lines" id="dbgLines"></div>
-    <div class="btns" style="justify-content:flex-start;flex-wrap:wrap"><button class="big" id="dbgCopy">Copy full report</button><button class="big ghost" id="dbgRot">Force landscape: on</button><button class="big ghost" id="dbgClear">Clear</button><button class="big" id="dbgClose2">Close</button><span id="dbgMsg" style="color:var(--ink-2);font-weight:700;align-self:center"></span></div>
+  <div class="review dbgp" id="dbg" hidden><div class="rev paper">
+    <h2>Report a problem <small>helps Claude find bugs</small><button class="big ghost" id="dbgClose" style="margin-left:auto">Close</button></h2>
+    <textarea id="dbgNote" class="dbgnote" rows="3" placeholder="What went wrong or felt off? e.g. 'people leave while waiting', 'hired a tech, Rx dropped'"></textarea>
+    <div class="btns" style="justify-content:flex-start;flex-wrap:wrap"><button class="big" id="dbgSave">Save report file</button><button class="big ghost" id="dbgGh">Report on GitHub</button><button class="big ghost" id="dbgCopy">Copy as text</button></div>
+    <div class="dbghelp"><b>Save report file</b> saves your whole game, the activity log and performance numbers; attach the file in your chat with Claude. <b>Report on GitHub</b> opens an issue with a summary. <span id="dbgMsg"></span></div>
+    <details class="dbgdet"><summary>Technical details</summary><div class="env" id="dbgEnv"></div><div class="lines" id="dbgLines"></div>
+    <div class="btns" style="justify-content:flex-start;flex-wrap:wrap"><button class="big ghost" id="dbgRot">Force landscape: on</button><button class="big ghost" id="dbgClear">Clear log</button><button class="big ghost" id="dbgClose2">Close</button></div></details>
     <textarea id="dbgTa" aria-hidden="true" tabindex="-1"></textarea>
   </div></div>
 </div>
@@ -369,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.41 · 2026-10-27';
+const BUILD='v24.42 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -794,7 +799,7 @@ function endDay(){if((S.mess||[]).length){S.mess=[];glog('ops','The night cleane
 
 /* ============ week ============ */
 let timer=null;
-function setSpeed(n){if(n>0&&S.coverPending&&$('sheet').hidden){S.coverPending=false;closeToday();}S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setInterval(tick,TICK_MS/n);renderHud();}
+function setSpeed(n){if(n>0&&S.coverPending&&$('sheet').hidden){S.coverPending=false;closeToday();}S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setInterval(timedTick,TICK_MS/n);renderHud();}
 function startWeek(){{const op=S.claims.filter(c=>c.status==='open');S.claims=[...S.claims.filter(c=>c.status!=='open').slice(-30),...op];}audioInit();cancelMove();PROPCACHE=null;S.stage=null;$('resume').hidden=true;if(!S.opened&&!S.speedSet)S.speed=3;if(S.openBuildNext){S.openBuildNext=false;setTimeout(()=>setBuild(true),400);}if(!S.opened)glog('ops','Open for business. New equipment unlocks as the store earns it — the Gazette announces each one.');SHOTS={};for(const o of S.objs){o.earn=0;o.wkTt=0;o.wkBt=0;o.wkJobs=0;o.usesWk=0;}S.inv.used={gen:0,brand:0,vax:0,otc:0};S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;S.wk.reg0=S.reg||0;if(S.preWk){Object.assign(S.wk,S.preWk);S.preWk=null;}S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
   for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;w.wkTicks=0;w.wkIdle=0;w.wkJobs=0;w.wkAct={};}for(const k in busyS)delete busyS[k];for(const sc of S.scripts){sc.claimed=null;delete sc.toShelf;}hourSnap={served:0,lost:0,cashIn:0,missed:0};
   $('review').hidden=true;$('office').hidden=true;closeSheet();setSpeed(S.speed||1);duck();SFX.bell();
@@ -1322,7 +1327,7 @@ function hireAdvice(r){const h=(S.hist||[])[S.hist.length-1];if(!h||!h.qw)return
   if(!crew&&r!=='rph')return {v:'good',t:`you have no ${ROLE[r].toLowerCase()} — ${r==='tech'?'your pharmacist is filling and checking alone':'your pharmacist is working the windows'}. Hire one now.`};
   const sc={clerk:(h.qw.win||0)+(h.qw.pick||0),tech:h.qw.bin||0,rph:h.qw.tray||0};const top=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];const mins=x=>Math.round(x*5);
   if(top!==r||sc[r]<6)return {v:'bad',t:`customers waited ~${mins(sc[r])} min at ${STAGE_OF[r]}${top!==r?`, but longest at ${STAGE_OF[top]} (~${mins(sc[top])} min)`:''}. Not the bottleneck.`};
-  const lost=r==='clerk'?(lw['at_drop-off']||0)+(lw['at_pick-up']||0):r==='rph'?(lw['waiting_for_the_check']||0):(lw['waiting_for_the_fill']||0);
+  const lost=(r==='clerk'?(lw['at_drop-off']||0)+(lw['at_pick-up']||0):r==='rph'?(lw['waiting_for_the_check']||0):(lw['waiting_for_the_fill']||0))+(top===r?(lw['wait_too_long']||0):0);/* people who heard the wait and left count against the bottleneck */
   const unmet=Math.max(0,Math.round((h.demand||0)*6-h.served-h.lost));const seats=r==='tech'?objsOf('fill').length:r==='rph'?objsOf('verify').length:objsOf('dropoff').length+objsOf('register').length;const share=crew>=seats;
   const gain=Math.round(Math.min(lost+unmet*.3,h.served*.1)*(share?.6:1));const val=gain*m;const pays=val>=wage*1.3,even=val>=wage*.8;
   const head=`the bottleneck — customers waited ~${mins(sc[r])} min at ${STAGE_OF[r]}, ${lost} gave up there`;
@@ -1742,7 +1747,7 @@ function drawScene(){
 /* ============ frame ============ */
 let perf=0,last=0,fps=0,fpsN=0,fpsT=0;
 let lastDraw=0;
-function frame(ts){perf=ts;const raw=Math.min(.05,(ts-last)/1000||0);last=ts;fpsN++;if(ts-fpsT>1000){fps=fpsN;fpsN=0;fpsT=ts;}
+function frame(ts){perf=ts;const raw=Math.min(.05,(ts-last)/1000||0);last=ts;fpsN++;if(ts-fpsT>1000){fps=fpsN;fpsN=0;fpsT=ts;if(!document.hidden){PERF.fpsN++;PERF.fpsSum+=fps;PERF.fpsMin=Math.min(PERF.fpsMin,fps);if(fps<30)PERF.slowSec++;}}
   const live=S.running&&S.speed>0;if(live)motion(raw);
   const titled=!$('title').hidden||document.hidden;const want=live||ptrs.size>0||buildOn||ts-lastDraw>66;/* paused: ~15 fps unless touching or building */
   if(!titled&&want){drawScene();lastDraw=ts;}requestAnimationFrame(frame);}
@@ -1814,7 +1819,24 @@ const SFX={door(){const t=gate('door',.9);if(t===null)return;tone(88,t,.18,'sine
 
 /* ============ debug ============ */
 const LOG=[];
-function log(type,msg,data){LOG.push({t:Math.round(performance.now()),type,msg,data,wk:S?S.week:0});if(LOG.length>500)LOG.shift();if(!$('dbg').hidden)renderDbg();}
+/* performance counters for problem reports */
+const PERF={ticks:0,tickSum:0,tickMax:0,slowTicks:0,fpsN:0,fpsSum:0,fpsMin:999,slowSec:0,errs:0};
+function timedTick(){const t0=performance.now();tick();const d=performance.now()-t0;PERF.ticks++;PERF.tickSum+=d;if(d>PERF.tickMax)PERF.tickMax=d;if(d>16)PERF.slowTicks++;}
+function perfSummary(){return {tickAvgMs:+(PERF.tickSum/Math.max(1,PERF.ticks)).toFixed(2),tickMaxMs:+PERF.tickMax.toFixed(1),slowTicks:PERF.slowTicks,fpsAvg:PERF.fpsN?Math.round(PERF.fpsSum/PERF.fpsN):null,fpsMin:PERF.fpsN?PERF.fpsMin:null,secondsUnder30fps:PERF.slowSec,errors:PERF.errs,ticks:PERF.ticks};}
+/* a problem report: everything needed to load this exact game and see what happened */
+const REPORT_REPO='DrFIllMore/maple-street-pharmacy';
+function reportData(note){let objs=S.objs;if(held&&!S.objs.includes(held.o))objs=[...S.objs,{...held.o,x:held.ox,y:held.oy,rot:held.orot}];
+  return {kind:'msp-report',schema:1,build:BUILD,at:new Date().toISOString(),note:note||'',env:env(),snap:snap(),perf:perfSummary(),
+    summary:{week:S.week,day:S.day,cash:Math.round(S.cash),loan:S.loan,trust:+S.trust.toFixed(1),reg:Math.round(S.reg||0),staff:S.staff.map(w=>w.role+(w.floater?'(temp)':'')).join(','),hist:(S.hist||[]).slice(-6)},
+    save:{S:{...S,objs},GL:GL.slice(-120),PLANS},chat:GL.slice(-400).map(e=>`w${e.wk} ${stamp(e)} [${e.type}] ${e.text}`),log:LOG.slice(-500)};}
+function saveReportFile(note){const d=reportData(note);const name=`msp-report-${BUILD.split(' ')[0]}-wk${S.week}-${new Date().toISOString().slice(0,16).replace(/[:T]/g,'')}.json`;const blob=new Blob([JSON.stringify(d)],{type:'application/json'});
+  try{const f=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Maple Street Pharmacy report'}).catch(()=>{});return 'Share sheet opened: save to Files, then attach it in your chat with Claude.';}}catch(e){}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);return `Saved ${name}. Attach it in your chat with Claude.`;}
+function githubIssueUrl(note){const s=reportData(note);const h=s.summary.hist.map(x=>`wk${x.week}: served ${x.served}, lost ${x.lost}, net ${x.net}`).join('\n');
+  const body=`**What happened**\n${note||'(no note)'}\n\n**Build** ${BUILD}\n**State** week ${s.summary.week}, cash ${s.summary.cash}, loan ${s.summary.loan}, trust ${s.summary.trust}, regulars ${s.summary.reg}\n**Staff** ${s.summary.staff}\n**Perf** ${JSON.stringify(s.perf)}\n\n**Last weeks**\n${h}\n\n<details><summary>Device & state</summary>\n\n\`\`\`\n${s.env}\n${s.snap}\n\`\`\`\n</details>\n\n<details><summary>Recent activity</summary>\n\n\`\`\`\n${s.chat.slice(-40).join('\n')}\n\`\`\`\n</details>\n\n_Attach the saved report file (Save report file) to this issue for the full game._`;
+  const title=`Report: ${(note||'problem').slice(0,60)} (wk${s.summary.week}, ${BUILD.split(' ')[0]})`;
+  let bd=body;while(encodeURIComponent(bd).length>6000)bd=bd.slice(0,Math.floor(bd.length*.9));return `https://github.com/${REPORT_REPO}/issues/new?labels=report&title=${encodeURIComponent(title)}&body=${encodeURIComponent(bd)}`;}
+function log(type,msg,data){if(type==='err')PERF.errs++;LOG.push({t:Math.round(performance.now()),type,msg,data,wk:S?S.week:0});if(LOG.length>500)LOG.shift();if(!$('dbg').hidden)renderDbg();}
 window.addEventListener('error',e=>log('err',`${e.message} @${(e.filename||'').split('/').pop()}:${e.lineno}:${e.colno}`));
 window.addEventListener('unhandledrejection',e=>log('err','promise: '+(e.reason&&e.reason.message||e.reason)));
 function env(){const app=$('app');const rect=id=>{const el=$(id);if(el.hidden)return 'hidden';const r=el.getBoundingClientRect();return `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)}`;};
@@ -1823,7 +1845,7 @@ function snap(){if(!S)return '';const c=st=>S.scripts.filter(x=>x.stage===st).le
 function report(){return `=== Maple Street Pharmacy debug ===\n${env()}\n\n--- state ---\n${snap()}\n\n--- activity (${GL.length}) ---\n`+GL.slice(-60).map(e=>`w${e.wk} ${stamp(e)} [${e.type}] ${e.text}`).join('\n')+`\n\n--- log (${LOG.length}) ---\n`+LOG.map(l=>`${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${l.msg}${l.data?' '+JSON.stringify(l.data):''}`).join('\n');}
 function renderDbg(){$('dbgEnv').textContent=env()+'\n'+snap();$('dbgLines').innerHTML=LOG.slice(-80).map(l=>`<div class="${l.type}">${(l.t/1000).toFixed(1)}s w${l.wk} [${l.type}] ${String(l.msg).replace(/</g,'&lt;')}${l.data?' '+JSON.stringify(l.data).replace(/</g,'&lt;'):''}</div>`).join('');$('dbgLines').scrollTop=1e6;$('dbgRot').textContent='Force landscape: '+(forceLand?'on':'off');}
 $('dbgClose').onclick=()=>$('dbg').hidden=true;$('dbgClose2').onclick=()=>$('dbg').hidden=true;$('dbg').addEventListener('click',e=>{if(e.target===$('dbg'))$('dbg').hidden=true;});
-$('dbgCopy').onclick=()=>copyText(report(),'dbgMsg');$('dbgClear').onclick=()=>{LOG.length=0;renderDbg();};
+$('dbgCopy').onclick=()=>copyText(($('dbgNote').value?'NOTE: '+$('dbgNote').value+'\n\n':'')+report(),'dbgMsg');$('dbgSave').onclick=()=>{$('dbgMsg').textContent=saveReportFile($('dbgNote').value.trim());};$('dbgGh').onclick=()=>{window.open(githubIssueUrl($('dbgNote').value.trim()),'_blank');$('dbgMsg').textContent='GitHub opened in a new tab. Attach the saved file there too if you can.';};$('dbgClear').onclick=()=>{LOG.length=0;renderDbg();};
 $('dbgRot').onclick=()=>{forceLand=true;fitCanvas();applyLayout();fitWorld();renderDbg();};
 setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();},1000);
 
