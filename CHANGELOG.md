@@ -1,5 +1,26 @@
 # Changelog
 
+## v24.33 · 2026-10-27 — A store that grows, and staff tools to keep up
+**Customers grow week to week (regular patients)**
+- Customers a day = new walk-ins + regulars due for a refill. You start with 140 regulars, and each comes back about every 4 weeks.
+- A good first visit (short line, short wait) turns 45% of new patients into regulars; a slow one 12%. Regulars who walk out or get a missed call may leave; 1.5% drift away each week, more to the chain when service is poor.
+- The chain now takes walk-ins only. The neighborhood grows 1% a week, and every few weeks there's an event (new apartments, a clinic, a bus stop).
+- Gazette shows **Regular patients 179 +18** and **Customers a day**. The District Manager notes growth and tells you when to hire.
+- Playtests: good play grows from 21 to 31–38 customers a day by weeks 10–15 (was flat or falling).
+
+**Staffing**
+- **Hire preview** under the Hire buttons, per role: how busy that role was, how many people gave up there, the likely extra scripts and $ vs the wage. It also says when there's no free station for another worker, or when the role is missing entirely.
+- **Part-time** tech or clerk: Mon/Wed/Fri at half the weekly wage (days editable in the grid).
+- **Day cover for every role**: floater RPh $400/day, temp tech $170/day, temp clerk $140/day. Paid only for booked days.
+- **Keep everyone rested** switch: each evening, anyone under 60% after the night's rest gets tomorrow off if a teammate covers, or a day-cover is booked. The regular schedule comes back after.
+- New items: **Anti-fatigue mat** ($120, unlocks wk 2): 25% less drain working on it. **Break room** ($1,400, unlocks wk 3 with 3+ staff): +8 energy every night, +2 morale a week.
+
+**Bug fixed: will-call deadlock.** Bags whose customer never came back stayed on the shelf forever. Once every shelf was full, the pharmacist couldn't finish checks and the store served 0 a day. Now bags uncollected for 5 trading days go back to stock, any bag without a customer on the way gets one each morning, and the chat warns if customers can't reach the register.
+
+**Advisors**: the patient-care advisor warns when trust is under 25 (the bank closes the store at 0).
+
+**Playtest** (20 weeks): a new "plays like a person" player (hires when the preview says so or after a bad week, turns on rest, fixes some complaints, ads when the chain bites) wins 13 of 14 games (weeks 11–16). Cautious, builder and optimal win. Naive and marketer lose (trust collapses after their tech quits and nobody is rehired). 47/47 test scripts pass; cash reconciles every week.
+
 ## v24.32 · 2026-10-27 — Bug sweep after the bank and pricing patch
 - **Cards could still slide sideways on the phone.** The landscape touch-scroll moved content along a hidden axis. It now scrolls only along an axis that really scrolls, and ignores drag handles (chat grip, tabs). Cards stay put; panels still scroll.
 - **Trust 0 shutdown** is decided at that day's close. Week-end perks (delivery, plants, …) can no longer lift trust back above 0 after the "closing tonight" message.

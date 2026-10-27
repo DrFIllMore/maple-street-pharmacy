@@ -80,3 +80,11 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Loan: Saturday bill = min($250, balance) + 1% interest, paid in cash. Missed → interest + $50 added to the balance, strike counted.
 - Borrow: $2k/$5k draws, $100 fee, limit $30k total. Blocked while any strike is active or trust < 40.
 - Check notice from the 2nd consecutive missed payment; foreclosure on the 4th.
+
+## Customers and staffing (v24.33)
+- walk-ins/day = 17 · hood · plan share · (0.4 + trust/100) · price · promos · (1 − chain) · press; hood grows 1%/wk (max 1.35) plus events (+4–8%).
+- regulars/day = regulars / 24. Start 140. New patient served: +0.45 regular if line < 6 ticks and wait < 14, else +0.12. Regular slow visit −0.15, walk-out −0.5, missed call −0.3. Weekly drift 1.5% (+ chain·10% when ≥ 8% of customers were lost).
+- Will-call: bags older than 5 trading days return to stock.
+- Day cover: floater/temps per role (rph 400, tech 170, clerk 140 a day). Part-time: F O F O F O.
+- Keep everyone rested: at day end, energy < 60 (after night) → tomorrow off if a same-role teammate works, else book cover if cash ≥ cost + $1,500.
+- Mat: work drain ×0.75 on that tile. Break room: +8 night recovery, +2 morale/wk.
