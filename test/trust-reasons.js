@@ -1,0 +1,6 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();const pg=await (await b.newContext({viewport:{width:932,height:430}})).newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,7);a.hire('tech');a.hire('clerk');a.setBuild(false);const out=[];
+ for(let k=0;k<6;k++){const S2=__msp.S;a.startWeek();a.setSpeed(0);if(k===2)S2.trust=99;if(k===4)S2.trust=3;const t0=S2.trust;while(S2.running){for(let f=0;f<12;f++)a.motion(.016);a.tick();}const sum=Object.values(S2.wk.tw||{}).reduce((t,v)=>t+v,0);out.push([k,+(S2.trust-t0).toFixed(2),+sum.toFixed(2),document.querySelector('.twhy')?document.querySelector('.twhy').textContent:'']);}
+ return out;});
+console.log(r.map(x=>JSON.stringify(x)).join('\n'),errs);await b.close();})();

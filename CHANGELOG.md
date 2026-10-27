@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.37 · 2026-10-27 — Trust reasons add up
+- **Bug:** the Gazette listed only the three biggest trust changes, so the lines didn't add up to the week's total. For example, +4.9 served, −4.4 walk-outs and −1.0 claims came to −0.5, but the total said +0.5, because +1.0 of perks wasn't shown. It now adds an "other" line, so the reasons always sum to the total.
+- **Bug:** trust changes were recorded even when trust was already at 100 (or 0), so "+4.9 served" could show while trust didn't move. Each change now records only what actually moved.
+
 ## v24.36 · 2026-10-27 — The restroom gets used
 - **Used about 4× as often.** Customers waiting in line or in a chair now go about 10% of visits (was 2–3 a week). Older and sick customers go more often.
 - **Capacity:** one person inside, two can wait at the door. If it's full they try again later; after three tries they give up and get less patient. More restrooms spread the load.
