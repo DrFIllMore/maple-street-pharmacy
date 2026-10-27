@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.29 · 2026-10-27 — Staff card polish
+- **Now** stays on one line with a short status (for example "idle · no verify terminal"). The longer advice moves to a small note under the details. Chat messages still use the full sentence.
+- Labels (Energy … Experience, Now) share one fixed-width column, so values line up and no longer touch the label.
+
 ## v24.28 · 2026-10-27 — Cards stay still
 - Cards (staff, items, patients) no longer slide when you drag inside them. They now have room to show everything at once: a card can cover the chat log while it is open, but not the toolbar. Sideways scrolling is off, and when a very long card does scroll, the scroll stops at the card's edge.
 - Test: every item and staff card fits without scrolling on phone (430×873) and desktop (932×430).
