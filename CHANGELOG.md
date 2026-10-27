@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.38 · 2026-10-27 — Fewer walk-outs over the restroom
+- **Bug from v24.36:** customers use the restroom 4× more often, but the penalty for having no restroom (30% walk out, the rest lose 40% of their patience) stayed the same. Most walk-outs became "needing the restroom": 16 of 17 in a test day. Without a restroom, customers now lose 15% patience and 8% walk out. In the same test: 17 walk-outs → 4.
+- Checked hiring: adding a clerk, tech or pharmacist never lowered prescriptions served in controlled runs (same random seed, 3 weeks each).
+
 ## v24.37 · 2026-10-27 — Trust reasons add up
 - **Bug:** the Gazette listed only the three biggest trust changes, so the lines didn't add up to the week's total. For example, +4.9 served, −4.4 walk-outs and −1.0 claims came to −0.5, but the total said +0.5, because +1.0 of perks wasn't shown. It now adds an "other" line, so the reasons always sum to the total.
 - **Bug:** trust changes were recorded even when trust was already at 100 (or 0), so "+4.9 served" could show while trust didn't move. Each change now records only what actually moved.
