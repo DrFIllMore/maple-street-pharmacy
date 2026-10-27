@@ -1,5 +1,18 @@
 # Changelog
 
+## v24.31 · 2026-10-27 — Rx pricing, borrowing, the foreclosure check
+- **Cash price is open: $30–$120** (was $36–$60), in $4 steps (Supplies). The **fair price** is $48 at trust 50 and moves $2 per 10 trust.
+  - Up to fair +$8: a few cash customers leave (−0.8% per $), and you earn more on each one (+9% at fair +$8).
+  - Fair +$9 to +$12: still a little more money, but trust slips each week (−0.6 at +$12). Lower trust lowers the fair price.
+  - Past fair +$12: cash customers leave fast (−5% per $), walk-ins drift to the chain, and trust drops hard. At fair +$20 the Gazette runs a "prices hiked" story.
+  - Below fair −$6: more cash customers. A deliberate discount (fair −$8) earns +0.3 trust a week.
+  - Insured patients still pay their $15 copay. Patients asked to pay cash on a rejected claim say yes less often at high prices.
+  - The lever shows the live effect: share of cash customers, walk-ins lost, trust per week.
+- **Loan bill = $250 minimum + that week's interest, paid in cash every Saturday.** Interest is no longer added to the loan. Week-one bill is $410, about the same as before.
+- **Borrow from the bank** (Money tab): $2,000 or $5,000, $100 fee each, 1% a week, total limit $30,000. The bank won't lend after a missed payment, after a week closed in the red, or with trust under 40. You can't win while you owe.
+- **Foreclosure notice as a bank check**: from the 2nd missed payment in a row, the week review opens with your returned loan check, stamped "Unpaid · 2 of 4", and a *Notice of possible foreclosure*. It shows what you owe, what's due next Saturday, and how many misses are left.
+- Playtest: naive wins 1 of 8 seeds, same as before. Cash still reconciles to $0 every week.
+
 ## v24.30 · 2026-10-27 — The bank, and a clear goal
 - **Win needs four things at Saturday close**: business value $20,000, **cash in hand $5,000**, loan paid off, trust 70. The cash requirement was hidden before; it is now its own goal bar (Proposals strip and goal panel) and counts toward the top-bar goal meter.
 - **The bank can close the store** (replaces the instant loss at −$3,000):

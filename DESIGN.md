@@ -72,3 +72,11 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Win (checked at Saturday close): business value ≥ $20,000, cash ≥ $5,000, loan 0, trust ≥ 70.
 - Lose: 4 consecutive Saturdays with cash < $0; 4 consecutive missed loan payments (payment taken only when cash ≥ amount due; miss = +$50 late fee); trust ≤ 0 at any day's close.
 - Strikes reset as soon as a Saturday closes clean. Notices appear in the Gazette and chat each week a strike is counted.
+
+## Rx cash price and the bank (v24.31)
+- fair = 48 + 0.2·(trust − 50). gap d = price − fair.
+- Cash-customer multiplier: d ≤ −6 → 1 + 1.5%·(−d−6) (max +30%); −6..0 → 1; 0..12 → 1 − 0.8%·d; > 12 → 0.904 − 5%·(d−12) (floor 0).
+- Walk-ins overall: d > 12 → × (1 − 1.2%·(d−12)), floor 0.6. Trust per week: d > 8 → −0.15·(d−8); d ≤ −8 → +0.3. Press story at d ≥ 20.
+- Loan: Saturday bill = min($250, balance) + 1% interest, paid in cash. Missed → interest + $50 added to the balance, strike counted.
+- Borrow: $2k/$5k draws, $100 fee, limit $30k total. Blocked while any strike is active or trust < 40.
+- Check notice from the 2nd consecutive missed payment; foreclosure on the 4th.
