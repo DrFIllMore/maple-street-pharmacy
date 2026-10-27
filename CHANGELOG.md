@@ -1,5 +1,29 @@
 # Changelog
 
+## v24.41 · 2026-10-27 — Fair trust, come back later, staff cost per Rx
+**Trust follows how well you serve people**
+- Each walk-out now costs −0.1 (−0.15 if angry), down from −0.2/−0.4. Each script served gives +0.02.
+- New weekly **service** score based on the share of customers who walked out: under 5% → +3, under 10% → +1.5, 10–15% → 0, over 15% → down (−2.5 at 25%, max −8). When trust is under 50 and service is good, +1 more ("word gets around").
+- A store that serves most people now climbs back from low trust. Before, 92% served (122 served, 11 walk-outs) left trust flat.
+
+**Come back later**
+- At drop-off, if the expected wait is 80+ minutes, most customers (80%) leave their prescription and come back for it. They leave happy, don't count as walk-outs, and return when the bag is ready.
+- If the wait is 160+ minutes, about 30% take the prescription to the chain instead. Those count as lost, and the District Manager points to the slowest step.
+- Customers who had to come back are less likely to become regulars, so speed still matters for growth.
+- The expected wait is the work queued ahead (bin, fill, check, claims) divided by how fast bags have been finishing in the last 3 hours. The chat notes when the wait is long. The Gazette shows "Came back later: N".
+
+**Staff cost per prescription**
+- Gazette and Staff tab: wages ÷ prescriptions served, colored green (≤ $20), plain (≤ $28) or red. Each script leaves about $50 after drugs.
+- The District Manager flags a team over $28 per Rx and names the least-busy role that could go part-time or be let go.
+
+**Feed:** the three posts shown on the weekly feed page always include a complaint you can promise on. Before, it could sit in a hidden 4th or 5th slot.
+
+**Replay of a reported week-9 store** (trust 9, 6 staff, 1 fill station), 6 weeks:
+- As is: walk-outs 3–11 a week, trust drifts down, cash stays negative ($47 per Rx).
+- With a 2nd fill station and 2 fewer staff: $19–21 per Rx, +$2–3k a week, trust 11 → 21 (faster with claims handled).
+
+**Playtest** (20 weeks, 3 games each): careful 3/3 (weeks 11–12), builder 3/3, reactive 3/3, plays-like-a-person 3/3 (weeks 9–11), best play 3/3; naive no wins (no losses either); marketer loses.
+
 ## v24.40 · 2026-10-27 — Truth audit: what the game says now matches what happens
 An independent review of every message, label and piece of advice, plus measured checks in simulation.
 
