@@ -341,7 +341,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.19 · 2026-10-26';
+const BUILD='v24.20 · 2026-10-26';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1232,7 +1232,7 @@ function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedul
           <span class="em">${battery(w.floater?100:e,w.floater?'#c9c2b2':enCol(e))}<b style="color:${w.floater?'var(--ink-2)':enCol(e)}">${w.floater?'—':e+'%'}</b>${w.isYou||w.floater?'':`${moraleBox(m,moCol(m))}<b style="color:${moCol(m)}"><span class="hrt">♥</span>${m}</b>`}</span>
           ${cells}<span class="wg">${wage(w)}</span><button class="a more" data-more="${w.id}" aria-label="More about ${w.name}">⋯</button></div>`;}).join('');
       sb=`<div class="team">${head}${rows}</div><div class="foot">Tap a day to cycle Full · AM · PM · Off (half days 55% wage). Energy: busy day −29, quiet −14, night +23, day off +45. ⋯ = bonus, raise, let go.</div>`
-        +`<div class="lbl">Hire <span class="sub">· ${fmt(HIRE_FEE)} agency fee, starts next day</span></div><div class="hire">${['tech','clerk','rph'].map(r=>`<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'verifies, consults, covers anything'}</small></button>`).join('')}${S.staff.some(w=>w.floater)?'':`<button class="a" data-h="float">Floater RPh · ${fmt(FLOAT_DAY)}/day<small>book days above · gray coat · no fee</small></button>`}</div>`;}
+        +`<div class="lbl">Hire <span class="sub">· ${fmt(HIRE_FEE)} agency fee, starts next day</span></div><div class="hire">${['tech','clerk','rph'].map(r=>`<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${S.cash<WAGES[r]*2?`needs ${fmt(WAGES[r]*2)} cash (two weeks' pay)`:(r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'checks, consults, covers anything')}</small></button>`).join('')}${S.staff.some(w=>w.floater)?'':`<button class="a" data-h="float">Floater RPh · ${fmt(FLOAT_DAY)}/day<small>book days above · gray coat · no fee</small></button>`}</div>`;}
     body=`<h2>Staff <small>${fmt(wages())}/week</small></h2>${tabs}${sb}`;}
   if(officeTab==='promo'){const rv=S.rivalOn?Math.round((S.promo.pricematch>0?0:S.rival)*100):0;
     body=`<h2>Promote <small>bring people in</small></h2>

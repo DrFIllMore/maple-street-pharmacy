@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.20 · 2026-10-26
+- A greyed-out hire button now says why, e.g. "needs $3,600 cash (two weeks' pay)" for a pharmacist (tech $1,600, clerk $1,300).
+
 ## v24.19 · 2026-10-26 — Goal and balance
 Robot playtest, 6 play styles × 3 runs × 20 weeks (test/reports/v24.19.html).
 - **Goal is now business value, not cash:** cash + what your equipment would sell for (half of what you put into it) ≥ **$20,000**, with at least $5,000 cash, the loan repaid and trust ≥ **70** (was cash ≥ $15k, trust ≥ 60). Investing is no longer punished by the goal; overbuilding still is (half the money is gone, and wages/idle time stay).
