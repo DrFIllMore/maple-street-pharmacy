@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.23 · 2026-10-27 — This week's money
+- Tap **Saturday** in the top bar for the week's money: Cash now → Saturday night, then a table with **So far / To come / Week** for Money in (counter sales, insurer checks), Money out (drugs paid Monday, hiring & bonuses, Saturday bills: wages, rent, loan payment) and Net. The Money › Cash tab shows the same table (one shared calculation, `weekMoney()`).
+- Checked: the Saturday figure on Thursday afternoon lands within about $100–300 of the real Saturday-night cash (the gap is sales running faster or slower than the pace so far).
+
 ## v24.22 · 2026-10-27
 - Saturday value shown without the ≈ sign.
 

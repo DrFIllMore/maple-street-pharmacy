@@ -60,6 +60,12 @@
 .igav.e{background:#efe6d2;font-size:14px}.igav.p{background:#e4ecf4;overflow:hidden}.igh .ptag{margin-left:2px}.igh .lk{margin-left:auto;color:var(--ink-2);font-weight:700;font-size:.9em;white-space:nowrap}.igh b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ig.igbig img{height:190px;object-fit:cover}
 .bar .st{flex:none}.bar .w3{width:2.9em}.bar .w4{width:4em}.bar .w6{width:4.6em}.bar .w7{width:5.9em}.bar .w8{width:6.6em}.bar .st b,.bar .st small{overflow:hidden;text-overflow:ellipsis}/* fixed slots: values change, the layout never moves */.bar .st b{white-space:nowrap;font-variant-numeric:tabular-nums}.bar .st small{white-space:nowrap}.bar .st b.warn{color:#b8730f}.bar .chip{text-align:left;align-items:flex-start}
 .app.rot .bar{gap:calc(8px*var(--k));padding-left:9px}.app.rot .goal .trk{width:calc(64px*var(--k))}
+.wm{display:grid;gap:0;font-size:.9em}.wm .wr{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:6px;padding:1px 0;align-items:baseline}.wm .wr b{text-align:right;font-family:var(--mono);font-weight:700;white-space:nowrap}
+.wm .wr.hd{font-size:.72em;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:800;border-bottom:1px solid var(--line)}.wm .wr.hd b{font-family:inherit;font-weight:800}
+.wm .wr.grp{font-weight:800;border-top:1px dashed var(--line);margin-top:2px}.wm .wr.grp.pos b{color:var(--good)}.wm .wr.grp.neg b{color:var(--bad)}.wm .wr.sub{font-size:.86em;color:var(--ink-2)}.wm .wr.sub b{font-weight:600;color:var(--ink-2)}
+.wm .wr.tot{border-top:2px solid var(--ink);margin-top:3px;font-weight:900}.wm .wr.tot.pos b{color:var(--good)}.wm .wr.tot.neg b{color:var(--bad)}
+.wm .wsat{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 6px;padding:5px 8px;border-radius:8px;background:rgba(0,0,0,.04);font-weight:700}.wm .wsat b{font-family:var(--mono)}.wm .wsat b.neg{color:var(--bad)}.wm .wsat b.warn{color:#b8730f}
+.sheet.wide{width:min(430px,72%)}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -280,7 +286,7 @@ button,.hud{touch-action:manipulation}
     <span class="sp"></span>
     <span class="st w7"><small>Cash</small><b id="cash"></b></span>
     <span class="st w7"><small>Insurers</small><b id="owed" class="owed"></b></span>
-    <span class="st w7" id="satSt"><small>Saturday</small><b id="sat">—</b></span>
+    <button class="st chip w7" id="satSt" aria-label="This week's money"><small>Saturday</small><b id="sat">—</b></button>
     <span class="st w3"><small>Trust</small><b id="trust"></b></span>
     <button class="st chip w6" id="stChip" aria-label="Staff"><small>Staff</small><b id="stChipV">ok</b></button>
     <button class="st chip w4" id="prChip" aria-label="In the news"><small>News</small><b id="prChipV">—</b></button>
@@ -341,7 +347,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.22 · 2026-10-27';
+const BUILD='v24.23 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1056,7 +1062,7 @@ function startMove(id){closeSheet();if(!buildOn)setBuild(true);const err=pickUp(
 function toast(t){glog('ops',t);}
 
 /* ============ sheets ============ */
-function sheet(html){if(S.coverPending&&!html.includes('id="cvF"')){S.coverPending=false;closeToday();}const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
+function sheet(html){$('sheet').classList.toggle('wide',html.includes('class="wm"'));if(S.coverPending&&!html.includes('id="cvF"')){S.coverPending=false;closeToday();}const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
 function closeSheet(){$('sheet').hidden=true;S.sel=null;if(S.coverPending){S.coverPending=false;closeToday();}/* dismissing the no-pharmacist question = closing for the day */}
 function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;if(!$('office').hidden)closeOffice();}
 function loadOf(o){const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.id).length:o.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+o.id||x.at==='claim:'+o.id).length:o.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+o.id).length:o.type==='bin'?S.scripts.filter(x=>x.at==='bin:'+o.id).length:['dropoff','register'].includes(o.type)?S.patients.filter(p=>p.q===o.id&&(p.state==='queued'||p.state==='toQueue')).length:0;
@@ -1203,11 +1209,11 @@ function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedul
     const dueNow=dueThisWeek(),dueNext=dueNextWeek(),dueLater=owedTotal()*(1-.06)-dueNow-dueNext;
     const interest=Math.round(S.loan*LOAN_RATE);const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+Math.min(LOAN_PAY,S.loan)+(S.mods.delivery?60:0);/* interest is added to the loan, not paid in cash */
     const frac=S.running?Math.max(.1,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK)):0;const counterSoFar=S.wk.cashIn;const counterRest=S.running?Math.round(counterSoFar/frac-counterSoFar):Math.round((S.hist.length?S.hist[S.hist.length-1].inflow-(S.hist[S.hist.length-1].paid||0):2000)*0);
-    const sat=S.cash+counterRest+dueNow-bills;
+    const sat=S.running?weekMoney().sat:S.cash;
     const verdict=sat<-OVERDRAFT?`<span class="verdict bad">Saturday you'd be past the overdraft. Take cash claims, cut a shift, or delay the drug order.</span>`:sat<0?`<span class="verdict bad">Saturday you'd be overdrawn by ${fmt(-sat)}. The bank allows ${fmt(OVERDRAFT)}, but it's thin.</span>`:sat<2000?`<span class="verdict">Saturday you'd have about ${fmt(sat)}. Tight — don't buy anything big this week.</span>`:`<span class="verdict good">Saturday you'd have about ${fmt(sat)}. Room to invest or pay down the loan.</span>`;
     const load=(l,v,fix)=>{const p=Math.round((v||0)*100);const bad=p>85,low=p<30&&p>0;return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${bad?'bad':low?'':'good'}">${bad?fix:low?'mostly idle':'fine'}</span></div></div>`;};
     body=`<h2>Money <small>will you make Saturday?</small></h2>${moneyTabs()}
-      <div class="tile"><div class="pay"><div><span>Cash now</span><b>${fmt(S.cash)}</b></div><div><span>Coming in this week${S.running?' (est.)':''}</span><b class="pos">+${fmt(Math.round(counterRest+dueNow))}</b></div><div><span>Saturday bills</span><b class="neg">−${fmt(bills)}</b></div><div class="tot"><span>Saturday night</span><b class="${sat<0?'neg':''}">${fmt(Math.round(sat))}</b></div></div>${verdict}</div>
+      <div class="tile">${weekMoneyHtml()}${S.running?verdict:''}</div>
       <div class="tile"><small>Loan · ${fmt(S.loan)} left · ${fmt(interest)} a week in interest</small><div class="seg" style="margin-top:4px"><button data-pay="500" ${S.cash<1500?'disabled':''}>Pay $500</button><button data-pay="2000" ${S.cash<3000?'disabled':''}>Pay $2,000</button><button data-pay="all" ${S.cash-1000<S.loan?'disabled':''}>Pay it off</button></div><div class="foot">Every $1,000 paid saves $10 a week.</div></div>`;
     S._queues=ds.length?`<div class="tile"><small>Where people wait · yesterday</small>${load('Drop-off',u.intake,'line forms → another window or clerk')}${load('Fill',u.fill,'baskets pile up → upgrade or second tech')}${load('Verify',u.verify,'you\'re the bottleneck → hire a pharmacist')}${load('Registers',u.pickup,'pick-up line → another register')}</div>`:'';}
   if(officeTab==='metrics'&&S.moneyTab==='equip')body=`<h2>Money <small>what each item earns and does</small></h2>${moneyTabs()}${equipHtml()}`;
@@ -1312,7 +1318,24 @@ function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;S.wk.maxTr
   const idleW=S.staff.filter(w=>!w.plan&&!w.off);if(idleW.length>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idleW.map(w=>w.name).join(', ')} have nothing to do right now.`,'idle',36);
   if(owedTotal()>S.cash*1.5&&owedTotal()>2500)glog('ops',`Insurers owe you ${fmt(owedTotal())}; you have ${fmt(S.cash)}.`,'owed',72);}
 /* Saturday cash: what you'd hold after Saturday's bills — cash now + counter sales still to come at this week's pace + insurer checks due by Saturday − wages, rent and the loan payment (drugs were paid Monday; interest goes onto the loan) */
-function satCash(){if(!S.running)return null;const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const rest=Math.max(0,S.wk.cashIn/frac-S.wk.cashIn);const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+Math.min(LOAN_PAY,S.loan)+(S.mods.delivery?60:0);return S.cash+rest+dueThisWeek()-bills;}
+/* the week's money in one place: what came in and went out so far, what's still coming by Saturday, and the cash you'll hold after Saturday's bills */
+function weekMoney(){const w=S.wk;const frac=S.running?Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK)):1;
+  const r={counter:w.cashIn||0,ins:w.paid||0,drugs:w.drug||0,extras:(w.bonus||0)+(w.hireFees||0),
+    counterRest:S.running?Math.max(0,(w.cashIn||0)/frac-(w.cashIn||0)):0,insRest:S.running?dueThisWeek():0,
+    wages:S.running?wages()+(w.floatOnce||0)+(w.exitPay||0):0,rent:S.running?S.rent:0,loan:S.running?Math.min(LOAN_PAY,S.loan):0,other:S.running&&S.mods.delivery?60:0};
+  r.inSoFar=r.counter+r.ins;r.outSoFar=r.drugs+r.extras;r.inRest=r.counterRest+r.insRest;r.outRest=r.wages+r.rent+r.loan+r.other;r.sat=S.cash+r.inRest-r.outRest;return r;}
+function weekMoneyHtml(compact){if(!S.running)return `<div class="wm"><div class="foot">The week isn't running. Last week's full numbers are in the Gazette (week review).</div></div>`;const m=weekMoney();const f=v=>v?fmt(Math.round(v)):'—';const pl=v=>v?'+'+fmt(Math.round(v)):'—';const mi=v=>v?'−'+fmt(Math.round(v)):'—';
+  const row=(l,a,b,c,cls)=>`<div class="wr ${cls||''}"><span>${l}</span><b>${a}</b><b>${b}</b><b>${c}</b></div>`;
+  const netSo=m.inSoFar-m.outSoFar,netRest=m.inRest-m.outRest,net=netSo+netRest;
+  const satLine=`<div class="wsat"><span>Cash now <b>${fmt(S.cash)}</b></span><span>→ Saturday night <b class="${m.sat<0?'neg':m.sat<2000?'warn':''}">${fmt(Math.round(m.sat))}</b></span></div>`;
+  return `<div class="wm">${satLine}${row('','So far','To come','Week','hd')}
+    ${row('Money in',f(m.inSoFar),pl(m.inRest),f(m.inSoFar+m.inRest),'grp pos')}
+    ${row('· counter sales',f(m.counter),pl(m.counterRest),'','sub')}${row('· insurer checks',f(m.ins),pl(m.insRest),'','sub')}
+    ${row('Money out',mi(m.outSoFar),mi(m.outRest),mi(m.outSoFar+m.outRest),'grp neg')}
+    ${row('· drugs (Monday)',mi(m.drugs),'—','','sub')}${m.extras?row('· hiring & bonuses',mi(m.extras),'—','','sub'):''}${row('· Saturday bills','—',mi(m.wages+m.rent+m.loan+m.other),'','sub')}
+    ${row('Net',(netSo<0?'−':'+')+fmt(Math.abs(Math.round(netSo))),(netRest<0?'−':'+')+fmt(Math.abs(Math.round(netRest))),(net<0?'−':'+')+fmt(Math.abs(Math.round(net))),'tot '+(net<0?'neg':'pos'))}
+    ${compact?'':`<div class="foot">"To come" assumes the rest of the week sells at today's pace. Wages, rent and the loan payment are paid Saturday night; loan interest is added to the loan, not paid in cash.</div>`}</div>`;}
+function satCash(){return S.running?weekMoney().sat:null;}
 function weekSoFar(){/* projected week net: counter cash on current pace + what insurers pay this Saturday − the week's bills and drugs */const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const counter=S.wk.cashIn/frac;const ins=dueThisWeek();const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+Math.min(LOAN_PAY,S.loan)+(S.wk.bonus||0)+(S.wk.hireFees||0);return counter+ins-bills-S.wk.drug;}/* interest is added to the loan, not paid in cash */
 function runwayWeeks(){const burn=wages()+S.rent+LOAN_PAY+S.orderQty*S.unitCost;const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
 $('menuBtn').onclick=()=>{const m=$('menu');m.hidden=!m.hidden;SFX.click();};
@@ -1321,7 +1344,7 @@ document.querySelectorAll('.sb[data-tab]').forEach(b=>b.onclick=()=>{SFX.click()
 $('mChat').onclick=()=>{L.chatShown=!L.chatShown;$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');applyLayout();renderChat();$('menu').hidden=true;};
 $('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');applyLayout();fitWorld();};
 $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
-$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();openOffice('schedule');};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()||'<p class="sub">Nothing about Maple Street in the Gazette right now. Stories run for 3 days and move customers ±10–15%.</p>'}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
+$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();openOffice('schedule');};$('satSt').onclick=()=>{SFX.click();sheet(`<h3>This week's money</h3>${weekMoneyHtml(true)}`);};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()||'<p class="sub">Nothing about Maple Street in the Gazette right now. Stories run for 3 days and move customers ±10–15%.</p>'}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 
 /* business value = cash + what the equipment would sell for (half of what went into it). Investing isn't punished by the goal, overbuilding still is */
