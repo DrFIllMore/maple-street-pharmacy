@@ -1,0 +1,10 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();const pg=await (await b.newContext({viewport:{width:873,height:430}})).newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;a.place('fill',5,1);S.cash=50000;a.openObj(S.objs.find(x=>x.type==='fill'));});
+await pg.waitForTimeout(200);await pg.screenshot({path:'item.png'});
+const r=await pg.evaluate(()=>{const sh=document.getElementById('sheet').getBoundingClientRect();return [...document.querySelectorAll('#sheet .acts button')].map(b=>{const q=b.getBoundingClientRect();return [b.id,Math.round(q.left),Math.round(q.right),Math.round(q.top),b.scrollWidth>b.clientWidth+1,q.right<=sh.right+0.5]})});console.log(JSON.stringify(r));
+await pg.evaluate(()=>{__msp.api.closeSheet?__msp.api.closeSheet():document.querySelector('#sheet .x').click();__msp.api.openOffice('schedule');});await pg.waitForTimeout(200);
+await pg.evaluate(()=>document.querySelector('[data-more]').click());await pg.waitForTimeout(200);await pg.screenshot({path:'worker.png'});
+console.log(await pg.evaluate(()=>({office:document.getElementById('office').hidden,sheet:document.getElementById('sheet').hidden,back:!!document.getElementById('wkBack')})));
+await pg.evaluate(()=>document.getElementById('wkBack').click());await pg.waitForTimeout(200);
+console.log(await pg.evaluate(()=>({office:document.getElementById('office').hidden,sheet:document.getElementById('sheet').hidden})),errs);await b.close();})();

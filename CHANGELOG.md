@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.27 · 2026-10-27 — Staff card and item card layout
+- Opening a person from Staff (⋯) now closes the Staff panel so their card is no longer hidden behind it. A **‹ Staff** link at the top of the card takes you back to the same tab.
+- Item cards: the upgrade gets its own full-width row ("⬆ Upgrade to … $cost") with a one-line note under it. Move, Rotate and Sell sit on the row below, so nothing is pushed off the card.
+
 ## v24.26 · 2026-10-27 — Flu shots: clear requirements
 - When the consult room unlocks, the Gazette and chat say flu shots need **the consult room and the vaccine contract** (Supplies, $600 with 50 doses), that the pharmacist gives every shot ($40), and that without the contract it's $20 reviews only.
 - Placing a consult room/desk without the contract repeats that once in chat. Signing confirms what happens next (doses in stock, who gives shots, reorder in Supplies).
