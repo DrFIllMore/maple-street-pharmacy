@@ -1,0 +1,8 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();
+const scen=[{name:'busy 1 fill',reg:500,fills:1,clerks:1},{name:'busy 2 fills',reg:500,fills:2,clerks:1},{name:'busy 2f 2clerk 2win',reg:500,fills:2,clerks:2,win:2},{name:'quiet',reg:120,fills:1,clerks:1},{name:'1 fill 2 techs',reg:500,fills:1,clerks:2,techs:2,win:2}];
+for(const sc of scen){const ctx=await b.newContext({viewport:{width:932,height:430}});await ctx.addInitScript(()=>{let x=99;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};});const pg=await ctx.newPage();
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(250);
+const r=await pg.evaluate((sc)=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);if(sc.win>1){P('dropoff',2,4);}P('bin',2,1);P('fill',5,1);if(sc.fills>1)P('fill',6,2,0);P('verify',8,1);P('shelf',11,1);P('shelf',14,1);P('chair',4,7);P('chair',5,7);P('restroom',12,9,0);a.hire('tech');a.hire('clerk');for(let i=1;i<(sc.clerks||1);i++)a.hire('clerk');for(let i=1;i<(sc.techs||1);i++)a.hire('tech');a.setBuild(false);S.reg=sc.reg;
+ a.startWeek();a.setSpeed(0);while(S.running){for(let f=0;f<12;f++)a.motion(.016);a.tick();}const h=S.hist[S.hist.length-1];return {qw:h.qw,served:h.served,lost:h.lost,lw:h.lw,objs:S.objs.filter(o=>['dropoff','fill'].includes(o.type)).length};},sc);
+console.log(sc.name.padEnd(22),JSON.stringify(r));await ctx.close();}
+await b.close();})();

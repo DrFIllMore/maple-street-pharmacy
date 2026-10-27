@@ -1,5 +1,41 @@
 # Changelog
 
+## v24.40 · 2026-10-27 — Truth audit: what the game says now matches what happens
+An independent review of every message, label and piece of advice, plus measured checks in simulation.
+
+**Advice that sent players the wrong way**
+- **Hire preview rebuilt around the real bottleneck.** The game now tracks where customers spend the most time waiting: windows (clerks), the bin (techs / fill stations), the check (pharmacist). Only the bottleneck role can get "pays for itself". If every station of that kind already has someone, it says build or upgrade the station instead. Checked with same-seed A/B runs:
+  - Before: the preview said a clerk "pays for itself" when the hire actually lost money; and "nowhere to work" for a tech who did help a little.
+  - Now: every role the preview calls "not the bottleneck" added ~0 scripts when hired. The one "pays" case (clerk when windows were the jam) added +12 a week, about break-even. The estimate was tightened to match and the verdict reads "about breaks even" in that range.
+- **Walk-outs say what people were waiting on:** "waiting for the fill", "waiting for the check", "will-call full", "waiting on a claim", "out of stock", "needing the restroom". Feed posts, promises and District Manager advice follow the real cause.
+- District Manager says "build another fill station" only when there are more techs than stations.
+- Station cards: "OVERUSED · add a clerk / hire a tech / barcode scanner / build another", depending on what actually relieves it. A backed-up basket bin says "fills are the jam" (bins have no capacity, so building another doesn't help).
+- Flow: "Baskets in the bin" suggests a fill station when every station has a tech. "Waiting for your check" says when will-call is full.
+- Advisors no longer suggest items that aren't unlocked yet.
+
+**Wrong numbers**
+- **Anti-fatigue mats did nothing:** they were checked one tile off. They work now.
+- Insurer payment time showed old "weeks" values (SilverPlan "3 wks"). It now shows the real 7 / 12 / 4 days after the sale.
+- The Proposals Saturday forecast used generics only at full price. It now uses the real order cost (all lines, discount included), same as the Stock slip.
+- The Gazette money column now adds up to Week net: it uses the wages actually paid, shows the delivery driver, and drops "stock stolen" (stock, not cash). The Saturday chat line lists every bill.
+- Price hint: a small discount (under $6 below fair) now says it doesn't bring more customers (it didn't).
+- Staff tab energy text matches the rules (busy ≈ −30, quiet ≈ −20, night +23, day off +45 more, Sunday +20).
+- Claims: appeal success shows 60% (70% at a problem desk). Problem desk text says a clerk or pharmacist works it.
+- Case manager: chairs advice now says seated customers wait ~40% longer (it said twice as long, by the pick-up line). The loyalty-card follow-up names where people actually walked out.
+- Promote: only a paper ad or price-match slows the chain (it said any ad).
+- Gazette "Customers a day" is now "Expected a day" (it's a forecast).
+
+**Rules that didn't match their text**
+- BlueLeaf "walks for a month" was permanent. They now come back after 4 weeks and can't be re-signed early.
+- People still in the drop-off line at closing used to vanish with their prescription. Now it's filled tomorrow and they come back for it.
+- Past days in the shift grid could be switched off to dodge wages already earned. They're locked now; today is locked for regular staff (day cover can still be booked).
+- A one-week promo bought mid-week ran out that Saturday. It now runs the paid week after.
+- The bulk-order offer could cut short a longer discount you'd already paid for.
+
+**Measured and correct:** Saturday forecast within 4% of actual, "Expected a day" within 3% of arrivals, hourly chat totals equal the week counters, walk-out labels match the customer's real state, idle reasons are true when shown. Cash reconciles every week. 56/56 test scripts pass.
+
+**Playtest (20 weeks, 3 games each):** plays-like-a-person 3/3 (weeks 9–10), reactive 3/3, best play 3/3, builder 2/3, careful 2/3 (slower: weeks 16–19), naive and marketer lose.
+
 ## v24.39 · 2026-10-27 — Walk-outs blamed on the wrong place
 - **Bug:** customers who had already handed in their prescription and were sitting down waiting for it were reported as giving up "at drop-off". The Gazette, the District Manager ("build a second drop-off window") and the hire preview ("hire a clerk") then all pointed at the wrong fix. They now say **waiting for the fill**.
 - When fills are the jam and you already have as many techs as fill stations, the advice is to **build another fill station** instead of hiring.
