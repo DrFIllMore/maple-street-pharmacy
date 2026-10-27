@@ -40,7 +40,6 @@
 .hb{display:flex;align-items:center;gap:3px;min-width:0}.hb .hrt{font-size:10px;line-height:1;flex:none;font-family:system-ui,sans-serif}.hb .mb{flex:1}
 .kv .batt{flex:1;max-width:120px}.kv .hb{flex:1;max-width:120px}
 .batt.mo::after{display:none}.tm .em b .hrt{font-size:.85em;margin-right:1px;font-family:system-ui,sans-serif}.tm .em{grid-template-columns:1fr 36px}
-.bar .fitx{display:none!important}
 .esum{font-size:.84em;background:rgba(0,0,0,.035);border-radius:8px;padding:5px 8px;margin:2px 0 6px}
 .eq{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(36px,1fr) 34px 52px 56px 78px;gap:6px;align-items:center;padding:3px 0;border-bottom:1px dashed var(--line);font-size:.84em}
 .eq.hd span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eq.hd{padding:6px 0 2px;border-bottom:1px solid var(--line);font-size:.66em;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:800}
@@ -59,6 +58,8 @@
 .gzcard{border:1px solid #cfc2a5;border-radius:6px;background:#f6efdf;padding:4px 8px;display:grid;gap:1px}.gzm{font-family:Georgia,serif;font-size:.72em;letter-spacing:.06em;text-transform:uppercase;color:#5b554c;border-bottom:1px solid #cfc2a5;padding-bottom:1px}.gzh{font-family:Georgia,serif;font-weight:700;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pa{display:flex;justify-content:center;align-items:center;align-self:center}.pa .rp{min-width:80px;height:28px;padding:0 10px;border-radius:15px;border:1px solid var(--line);background:#fff;font-size:.9em;font-weight:800}.pa .replied{color:var(--accent-ink);font-weight:900;font-size:.9em;text-align:right}.pa .replied.neg{color:var(--bad)}
 .igav.e{background:#efe6d2;font-size:14px}.igav.p{background:#e4ecf4;overflow:hidden}.igh .ptag{margin-left:2px}.igh .lk{margin-left:auto;color:var(--ink-2);font-weight:700;font-size:.9em;white-space:nowrap}.igh b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ig.igbig img{height:190px;object-fit:cover}
+.bar .st{flex:none}.bar .w3{width:2.9em}.bar .w4{width:4em}.bar .w6{width:4.6em}.bar .w7{width:5.9em}.bar .w8{width:6.6em}.bar .st b,.bar .st small{overflow:hidden;text-overflow:ellipsis}/* fixed slots: values change, the layout never moves */.bar .st b{white-space:nowrap;font-variant-numeric:tabular-nums}.bar .st small{white-space:nowrap}.bar .st b.warn{color:#b8730f}.bar .chip{text-align:left;align-items:flex-start}
+.app.rot .bar{gap:calc(8px*var(--k));padding-left:9px}.app.rot .goal .trk{width:calc(64px*var(--k))}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -272,18 +273,17 @@ button,.hud{touch-action:manipulation}
 <div class="app" id="app">
   <canvas id="cv"></canvas>
   <div class="hud bar" id="bar">
-    <span class="st when"><small id="wkL">Week 1</small><b id="wkT">building</b></span>
-    <span class="st"><small>Rx today</small><b id="rxT">0</b></span>
-    <span class="st"><small>In store</small><b id="inT">0</b></span>
-    <span class="st"><small>Rx week</small><b id="rxW">0</b></span>
+    <span class="st when w8"><small id="wkL">Week 1</small><b id="wkT">building</b></span>
+    <span class="st w4"><small>Rx day</small><b id="rxT">—</b></span>
+    <span class="st w4"><small>In store</small><b id="inT">—</b></span>
+    <span class="st w4"><small>Rx week</small><b id="rxW">—</b></span>
     <span class="sp"></span>
-    <span class="st"><small>Cash</small><b id="cash"></b></span>
-    <span class="st"><small>Insurers owe</small><b id="owed" class="owed"></b></span>
-    <span class="st" id="wnetSt"><small>Week est.</small><b id="wnet"></b></span>
-    <span class="st" id="runSt"><small>Runway</small><b id="runway"></b></span>
-    <span class="st"><small>Trust</small><b id="trust"></b></span>
-    <button class="st chip" id="stChip" aria-label="Staff"><small>Staff</small><b id="stChipV">ok</b></button>
-    <button class="st chip" id="prChip" aria-label="In the news" hidden><small>📰 News</small><b id="prChipV"></b></button>
+    <span class="st w7"><small>Cash</small><b id="cash"></b></span>
+    <span class="st w7"><small>Insurers</small><b id="owed" class="owed"></b></span>
+    <span class="st w7" id="satSt"><small>Saturday</small><b id="sat">—</b></span>
+    <span class="st w3"><small>Trust</small><b id="trust"></b></span>
+    <button class="st chip w6" id="stChip" aria-label="Staff"><small>Staff</small><b id="stChipV">ok</b></button>
+    <button class="st chip w4" id="prChip" aria-label="In the news"><small>News</small><b id="prChipV">—</b></button>
     <span class="st goal" id="goalSt"><small>Goal</small><span class="trk"><i id="goalI"></i></span></span>
     <button class="bb" id="menuBtn" aria-label="Menu">⋯</button>
   </div>
@@ -341,7 +341,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.20 · 2026-10-26';
+const BUILD='v24.21 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1201,7 +1201,7 @@ function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedul
   if(officeTab==='flow')body=flowHtml();
   if(officeTab==='metrics'){const last=ds[ds.length-1]||{};const u=last.util||{};
     const dueNow=dueThisWeek(),dueNext=dueNextWeek(),dueLater=owedTotal()*(1-.06)-dueNow-dueNext;
-    const interest=Math.round(S.loan*LOAN_RATE);const bills=wages()+S.rent+Math.min(LOAN_PAY,S.loan)+interest+(S.mods.delivery?60:0);
+    const interest=Math.round(S.loan*LOAN_RATE);const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+Math.min(LOAN_PAY,S.loan)+(S.mods.delivery?60:0);/* interest is added to the loan, not paid in cash */
     const frac=S.running?Math.max(.1,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK)):0;const counterSoFar=S.wk.cashIn;const counterRest=S.running?Math.round(counterSoFar/frac-counterSoFar):Math.round((S.hist.length?S.hist[S.hist.length-1].inflow-(S.hist[S.hist.length-1].paid||0):2000)*0);
     const sat=S.cash+counterRest+dueNow-bills;
     const verdict=sat<-OVERDRAFT?`<span class="verdict bad">Saturday you'd be past the overdraft. Take cash claims, cut a shift, or delay the drug order.</span>`:sat<0?`<span class="verdict bad">Saturday you'd be overdrawn by ${fmt(-sat)}. The bank allows ${fmt(OVERDRAFT)}, but it's thin.</span>`:sat<2000?`<span class="verdict">Saturday you'd have about ${fmt(sat)}. Tight — don't buy anything big this week.</span>`:`<span class="verdict good">Saturday you'd have about ${fmt(sat)}. Room to invest or pay down the loan.</span>`;
@@ -1311,6 +1311,8 @@ function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;S.wk.maxTr
   const conf=S.patients.filter(p=>p.conf>0).length;if(conf>=2)glog('bad',`${conf} people can't find their way in.`,'conf',24);
   const idleW=S.staff.filter(w=>!w.plan&&!w.off);if(idleW.length>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idleW.map(w=>w.name).join(', ')} have nothing to do right now.`,'idle',36);
   if(owedTotal()>S.cash*1.5&&owedTotal()>2500)glog('ops',`Insurers owe you ${fmt(owedTotal())}; you have ${fmt(S.cash)}.`,'owed',72);}
+/* Saturday cash: what you'd hold after Saturday's bills — cash now + counter sales still to come at this week's pace + insurer checks due by Saturday − wages, rent and the loan payment (drugs were paid Monday; interest goes onto the loan) */
+function satCash(){if(!S.running)return null;const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const rest=Math.max(0,S.wk.cashIn/frac-S.wk.cashIn);const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+Math.min(LOAN_PAY,S.loan)+(S.mods.delivery?60:0);return S.cash+rest+dueThisWeek()-bills;}
 function weekSoFar(){/* projected week net: counter cash on current pace + what insurers pay this Saturday − the week's bills and drugs */const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const counter=S.wk.cashIn/frac;const ins=dueThisWeek();const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+Math.min(LOAN_PAY,S.loan)+(S.wk.bonus||0)+(S.wk.hireFees||0);return counter+ins-bills-S.wk.drug;}/* interest is added to the loan, not paid in cash */
 function runwayWeeks(){const burn=wages()+S.rent+LOAN_PAY+S.orderQty*S.unitCost;const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
 $('menuBtn').onclick=()=>{const m=$('menu');m.hidden=!m.hidden;SFX.click();};
@@ -1319,22 +1321,19 @@ document.querySelectorAll('.sb[data-tab]').forEach(b=>b.onclick=()=>{SFX.click()
 $('mChat').onclick=()=>{L.chatShown=!L.chatShown;$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');applyLayout();renderChat();$('menu').hidden=true;};
 $('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');applyLayout();fitWorld();};
 $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
-$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();openOffice('schedule');};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
+$('mDbg').onclick=()=>{closeAll();$('dbg').hidden=false;renderDbg();};$('stChip').onclick=()=>{SFX.click();openOffice('schedule');};$('prChip').onclick=()=>{SFX.click();sheet(`<h3>In the news</h3>${pressHtml()||'<p class="sub">Nothing about Maple Street in the Gazette right now. Stories run for 3 days and move customers ±10–15%.</p>'}`);};$('mWin').onclick=()=>{closeAll();$('winAdj').hidden=false;winRender();};
 $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 
 /* business value = cash + what the equipment would sell for (half of what went into it). Investing isn't punished by the goal, overbuilding still is */
 function worth(){return S.cash+S.objs.reduce((t,o)=>t+invested(o)/2,0);}
 function goalPct(){return Math.min(1,Math.max(0,Math.min(1,worth()/GOAL_CASH)*.5+(1-Math.min(1,S.loan/LOAN))*.3+Math.min(1,S.trust/GOAL_TRUST)*.2));}
-let fitQ=0;/* keep the top bar on one line: drop the least important readouts until it fits */
-let fitSig='';function fitBar(){fitQ=0;const bar=$('bar');if(!bar)return;const sig=bar.textContent.length+'|'+VW+'|'+[...bar.children].map(e=>e.hidden?0:1).join('');if(sig===fitSig)return;fitSig=sig;const order=[$('runSt'),$('goalSt'),$('wnetSt'),$('inT')&&$('inT').parentElement];for(const e of order)if(e)e.classList.remove('fitx');for(const e of order){if(bar.scrollWidth<=bar.clientWidth+1)break;if(e&&!e.hidden)e.classList.add('fitx');}}
-function renderHud(){if(!fitQ){fitQ=1;requestAnimationFrame(fitBar);}if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();$('wkL').textContent=`Week ${S.week}`;$('wkT').textContent=S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'Closed':'Building';$('rxT').textContent=S.running?`${S.dayServed||0}`:'—';$('rxW').textContent=S.wk.served||0;$('inT').textContent=S.running?S.patients.filter(p=>p.state!=='leaving'&&p.state!=='pending'&&p.x<W+1).length:'—';{const lo=S.staff.reduce((m,w)=>Math.min(m,w.energy??100),100);const n=S.staff.filter(w=>(w.energy??100)<EN.exhausted).length;const c=$('stChip');c.classList.toggle('bad',lo<EN.exhausted);c.classList.toggle('warn',lo>=EN.exhausted&&lo<EN.tired);const sk=S.staff.filter(w=>w.sick>0).length;const up=S.staff.filter(w=>!w.isYou&&!w.floater&&((w.morale??80)<MO.complain||w.notice>0)).length;if(up)c.classList.add('bad');$('stChipV').textContent=up&&!sk?`${up} upset`:sk?`${sk} sick`+(lo<EN.exhausted?` · ${Math.round(lo)}%`:''):lo<EN.exhausted?`${n} low · ${Math.round(lo)}%`:lo<EN.tired?`tired · ${Math.round(lo)}%`:'ok';if(sk)c.classList.add('bad');}{const pc=$('prChip');const on=pressActive();pc.hidden=!on;if(on){pc.classList.toggle('bad',S.press.bad);pc.classList.toggle('good',!S.press.bad);$('prChipV').textContent=S.press.bad?'−15%':'+10%';}}
+function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();$('wkL').textContent=`Week ${S.week}`;$('wkT').textContent=S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'Closed':'Building';$('rxT').textContent=S.running?`${S.dayServed||0}`:'—';$('rxW').textContent=S.running?(S.wk.served||0):'—';$('inT').textContent=S.running?S.patients.filter(p=>p.state!=='leaving'&&p.state!=='pending'&&p.x<W+1).length:'—';{const lo=S.staff.reduce((m,w)=>Math.min(m,w.energy??100),100);const n=S.staff.filter(w=>(w.energy??100)<EN.exhausted).length;const c=$('stChip');c.classList.toggle('bad',lo<EN.exhausted);c.classList.toggle('warn',lo>=EN.exhausted&&lo<EN.tired);const sk=S.staff.filter(w=>w.sick>0).length;const up=S.staff.filter(w=>!w.isYou&&!w.floater&&((w.morale??80)<MO.complain||w.notice>0)).length;if(up)c.classList.add('bad');$('stChipV').textContent=sk?`${sk} sick`:up?`${up} upset`:lo<EN.exhausted?`${n} low`:lo<EN.tired?'tired':'ok';if(sk)c.classList.add('bad');}{const pc=$('prChip');const on=pressActive();pc.classList.toggle('bad',on&&S.press.bad);pc.classList.toggle('good',on&&!S.press.bad);$('prChipV').textContent=on?(S.press.bad?'−15%':'+10%'):'—';}
   const sk=`${S.running}|${S.speed}|${S.opened}`;if(sk!==spdKey){spdKey=sk;$('spd').innerHTML=S.running?[[0,'❚❚'],[1,'▶'],[3,'▶▶']].map(([n,g])=>`<button class="spd ${S.speed===n?'on':''}" data-s="${n}" aria-label="speed ${n}">${g}</button>`).join(''):`<button class="spd on" id="goBtn" aria-label="Continue">▶</button>`;
   $('spd').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.speedSet=true;setSpeed(+b.dataset.s);SFX.click();});const gb=$('goBtn');if(gb)gb.onclick=()=>{SFX.click();if(!S.opened){setBuild(true);showChecklist();}else resumeReview();};}
   {const rs=$('resume');const show=S.opened&&!S.running&&!S.done&&S.stage&&$('review').hidden&&$('title').hidden;rs.hidden=!show;if(show){const st=STAGES[S.stage]||STAGES.review;rs.textContent=`▶ Continue week review · ${st[0]} ${st[1]} of 5`;rs.onclick=()=>{SFX.click();resumeReview();};}}
-  $('goalI').style.width=Math.round(goalPct()*100)+'%';$('goalSt').hidden=VW<700;
-  $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());{const nxt=dueThisWeek();const lab=$('owed').previousElementSibling;if(lab)lab.textContent=VW>=760&&owedTotal()>0?`Insurers owe · ${fmt(Math.round(nxt))} this wk`:'Insurers owe';}$('trust').textContent=Math.round(S.trust);
-  const ws=weekSoFar();$('wnet').textContent=(ws>=0?'+':'')+fmt(ws);$('wnet').className=ws<0?'neg':'pos';$('wnetSt').hidden=!S.running;
-  const rw=runwayWeeks();$('runway').textContent=rw===Infinity||rw>52?'ok':Math.round(rw*10)/10+'w';$('runway').className=rw<2?'neg':'';$('runSt').hidden=VW<860||!S.opened;$('wnetSt').hidden=!S.running||VW<760;
+  $('goalI').style.width=Math.round(goalPct()*100)+'%';
+  $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());$('trust').textContent=Math.round(S.trust);
+  {const sc=satCash();const e=$('sat');if(sc===null){e.textContent='—';e.className='';}else{e.textContent='≈'+(Math.abs(sc)>=10000?(sc<0?'−':'')+'$'+(Math.abs(sc)/1000).toFixed(1)+'k':fmt(Math.round(sc/10)*10));e.className=sc<0?'neg':sc<2000?'warn':'';}}
   const oc=S.claims.filter(c=>c.status==='open').length;$('claimsN').hidden=!oc;$('claimsN').textContent=oc;$('feedN').hidden=!(S.feed&&!S.feed.seen);$('inboxN').hidden=!(S.inbox&&!S.inbox.seen);}
 
 
