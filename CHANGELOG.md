@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.25 · 2026-10-27 — Busy stations can be opened (and upgraded)
+- Tapping a station a worker is standing at opened the worker instead (people were always checked first, and a worker's tap area covers the station), so the fill station, verify terminal and register — the three upgradable items — were nearly impossible to open during the week. Now whichever is closer to your finger wins: tap the station top for the station card (with ⬆ upgrade), tap the person for the worker.
+- The worker card shows **At: Fill station · Counting tray ›** — one tap to the station they're working.
+- Item card buttons wrap instead of running off the card on phones (Sell was cut off next to a long upgrade name).
+- Reminder: all upgrades are also listed under Supplies › Upgrades.
+
 ## v24.24 · 2026-10-27 — Two pharmacists, one fill station
 Measured with test/rph2.js and test/rph3.js (a week each: 2 pharmacists + tech, 2 pharmacists no tech, 2 pharmacists + tech + 2 fill stations, floater no tech).
 - Pharmacists could still take the fill station from the tech: a tech carrying a finished batch to the verify tray releases the station, and a pharmacist slipped in (tech then idle ~50% of the week). Now every on-shift tech keeps a station reserved until they're back on it; a pharmacist fills only on a station no tech needs, or takes one batch when the tech is away on deliveries/phones and 4+ baskets are waiting. Result: the tech is never idle while baskets wait.
