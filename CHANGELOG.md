@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.34 · 2026-10-27 — Gazette: build news strip
+- "New in Build" moved out of the cramped box under Around town to a full-width strip under the three columns. It lists each new item with its two-to-five-word tag (e.g. **Phone desk** Takes phone-in Rx · **Plant** People like plants) instead of a paragraph. The full explanation stays in the chat and on the item in Build.
+- The same strip carries the week's one-liner when nothing unlocked: neighborhood news, claims written off, lines, or the classifieds.
+
 ## v24.33 · 2026-10-27 — A store that grows, and staff tools to keep up
 **Customers grow week to week (regular patients)**
 - Customers a day = new walk-ins + regulars due for a refill. You start with 140 regulars, and each comes back about every 4 weeks.
