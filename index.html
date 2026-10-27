@@ -347,7 +347,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.23 · 2026-10-27';
+const BUILD='v24.24 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -559,8 +559,13 @@ function jobEscort(w,p){p.escort=w.id;const t=p.state==='inBack'?[Math.floor(p.x
 /* ============ jobs ============ */
 const PRI={clerk:['pickup','intake','receive','phone','restock','problem'],tech:['receive','fill','restock','phone'],rph:['verify','consult','problem','pickup','intake','phone','fill']};
 /* the pharmacist fills only when every check and consult is done, the lines are slow, and a fill station is free that no on-shift tech needs */
-function rphMayFill(lineN){if(lineN>1)return false;if(S.scripts.some(x=>(x.stage==='tray'||x.stage==='problem')&&!x.claimed))return false;if(S.patients.some(p=>p.kind==='consult'&&p.state==='atRoom'))return false;const ts=S.staff.filter(x=>x.role==='tech'&&onShift(x)&&!S.closedToday&&!(x.sick>0));const stations=objsOf('fill').filter(o=>passS(...staffTile(o))).length;if(stations>ts.length)return true;
-  /* one station, tech busy elsewhere, baskets backing up: help with a batch (multi-tasking), never while a tech stands free */const backlog=S.scripts.filter(x=>x.stage==='bin'&&!x.claimed).length;return backlog>=4&&ts.every(x=>x.plan&&x.plan.name!=='fill'?true:!!x.plan);}
+function rphMayFill(lineN){/* blocked only by work this pharmacist could actually do right now */
+  const canCheck=S.scripts.some(x=>(x.stage==='tray'||x.stage==='problem')&&!x.claimed)&&objsOf('verify').some(o=>!busyS[o.id]&&passS(...staffTile(o)));if(canCheck)return false;
+  if(S.patients.some(p=>p.kind==='consult'&&p.state==='atRoom'&&!busyS[p.room]))return false;
+  if(lineN>1&&[...objsOf('dropoff'),...objsOf('register')].some(o=>!busyS[o.id]&&passS(...staffTile(o))&&S.patients.some(p=>p.q===o.id&&p.state==='queued')))return false;
+  /* keep a fill station for every tech on shift who isn't already on one */const holding=new Set(objsOf('fill').map(o=>busyS[o.id]).filter(Boolean));const techs=S.staff.filter(x=>x.role==='tech'&&onShift(x)&&!S.closedToday&&!(x.sick>0));const techsWaiting=techs.filter(x=>!holding.has(x.id)).length;/* a tech walking a finished batch to the tray still needs a station when they come back */
+  const free=objsOf('fill').filter(o=>!busyS[o.id]&&passS(...staffTile(o))).length;if(free>techsWaiting)return true;
+  /* the tech is busy elsewhere (deliveries, phones) and baskets are piling up: take one batch */const techsAway=techs.length>0&&techs.every(x=>x.plan&&x.plan.name!=='fill');return free>0&&techsAway&&S.scripts.filter(x=>x.stage==='bin'&&!x.claimed).length>=4;}
 const busyS={};const dist=(a,b)=>Math.hypot(a[0]+.5-b.x,a[1]+.5-b.y);
 function freeObj(type,w){return objsOf(type).filter(o=>!busyS[o.id]&&passS(...staffTile(o))).sort((a,b)=>dist(staffTile(a),w)-dist(staffTile(b),w))[0];}
 const CORE={clerk:['pickup','intake','phone'],tech:['fill'],rph:['verify','consult','problem']};
@@ -1100,7 +1105,7 @@ function staffingNote(o){/* one worker per station: who is on it, and whether so
 function idleWhy(w){const can=o=>passS(...staffTile(o));
   if(w.role==='tech'){const fs=objsOf('fill');if(!fs.length)return 'no fill station to work at';if(!fs.some(can))return 'can\'t reach the fill station — something blocks the staff side';if(!objsOf('verify').some(can))return 'no verify terminal the fills can go to';if(!S.scripts.some(x=>x.stage==='bin'&&!x.claimed))return 'nothing in the bin to fill right now';if(fs.every(o=>busyS[o.id]))return `waiting — ${fs.length>1?'every fill station is':'the only fill station is'} taken${fs.length>1?'':' · a second one would keep this tech busy'}`;return 'between tasks';}
   if(w.role==='clerk'){const ws=[...objsOf('dropoff'),...objsOf('register')];if(!ws.some(can))return 'can\'t get behind a window';if(!S.patients.some(p=>p.state==='queued'))return 'no one in line right now';if(ws.every(o=>busyS[o.id]))return 'waiting — every window is taken';return 'between tasks';}
-  if(w.role==='rph'){if(!objsOf('verify').some(can))return 'can\'t reach the verify terminal';if(S.scripts.some(x=>x.stage==='tray'&&!x.claimed)&&objsOf('shelf').length&&!shelfFor())return 'waiting — will-call is full';if(!S.scripts.some(x=>x.stage==='tray'&&!x.claimed))return 'nothing to check right now';return 'between tasks';}return 'nothing to do';}
+  if(w.role==='rph'){if(!objsOf('verify').some(can))return 'can\'t reach the verify terminal';if(S.scripts.some(x=>x.stage==='tray'&&!x.claimed)&&objsOf('shelf').length&&!shelfFor())return 'waiting — will-call is full';if(S.scripts.some(x=>x.stage==='tray'&&!x.claimed)&&objsOf('verify').every(o=>busyS[o.id]))return 'waiting — the verify terminal is taken · a second one lets two pharmacists check';if(S.scripts.some(x=>x.stage==='bin'&&!x.claimed)&&objsOf('fill').every(o=>busyS[o.id]))return 'waiting — every fill station is taken · another station lets the pharmacist help fill';if(!S.scripts.some(x=>x.stage==='tray'&&!x.claimed))return 'nothing to check right now';return 'between tasks';}return 'nothing to do';}
 function openWorker(w){S.sel=null;SFX.click();const [md,mj]=workerMood(w);const task=w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle · '+idleWhy(w);const tmr=(S.sched[w.id]||['F','F','F','F','F','F'])[(S.day+1)%6];
   sheet(`<h3><span class="pp" style="margin-right:8px">${staffPortrait(w,46)}</span>${w.name} <small>${roleName(w)}${w.isYou?' · owner':''} · ${mj}</small></h3><div class="kv"><div><span>Energy</span>${energyBar(w)}<b>${energyPct(w)}%</b></div>${w.isYou||w.floater?'':`<div><span>Morale</span>${moraleBar(w)}<b>♥ ${Math.round(w.morale??80)}</b></div>`}<div><span>Mood</span><b>${md}</b></div><div><span>Wage</span><b>${w.isYou?'—':w.floater?fmt(FLOAT_DAY)+'/day':fmt(wageOf(w))+'/wk'+(w.raise?' · raised':'')}</b></div>${w.isYou||w.floater?'':`<div><span>Experience</span><b>${w.tenure||0} wk · +${Math.round(expBonus(w)*100)}% speed</b></div>`}<div><span>Now</span><b>${task}</b></div></div>
     <div class="acts"><button id="dayoff" ${tmr==='O'?'disabled':''}>${tmr==='O'?'Off tomorrow':'Day off tomorrow'}</button><button id="shifts">Shifts</button>${w.isYou||w.floater?'':`<button id="bonus" ${S.cash<BONUS?'disabled':''}>Bonus ${fmt(BONUS)}</button><button id="raise">Raise +10%</button>`}${w.isYou?'':'<button id="fire" class="danger">Let go</button>'}</div>`);

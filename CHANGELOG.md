@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.24 · 2026-10-27 — Two pharmacists, one fill station
+Measured with test/rph2.js and test/rph3.js (a week each: 2 pharmacists + tech, 2 pharmacists no tech, 2 pharmacists + tech + 2 fill stations, floater no tech).
+- Pharmacists could still take the fill station from the tech: a tech carrying a finished batch to the verify tray releases the station, and a pharmacist slipped in (tech then idle ~50% of the week). Now every on-shift tech keeps a station reserved until they're back on it; a pharmacist fills only on a station no tech needs, or takes one batch when the tech is away on deliveries/phones and 4+ baskets are waiting. Result: the tech is never idle while baskets wait.
+- A pharmacist is held back from filling only by work they could actually do right now (a free verify terminal with checks waiting, a free consult desk with a patient, a free window with a line). Before, checks waiting for the *other* pharmacist's terminal kept the second pharmacist idle.
+- When a pharmacist stands idle the reason now says what's missing: "every fill station is taken · another station lets the pharmacist help fill" or "the verify terminal is taken · a second one lets two pharmacists check".
+
 ## v24.23 · 2026-10-27 — This week's money
 - Tap **Saturday** in the top bar for the week's money: Cash now → Saturday night, then a table with **So far / To come / Week** for Money in (counter sales, insurer checks), Money out (drugs paid Monday, hiring & bonuses, Saturday bills: wages, rent, loan payment) and Net. The Money › Cash tab shows the same table (one shared calculation, `weekMoney()`).
 - Checked: the Saturday figure on Thursday afternoon lands within about $100–300 of the real Saturday-night cash (the gap is sales running faster or slower than the pace so far).
