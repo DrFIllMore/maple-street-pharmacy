@@ -1,0 +1,10 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();const pg=await (await b.newContext({viewport:{width:932,height:430},deviceScaleFactor:2})).newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(400);
+const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;S.cash=20000;const out={};
+ out.signWithoutRoom=a.signContract('vax');S.opened=true;S.unlocked=Object.keys(__msp.TYPES);
+ a.openOffice('inventory');out.suppliesNoRoom=[...document.querySelectorAll('#off .lever')].map(e=>e.textContent).find(t=>/Vaccines/.test(t)).replace(/\s+/g,' ').slice(0,200);out.btnDisabled=document.querySelector('[data-sign="vax"]').disabled;
+ a.place('room',12,7);out.tip=__msp.GL.slice(-2).map(e=>e.text);
+ const d=S.objs.find(o=>o.type==='consult');a.openObj(d);out.cardNoContract=[...document.querySelectorAll('#sheet .kv > div')].map(e=>e.textContent.replace(/\s+/g,' ')).find(t=>/Flu shots/.test(t));
+ out.sign=a.signContract('vax');out.signMsg=__msp.GL.slice(-1)[0].text;a.openObj(d);out.cardWith=[...document.querySelectorAll('#sheet .kv > div')].map(e=>e.textContent.replace(/\s+/g,' ')).find(t=>/Flu shots/.test(t));
+ return out;});
+console.log(JSON.stringify(r,null,1),errs);await b.close();})();

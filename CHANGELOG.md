@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.26 · 2026-10-27 — Flu shots: clear requirements
+- When the consult room unlocks, the Gazette and chat say flu shots need **the consult room and the vaccine contract** (Supplies, $600 with 50 doses), that the pharmacist gives every shot ($40), and that without the contract it's $20 reviews only.
+- Placing a consult room/desk without the contract repeats that once in chat. Signing confirms what happens next (doses in stock, who gives shots, reorder in Supplies).
+- The vaccine contract can't be signed before there's a consult room (it said nothing and the doses sat unused); Supplies says "Needs a consult room first".
+- The consult desk card shows a **Flu shots** row: doses left (red under 10) or "no vaccine contract".
+- Flu season card wording matches the math ("nearly twice as many" = ×1.8) and reminds you to keep a pharmacist free for the room.
+
 ## v24.25 · 2026-10-27 — Busy stations can be opened (and upgraded)
 - Tapping a station a worker is standing at opened the worker instead (people were always checked first, and a worker's tap area covers the station), so the fill station, verify terminal and register — the three upgradable items — were nearly impossible to open during the week. Now whichever is closer to your finger wins: tap the station top for the station card (with ⬆ upgrade), tap the person for the worker.
 - The worker card shows **At: Fill station · Counting tray ›** — one tap to the station they're working.
