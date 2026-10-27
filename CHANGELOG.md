@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.35 · 2026-10-27 — No scrolling on any full-screen page
+- **Intro** rewritten: goal bars in one row of four (Value $16k / $20k, Cash, Loan, Trust) and three short lines (loan, how the bank closes the store, what to build). Was a paragraph plus six facts that needed scrolling.
+- **Every week-review page fits the screen.** Pages now shrink their type a step at a time (to 72% at most) until nothing scrolls, and re-check on rotate/resize. Applies to the Gazette, feed, call, stock, proposals, checklist, bank check and game over.
+- Gazette: dropped "Due next week" (it's in Money) and "Runway" to make room for Regular patients and Customers a day. The feed's big photo shrinks with the page.
+- Foreclosure notice text cut to two short lines.
+- Tested: no page scrolls at iPhone 15 Pro Max (rotated), iPhone SE (rotated), phone in real landscape, or desktop; building every item through the Build bar (incl. mat and break room, and from a save made in v24.32) gave no errors.
+
 ## v24.34 · 2026-10-27 — Gazette: build news strip
 - "New in Build" moved out of the cramped box under Around town to a full-width strip under the three columns. It lists each new item with its two-to-five-word tag (e.g. **Phone desk** Takes phone-in Rx · **Plant** People like plants) instead of a paragraph. The full explanation stays in the chat and on the item in Build.
 - The same strip carries the week's one-liner when nothing unlocked: neighborhood news, claims written off, lines, or the classifieds.
