@@ -369,7 +369,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.35 · 2026-10-27';
+const BUILD='v24.36 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -383,6 +383,8 @@ const PNAMES=['Mrs. Alvarez','Mr. Chen','Tasha','Grandpa Joe','Ms. Okafor','Dere
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const TICKS_DAY=108,DAYS_WEEK=6,TICK_MS=200;
 const HOOD_EV=[{t:'A new apartment block opened on Elm Street. More neighbors walking by.',k:.06},{t:'A family clinic opened two doors down. Its patients need a pharmacy.',k:.08},{t:'The bus line added a Maple Street stop.',k:.05},{t:'The school nurse started sending families your way.',k:.04}];
+/* restroom: chance per 5-min tick that someone waiting needs it; one inside, two can wait at the door */
+const LOO_P={base:.012,old:.02,sick:.04},LOO_LINE=2,LOO_T=4,LOO_T_SICK=7,VOMIT_P=.0025;
 const RTS_DAYS=5,WALK_BASE=17,REG_START=140,REFILL_DAYS=24,REG_CONV_GOOD=.45,REG_CONV_SLOW=.12,REG_CHURN=.015;   /* 5 game minutes per tick */
 
 /* ============ floor & object types ============ */
@@ -403,7 +405,7 @@ const TYPES={
   room:{short:'Private consult room, ready-made',name:'Consult room',cost:2500,w:4,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk walled in with two doors: customers come in at the front, the pharmacist through a staff-only door at the back. Private from day one, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
   consult:{short:'Shots & reviews · wall it in',name:'Consult desk',cost:1500,w:2,d:1,block:'all',sides:'both',cat:'station',desc:'Shots and med reviews. After placing, the floor shows where walls and a door go to make it private.'},
   chair:{short:'Waiting lasts longer',name:'Chair',cost:100,w:1,d:1,block:'none',seat:true,cat:'furniture',desc:'Seated people wait longer before giving up. Nobody walks through a chair — leave a path around the seating.'},
-  restroom:{short:'One at a time, unisex',name:'Restroom',cost:900,w:1,d:2,block:'all',sides:'patient',cat:'furniture',desc:'Unisex, one person at a time. Some customers need it while they wait; without one they get restless and a few walk out.'},
+  restroom:{short:'1 inside, 2 can wait',name:'Restroom',cost:900,w:1,d:2,block:'all',sides:'patient',cat:'furniture',desc:'Unisex: one person inside, two can wait at the door. Waiting customers use it and come back more patient. Sick customers go here instead of being sick on the floor. Without one, people get restless and some leave.'},
   otc:{short:'Extra sales on the way out',name:'OTC shelf',cost:900,w:2,d:1,block:'all',sides:'patient',cat:'furniture',desc:'Cold medicine and vitamins. Customers buy on the way out.'},
   medshelf:{short:'Looks the part, +3% customers',name:'Stock shelf',cost:400,w:2,d:1,block:'all',cat:'furniture',desc:'Generics get put away here, and the back room looks like a pharmacy: about 3% more customers.'},
   fridge:{short:'Cold storage for specialty meds',name:'Fridge',cost:1200,w:1,d:1,block:'all',cat:'station',desc:'Keeps specialty medicines. Needed for the specialty contract (Supplies).'},
@@ -448,7 +450,7 @@ function orderCost(){let t=0;for(const k in INV)t+=(S.inv.order[k]||0)*INV[k].un
 function suggestOrder(){const d=demandPerDay();const u=S.inv.used;const o=S.inv.order;o.gen=Math.max(0,Math.round((d*6*1.1-Math.max(0,S.stock-d*2))/25)*25);o.brand=S.contracts.special?Math.max(0,Math.ceil(((u.brand||0)*1.3+3-S.inv.brand)/5)*5):0;o.vax=S.contracts.vax?(S.vaxDoses<25?30:0):0;const shelves=objsOf('otc').length;o.otc=shelves?Math.max(0,Math.ceil(((u.otc||0)*1.2+10-invOn('otc'))/20)*20):0;}
 const blank=()=>({served:0,lost:0,consults:0,otc:0,cashIn:0,drug:0,paid:0,fee:0,trust0:0,phoneMissed:0,backorder:0,writeoff:0,annoyed:0,ev:[],built:[],maxTray:0,intrude:0,theft:0,theftVal:0,escorted:0,looDenied:0,tw:{}});
 /* every trust change goes through here so the week can say why it moved */function dTrust(v,why){S.trust+=v;if(S.wk){S.wk.tw=S.wk.tw||{};S.wk.tw[why]=(S.wk.tw[why]||0)+v;}}
-/* energy: a 0–100 battery per worker, owner included. Drains while at work (more when busy), recovers overnight, on days off and over Sunday *//* capacity: every on-shift tick is filed under one activity area */const ACT_OF={intake:'counter',pickup:'counter',phone:'counter',fill:'fill',receive:'stock',restock:'stock',verify:'check',problem:'check',consult:'consult',escort:'security'};
+/* energy: a 0–100 battery per worker, owner included. Drains while at work (more when busy), recovers overnight, on days off and over Sunday *//* capacity: every on-shift tick is filed under one activity area */const ACT_OF={clean:'counter',intake:'counter',pickup:'counter',phone:'counter',fill:'fill',receive:'stock',restock:'stock',verify:'check',problem:'check',consult:'consult',escort:'security'};
 const ACTS=[['counter','Counter','#1d9e75'],['fill','Fill','#2f7fd6'],['stock','Stock','#7f77dd'],['check','Check','#ef9f27'],['consult','Consult','#d4537e'],['security','Escort','#6b6f76'],['other','Other','#a7a39a'],['idle','Idle','#ddd6c6']];
 const HOME={clerk:['counter'],tech:['fill','stock'],rph:['check','consult']};
 const FLOAT_DAY=400,FLOAT_HALF=220,TEMP_DAY={rph:400,tech:170,clerk:140},PT_DAYS=['F','O','F','O','F','O'],SICK_DAYS=2,SICK_P=.5,HIRE_FEE=300,BONUS=150,BONUS_M=15,RAISE_M=20;const MO={low:50,complain:30,notice:15,back:30};const PRESS_BAD={demand:-.15,trust:-2,morale:-5},PRESS_GOOD={demand:.10,trust:1,morale:5},PRESS_DAYS=3;/* morale 0–100: under 50 slower and sticks to own role · under 30 posts complaints · under 15 gives 3 days' notice */const EN={base:.07,walk:.17,work:.27,night:23,dayOff:45,sunday:20,tired:50,exhausted:25,risk:10};/* per 5-min tick: on shift .07 (≈8/day), on a job (mostly walking) +.20, hands-on at a station +.35. A quiet day (≈55% busy) breaks even with the night; a flat-out day loses ≈7 net, so a bottleneck worker runs empty in 4–5 weeks without a day off */
@@ -603,10 +605,15 @@ function fx(o,text,kind){const t=o.x!==undefined?[o.x+(TYPES[o.type]?((o.rot&1)?
 function freeSeat(p){const taken=new Set(S.patients.map(o=>o.seat));const cs=objsOf('chair').filter(c=>adjReach(c.x,c.y)&&!taken.has(c.id));if(!cs.length)return null;cs.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return cs[0];}
 function seat(p){const c=freeSeat(p);if(c){p.seat=c.id;p.state='toSeat';goTo(p,c.x,c.y);return;}const tiles=[...reach].map(k=>k.split(',').map(Number)).filter(([x,y])=>!grid[y][x].o);const t=tiles.length?pick(tiles):[DOOR.x-1,DOOR.y];p.seat=null;p.state='toSeat';goTo(p,t[0],t[1]);}
 
-function sendBack(p){const pr=p.prev||{};p.escort=null;p.inT=0;if(pr.state==='queued'&&pr.q&&objById(pr.q)){p.q=pr.q;p.qt=Math.floor(p.qt*.5);p.seq=S.sid++;p.state='toQueue';}else{p.state='waiting';seat(p);}p.prev=null;}
+const looLoad=o=>(o.occ?1:0)+S.patients.filter(p=>p.state==='toLoo'&&p.looT===o.id).length;
+/* a sick customer who doesn't make it to a restroom: a mess on the floor until staff clean it */
+function beSick(p){const m={id:uid(),x:Math.round(p.x),y:Math.round(p.y),t:0};S.mess=S.mess||[];S.mess.push(m);S.wk.mess=(S.wk.mess||0)+1;dTrust(-1,'mess on the floor');
+  for(const q of S.patients)if(q!==p&&Math.hypot(q.x-m.x,q.y-m.y)<2.5)q.patience*=.8;SFX.sigh();fx([m.x,m.y],'ugh','bad');
+  glog('bad',`${p.name} was sick on the floor. Staff need to clean it up${objsOf('restroom').length?'':' — a restroom gives sick customers somewhere to go'}.`,'mess',6);}
+function sendBack(p){const pr=p.prev||{};p.escort=null;p.inT=0;if(pr.state==='queued'&&pr.q&&objById(pr.q)){p.q=pr.q;p.qt=Math.floor(p.qt*.5);p.seq=pr.seq??S.sid++;/* back to their own spot in line */p.state='toQueue';}else{p.state='waiting';seat(p);}p.prev=null;}
 function jobEscort(w,p){p.escort=w.id;const t=p.state==='inBack'?[Math.floor(p.x),Math.floor(p.y)]:p.target;return {name:'escort',steps:[{go:t},{work:.6,label:'sending a customer back'},{fn:()=>{if(p.state==='sneak'||p.state==='inBack'){sendBack(p);S.wk.escorted++;glog('ops',`${w.name} sent ${p.name} back to the front.`,'escort',6);}}}]};}
 /* ============ jobs ============ */
-const PRI={clerk:['pickup','intake','receive','phone','restock','problem'],tech:['receive','fill','restock','phone'],rph:['verify','consult','problem','pickup','intake','phone','fill']};
+const PRI={clerk:['clean','pickup','intake','receive','phone','restock','problem'],tech:['receive','clean','fill','restock','phone'],rph:['verify','consult','problem','pickup','intake','phone','fill','clean']};
 /* the pharmacist fills only when every check and consult is done, the lines are slow, and a fill station is free that no on-shift tech needs */
 function rphMayFill(lineN){/* blocked only by work this pharmacist could actually do right now */
   const canCheck=S.scripts.some(x=>(x.stage==='tray'||x.stage==='problem')&&!x.claimed)&&objsOf('verify').some(o=>!busyS[o.id]&&passS(...staffTile(o)));if(canCheck)return false;
@@ -618,10 +625,11 @@ function rphMayFill(lineN){/* blocked only by work this pharmacist could actuall
 const busyS={};const dist=(a,b)=>Math.hypot(a[0]+.5-b.x,a[1]+.5-b.y);
 function freeObj(type,w){return objsOf(type).filter(o=>!busyS[o.id]&&passS(...staffTile(o))).sort((a,b)=>dist(staffTile(a),w)-dist(staffTile(b),w))[0];}
 const CORE={clerk:['pickup','intake','phone'],tech:['fill'],rph:['verify','consult','problem']};
-function findJob(w){let pri=PRI[w.role];if(!w.isYou&&!w.floater&&(w.morale??80)<MO.low)pri=pri.filter(k=>CORE[w.role].includes(k));if(w.role!=='tech'){const qd=objsOf('dropoff').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0),qr=objsOf('register').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0);if(w.role==='clerk')pri=qd>qr?['intake','pickup','receive','phone','restock','problem']:['pickup','intake','receive','phone','restock','problem'];if((qd+qr)>=3&&S.scripts.some(x=>x.stage==='ringing'))pri=pri.filter(k=>k!=='phone');if(w.role==='rph'&&S.staff.some(x=>x.role==='clerk'&&!x.off&&x.x<W&&!x.plan))pri=pri.filter(k=>!['intake','pickup','phone'].includes(k));if(w.role==='rph'&&!rphMayFill(qd+qr))pri=pri.filter(k=>k!=='fill');/* the bench is the tech's: fill only on a station no tech needs, when the lines are slow *//* don't take a clerk's window while a clerk stands idle */}
+function findJob(w){let pri=PRI[w.role];if(!w.isYou&&!w.floater&&(w.morale??80)<MO.low)pri=pri.filter(k=>CORE[w.role].includes(k));if(w.role!=='tech'){const qd=objsOf('dropoff').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0),qr=objsOf('register').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0);if(w.role==='clerk')pri=qd>qr?['clean','intake','pickup','receive','phone','restock','problem']:['clean','pickup','intake','receive','phone','restock','problem'];if((qd+qr)>=3&&S.scripts.some(x=>x.stage==='ringing'))pri=pri.filter(k=>k!=='phone');if(w.role==='rph'&&S.staff.some(x=>x.role==='clerk'&&!x.off&&x.x<W&&!x.plan))pri=pri.filter(k=>!['intake','pickup','phone'].includes(k));if(w.role==='rph'&&!rphMayFill(qd+qr))pri=pri.filter(k=>k!=='fill');/* the bench is the tech's: fill only on a station no tech needs, when the lines are slow *//* don't take a clerk's window while a clerk stands idle */}
   {const sn=S.patients.find(p=>(p.state==='inBack'||(p.state==='sneak'&&p.snT>=3))&&!p.escort);if(sn&&(w.role!=='tech'||!S.staff.some(x=>x.role!=='tech'&&!x.off&&!x.plan)))return jobEscort(w,sn);}
   for(const kind of pri){
     if(kind==='intake'){for(const o of objsOf('dropoff')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.state==='queued'&&x.arrived&&qIndex(x)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&!sc.claimed&&objsOf('bin').length)return jobIntake(w,o,p,sc);}}}
+    if(kind==='clean'){const m=(S.mess||[]).find(m=>!m.claimed&&passS(m.x,m.y));if(m)return jobClean(w,m);}
     if(kind==='receive'){const box=S.inv.recv.find(b=>!b.claimed);const bin=binOf();if(box&&bin&&passS(...staffTile(bin)))return jobReceive(w,box,bin);}
     if(kind==='restock'){const sh=objsOf('otc').find(o=>(o.stock||0)<=OTC_CAP*.3&&!busyS[o.id]&&passS(...patientTile(o)));const bin=binOf();if(sh&&S.inv.otcBack>0&&bin)return jobRestock(w,sh,bin);}
     if(kind==='phone'){const sc=S.scripts.filter(x=>x.stage==='ringing'&&!x.claimed).sort((a,b)=>(b.ring||0)-(a.ring||0))[0];if(sc&&objsOf('bin').length){const o=freeObj('phone',w)||(w.role!=='tech'?freeObj('dropoff',w):null);if(o)return jobPhone(w,o,sc);}}/* a phone desk lets anyone free pick up (techs too); without one, a clerk or the pharmacist takes it at a free drop-off window */
@@ -636,6 +644,7 @@ const binOf=()=>{const bs=objsOf('bin');if(bs.length<2)return bs[0];const r=bs.f
 function jobIntake(w,o,p,sc){claim(w,o,sc);p.state='served';return {name:'intake',steps:[{go:staffTile(o)},{work:1,label:'taking Rx'},{fn:()=>{sc.stage='bin';sc.at='wtray:'+o.id;sc.claimed=null;seat(p);release(o,null);SFX.paper();}}]};}
 function recvDest(line){if(line==='otc')return objsOf('otc').find(o=>(o.stock||0)<OTC_CAP)||objsOf('otc')[0]||null;if(line==='brand')return objsOf('fridge')[0]||null;if(line==='vax')return objsOf('fridge')[0]||objsOf('consult')[0]||null;return objsOf('medshelf')[0]||objsOf('fill')[0]||null;}
 function putAway(line,n){if(line==='gen')S.stock+=n;else if(line==='brand')S.inv.brand+=n;else if(line==='vax')S.vaxDoses+=n;else{let left=n;for(const o of objsOf('otc')){const room=OTC_CAP-(o.stock||0);const put=Math.min(room,left);o.stock=(o.stock||0)+put;left-=put;if(!left)break;}S.inv.otcBack+=left;}}
+function jobClean(w,m){m.claimed=w.id;return {name:'clean',steps:[{go:[m.x,m.y]},{work:1.5,label:'cleaning up'},{fn:()=>{S.mess=(S.mess||[]).filter(x=>x!==m);glog('ops',`${w.name} cleaned up the floor.`,'clean',6);}}]};}
 function jobReceive(w,box,bin){box.claimed=w.id;const dest=recvDest(box.line);const steps=[{go:staffTile(bin)},{work:1,label:'unpacking'},{fn:()=>{w.carry=[{stage:'box'}];w.carryKind='box';}}];
   if(dest){const dt=dest.type==='otc'?patientTile(dest):staffTile(dest);if(dt&&passS(...dt))steps.push({go:dt},{work:1.2,label:'stocking'});}
   steps.push({fn:()=>{w.carry=[];w.carryKind=null;putAway(box.line,box.n);S.inv.recv=S.inv.recv.filter(b=>b!==box);glog('ops',`${w.name} put away ${box.n} ${INV[box.line].n.toLowerCase()}.`,'recv'+box.line,6);}});
@@ -695,7 +704,8 @@ function tick(){
   for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;w.idleT=0;}else{w.idleT=(w.idleT||0)+1;if(w.idleT===24&&!w.isYou&&S.tick>12)glog('staff',`${w.name} has had nothing to do for two hours: ${idleWhy(w)}.`,'idle'+w.id,108);}}else w.idleT=0;
     if(w.plan){const st=w.plan.steps[w.step];if(st&&st.work!==undefined){if(!w.workMax){w.workMax=st.work;w.work=st.work;}const nIn=nInBack;w.work-=nIn?1/(1+.5*nIn):1;if(w.work<=0){w.workMax=0;w.step++;}const o=w.plan.steps.find(s=>s.go)?null:null;util[w.plan.name]=(util[w.plan.name]||0)+1;}}}
   for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14&&!sc.vm){if(objsOf('phone').length){sc.vm=true;S.wk.voicemail=(S.wk.voicemail||0)+1;glog('ops','A call went to voicemail — someone will call back when free.','vm',24);}else{sc.stage='dead';if(sc.reg)regGain(-.3);S.wk.phoneMissed++;dTrust(-.2,'missed calls');glog('bad','Missed a phone-in prescription. A phone desk sends calls to voicemail instead.','missed',12);}}}}
-  for(const o of objsOf('restroom'))if(o.occ&&!S.patients.some(p=>p.id===o.occ&&p.state==='inLoo'))o.occ=null;/* nobody inside → free */
+  for(const o of objsOf('restroom'))if(o.occ&&!S.patients.some(p=>p.id===o.occ&&p.state==='inLoo'))o.occ=null;
+  for(const m of S.mess||[]){m.t++;if(m.t%6===0)dTrust(-.1,'mess on the floor');}/* nobody inside → free */
   /* claims expire */for(const c of S.claims)if(c.status==='open'&&(c.d!==undefined?((S.week-1)*DAYS_WEEK+S.day)-c.d>=3:(S.week*10+S.day)-c.day>=3)){const sc=S.scripts.find(x=>x.id===c.id);if(sc)writeOff(sc,'expired');else c.status='written off';}
   shotTick();
   /* patients */
@@ -705,9 +715,12 @@ function tick(){
     if(p.state==='atRoom'){p.qt++;if(p.qt===3){const o=objById(p.room);if(o&&!staffCanReach(o))glog('bad',`${p.name} is waiting in the consult room but the pharmacist has no way to the desk. Put a staff door in the wall behind it.`,'noreachconsult',60);}if(p.qt>10)leave(p,'annoyed');}
     if(p.state==='pending'){p.delay--;if(p.delay<=0){p.seq=S.sid++;routeViaOtc(p);}}
     if(p.conf>0){p.conf++;if(p.conf>8)leave(p,'confused');}
-    if(!p.loo&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<(p.elderly?.006:.003)){const loo=objsOf('restroom').find(o=>!o.occ&&reach.has(patientTile(o).join(',')));if(loo){p.loo='going';p.prev={state:p.state,q:p.q,seat:p.seat};p.seat=null;p.state='toLoo';p.looT=loo.id;p.looW=0;}else{p.loo='denied';p.patience*=.6;S.wk.looDenied=(S.wk.looDenied||0)+1;if(Math.random()<.3){leave(p,'annoyed');continue;}}}
-    if(p.state==='toLoo'&&p.arrivedLoo){const o=objById(p.looT);if(!o){p.loo='denied';sendBack(p);}else if(o.occ&&o.occ!==p.id){p.looW++;if(p.looW>4){p.loo='denied';p.patience*=.6;S.wk.looDenied=(S.wk.looDenied||0)+1;sendBack(p);}}else{o.occ=p.id;p.state='inLoo';p.inT=0;}}
-    if(p.state==='inLoo'){p.inT++;if(p.inT>=3){const o=objById(p.looT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;o.usesWk=(o.usesWk||0)+1;}p.loo='done';sendBack(p);}}
+    if(!p.loo&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<(p.sick&&!p.relieved?LOO_P.sick:p.elderly?LOO_P.old:LOO_P.base)){const loos=objsOf('restroom').filter(o=>reach.has(patientTile(o).join(',')));
+      if(!loos.length){p.loo='denied';p.patience*=.6;S.wk.looDenied=(S.wk.looDenied||0)+1;if(Math.random()<.3){leave(p,'annoyed');continue;}}
+      else{const [lo,n]=loos.map(o=>[o,looLoad(o)]).sort((a,b)=>a[1]-b[1])[0];if(n<1+LOO_LINE){p.loo='going';p.prev={state:p.state,q:p.q,seat:p.seat,seq:p.seq};p.seat=null;p.state='toLoo';p.looT=lo.id;p.looW=0;}else if((p.looTry=(p.looTry||0)+1)>=3){p.loo='denied';p.patience*=.8;S.wk.looDenied=(S.wk.looDenied||0)+1;}}}
+    if(p.state==='toLoo'&&p.arrivedLoo){const o=objById(p.looT);if(!o){p.loo='denied';sendBack(p);}else if(o.occ&&o.occ!==p.id){p.looW++;if(p.looW>14){p.loo='denied';p.patience*=.8;S.wk.looDenied=(S.wk.looDenied||0)+1;sendBack(p);}}else{o.occ=p.id;p.state='inLoo';p.inT=0;}}
+    if(p.state==='inLoo'){p.inT++;if(p.inT>=(p.sick&&!p.relieved?LOO_T_SICK:LOO_T)){const o=objById(p.looT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;o.usesWk=(o.usesWk||0)+1;}if(p.sick)p.relieved=true;p.patience=Math.min(2,p.patience*1.2);p.loo='done';S.wk.looUsed=(S.wk.looUsed||0)+1;sendBack(p);}}
+    if(p.sick&&!p.relieved&&(p.state==='queued'||p.state==='waiting'||p.state==='toLoo')&&Math.random()<VOMIT_P){p.relieved=true;beSick(p);}
     if(exposed.size&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<.01*(1+exposed.size/6)){p.prev={state:p.state,q:p.q,seat:p.seat};p.seat=null;p.state='sneak';p.snT=0;p.target=pick([...exposed]).split(',').map(Number);p.inT=0;p.escort=null;}
     if(p.state==='sneak')p.snT++;if(p.state==='inBack'){p.inT++;if(p.inT>=2&&Math.random()<(p.escort?.08:.2)){const units=Math.min(S.stock,Math.floor(rnd(4,9)));let val=units*S.unitCost;S.stock-=units;if(S.inv.brand>0&&Math.random()<.3){S.inv.brand--;val+=SPECIAL_COST;}S.wk.theft++;S.wk.theftVal+=val;p.stole=true;p.state='leaving';p.exitMood='content';p.q=null;goTo(p,DOOR.x,DOOR.y);S.wk.ev.push({k:'theft',name:p.name,val});dTrust(-.5,'security');fx([p.x,p.y],'−'+fmt(val)+' stolen','bad');glog('bad',`Someone walked out of the pharmacy area with stock worth ${fmt(val)}.`,'theft',10);SFX.sigh();}}
     const m=moodOf(p);if((m==='annoyed'||m==='angry')&&p.state!=='leaving')S.wk.annoyedTicks=(S.wk.annoyedTicks||0)+1;
@@ -741,7 +754,7 @@ function autoRestPlan(){S.autoOff=(S.autoOff||[]).filter(a=>{if(a.day!==S.day)re
     if(!mates){const cost=TEMP_DAY[w.role];if(S.cash<cost+1500)continue;bookFloater(t,true,w.role);}
     const sc=S.sched[w.id]||(S.sched[w.id]=['F','F','F','F','F','F']);S.autoOff.push({id:w.id,day:t,prev:sc[t]});sc[t]='O';rested.push(w.name+(mates?'':' (cover booked)'));}
   if(rested.length)glog('staff',`Resting tomorrow: ${rested.join(', ')}.`);}
-function endDay(){
+function endDay(){if((S.mess||[]).length){S.mess=[];glog('ops','The night cleaner mopped up what was left on the floor.');}
   const u={};for(const t of ['fill','verify','intake','pickup'])u[t]=Math.min(1,(util[t]||0)/(TICKS_DAY*Math.max(1,t==='fill'?objsOf('fill').length:t==='verify'?objsOf('verify').length:t==='intake'?objsOf('dropoff').length:objsOf('register').length)));for(const k in util)delete util[k];
   const w=S.wk;const dayServed=w.served-(w._ps||0),dayLost=w.lost-(w._pl||0);w._ps=w.served;w._pl=w.lost;
   pressDaily(dayServed,dayLost);S.days.push({w:S.week,d:S.day,served:dayServed,lost:dayLost,cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1),util:u,stock:S.stock,annoyed:w.annoyedTicks||0});w.annoyedTicks=0;if(S.days.length>60)S.days.shift();
@@ -832,7 +845,7 @@ function flowHtml(){const cnt=f=>S.scripts.filter(f).length;const pat=f=>S.patie
     {l:'Bags on the shelf',n:cnt(x=>x.stage==='shelf'),cap:16*Math.max(1,shelves.length),who:`${shelves.length} shel${shelves.length===1?'f':'ves'}`,fix:'a second will-call shelf'},
     {l:'Pick-up line',n:inQ('register'),cap:Math.max(1,regs.length)*4,who:`${regs.length} register${regs.length!==1?'s':''}${waiting('register','clerk')}`,fix:'another register'},
     {l:'Delivery to put away',n:S.inv.recv.length,cap:4,who:S.inv.recv.length?S.inv.recv.map(b=>INV[b.line].n.toLowerCase()).join(', '):'nothing waiting',fix:'a free tech or clerk'},
-    {l:'Restroom',n:pat(p=>p.state==='toLoo'||p.state==='inLoo'),cap:Math.max(1,objsOf('restroom').length),who:objsOf('restroom').length?`${objsOf('restroom').length} unisex`:`none · ${S.wk.looDenied||0} went without this week`,fix:'a restroom'},
+    {l:'Restroom',n:pat(p=>p.state==='toLoo'||p.state==='inLoo'),cap:Math.max(1,objsOf('restroom').length*(1+LOO_LINE)),who:objsOf('restroom').length?`${objsOf('restroom').length} · 1 inside + ${LOO_LINE} waiting each`:`none · ${S.wk.looDenied||0} went without this week`,fix:'a restroom'},
     {l:'Sitting & waiting',n:pat(p=>p.state==='waiting'||p.state==='toSeat'),cap:Math.max(1,chairs.length),who:`${chairs.length} chair${chairs.length!==1?'s':''}`,fix:'more chairs'}];
   const jam=rows.filter(r=>r.n/r.cap>=.85);
   return `<h2>Flow <small>live · where scripts are right now</small></h2>
@@ -1683,6 +1696,7 @@ function drawScene(){
   if(buildOn&&tool&&tool!=='erase'&&gpos){const ty=tool==='move'?held.o.type:tool;const T=TYPES[ty];let gx=gpos[0];if(((rot&1)?T.d:T.w)>1&&gx===W-1)gx--;const o={type:ty,x:gx,y:gpos[1],rot,id:'ghost',level:held?held.o.level:0};const ok=!canPlace(ty,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');ghost={o,ok};}
   if(buildOn){for(let x=0;x<W;x++)for(let y=0;y<D;y++){if(grid[y][x].o)continue;const [sx,sy]=iso(x+.5,y+.5);ctx.fillStyle='rgba(0,0,0,.08)';ctx.beginPath();ctx.arc(sx,sy,1.2*z,0,Math.PI*2);ctx.fill();}}
   const items=[];
+  for(const m of S.mess||[])items.push({d:-1e9+1,f:()=>{const [mx,my]=iso(m.x+.5,m.y+.5);const zz=Z();ctx.fillStyle='rgba(150,170,60,.85)';ctx.beginPath();ctx.ellipse(mx,my,13*zz,6*zz,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(120,140,40,.9)';ctx.beginPath();ctx.ellipse(mx+6*zz,my+2*zz,6*zz,3*zz,0,0,Math.PI*2);ctx.fill();}});
   for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;items.push({d:o.type==='mat'?-1e9:Math.max(...footprint(o).map(([x,y])=>depth(x+.5,y+.5))),f:()=>drawObj(o)});}
   for(const w of S.staff){if(w.off||w.x>=W+1)continue;const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
     const cue=S.running&&!st&&(w.idleT||0)>=6?(idleWhy(w).startsWith('waiting')?'wait':'idle'):null;const eb=enBand(w);const wen=w.floater?100:w.energy;const wm=eb==='risk'||eb==='empty'?'angry':eb==='exhausted'?'sad':null;items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{cue,role:w.floater&&w.role==='rph'?'float':w.role,mood:wm,energy:wen,shirt:w.role==='tech'?'#2f7fd6':w.role==='clerk'?'#1d9e75':'#9aa3b5',coat:w.floater?'#aeb4bd':w.role==='rph'?'#f6f6f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.carryKind==='box'?'box':(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket')):null,carryN:w.carry.length,prog})});}

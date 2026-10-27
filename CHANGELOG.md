@@ -1,5 +1,14 @@
 # Changelog
 
+## v24.36 · 2026-10-27 — The restroom gets used
+- **Used about 4× as often.** Customers waiting in line or in a chair now go about 10% of visits (was 2–3 a week). Older and sick customers go more often.
+- **Capacity:** one person inside, two can wait at the door. If it's full they try again later; after three tries they give up and get less patient. More restrooms spread the load.
+- **It helps the wait:** coming back from the restroom makes a customer 20% more patient, and they return to their own spot in line (they used to go to the back).
+- **Sick customers:** about 1 in 6 customers is sick. A sick customer stays in the restroom longer. If they don't make it there, they're sick on the floor. That costs 1 trust right away and a little more every half hour until it's cleaned. Customers nearby get less patient.
+- **Cleaning:** clerks clean up first, before the windows; techs after putting deliveries away; the pharmacist only when idle. Anything left is mopped overnight.
+- Flow shows the restroom as "1 inside + 2 waiting". The item card text explains it.
+- Sim: with a restroom, 10–12 uses a week, 0–1 messes, nobody lost. Without one, 16–18 people a week have nowhere to go and 5–8 leave.
+
 ## v24.35 · 2026-10-27 — No scrolling on any full-screen page
 - **Intro** rewritten: goal bars in one row of four (Value $16k / $20k, Cash, Loan, Trust) and three short lines (loan, how the bank closes the store, what to build). Was a paragraph plus six facts that needed scrolling.
 - **Every week-review page fits the screen.** Pages now shrink their type a step at a time (to 72% at most) until nothing scrolls, and re-check on rotate/resize. Applies to the Gazette, feed, call, stock, proposals, checklist, bank check and game over.
