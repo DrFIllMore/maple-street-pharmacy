@@ -341,7 +341,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.21 · 2026-10-27';
+const BUILD='v24.22 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1333,7 +1333,7 @@ function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&
   {const rs=$('resume');const show=S.opened&&!S.running&&!S.done&&S.stage&&$('review').hidden&&$('title').hidden;rs.hidden=!show;if(show){const st=STAGES[S.stage]||STAGES.review;rs.textContent=`▶ Continue week review · ${st[0]} ${st[1]} of 5`;rs.onclick=()=>{SFX.click();resumeReview();};}}
   $('goalI').style.width=Math.round(goalPct()*100)+'%';
   $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());$('trust').textContent=Math.round(S.trust);
-  {const sc=satCash();const e=$('sat');if(sc===null){e.textContent='—';e.className='';}else{e.textContent='≈'+(Math.abs(sc)>=10000?(sc<0?'−':'')+'$'+(Math.abs(sc)/1000).toFixed(1)+'k':fmt(Math.round(sc/10)*10));e.className=sc<0?'neg':sc<2000?'warn':'';}}
+  {const sc=satCash();const e=$('sat');if(sc===null){e.textContent='—';e.className='';}else{e.textContent=(Math.abs(sc)>=10000?(sc<0?'−':'')+'$'+(Math.abs(sc)/1000).toFixed(1)+'k':fmt(Math.round(sc/10)*10));e.className=sc<0?'neg':sc<2000?'warn':'';}}
   const oc=S.claims.filter(c=>c.status==='open').length;$('claimsN').hidden=!oc;$('claimsN').textContent=oc;$('feedN').hidden=!(S.feed&&!S.feed.seen);$('inboxN').hidden=!(S.inbox&&!S.inbox.seen);}
 
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.22 · 2026-10-27
+- Saturday value shown without the ≈ sign.
+
 ## v24.21 · 2026-10-27 — Steady top bar, clearer money
 - The top bar has fixed slots that never appear, disappear or resize: Week/time · Rx day · In store · Rx week · Cash · Insurers · Saturday · Trust · Staff · News · Goal. Between weeks the live-week slots show "—" instead of last week's numbers; News shows "—" when there's no story; the Staff slot uses short words (ok / tired / 2 low / 1 sick / 1 upset). Measured: one layout through a whole week on 393-, 430-, 932- and 1280-wide screens, nothing cut off.
 - **"Week est." (often a scary −$3,900 on Monday) is replaced by "Saturday ≈ $X"**: the cash you'd hold after Saturday's bills — cash now + counter sales still to come at this week's pace + insurer checks due by Saturday − wages, rent and the loan payment (drugs were paid Monday; interest is added to the loan). Amber under $2,000, red below zero. The Money tab's forecast uses the same math (it also wrongly counted interest as cash).
