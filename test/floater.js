@@ -6,4 +6,4 @@ const r=await pg.evaluate(()=>{const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.
  a.bookFloater(4);out.floatWage2=a.wageOf(f);S.staff[1].energy=18;S.staff[2].sick=2;S.staff[2].off=true;for(let i=0;i<30;i++){for(let k=0;k<12;k++)a.motion(.016);a.tick();}out.chip=document.getElementById('stChipV').textContent;return out;});
 console.log(JSON.stringify(r),errs);
 await pg.evaluate(()=>{__msp.S.staffTab='workers';__msp.api.openOffice('schedule');});await pg.waitForTimeout(300);await pg.screenshot({path:'v241-staff.png'});
-await pg.evaluate(()=>{document.querySelector('[data-stab="shifts"]').click();});await pg.waitForTimeout(200);await pg.screenshot({path:'v241-sched.png'});await b.close();})();
+await pg.evaluate(()=>{});await pg.waitForTimeout(200);await pg.screenshot({path:'v241-sched.png'});await b.close();})();

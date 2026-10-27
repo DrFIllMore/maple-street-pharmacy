@@ -117,7 +117,7 @@ async function runOne(browser,arch,seed){
   const frd=weeks.map(x=>x.firstRemitDay).find(x=>x!==undefined&&x!==null);const firstInsurerMin=frd!==undefined?+(((frd+1)*108*0.2)/60).toFixed(1):null;
   let maxDead=0,last=0;for(const e of notable){if(e.t-last>maxDead)maxDead=e.t-last;last=e.t;}const endT=endWeek*648;if(endT-last>maxDead)maxDead=endT-last;
   const firstPositiveWeek=(weeks.find(x=>x.net>0)||{}).week??null;const minCash=Math.min(...weeks.map(x=>x.cash));
-  let lossWarned=false;if(result==='lose'){const prior=weeks.slice(-3,-1);lossWarned=prior.some(x=>x.advisors.some(m=>m.st==='dis'&&/loan|cash|overdraft|payroll|runway|bank|afford|spend/i.test(m.subject+' '+m.act)));}
+  let lossWarned=false;if(result==='lose'){const prior=weeks.slice(-3,-1);lossWarned=prior.some(x=>x.advisors.some(m=>m.st==='dis'&&/loan|cash|overdraft|payroll|runway|bank|afford|spend|trust|slipping/i.test(m.subject+' '+m.act)));}
   await ctx.close();
   return {arch,seed,result,endWeek,weeks,decisions,minCash,firstPositiveWeek,flow:{firstInsurerMin,maxDeadSec:+(maxDead*0.2).toFixed(0),minutesPerWeek1x:+((648*0.2)/60).toFixed(1),minutesPerWeek3x:+((648*0.2/3)/60).toFixed(1)},lossWarned,errs};
 }

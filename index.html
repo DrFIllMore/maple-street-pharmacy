@@ -365,7 +365,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.31 · 2026-10-27';
+const BUILD='v24.32 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -422,7 +422,7 @@ const PLANS={blue:{name:'BlueLeaf',rate:58,delay:2,days:7,reject:.06,share:.35,h
              silver:{name:'SilverPlan',rate:50,delay:3,days:12,reject:.10,share:.30,h:'seniors · pays 12 days after the sale · 10% rejected'},
              quick:{name:'QuickPay HMO',rate:44,delay:1,days:4,reject:.04,share:.15,h:'local HMO · pays 4 days after the sale · 4% rejected'}};
 const SPECIAL_ADD=90,SPECIAL_COST=55,VAX_SIGN=600,VAX_PACK=50,VAX_PACK_COST=600,SPECIAL_SIGN=2000,REVIEW_FEE=20;
-const CASH_SHARE=.2,COPAY=15,CONSULT=40,OTC=9,RENT=500,LOAN=16000,LOAN_PAY=250,LOAN_RATE=.01,GOAL_CASH=20000,GOAL_TRUST=70,GOAL_HAND=5000,BANK_STRIKES=4,LATE_FEE=50,LOAN_LIMIT=30000,BORROW_FEE=100,PRICE_MIN=30,PRICE_MAX=120,OVERDRAFT=3000;
+const CASH_SHARE=.2,COPAY=15,CONSULT=40,OTC=9,RENT=500,LOAN=16000,LOAN_PAY=250,LOAN_RATE=.01,GOAL_CASH=20000,GOAL_TRUST=70,GOAL_HAND=5000,BANK_STRIKES=4,LATE_FEE=50,LOAN_LIMIT=30000,BORROW_FEE=100,PRICE_MIN=30,PRICE_MAX=120;
 
 /* ============ state ============ */
 let S;
@@ -538,13 +538,15 @@ function readiness(){const r=[];const ok=(c,t)=>r.push({ok:!!c,t});
 /* ---- Rx cash price ----
    Insured patients pay the copay their insurer sets; the price you control is the cash price (cash customers, and insured patients
    whose plan you don't take). "Fair" is what the block will accept: $48 at trust 50, higher with more trust (+$2 per 10 trust).
-   Up to fair+$12 you lose a few cash customers (−1.5% per $); past that they leave fast (−4.5% per $), walk-ins drift to the chain,
+   Up to fair+$12 you lose a few cash customers (−0.8% per $); past that they leave fast (−5% per $), walk-ins drift to the chain,
    and trust slides every week. Below fair you gain a few. Fair+$8 earns ~9% more per cash customer with no trust cost; fair+$12 ~13% more but trust slips (which lowers fair); past that it loses money fast. */
+const cashShareNow=()=>{const a=acceptedShare();return a>0?1-Object.keys(PLANS).reduce((t,k)=>t+(S.plans[k]?PLANS[k].share:0),0)/a:0;};
+const counterPerScript=()=>{const c=cashShareNow();return COPAY*(1-c)+S.cashPrice*c;};/* average paid at the counter per script */
 const fairPrice=()=>Math.round(48+(S.trust-50)*.2);
 const priceGap=()=>S.cashPrice-fairPrice();
 function priceMult(){const d=priceGap();return clamp(d<=0?1+Math.min(.3,Math.max(0,-d-6)*.015):d<=12?1-.008*d:.904-.05*(d-12),0,1.3);}
 const priceWalk=()=>{const d=priceGap();return d>12?Math.max(.6,1-.012*(d-12)):1;};/* overall walk-ins lost to the chain */
-const priceTrustWk=()=>{const d=priceGap();return d>8?-Math.round(.15*(d-8)*10)/10:d<=-8?.3:0;};
+const priceTrustWk=()=>{const d=priceGap();return d>8?-Math.min(5,Math.round(.15*(d-8)*10)/10):d<=-8?.3:0;};
 const acceptedShare=()=>Object.keys(PLANS).reduce((t,k)=>t+(S.plans[k]?PLANS[k].share:PLANS[k].share*.25*priceMult()),0)+CASH_SHARE*priceMult();
 const PROMOS={flyers:{n:'Flyers on the block',cost:300,wk:1,boost:.10,h:'+10% walk-ins for a week'},paper:{n:'Local paper ad',cost:900,wk:2,boost:.15,h:'+15% walk-ins for two weeks, +1 trust'},social:{n:'Social push',cost:500,wk:1,boost:.08,h:'+8% for a week and your photo reaches further (easier to go viral)'},pricematch:{n:'Price-match week',cost:700,wk:2,boost:0,h:'Takes the chain\'s customers back for two weeks and chips at its share'},loyalty:{n:'Loyalty cards',cost:400,wk:0,boost:0,h:'One-time. People wait a little longer and buy more OTC'}};
 /* first consult desk: say what flu shots need */const shotTip=()=>{if(!S.contracts.vax&&!S.shotTipSaid){S.shotTipSaid=true;glog('event',`Flu shots need two things: this consult room and the vaccine contract (Supplies · ${fmt(VAX_SIGN)}, ${VAX_PACK} doses included). Your pharmacist gives every shot: ${fmt(CONSULT)} each. Until you sign, visitors only get ${fmt(REVIEW_FEE)} medication reviews.`);}};
@@ -720,7 +722,7 @@ function endDay(){
   S.tick=0;S.day++;
   for(const p of S.patients){if(p.state==='leaving'||p.state==='served')continue;const sc=S.scripts.find(x=>x.id===p.script);if(sc&&!['done','withPatient','dead'].includes(sc.stage)){sc.src='phone';sc.patient=null;sc.tomorrow=true;p.state='leaving';p.exitMood='content';p.q=null;p.seat=null;goTo(p,DOOR.x,DOOR.y);}else leave(p,'content');}
   S.scripts=S.scripts.filter(sc=>!(sc.unclaimed||sc.stage==='dead'||sc.stage==='done'));
-  if(S.trust<=0){glog('bad','Trust hit 0. The bank is closing the pharmacy tonight.');S.day=DAYS_WEEK;}
+  if(S.trust<=0){glog('bad','Trust hit 0. The bank is closing the pharmacy tonight.');S.trustZero=true;S.day=DAYS_WEEK;}
   if(S.day>=DAYS_WEEK)endWeek();}
 
 /* ============ week ============ */
@@ -736,7 +738,7 @@ const feeOf=l=>.06;
 function bankNotes(){const b=S.bank||{red:0,miss:0},out=[];
   if(b.miss>0)out.push({k:'loan',n:b.miss,t:b.miss>=BANK_STRIKES?`Loan payment missed ${b.miss} weeks in a row. The bank has foreclosed.`:`Loan payment of ${fmt(S.wk.missed||LOAN_PAY)} missed (${b.miss} of ${BANK_STRIKES}). ${fmt(LATE_FEE)} late fee added. ${b.miss===BANK_STRIKES-1?'Final notice: miss next Saturday and the bank forecloses.':'Have the payment in cash by Saturday close.'}`});
   if(b.red>0)out.push({k:'cash',n:b.red,t:b.red>=BANK_STRIKES?`Closed in the red ${b.red} Saturdays in a row. The bank has shut the account.`:`Closed the week at ${fmt(S.cash)} (${b.red} of ${BANK_STRIKES} in the red). ${b.red===BANK_STRIKES-1?'Final notice: end next Saturday below $0 and the bank shuts the pharmacy.':'Get back above $0 by Saturday close to reset the count.'}`});
-  if(S.trust<=0)out.push({k:'trust',n:0,t:'Trust reached 0. The bank has pulled the store\'s credit.'});else if(S.trust<15)out.push({k:'trust',n:0,t:`Trust is ${Math.round(S.trust)}. If it reaches 0, the bank pulls the store's credit and the pharmacy closes.`});
+  if(S.trustZero||S.trust<=0)out.push({k:'trust',n:0,t:'Trust reached 0. The bank has pulled the store\'s credit.'});else if(S.trust<15)out.push({k:'trust',n:0,t:`Trust is ${Math.round(S.trust)}. If it reaches 0, the bank pulls the store's credit and the pharmacy closes.`});
   return out;}
 function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();for(const p of S.patients){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='withPatient')sc.stage='dead';}S.patients=[];S.fx=[];
   /* everyone goes home: the floor shows only what you built */for(const w of S.staff){for(const c of w.carry){const b=binOf();if(c.stage){c.stage='bin';c.at=b?'bin:'+b.id:null;c.claimed=null;}}w.carry=[];w.carryKind=null;w.plan=null;w.goal=null;w.path=null;w.off=true;w.x=OUT.x;w.y=OUT.y;w.energy=clamp((w.energy||0)+EN.sunday,0,100);}for(const k in busyS)delete busyS[k];
@@ -749,10 +751,10 @@ function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeS
   if(S.mods.delivery)dTrust(1.5,'perks');if(S.mods.referral)dTrust(1,'perks');if(objsOf('plant').length)dTrust(.3*Math.min(3,objsOf('plant').length),'perks');{const t=priceTrustWk();if(t)dTrust(t,t<0?'prices':'fair prices');}if(priceGap()>=20)runStory('gouge',true,'Maple Street Pharmacy hikes prescription prices',`Cash customers say they paid ${fmt(S.cashPrice)} a script, well above the ${fmt(fairPrice())} going rate.`);gradePromises();pressWeekly();
   for(const k of Object.keys(S.mods)){if(k.endsWith('K'))continue;if(typeof S.mods[k]==='number'&&S.mods[k]<99){S.mods[k]--;if(S.mods[k]<=0){delete S.mods[k];delete S.mods[k+'K'];}}}
   S.trust=clamp(S.trust,0,100);S.wk.net=S.wk.cashIn+paid-costs;(S.hist=S.hist||[]).push({week:S.week,cash:Math.round(S.cash),net:Math.round(S.wk.net),inflow:S.wk.cashIn+paid,paid:Math.round(paid),served:S.wk.served,lost:S.wk.lost});
-  glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${fmt(loanPay)}${interest?` (+${fmt(interest)} interest)`:''}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
+  glog('money',`Insurers paid ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(wages())}, rent ${fmt(S.rent)}, loan ${S.wk.missed?'missed':fmt(loanPay)+(interest?` (incl. ${fmt(interest)} interest)`:'')}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}.`);
   log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,paid:Math.round(paid),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
   S.bank.red=S.cash<0?S.bank.red+1:0;S.wk.bankNote=bankNotes();
-  if(S.trust<=0){S.done='lose';S.doneWhy='trust';}else if(S.bank.miss>=BANK_STRIKES){S.done='lose';S.doneWhy='loan';}else if(S.bank.red>=BANK_STRIKES){S.done='lose';S.doneWhy='cash';}else if(worth()>=GOAL_CASH&&S.cash>=GOAL_HAND&&S.trust>=GOAL_TRUST&&S.loan<=0)S.done='win';
+  if(S.trustZero||S.trust<=0){S.done='lose';S.doneWhy='trust';}else if(S.bank.miss>=BANK_STRIKES){S.done='lose';S.doneWhy='loan';}else if(S.bank.red>=BANK_STRIKES){S.done='lose';S.doneWhy='cash';}else if(worth()>=GOAL_CASH&&S.cash>=GOAL_HAND&&S.trust>=GOAL_TRUST&&S.loan<=0)S.done='win';
   for(const n of S.wk.bankNote)glog('bad','Bank notice: '+n.t);
   for(const k in S.promo){if(S.promo[k]>0)S.promo[k]--;}if(S.week>=3){if(!S.rivalOn){S.rivalOn=true;S.rival=.12;glog('bad','A chain pharmacy opened across the street. It will take some of your walk-ins unless you fight back (Promote).');}else S.rival=Math.max(0,Math.min(.35,S.rival+(S.promo.pricematch>0||S.promo.paper>0?-.04:.015)));}
   S.totWriteoff=(S.totWriteoff||0)+(S.wk.writeoff||0);checkUnlocks();
@@ -889,7 +891,7 @@ function mailsHtml(ib){return `<div class="mails">${ib.mails.map(m=>{const A=ADV
 function callHtml(ib){return `<div class="call"><div class="tiles">${ib.mails.map(m=>{const A=ADVISORS[m.k],[sl,sj,sc]=STANCE[m.st];return `<div class="tile-v ${sc}">${advisorPortrait(m.k,40)}<div class="tv-name"><b>${A.name}</b><small>${A.title}</small></div><span class="stance bt ${sc}">${sj} ${sl}</span></div>`;}).join('')}</div>
   <div class="chatp"><div class="chath">Meeting chat</div>${ib.mails.map(m=>{const A=ADVISORS[m.k];return `<div class="cmsg"><span class="cfrom">${A.name.split(' ')[0]}</span><span class="cact">${m.act}</span></div>`;}).join('')}</div></div>`;}
 function showStock(){closeAll();if(!S.opened){reviewDecide();return;}setStage('stock');
-  const bills=wages()+S.rent+loanDue();const due=dueThisWeek();const est=Math.round(demandPerDay()*6*(COPAY*.8+S.cashPrice*.2)*.9);const d=demandPerDay();
+  const bills=wages()+S.rent+loanDue();const due=dueThisWeek();const est=Math.round(demandPerDay()*6*counterPerScript()*.9);const d=demandPerDay();
   const row=(k)=>{const I=INV[k];const on=invOn(k);const used=S.inv.used[k]||0;const perDay=k==='gen'?d:used/6;const days=perDay>0?Math.floor(on/perDay):null;const locked=(k==='brand'&&!S.contracts.special)||(k==='vax'&&!S.contracts.vax)||(k==='otc'&&!objsOf('otc').length);const q=S.inv.order[k]||0;
     return `<div class="srow2 ${locked?'locked':''}"><div class="sn"><b>${I.n}</b><small>${locked?(k==='brand'?'needs the specialty contract + fridge':k==='vax'?'needs the vaccine contract':'needs an OTC shelf'):I.note}</small></div><div class="sv"><b>${on}</b><small>on hand</small></div><div class="sv"><b>${used}</b><small>used</small></div><div class="sv"><b class="${days!==null&&days<3?'neg':''}">${days===null?'—':days+'d'}</b><small>left</small></div><div class="sq">${locked?'<span class="sub">—</span>':`<button data-ord="${k}" data-d="-1">−</button><b>${q}</b><button data-ord="${k}" data-d="1">+</button>`}</div><div class="sv"><b>${locked?'—':fmt(q*I.unit)}</b><small>${fmt(I.unit)} ea</small></div></div>`;};
   const cost=orderCost();const sat=S.cash+est+due-bills-cost;
@@ -1037,7 +1039,7 @@ const creditLeft=()=>Math.max(0,LOAN_LIMIT-S.loan);
 function canBorrow(){const b=S.bank||{};if((b.miss||0)>0)return 'The bank won\'t lend while a payment is missed.';if((b.red||0)>0)return 'The bank won\'t lend after a week closed in the red.';if(S.trust<40)return 'Trust under 40: the bank won\'t lend.';if(creditLeft()<1000)return `Credit limit reached (${fmt(LOAN_LIMIT)}).`;return '';}
 function borrow(amt){const no=canBorrow();if(no)return no;amt=Math.min(amt,creditLeft()-BORROW_FEE);if(amt<500)return 'Not enough credit left.';S.cash+=amt;S.loan+=amt+BORROW_FEE;glog('money',`Borrowed ${fmt(amt)} from First Maple Bank (${fmt(BORROW_FEE)} fee added). Loan now ${fmt(S.loan)}; Saturday payment ${fmt(loanDue())}.`);SFX.cash&&SFX.cash();saveGame();return '';}
 function payLoan(amt){amt=Math.round(Math.min(amt,S.loan,Math.max(0,S.cash-1000)));if(amt<=0)return;S.cash-=amt;S.loan-=amt;glog('money',`Paid ${fmt(amt)} toward the loan. ${fmt(S.loan)} left.`);SFX.cash&&SFX.cash();saveGame();}
-function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Business value',`${fmt(Math.round(worth()))} / ${fmt(GOAL_CASH)}`,worth()/GOAL_CASH)}${g('Cash in hand',`${fmt(Math.round(S.cash))} / ${fmt(GOAL_HAND)}`,Math.max(0,S.cash)/GOAL_HAND)}${g('Loan left',fmt(S.loan),1-S.loan/LOAN)}${g('Trust',`${Math.round(S.trust)} / ${GOAL_TRUST}`,S.trust/GOAL_TRUST)}</div>`;}
+function goalsHtml(){const g=(l,v,p)=>`<div class="g"><small>${l}</small><b>${v}</b><div class="trk"><i style="width:${Math.round(Math.min(1,p)*100)}%"></i></div></div>`;return `<div class="goals">${g('Business value',`${fmt(Math.round(worth()))} / ${fmt(GOAL_CASH)}`,worth()/GOAL_CASH)}${g('Cash in hand',`${fmt(Math.round(S.cash))} / ${fmt(GOAL_HAND)}`,Math.max(0,S.cash)/GOAL_HAND)}${g('Loan left',fmt(S.loan),Math.max(0,1-S.loan/LOAN))}${g('Trust',`${Math.round(S.trust)} / ${GOAL_TRUST}`,S.trust/GOAL_TRUST)}</div>`;}
 function showIntro(){closeAll();page(`<h2>Maple Street Pharmacy <small>your goal</small></h2>${goalsHtml()}
   <p class="sub">Fill all four bars to win, checked each Saturday. The bank closes the store after <b>4 Saturdays in a row below $0</b>, <b>4 missed loan payments in a row</b>, or if <b>trust hits 0</b>.</p>
   <div class="facts"><div>🏦 The bank lent you <b>${fmt(LOAN)}</b> at 1% a week · every Saturday you pay <b>${fmt(LOAN_PAY)}</b> plus that week's interest · pay extra or borrow more any time</div><div>🧾 Insurers pay <b>7–12 days after each sale</b>; the loan carries you until the checks start</div><div>⚒ Tap <b>Build</b>, pick an item, tap the floor</div><div>🚪 Customers enter by the <b>door on the right</b></div><div>👥 You need a <b>technician</b> and a <b>clerk</b> before opening</div></div>
@@ -1064,7 +1066,7 @@ function bankCheck(prev){const b=S.bank,w=S.wk,amt=w.missed,left=BANK_STRIKES-b.
   <div class="btns"><button class="big" id="chkOk">Understood: to the Gazette ▶</button></div>`);
   $('chkOk').onclick=()=>{SFX.click();w.checkSeen=true;saveGame();showReview();};}
 function showReview(){closeAll();setStage('review');const w=S.wk,prev=S.week-1;
-  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Business worth ${fmt(Math.round(worth()))} (cash ${fmt(S.cash)}), loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>${S.doneWhy==='loan'?'The bank foreclosed':S.doneWhy==='trust'?'The bank pulled your credit':'The bank shut the pharmacy'}</h2><p class="sub">Week ${prev}. ${S.doneWhy==='loan'?`Loan payments missed ${BANK_STRIKES} Saturdays in a row. Loan left ${fmt(S.loan)}.`:S.doneWhy==='trust'?'Trust fell to 0. Customers stopped coming and the bank stopped lending.':`Cash below $0 at close ${BANK_STRIKES} Saturdays in a row. Cash ${fmt(S.cash)}.`}</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
+  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Business worth ${fmt(Math.round(worth()))} (cash ${fmt(S.cash)}), loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>${S.doneWhy==='loan'?'The bank foreclosed':S.doneWhy==='trust'?'The bank pulled your credit':'The bank shut the pharmacy'}</h2><p class="sub">Week ${prev}. ${S.doneWhy==='loan'?`Loan payments missed ${BANK_STRIKES} Saturdays in a row. Loan left ${fmt(S.loan)}.`:S.doneWhy==='trust'?'Trust fell to 0. Customers stopped coming and the bank stopped lending.':S.doneWhy==='cash'?`Cash below $0 at close ${BANK_STRIKES} Saturdays in a row. Cash ${fmt(S.cash)}.`:`Cash ${fmt(S.cash)}. Too much owed, not enough in hand.`}</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
   if(prev<1||!S.opened){reviewDecide();return;}
   if(w.missed&&(S.bank||{}).miss>=2&&!w.checkSeen){bankCheck(prev);return;}
   const lostWhy=Object.keys(w).filter(k=>k.startsWith('lost_')).map(k=>`${w[k]} ${k.slice(5).replace(/_/g,' ')}`).join(', ');const d=S.trust-w.trust0;const rw=runwayWeeks();
@@ -1099,7 +1101,7 @@ function buildProposals(card){if(PROPCACHE&&PROPCACHE.week===S.week)return PROPC
   list.push(memo);
   PROPCACHE={week:S.week,list};return list;}
 function reviewDecide(){closeAll();if(S.opened)setStage('decide');const card=CARDS.find(c=>c.id===S.card);const due=dueThisWeek();
-  const bills=wages()+S.rent+loanDue();const est=Math.round(demandPerDay()*6*(COPAY*.8+S.cashPrice*.2)*.9);const sat=S.cash+est+due-bills-S.orderQty*S.unitCost;
+  const bills=wages()+S.rent+loanDue();const est=Math.round(demandPerDay()*6*counterPerScript()*.9);const sat=S.cash+est+due-bills-S.orderQty*S.unitCost;
   const props=buildProposals(card);S._props=props;
   const doc=(p,idx)=>`<div class="contract ${p.required?'req':''}"><div class="ch2"><span class="cico">${p.icon}</span><div class="chd"><div class="cfrom2">From: <b>${p.from}</b></div><div class="cto">To: Maple Street Pharmacy</div></div>${p.required?'<span class="creq">Required</span>':'<span class="creq opt">Optional</span>'}</div><div class="cre">Re: ${p.title}</div><div class="cbody">${p.body}</div><ul class="cterms">${(p.terms&&p.terms.length?p.terms:p.opts.map(o=>o.label+(o.note?': '+o.note:''))).slice(0,3).map(t=>`<li>${t}</li>`).join('')}</ul><div class="csign" id="opts${idx}">${p.opts.map((o,i)=>`<button data-p="${idx}" data-i="${i}" class="${p.chosen===i?'on':''}">${o.label}</button>`).join('')}</div></div>`;
   page(`<h2>Week ${S.week} <small>${S.opened?'proposals on your desk · 5 of 5':'opening week'}</small></h2>
@@ -1285,12 +1287,12 @@ function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedul
     const interest=Math.round(S.loan*LOAN_RATE);const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+loanDue()+(S.mods.delivery?60:0);
     const frac=S.running?Math.max(.1,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK)):0;const counterSoFar=S.wk.cashIn;const counterRest=S.running?Math.round(counterSoFar/frac-counterSoFar):Math.round((S.hist.length?S.hist[S.hist.length-1].inflow-(S.hist[S.hist.length-1].paid||0):2000)*0);
     const sat=S.running?weekMoney().sat:S.cash;
-    const strikes=((S.bank||{}).red||0)+1;const verdict=sat<0?`<span class="verdict bad">Saturday you'd close at ${fmt(sat)}: bank notice ${strikes} of ${BANK_STRIKES}${strikes>=BANK_STRIKES?', and the bank shuts the pharmacy':''}. Take cash claims, cut a shift, or delay the drug order.</span>`:sat<2000?`<span class="verdict">Saturday you'd have about ${fmt(sat)}. Tight — don't buy anything big this week.</span>`:`<span class="verdict good">Saturday you'd have about ${fmt(sat)}. Room to invest or pay down the loan.</span>`;
+    const wmF=S.running?weekMoney():{};const strikes=((S.bank||{}).red||0)+1;const verdict=wmF.loanMiss?`<span class="verdict bad">At this pace the ${fmt(wmF.loanMiss)} loan payment would be missed Saturday: bank notice ${((S.bank||{}).miss||0)+1} of ${BANK_STRIKES}. Take cash claims or cut a shift.</span>`:sat<0?`<span class="verdict bad">Saturday you'd close at ${fmt(sat)}: bank notice ${strikes} of ${BANK_STRIKES}${strikes>=BANK_STRIKES?', and the bank shuts the pharmacy':''}. Take cash claims, cut a shift, or delay the drug order.</span>`:sat<2000?`<span class="verdict">Saturday you'd have about ${fmt(sat)}. Tight — don't buy anything big this week.</span>`:`<span class="verdict good">Saturday you'd have about ${fmt(sat)}. Room to invest or pay down the loan.</span>`;
     const load=(l,v,fix)=>{const p=Math.round((v||0)*100);const bad=p>85,low=p<30&&p>0;return `<div class="pay"><div><span>${l} <b>${p}%</b> busy</span><span class="verdict ${bad?'bad':low?'':'good'}">${bad?fix:low?'mostly idle':'fine'}</span></div></div>`;};
     body=`<h2>Money <small>will you make Saturday?</small></h2>${moneyTabs()}
       <div class="tile">${weekMoneyHtml()}${S.running?verdict:''}</div>
       <div class="tile"><small>Loan · ${fmt(S.loan)} left · Saturday payment <b>${fmt(loanDue())}</b> (${fmt(loanPrin())} + ${fmt(interest)} interest)</small><div class="seg" style="margin-top:4px"><button data-pay="500" ${S.cash<1500||!S.loan?'disabled':''}>Pay $500</button><button data-pay="2000" ${S.cash<3000||!S.loan?'disabled':''}>Pay $2,000</button><button data-pay="all" ${S.cash-1000<S.loan||!S.loan?'disabled':''}>Pay it off</button></div>
-        <div class="seg" style="margin-top:4px"><button data-borrow="2000" ${canBorrow()?'disabled':''}>Borrow $2,000</button><button data-borrow="5000" ${canBorrow()||creditLeft()<5100?'disabled':''}>Borrow $5,000</button></div><div class="foot">${canBorrow()||`Credit left ${fmt(creditLeft())} of ${fmt(LOAN_LIMIT)} · ${fmt(BORROW_FEE)} fee per loan · 1% a week.`} You can't win while you owe the bank.</div></div>`;
+        <div class="seg" style="margin-top:4px"><button data-borrow="2000" ${canBorrow()||creditLeft()<2000+BORROW_FEE?'disabled':''}>Borrow $2,000</button><button data-borrow="5000" ${canBorrow()||creditLeft()<5000+BORROW_FEE?'disabled':''}>Borrow $5,000</button></div><div class="foot">${canBorrow()||`Credit left ${fmt(creditLeft())} of ${fmt(LOAN_LIMIT)} · ${fmt(BORROW_FEE)} fee per loan · 1% a week.`} You can't win while you owe the bank.</div></div>`;
     S._queues=ds.length?`<div class="tile"><small>Where people wait · yesterday</small>${load('Drop-off',u.intake,'line forms → another window or clerk')}${load('Fill',u.fill,'baskets pile up → upgrade or second tech')}${load('Verify',u.verify,'you\'re the bottleneck → hire a pharmacist')}${load('Registers',u.pickup,'pick-up line → another register')}</div>`:'';}
   if(officeTab==='metrics'&&S.moneyTab==='equip')body=`<h2>Money <small>what each item earns and does</small></h2>${moneyTabs()}${equipHtml()}`;
   if(officeTab==='insurance'){body=`<h2>Insurers <small>on = you take their patients</small></h2>${Object.keys(PLANS).map(k=>{const p=PLANS[k];const on=S.plans[k];const owed=S.ledger.filter(l=>l.plan===k).reduce((t,l)=>t+l.amt,0);return `<div class="ins"><button class="sw ${on?'on':''}" data-plan="${k}" aria-label="toggle"></button><div class="nm">${p.name}${owed?` <span class="sub" style="font-weight:600">· owes you ${fmt(owed)}</span>`:''}</div><div class="m"><span>pays <b>${fmt(p.rate)}</b>/Rx</span><span>in <b>${p.delay} wk${p.delay>1?'s':''}</b></span><span>rejects <b>${Math.round(p.reject*100)}%</b></span><span><b>${Math.round(p.share*100)}%</b> of patients</span></div></div>`;}).join('')}
@@ -1393,13 +1395,15 @@ function watch(){const c=st=>S.scripts.filter(x=>x.stage===st).length;S.wk.maxTr
   const conf=S.patients.filter(p=>p.conf>0).length;if(conf>=2)glog('bad',`${conf} people can't find their way in.`,'conf',24);
   const idleW=S.staff.filter(w=>!w.plan&&!w.off);if(idleW.length>=2&&S.patients.length<2&&S.tick>12&&S.tick<96)glog('staff',`${idleW.map(w=>w.name).join(', ')} have nothing to do right now.`,'idle',36);
   if(owedTotal()>S.cash*1.5&&owedTotal()>2500)glog('ops',`Insurers owe you ${fmt(owedTotal())}; you have ${fmt(S.cash)}.`,'owed',72);}
-/* Saturday cash: what you'd hold after Saturday's bills — cash now + counter sales still to come at this week's pace + insurer checks due by Saturday − wages, rent and the loan payment (drugs were paid Monday; interest goes onto the loan) */
+/* Saturday cash: what you'd hold after Saturday's bills — cash now + counter sales still to come at this week's pace + insurer checks due by Saturday − wages, rent and the loan payment with its interest (drugs were paid Monday) */
 /* the week's money in one place: what came in and went out so far, what's still coming by Saturday, and the cash you'll hold after Saturday's bills */
 function weekMoney(){const w=S.wk;const frac=S.running?Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK)):1;
   const r={counter:w.cashIn||0,ins:w.paid||0,drugs:w.drug||0,extras:(w.bonus||0)+(w.hireFees||0),
     counterRest:S.running?Math.max(0,(w.cashIn||0)/frac-(w.cashIn||0)):0,insRest:S.running?dueThisWeek():0,
     wages:S.running?wages()+(w.floatOnce||0)+(w.exitPay||0):0,rent:S.running?S.rent:0,loan:S.running?loanDue():0,other:S.running&&S.mods.delivery?60:0};
-  r.inSoFar=r.counter+r.ins;r.outSoFar=r.drugs+r.extras;r.inRest=r.counterRest+r.insRest;r.outRest=r.wages+r.rent+r.loan+r.other;r.sat=S.cash+r.inRest-r.outRest;return r;}
+  r.inSoFar=r.counter+r.ins;r.outSoFar=r.drugs+r.extras;r.inRest=r.counterRest+r.insRest;
+  /* the bank only takes the payment if cash covers it after the other bills */if(r.loan&&S.cash+r.inRest-(r.wages+r.rent+r.other)<r.loan){r.loanMiss=r.loan;r.loan=0;}
+  r.outRest=r.wages+r.rent+r.loan+r.other;r.sat=S.cash+r.inRest-r.outRest;return r;}
 function weekMoneyHtml(compact){if(!S.running)return `<div class="wm"><div class="foot">The week isn't running. Last week's full numbers are in the Gazette (week review).</div></div>`;const m=weekMoney();const f=v=>v?fmt(Math.round(v)):'—';const pl=v=>v?'+'+fmt(Math.round(v)):'—';const mi=v=>v?'−'+fmt(Math.round(v)):'—';
   const row=(l,a,b,c,cls)=>`<div class="wr ${cls||''}"><span>${l}</span><b>${a}</b><b>${b}</b><b>${c}</b></div>`;
   const netSo=m.inSoFar-m.outSoFar,netRest=m.inRest-m.outRest,net=netSo+netRest;
@@ -1410,9 +1414,9 @@ function weekMoneyHtml(compact){if(!S.running)return `<div class="wm"><div class
     ${row('Money out',mi(m.outSoFar),mi(m.outRest),mi(m.outSoFar+m.outRest),'grp neg')}
     ${row('· drugs (Monday)',mi(m.drugs),'—','','sub')}${m.extras?row('· hiring & bonuses',mi(m.extras),'—','','sub'):''}${row('· Saturday bills','—',mi(m.wages+m.rent+m.loan+m.other),'','sub')}
     ${row('Net',(netSo<0?'−':'+')+fmt(Math.abs(Math.round(netSo))),(netRest<0?'−':'+')+fmt(Math.abs(Math.round(netRest))),(net<0?'−':'+')+fmt(Math.abs(Math.round(net))),'tot '+(net<0?'neg':'pos'))}
-    ${compact?'':`<div class="foot">"To come" assumes the rest of the week sells at today's pace. Wages, rent and the loan payment ($250 + interest) are paid Saturday night.</div>`}</div>`;}
+    ${compact?'':`<div class="foot">"To come" assumes the rest of the week sells at today's pace. Wages, rent and the loan payment (${fmt(LOAN_PAY)} + interest) are paid Saturday night.</div>`}</div>`;}
 function satCash(){return S.running?weekMoney().sat:null;}
-function weekSoFar(){/* projected week net: counter cash on current pace + what insurers pay this Saturday − the week's bills and drugs */const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const counter=S.wk.cashIn/frac;const ins=dueThisWeek();const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+loanDue()+(S.wk.bonus||0)+(S.wk.hireFees||0);return counter+ins-bills-S.wk.drug;}/* interest is added to the loan, not paid in cash */
+function weekSoFar(){/* projected week net: counter cash on current pace + what insurers pay this Saturday − the week's bills and drugs */const frac=Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const counter=S.wk.cashIn/frac;const ins=dueThisWeek();const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+loanDue()+(S.wk.bonus||0)+(S.wk.hireFees||0);return counter+ins-bills-S.wk.drug;}
 function runwayWeeks(){const burn=wages()+S.rent+loanDue()+S.orderQty*S.unitCost;const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
 $('menuBtn').onclick=()=>{const m=$('menu');m.hidden=!m.hidden;SFX.click();};
 $('mStaff').onclick=()=>openOffice('schedule');$('mOffice').onclick=()=>openOffice('metrics');
@@ -1741,9 +1745,9 @@ start();
 })();
 
 /* Drag-to-scroll for cards and panels in forced landscape: iOS doesn't scroll a rotated box along its own axis, so we map the finger ourselves. */
-(function(){let t=null;const scroller=el=>{for(;el&&el!==document.body;el=el.parentElement){if(el.tagName==='CANVAS')return null;const cs=getComputedStyle(el);if(/(auto|scroll)/.test(cs.overflowY+cs.overflowX)&&(el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1))return el;}return null;};
-document.addEventListener('touchstart',e=>{t=null;if(!document.querySelector('.app.rot')||e.touches.length!==1)return;const el=scroller(e.target);if(!el)return;const p=e.touches[0];t={el,x:p.clientX,y:p.clientY,moved:false};},{passive:true});
-document.addEventListener('touchmove',e=>{if(!t)return;const p=e.touches[0],dx=p.clientX-t.x,dy=p.clientY-t.y;if(!t.moved&&Math.hypot(dx,dy)<6)return;t.moved=true;t.x=p.clientX;t.y=p.clientY;/* rotate(90deg): local y = −screen x, local x = screen y */t.el.scrollTop-=-dx;t.el.scrollLeft-=dy;e.preventDefault();},{passive:false});
+(function(){let t=null;const scroller=el=>{for(;el&&el!==document.body;el=el.parentElement){if(el.tagName==='CANVAS')return null;const cs=getComputedStyle(el);if(cs.touchAction==='none')return null;/* drags (chat grip, tabs) */const y=/(auto|scroll)/.test(cs.overflowY)&&el.scrollHeight>el.clientHeight+1,x=/(auto|scroll)/.test(cs.overflowX)&&el.scrollWidth>el.clientWidth+1;if(x||y)return {el,x,y};}return null;};
+document.addEventListener('touchstart',e=>{t=null;if(!document.querySelector('.app.rot')||e.touches.length!==1)return;const sc=scroller(e.target);if(!sc)return;const p=e.touches[0];t={el:sc.el,ax:sc.x,ay:sc.y,x:p.clientX,y:p.clientY,moved:false};},{passive:true});
+document.addEventListener('touchmove',e=>{if(!t)return;const p=e.touches[0],dx=p.clientX-t.x,dy=p.clientY-t.y;if(!t.moved&&Math.hypot(dx,dy)<6)return;t.moved=true;t.x=p.clientX;t.y=p.clientY;/* rotate(90deg): local y = −screen x, local x = screen y */if(t.ay)t.el.scrollTop-=-dx;if(t.ax)t.el.scrollLeft-=dy;e.preventDefault();},{passive:false});
 document.addEventListener('touchend',e=>{if(t&&t.moved)e.preventDefault();t=null;},{passive:false});})();
 </script>
 </body>

@@ -1,5 +1,16 @@
 # Changelog
 
+## v24.32 · 2026-10-27 — Bug sweep after the bank and pricing patch
+- **Cards could still slide sideways on the phone.** The landscape touch-scroll moved content along a hidden axis. It now scrolls only along an axis that really scrolls, and ignores drag handles (chat grip, tabs). Cards stay put; panels still scroll.
+- **Trust 0 shutdown** is decided at that day's close. Week-end perks (delivery, plants, …) can no longer lift trust back above 0 after the "closing tonight" message.
+- **Saturday forecast** now predicts a missed loan payment (and says which bank notice it would be) instead of assuming it gets paid. Forecasts use the real cash-customer share at your price instead of a fixed 20% at the cash price.
+- Chat line for the loan reads "loan $410 (incl. $160 interest)" or "loan missed" (was double-counting interest).
+- Pricing trust loss capped at −5 a week. $120 for one week no longer wipes 12 trust at once; it's still the fastest way to lose the store.
+- Borrow buttons disable when the full amount (plus fee) isn't available, instead of quietly lending less.
+- Loan goal bar no longer breaks when the loan is above $16,000 after borrowing. Old saves that lost under the old rule get a generic game-over line.
+- Removed the unused overdraft constant and stale comments. The money footer reads the loan minimum from the game.
+- Tests: fixed 3 tests broken by earlier UI changes (unlock gating, merged Staff tab) and removed the obsolete smoke test. Added touch-scroll and bank-soak tests. The playtest counts a trust warning as naming the cause. 46/46 scripts pass, cash reconciles every week, tick ≈0.6 ms, draw ≈1.4 ms.
+
 ## v24.31 · 2026-10-27 — Rx pricing, borrowing, the foreclosure check
 - **Cash price is open: $30–$120** (was $36–$60), in $4 steps (Supplies). The **fair price** is $48 at trust 50 and moves $2 per 10 trust.
   - Up to fair +$8: a few cash customers leave (−0.8% per $), and you earn more on each one (+9% at fair +$8).

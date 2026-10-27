@@ -8,5 +8,5 @@ const r=await pg.evaluate(()=>{const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.
 console.log(JSON.stringify(r,null,0).replace(/\{"day"/g,'\n{"day"'),errs);
 // staff screen + schedule render
 await pg.evaluate(()=>{__msp.api.openOffice('schedule');});await pg.waitForTimeout(200);
-const t=await pg.evaluate(()=>{document.querySelector('[data-stab="workers"]').click();const rows=[...document.querySelectorAll('#off .srow')].map(r=>r.textContent.replace(/\s+/g,' ').trim());document.querySelector('[data-stab="shifts"]').click();const sh=[...document.querySelectorAll('#off .sh .who')].map(e=>e.textContent.replace(/\s+/g,' ').trim());return {rows,sh};});
+const t=await pg.evaluate(()=>{const rows=[...document.querySelectorAll('#off .srow')].map(r=>r.textContent.replace(/\s+/g,' ').trim());const sh=[...document.querySelectorAll('#off .sh .who')].map(e=>e.textContent.replace(/\s+/g,' ').trim());return {rows,sh};});
 console.log(JSON.stringify(t,null,1));await pg.screenshot({path:'v24-staff.png'});await b.close();})();
