@@ -1,5 +1,10 @@
 # Changelog
 
+## v24.39 · 2026-10-27 — Walk-outs blamed on the wrong place
+- **Bug:** customers who had already handed in their prescription and were sitting down waiting for it were reported as giving up "at drop-off". The Gazette, the District Manager ("build a second drop-off window") and the hire preview ("hire a clerk") then all pointed at the wrong fix. They now say **waiting for the fill**.
+- When fills are the jam and you already have as many techs as fill stations, the advice is to **build another fill station** instead of hiring.
+- Replayed a reported store: one fill station, 2 techs, 2 clerks, 2 pharmacists. Before, it lost 2–3 a week, all labeled "at drop-off". With a second fill station it served 148 with 0 lost.
+
 ## v24.38 · 2026-10-27 — Fewer walk-outs over the restroom
 - **Bug from v24.36:** customers use the restroom 4× more often, but the penalty for having no restroom (30% walk out, the rest lose 40% of their patience) stayed the same. Most walk-outs became "needing the restroom": 16 of 17 in a test day. Without a restroom, customers now lose 15% patience and 8% walk out. In the same test: 17 walk-outs → 4.
 - Checked hiring: adding a clerk, tech or pharmacist never lowered prescriptions served in controlled runs (same random seed, 3 weeks each).

@@ -369,7 +369,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.38 · 2026-10-27';
+const BUILD='v24.39 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -729,7 +729,7 @@ function tick(){
   if(S.tick%12===0){const s=S.wk.served-hourSnap.served,l=S.wk.lost-hourSnap.lost,m=S.wk.cashIn-hourSnap.cashIn,pm=S.wk.phoneMissed-hourSnap.missed;hourSnap={served:S.wk.served,lost:S.wk.lost,cashIn:S.wk.cashIn,missed:S.wk.phoneMissed};const ann=S.patients.filter(p=>['annoyed','angry'].includes(moodOf(p))).length;if(s||l||m)glog('money',`Hour: ${s} served, ${l} gave up${pm?`, ${pm} calls missed`:''}${ann?`, ${ann} annoyed right now`:''}, ${fmt(m)} in.`);}
   watch();if(S.tick%36===0)saveGame();if(S.tick>=TICKS_DAY)endDay();renderHud();}
 function leave(p,mood){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage!=='done'){sc.abandoned=true;if(sc.stage==='withPatient')sc.stage='dead';if(sc.stage==='shelf')sc.unclaimed=true;}
-  const where=(p.state==='toLoo'||p.state==='inLoo'||p.loo==='denied'&&p.state!=='leaving')?'needing the restroom':(p.state==='sneak'||p.state==='inBack')?'in the store':p.q&&objById(p.q)?(objById(p.q).type==='register'?'at pick-up':'at drop-off'):p.state==='waiting'?'waiting for the fill':p.conf>0?'at the door':'in the store';
+  const where=(p.state==='toLoo'||p.state==='inLoo'||p.loo==='denied'&&p.state!=='leaving')?'needing the restroom':(p.state==='sneak'||p.state==='inBack')?'in the store':(p.state==='waiting'||p.state==='toSeat')?'waiting for the fill':(p.state==='queued'||p.state==='toQueue')&&p.q&&objById(p.q)?(objById(p.q).type==='register'?'at pick-up':'at drop-off'):p.conf>0?'at the door':'in the store';
   if(mood!=='content')S.wk.ev.push({k:'gaveup',name:p.name,where,mood,el:p.elderly});
   p.state='leaving';p.q=null;p.seat=null;p.exitMood=mood;p.conf=0;goTo(p,DOOR.x,DOOR.y);
   if(mood!=='content'&&(p.kind!=='consult'||mood==='angry')){if(sc&&sc.reg)regGain(-.5);S.wk.lost++;S.wk['lost_'+where.replace(/ /g,'_')]=(S.wk['lost_'+where.replace(/ /g,'_')]||0)+1;dTrust(mood==='angry'?-.4:-.2,'walk-outs');SFX.sigh();glog('bad',`${p.name} gave up ${where}${mood==='confused'?' (couldn\'t get in)':''}.`,'walk',12);}}
@@ -895,7 +895,7 @@ function makeInbox(){const w=S.wk,h=S.hist||[],last=h[h.length-1]||{},prev=h[h.l
     const wkBusy=o=>o.wkTt?(o.wkBt||0)/o.wkTt:1;const idleObj=S.objs.filter(o=>['register','dropoff','fill','verify','phone','problem'].includes(o.type)&&o.wkTt>100&&wkBusy(o)<.15).sort((a,b)=>objsOf(b.type).length-objsOf(a.type).length||wkBusy(a)-wkBusy(b));
     if(w.intrude>=2||w.theft)act=`${w.intrude} customers walked into the pharmacy area${w.theft?` and ${w.theft} stole stock (${fmt(w.theftVal)})`:''}. Run a counter or wall line between the shop and the fill station — red tiles in Build show the gap.`;
     else if((()=>{const r=['tech','clerk','rph'].find(r=>hireAdvice(r).v==='good');if(r&&(w.lost>=4||S.cash>WAGES[r]*3)){act=`Hire a ${r==='rph'?'second pharmacist':ROLE[r].toLowerCase()} — customers are growing past the team, and the Staff screen shows the hire pays for itself. Part-time works if cash is thin.`;return true;}return false;})());
-    else if(w.lost>=8&&worst)act=worst.includes('drop')?'Build a second drop-off window or put a clerk on it full time.':worst.includes('pick')?'Build a second register. A card reader on the first one helps too.':worst.includes('fill')?'Upgrade the fill station or hire a second tech. The queue starts there.':'More chairs, and look at the Flow panel for the real jam.';
+    else if(w.lost>=8&&worst)act=worst.includes('drop')?'Build a second drop-off window or put a clerk on it full time.':worst.includes('pick')?'Build a second register. A card reader on the first one helps too.':worst.includes('fill')?(S.staff.filter(x=>x.role==='tech').length>=objsOf('fill').length?`Build another fill station: ${objsOf('fill').length===1?'your techs share one':'every station is taken'}, so baskets pile up in the bin.`:'Hire another tech or upgrade the fill station. The queue starts there.'):'More chairs, and look at the Flow panel for the real jam.';
     else if(prev&&w.served<prev.served*.85)act=S.rivalOn?'Run a price-match week and a paper ad back to back. Take the block back.':'Check Flow for a blocked path or an idle window.';
     else if(idleObj.length&&objsOf(idleObj[0].type).length>1)act=`You have ${objsOf(idleObj[0].type).length} ${TYPES[idleObj[0].type].name.toLowerCase()}s and one ran at ${Math.round(wkBusy(idleObj[0])*100)}% all week. Sell the extra (half back) — more equipment doesn't help without the staff and customers to use it.`;
     else if(S.trust>=75&&S.cashPrice<52)act=`Trust is ${Math.round(S.trust)}. Raise the cash price $4; the neighborhood will carry it.`;
