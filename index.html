@@ -123,7 +123,7 @@ button,.hud{touch-action:manipulation}
 .chat .ll div{display:flex;gap:6px}.chat .ts{color:rgba(231,236,232,.55);font-family:var(--mono);font-size:.9em;flex:none}
 .chat .ops,.dot.ops{color:#fac775}.chat .bad,.dot.bad{color:#f09595}.chat .money,.dot.money{color:#c0dd97}.chat .staff,.dot.staff{color:#b5d4f4}.chat .event,.dot.event{color:#cecbf6}
 .chat .grip{position:absolute;right:-12px;top:-12px;width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid #fff;touch-action:none;opacity:.85}
-.sheet{left:max(var(--gl),calc(var(--gl) + var(--chatX) - var(--glR)));bottom:calc(var(--chatY) + var(--chatH) + 14px + var(--sab));width:min(300px,60%);max-width:calc(100% - var(--gl) - 16px);max-height:calc(100% - var(--barH) - var(--barY) - var(--chatY) - var(--chatH) - 28px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px;font-size:var(--sheetF);z-index:9}
+.sheet{left:max(var(--gl),calc(var(--gl) + var(--chatX) - var(--glR)));bottom:calc(var(--chatY) + var(--sab) + 56px*var(--k) + 8px);width:min(300px,60%);max-width:calc(100% - var(--gl) - 16px);max-height:calc(100% - var(--barH) - var(--barY) - var(--chatY) - var(--sab) - 56px*var(--k) - 22px);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px;font-size:var(--sheetF);z-index:9}
 .sheet h3{margin:0;font-size:1.1em;font-weight:800;padding-right:40px;display:flex;align-items:baseline;gap:8px}.sheet h3 small{font-weight:600;color:var(--ink-2);font-size:.8em}
 .sheet p{margin:0;font-size:.9em;color:var(--ink-2);font-weight:600}
 .sheet .x{position:absolute;right:4px;top:4px;width:40px;height:36px;font-size:18px;color:var(--ink-2)}
@@ -232,7 +232,7 @@ button,.hud{touch-action:manipulation}
 .drawer h2{margin:0;font-size:1.15em;display:flex;justify-content:space-between;align-items:baseline;gap:8px}.drawer h2 small{font-size:.72em;color:var(--ink-2);font-weight:700}
 .sheet .rxhead,.drawer .rxhead{padding-right:34px}
 .sheet .rxhead{font-size:.68em;white-space:nowrap;gap:6px;padding-bottom:3px}.sheet .rxhead>span:nth-child(2){overflow:hidden;text-overflow:ellipsis;min-width:0}.sheet .rxhead .dt{flex:none}
-.sheet .acts{flex-wrap:nowrap}.sheet .acts button{min-width:0;padding:0 8px;white-space:nowrap}.sheet .acts button.ic{width:34px;padding:0;justify-content:center;flex:none}.sheet .acts button.pri{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.sheet .acts button.danger{flex:none}
+.sheet .acts{flex-wrap:wrap}.sheet .acts button{min-width:0;padding:0 8px;white-space:nowrap}.sheet .acts button.ic{width:34px;padding:0;justify-content:center;flex:none}.sheet .acts button.pri{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.sheet .acts button.danger{flex:none}
 .drawer .x,.sheet .x{position:absolute;right:6px;top:6px;width:28px;height:28px;border-radius:50%;background:var(--panel-solid);border:1px solid var(--line);font-size:16px}
 .drawer .foot{font-size:.82em;color:var(--ink-2);font-weight:600;line-height:1.35}
 .ins{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center;background:var(--panel-solid);border:1px solid var(--line);border-radius:9px;padding:7px 10px}.ins .nm{grid-column:2;font-weight:800}.ins .m{grid-column:2;display:flex;gap:10px;flex-wrap:wrap;font-size:.8em;color:var(--ink-2);font-weight:600}.ins .m b{font-family:var(--mono);color:var(--ink)}
@@ -276,6 +276,8 @@ button,.hud{touch-action:manipulation}
 .cell.F{background:var(--accent-soft);color:var(--accent-ink)}.cell.A,.cell.P{background:#faeeda;color:#854f0b}.cell.O{background:var(--panel-solid);color:var(--ink-2)}
 .sheet .acts.up button{flex:1;justify-content:center}.sheet .acts button.danger.sell{flex:1 1 auto;justify-content:center;max-width:none}.sheet .uph{font-size:.78em;color:var(--ink-2);margin:-2px 0 2px}
 .sheet .back{display:block;text-align:left;width:auto;margin-right:auto;background:none;border:0;color:var(--accent-ink);font:inherit;font-size:.85em;font-weight:700;padding:0 0 4px;min-height:0;cursor:pointer}
+.sheet.wk{width:min(460px,calc(100% - var(--gl) - 16px))}.sheet .wkc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}.sheet .wkc>.acts{display:grid;grid-template-columns:1fr 1fr;gap:4px}.sheet .wkc>.acts button{width:100%;justify-content:center;padding:0 6px}.sheet .wkc>.acts button:first-child{grid-column:1/-1}
+@media (max-width:360px){.sheet .wkc{grid-template-columns:1fr}.sheet .wkc>.acts{flex-direction:row;flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -350,7 +352,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.27 · 2026-10-27';
+const BUILD='v24.28 · 2026-10-27';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1071,7 +1073,7 @@ function startMove(id){closeSheet();if(!buildOn)setBuild(true);const err=pickUp(
 function toast(t){glog('ops',t);}
 
 /* ============ sheets ============ */
-function sheet(html){$('sheet').classList.toggle('wide',html.includes('class="wm"'));if(S.coverPending&&!html.includes('id="cvF"')){S.coverPending=false;closeToday();}const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
+function sheet(html){$('sheet').classList.toggle('wide',html.includes('class="wm"'));$('sheet').classList.toggle('wk',html.includes('class="wkc"'));if(S.coverPending&&!html.includes('id="cvF"')){S.coverPending=false;closeToday();}const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
 function closeSheet(){$('sheet').hidden=true;S.sel=null;if(S.coverPending){S.coverPending=false;closeToday();}/* dismissing the no-pharmacist question = closing for the day */}
 function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;if(!$('office').hidden)closeOffice();}
 function loadOf(o){const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.id).length:o.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+o.id||x.at==='claim:'+o.id).length:o.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+o.id).length:o.type==='bin'?S.scripts.filter(x=>x.at==='bin:'+o.id).length:['dropoff','register'].includes(o.type)?S.patients.filter(p=>p.q===o.id&&(p.state==='queued'||p.state==='toQueue')).length:0;
@@ -1111,8 +1113,8 @@ function idleWhy(w){const can=o=>passS(...staffTile(o));
   if(w.role==='clerk'){const ws=[...objsOf('dropoff'),...objsOf('register')];if(!ws.some(can))return 'can\'t get behind a window';if(!S.patients.some(p=>p.state==='queued'))return 'no one in line right now';if(ws.every(o=>busyS[o.id]))return 'waiting — every window is taken';return 'between tasks';}
   if(w.role==='rph'){if(!objsOf('verify').some(can))return 'can\'t reach the verify terminal';if(S.scripts.some(x=>x.stage==='tray'&&!x.claimed)&&objsOf('shelf').length&&!shelfFor())return 'waiting — will-call is full';if(S.scripts.some(x=>x.stage==='tray'&&!x.claimed)&&objsOf('verify').every(o=>busyS[o.id]))return 'waiting — the verify terminal is taken · a second one lets two pharmacists check';if(S.scripts.some(x=>x.stage==='bin'&&!x.claimed)&&objsOf('fill').every(o=>busyS[o.id]))return 'waiting — every fill station is taken · another station lets the pharmacist help fill';if(!S.scripts.some(x=>x.stage==='tray'&&!x.claimed))return 'nothing to check right now';return 'between tasks';}return 'nothing to do';}
 function openWorker(w,back){S.sel=null;SFX.click();const atO=S.objs.find(o=>busyS[o.id]===w.id);const [md,mj]=workerMood(w);const task=w.off?'off shift':w.plan?(w.plan.steps[w.step]&&w.plan.steps[w.step].label)||w.plan.name:'idle · '+idleWhy(w);const tmr=(S.sched[w.id]||['F','F','F','F','F','F'])[(S.day+1)%6];
-  sheet(`${back?'<button class="back" id="wkBack">‹ Staff</button>':''}<h3><span class="pp" style="margin-right:8px">${staffPortrait(w,46)}</span>${w.name} <small>${roleName(w)}${w.isYou?' · owner':''} · ${mj}</small></h3><div class="kv"><div><span>Energy</span>${energyBar(w)}<b>${energyPct(w)}%</b></div>${w.isYou||w.floater?'':`<div><span>Morale</span>${moraleBar(w)}<b>♥ ${Math.round(w.morale??80)}</b></div>`}<div><span>Mood</span><b>${md}</b></div><div><span>Wage</span><b>${w.isYou?'—':w.floater?fmt(FLOAT_DAY)+'/day':fmt(wageOf(w))+'/wk'+(w.raise?' · raised':'')}</b></div>${w.isYou||w.floater?'':`<div><span>Experience</span><b>${w.tenure||0} wk · +${Math.round(expBonus(w)*100)}% speed</b></div>`}<div><span>Now</span><b>${task}</b></div>${atO?`<div><span>At</span><button class="lnk" id="atObj">${TYPES[atO.type].name}${TYPES[atO.type].levels?' · '+TYPES[atO.type].levels[atO.level||0].n:''} ›</button></div>`:''}</div>
-    <div class="acts"><button id="dayoff" ${tmr==='O'?'disabled':''}>${tmr==='O'?'Off tomorrow':'Day off tomorrow'}</button><button id="shifts">Shifts</button>${w.isYou||w.floater?'':`<button id="bonus" ${S.cash<BONUS?'disabled':''}>Bonus ${fmt(BONUS)}</button><button id="raise">Raise +10%</button>`}${w.isYou?'':'<button id="fire" class="danger">Let go</button>'}</div>`);
+  sheet(`${back?'<button class="back" id="wkBack">‹ Staff</button>':''}<h3><span class="pp" style="margin-right:8px">${staffPortrait(w,46)}</span>${w.name} <small>${roleName(w)}${w.isYou?' · owner':''} · ${mj}</small></h3><div class="wkc"><div class="kv"><div><span>Energy</span>${energyBar(w)}<b>${energyPct(w)}%</b></div>${w.isYou||w.floater?'':`<div><span>Morale</span>${moraleBar(w)}<b>♥ ${Math.round(w.morale??80)}</b></div>`}<div><span>Mood</span><b>${md}</b></div><div><span>Wage</span><b>${w.isYou?'—':w.floater?fmt(FLOAT_DAY)+'/day':fmt(wageOf(w))+'/wk'+(w.raise?' · raised':'')}</b></div>${w.isYou||w.floater?'':`<div><span>Experience</span><b>${w.tenure||0} wk · +${Math.round(expBonus(w)*100)}% speed</b></div>`}<div><span>Now</span><b>${task}</b></div>${atO?`<div><span>At</span><button class="lnk" id="atObj">${TYPES[atO.type].name}${TYPES[atO.type].levels?' · '+TYPES[atO.type].levels[atO.level||0].n:''} ›</button></div>`:''}</div>
+    <div class="acts"><button id="dayoff" ${tmr==='O'?'disabled':''}>${tmr==='O'?'Off tomorrow':'Day off tomorrow'}</button><button id="shifts">Shifts</button>${w.isYou||w.floater?'':`<button id="bonus" ${S.cash<BONUS?'disabled':''}>Bonus ${fmt(BONUS)}</button><button id="raise">Raise +10%</button>`}${w.isYou?'':'<button id="fire" class="danger">Let go</button>'}</div></div>`);
   if(!w.isYou&&!w.floater){$('bonus').onclick=()=>{const e=giveBonus(w);if(e)toast(e);openWorker(w,back);renderHud();};$('raise').onclick=()=>{const e=giveRaise(w);if(e)toast(e);openWorker(w,back);};}
   if(back)$('wkBack').onclick=()=>{closeSheet();openOffice(back);};if($('atObj'))$('atObj').onclick=()=>openObj(atO);
   $('dayoff').onclick=()=>{const e=setShift(w,(S.day+1)%6,'O');if(e){toast(e);return;}SFX.click();glog('staff',`${w.name} gets tomorrow off.`);openWorker(w,back);};
@@ -1673,6 +1675,12 @@ document.addEventListener('gesturestart',e=>e.preventDefault());document.addEven
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
 })();
+
+/* Drag-to-scroll for cards and panels in forced landscape: iOS doesn't scroll a rotated box along its own axis, so we map the finger ourselves. */
+(function(){let t=null;const scroller=el=>{for(;el&&el!==document.body;el=el.parentElement){if(el.tagName==='CANVAS')return null;const cs=getComputedStyle(el);if(/(auto|scroll)/.test(cs.overflowY+cs.overflowX)&&(el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1))return el;}return null;};
+document.addEventListener('touchstart',e=>{t=null;if(!document.querySelector('.app.rot')||e.touches.length!==1)return;const el=scroller(e.target);if(!el)return;const p=e.touches[0];t={el,x:p.clientX,y:p.clientY,moved:false};},{passive:true});
+document.addEventListener('touchmove',e=>{if(!t)return;const p=e.touches[0],dx=p.clientX-t.x,dy=p.clientY-t.y;if(!t.moved&&Math.hypot(dx,dy)<6)return;t.moved=true;t.x=p.clientX;t.y=p.clientY;/* rotate(90deg): local y = −screen x, local x = screen y */t.el.scrollTop-=-dx;t.el.scrollLeft-=dy;e.preventDefault();},{passive:false});
+document.addEventListener('touchend',e=>{if(t&&t.moved)e.preventDefault();t=null;},{passive:false});})();
 </script>
 </body>
 </html>

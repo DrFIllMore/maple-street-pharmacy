@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.28 · 2026-10-27 — Cards stay still
+- Cards (staff, items, patients) no longer slide when you drag inside them. They now have room to show everything at once: a card can cover the chat log while it is open, but not the toolbar. Sideways scrolling is off, and when a very long card does scroll, the scroll stops at the card's edge.
+- Test: every item and staff card fits without scrolling on phone (430×873) and desktop (932×430).
+
 ## v24.27 · 2026-10-27 — Staff card and item card layout
 - Opening a person from Staff (⋯) now closes the Staff panel so their card is no longer hidden behind it. A **‹ Staff** link at the top of the card takes you back to the same tab.
 - Item cards: the upgrade gets its own full-width row ("⬆ Upgrade to … $cost") with a one-line note under it. Move, Rotate and Sell sit on the row below, so nothing is pushed off the card.
