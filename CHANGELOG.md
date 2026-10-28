@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.46 · 2026-10-28 — One warning, and existing stores fixed
+- The item card showed the "can't reach" warning twice (in the status line and again in red underneath), which pushed the buttons off the card. Now it's one short line: "Customers can't reach the front — tap ↻ to turn it" (or "move it" for a restroom, snack machine or OTC shelf).
+- Saved games with a backwards window, register or consult desk get it turned around when the game loads, with a chat note.
+
 ## v24.45 · 2026-10-28 — Backwards register
 - **Reported:** a second register was built, but no clerk worked it and customers kept lining up at the first one. **Cause:** it was rotated with its front facing the pharmacy, so customers couldn't reach it, and the game gave no warning. Two clerks stood idle while 10–12 people waited at the one working register. In a replay of that store: walk-outs at pick-up went from 18 a week to 0 once it was turned around.
 - A drop-off window, register or consult desk placed backwards is now **turned around automatically**, with a chat note, when that fixes it.
