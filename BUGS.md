@@ -28,3 +28,6 @@ New reports go in `reports/`, and you can load them with `tools/load-report.js` 
 | 21 | v24.56 (wk 7 report) | Break room never used; comfort items don't show capacity or use | Break threshold (65%) was never reached because the night refilled energy; cards mixed a station "busy %" with use counts | v24.57 |
 | 22 | v24.57 (wk 7 report) | Can't place or move a wall anywhere | A wall on the drop-off's staff tile cut it off; every later placement or move was then blamed for it and refused; the error went to the hidden chat | v24.58 |
 | 23 | v24.58 (wk 8 report) | Gazette "Week net +$6,827" but the bank said cash closed at −$2,205 | Equipment bought or upgraded wasn't in the week's money; bank warning said 4 red weeks instead of 4 more | v24.59 |
+| 24 | v25.4 (soak + review) | Reloading with a driveway broke the game; drive-thru dead after growing the store | Driveway lookup cache saved into the game file / not refreshed when tiles moved | v25.5 |
+| 25 | v25.4 (review) | Drive-thru jams on a dead-end lane; cars at the window got in-store events (restroom, sick on the pavement) | Exit path allowed to reuse the entry; drive-thru customers treated as an indoor line | v25.5 |
+| 26 | v25.4 (review) | Campaign spending missing from the week's money; Fast growth badge off by one | buyPromo never booked the cost; week counted before the increment | v25.5 |

@@ -1,5 +1,25 @@
 # Changelog
 
+## v25.5 · 2026-10-28 — Bug sweep and speed-up after the v25 updates
+**Bugs fixed** (found by a 24-week soak test with every feature on, and an independent code review)
+- **Reloading a game with a driveway broke the game.** The driveway lookup was saved into the game file, came back empty, and threw an error every frame. It's no longer saved, and old saves are cleaned up on load.
+- **The drive-thru stopped working after the store grew** (0 cars a week from then on). The driveway lookup didn't notice that every tile had moved. It now refreshes whenever the lot changes.
+- **A dead-end lane jammed the drive-thru.** If cars had to come back out the way they went in, a car leaving the window and the car waiting behind it blocked each other (one test week: 3 served, 51 lost). The lane now needs a separate way out, and the build hint says so.
+- **Drive-thru customers got in-store events.** Cars at the window could "use the restroom", buy snacks, wander into the pharmacy, or be sick on the pavement outside, leaving a mess no one could reach that kept draining trust. These events now only happen inside.
+- **Growing the store north or south could push driveway tiles onto the parking rows and storefront sidewalk.** Those tiles now come up for half back.
+- **Promotions and contract signings weren't in the week's money.** A $6,000 campaign could still count as a week "in the black" for XP. They now have their own Gazette line, "Promotions & contracts", and count toward the week's net.
+- **The "Fast growth" badge accepted a week-13 win.** It now needs week 12 or earlier.
+- **Cars that give up on the drive-thru drove straight across the lot.** They now follow the road out.
+- **Level unlocks now apply from the setup week,** so a returning player can build a drive-thru before the store first opens. When a lot unlocks at once, it's a single chat message instead of one per item.
+
+**Faster**
+- The chat box rebuilt its last 80 lines, and forced a full page layout, for every message: about 6 times a second at ▶▶. It now redraws at most once a frame. Simulation time per tick dropped from about 2.5 ms to about 1 ms, and this was a third of all CPU time.
+- Money formatting no longer uses the browser's slow locale formatter (the top bar calls it every frame).
+- Trees, lamps, cars and people outside the screen are skipped when drawing. The drive-thru lane check no longer builds a string from every driveway tile each frame.
+- Reports now include drawing time (average and worst frame).
+
+Tests: `test/dt-spur.js`; the soak test runs 24 weeks with parking, the drive-thru, two expansions, campaigns and levels, with no errors or stuck customers.
+
 ## v25.4 · 2026-10-28 — Career on the title page
 - The title page shows a career card under New game / Continue: level, title, XP bar, badges earned, stores won and prescriptions filled.
 - Tap it for the full Career page before you start: XP to the next level, the next two levels' unlocks, lifetime totals, and all 23 badges (tap a badge for what it takes and your progress). It fits on one screen.
