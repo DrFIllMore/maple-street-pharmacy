@@ -1,5 +1,10 @@
 # Changelog
 
+## v25.4 · 2026-10-28 — Career on the title page
+- The title page shows a career card under New game / Continue: level, title, XP bar, badges earned, stores won and prescriptions filled.
+- Tap it for the full Career page before you start: XP to the next level, the next two levels' unlocks, lifetime totals, and all 23 badges (tap a badge for what it takes and your progress). It fits on one screen.
+- In a game, the same page is still under ⭐ Level in the bottom bar.
+
 ## v25.3 · 2026-10-28 — Levels unlock everything; more marketing
 **Levels, not weeks, open new things**
 - Nothing unlocks by week or trust any more. Each level opens items, promotions, or both:

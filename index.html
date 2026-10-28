@@ -164,6 +164,8 @@ button,.hud{touch-action:manipulation}
 .title .btns{display:flex;gap:8px;margin-top:10px}
 .title .big{height:48px;padding:0 22px;font-size:15px;box-shadow:0 8px 20px rgba(0,0,0,.3)}
 .title .big.ghost{background:rgba(255,253,247,.12);color:#f3efe4;border:1px solid rgba(255,255,255,.3)}
+.title .tcareer{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:6px 12px;color:#eaf4ef;font:inherit;font-weight:700;cursor:pointer}.title .tcareer .lvb{width:26px;height:26px;border-radius:50%;background:#1d9e75;color:#fff;display:grid;place-items:center;font-weight:900}.title .tcareer small{display:block;font-size:11px;color:#bcd4c9;font-weight:700}.title .tcareer .tb{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.2);overflow:hidden;margin-top:3px;width:150px}.title .tcareer .tb i{display:block;height:100%;background:#5dcaa5}
+#careerPop{z-index:40}#careerPop .rev{position:relative}#careerPop .x{position:absolute;right:8px;top:8px}
 .title .small{display:flex;gap:14px;margin-top:6px;font-size:11px;font-weight:700;color:#9fb8ad}
 .title .small button{color:#cfe3db;text-decoration:underline;font-size:11px;height:32px}
 .title .ver{position:absolute;right:12px;bottom:8px;font-family:var(--mono);font-size:10px;color:#7f948a}
@@ -358,9 +360,11 @@ button,.hud{touch-action:manipulation}
     <h1>Maple Street Pharmacy</h1>
     <p class="tag">a small pharmacy · a big squeeze</p>
     <div class="btns"><button class="big ghost" id="tUpd" hidden>Update available · reload</button><button class="big ghost" id="tCont" hidden>Continue</button><button class="big" id="tNew">New game</button></div>
+    <button class="tcareer" id="tCareer" aria-label="Career and badges"></button>
     <div class="small"><button id="tSound">Sound: on</button></div>
     <div class="ver" id="tVer"></div>
   </div>
+  <div class="review" id="careerPop" hidden><div class="rev paper"><button class="x" id="careerX" aria-label="Close">×</button><div id="careerBody"></div></div></div>
   <div class="review" id="review" hidden><button class="floorx" id="floorX" hidden>Floor ↗</button><div class="rev paper" id="rev"></div></div>
   <button class="resume" id="resume" hidden></button>
   <div class="review dbgp" id="dbg" hidden><div class="rev paper">
@@ -382,7 +386,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v25.3 · 2026-10-28';
+const BUILD='v25.4 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -2079,10 +2083,10 @@ function careerSeated(){const n=S.patients.filter(p=>p.seat&&p.state==='waiting'
 let cheerT=null;function cheer(icon,title,sub){const el=$('cheer');if(!el)return;el.innerHTML=`<i>${icon}</i><span><b>${title}</b><small>${sub||''}</small></span>`;el.hidden=false;el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(cheerT);cheerT=setTimeout(()=>{el.hidden=true;},4200);try{SFX.bell();}catch(e){}}
 function renderLevel(){const b=$('lvN');const L=careerLevel();if(b)b.textContent=L;const bar=$('lvBar');if(bar){const f=L<LV_MAX?(CAREER.xp-lvXP(L))/(lvXP(L+1)-lvXP(L)):1;bar.style.width=Math.round(Math.max(0,Math.min(1,f))*100)+'%';}}
 let achSel=null;
-function careerHtml(){const L=careerLevel(),cur=lvXP(L),nx=L<LV_MAX?lvXP(L+1):null;const pct=nx?Math.min(100,(CAREER.xp-cur)/(nx-cur)*100):100;const nextItems=L<LV_MAX?(LV_ITEMS[L+1]||[]):[];const got=ACH.filter(a=>CAREER.ach[a.id]).length;
+function careerHtml(full){const L=careerLevel(),cur=lvXP(L),nx=L<LV_MAX?lvXP(L+1):null;const pct=nx?Math.min(100,(CAREER.xp-cur)/(nx-cur)*100):100;const nextItems=L<LV_MAX?(LV_ITEMS[L+1]||[]):[];const got=ACH.filter(a=>CAREER.ach[a.id]).length;
   const sel=ACH.find(a=>a.id===achSel);const selTxt=sel?`<b>${sel.ic} ${sel.t}</b> · ${sel.d} ${CAREER.ach[sel.id]?`<span class="pos">Earned (week ${CAREER.ach[sel.id]})</span>`:`<span class="num">${Math.min(sel.goal,Math.round(sel.v()||0)).toLocaleString()} / ${sel.goal.toLocaleString()}</span>`} · ${sel.xp} XP`:'Tap a badge to see what it takes. XP: +1 per prescription, +25 a week in the black, +15 a smooth week, plus each badge.';
   return `<h2>Career <small>Level ${L} · ${LV_TITLES[L-1]}</small></h2>
-  <div class="tile lvcard"><div class="pay"><div><span>XP</span><b class="num">${CAREER.xp.toLocaleString()}${nx?` · ${(nx-CAREER.xp).toLocaleString()} to level ${L+1}`:''}</b></div></div><div class="lvtrk"><i style="width:${pct}%"></i></div><div class="foot">This store: +${(S.runXp||0).toLocaleString()} XP.</div>${[1,2].map(i=>L+i).filter(l=>l<=LV_MAX).map(l=>{const o=levelOpens(l);return `<div class="foot" style="margin-top:3px">🔒 Level ${l} at ${lvXP(l).toLocaleString()} XP: ${o.length?o.join(', '):'a new title'}</div>`;}).join('')}</div>
+  <div class="tile lvcard"><div class="pay"><div><span>XP</span><b class="num">${CAREER.xp.toLocaleString()}${nx?` · ${(nx-CAREER.xp).toLocaleString()} to level ${L+1}`:''}</b></div></div><div class="lvtrk"><i style="width:${pct}%"></i></div><div class="foot">${full?`${CAREER.tot.wins||0} store${(CAREER.tot.wins||0)===1?'':'s'} won · ${(CAREER.tot.rx||0).toLocaleString()} prescriptions filled · ${(CAREER.tot.dt||0).toLocaleString()} drive-thru pick-ups.`:`This store: +${((S&&S.runXp)||0).toLocaleString()} XP.`}</div>${[1,2].map(i=>L+i).filter(l=>l<=LV_MAX).map(l=>{const o=levelOpens(l);return `<div class="foot" style="margin-top:3px">🔒 Level ${l} at ${lvXP(l).toLocaleString()} XP: ${o.length?o.join(', '):'a new title'}</div>`;}).join('')}</div>
   <div class="tile"><small>Badges · ${got} of ${ACH.length}</small><div class="foot" id="achD" style="min-height:2.4em;line-height:1.2">${selTxt}</div><div class="achg">${ACH.map(a=>{const done=!!CAREER.ach[a.id];const p=done?100:Math.round(Math.min(1,(a.v()||0)/a.goal)*100);return `<button class="ach ${done?'done':''} ${achSel===a.id?'sel':''}" data-ach="${a.id}" aria-label="${a.t}"><span>${a.ic}</span>${done?'':`<em style="width:${p}%"></em>`}</button>`;}).join('')}</div></div>`;}
 
 /* ============ land: buy the lots next door, expand the store (v25) ============
@@ -2138,6 +2142,12 @@ function promoDay(served){const tb=promoBoost();if(!tb||!S.promoRun)return;const
 function promoDone(k){const r=S.promoRun&&S.promoRun[k];if(!r)return;const extra=Math.round(r.extra);const val=Math.round(extra*Math.max(10,scriptMargin()));const reg=Math.round((S.reg||0)-r.reg0);
   const line=PROMOS[k].boost?`${r.n} ended: about ${extra} extra customers ≈ ${fmt(val)} margin on a ${fmt(r.cost)} campaign${val>=r.cost?' — paid for itself.':'.'}`:`${r.n} ended.${reg?` Regulars ${reg>0?'+':''}${reg} since it started.`:''}`;
   glog('money',line);(S.promoLog=S.promoLog||[]).unshift({n:r.n,cost:r.cost,extra,val,wk:r.wk,boost:!!PROMOS[k].boost,reg});S.promoLog=S.promoLog.slice(0,5);delete S.promoRun[k];}
+/* career on the title page: level, XP bar, badges; tap for the full page */
+function renderTitleCareer(){const b=$('tCareer');if(!b)return;const L=careerLevel(),nx=L<LV_MAX?lvXP(L+1):null;const f=nx?(CAREER.xp-lvXP(L))/(nx-lvXP(L)):1;const got=ACH.filter(a=>CAREER.ach[a.id]).length;
+  b.innerHTML=`<span class="lvb">${L}</span><span><span>${LV_TITLES[L-1]}</span><small>${CAREER.xp.toLocaleString()} XP · ${got}/${ACH.length} badges · ${CAREER.tot.wins||0} win${(CAREER.tot.wins||0)===1?'':'s'} · ${(CAREER.tot.rx||0).toLocaleString()} scripts</small><span class="tb"><i style="width:${Math.round(Math.max(0,Math.min(1,f))*100)}%"></i></span></span><span aria-hidden="true">›</span>`;
+  b.onclick=()=>{try{SFX.click();}catch(e){}openCareerPop();};}
+function openCareerPop(){const el=$('careerPop');$('careerBody').innerHTML=careerHtml(true);el.hidden=false;if(typeof fitRev==='function')requestAnimationFrame(()=>{try{fitRev();}catch(e){}});
+  el.querySelectorAll('[data-ach]').forEach(x=>x.onclick=()=>{achSel=x.dataset.ach;openCareerPop();});$('careerX').onclick=()=>{el.hidden=true;};}
 /* ============ frame ============ */
 let perf=0,last=0,fps=0,fpsN=0,fpsT=0;
 let lastDraw=0;
@@ -2250,7 +2260,7 @@ setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();}
 /* ============ save / title / start ============ */
 function saveGame(){let objs=S.objs;if(held&&!S.objs.includes(held.o))objs=[...S.objs,{...held.o,x:held.ox,y:held.oy,rot:held.orot}];try{localStorage.setItem('msp-save',JSON.stringify({S:{...S,objs},GL:GL.slice(-120),PLANS}));}catch(e){}}
 function loadGame(){hourSnap=null;try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){for(const w of d.S.staff||[]){if(w.energy===undefined)w.energy=Math.round((1-Math.min(6,w.fatigue||0)/6)*100);if(w.morale===undefined)w.morale=80;if(w.tenure===undefined)w.tenure=Math.max(0,(d.S.week||1)-1);}if(d.S.reg==null){d.S.reg=REG_START+Math.min(200,(d.S.week-1)*12);d.S.hood=1;}GL.push(...(d.GL||[]));/* insurer rates always come from the current build */return d.S;}}catch(e){}return null;}
-function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
+function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;renderTitleCareer();$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
   $('tSound').onclick=()=>{setSound(!AU.on);$('tSound').textContent='Sound: '+(AU.on?'on':'off');$('mSound').textContent='Sound: '+(AU.on?'on':'off');audioInit();};
   const go=(fresh_)=>{audioInit();setMusic('title');duck();SFX.bell();$('title').hidden=true;$('app').classList.remove('titled');
     if(fresh_){S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();}
