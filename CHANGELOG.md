@@ -1,5 +1,10 @@
 # Changelog
 
+## v24.55 · 2026-10-28 — Staff tab: less to read
+- The three paragraphs of hire advice are now **one line** above the Hire buttons: where customers wait longest and the single best fix. For example: "Customers wait longest for filling (~50 min). Best fix: upgrade fill stations to the Automatic counter (Supplies) or build another fill station." Waits over 90 minutes are shown in hours.
+- Each hire button carries a short verdict in place of the job description: **✓ pays for itself**, **~ helps a little**, or **✕ not needed now**.
+- Shorter labels: part-time "Mon · Wed · Fri"; day cover "paid per booked day"; "Keep everyone rested: tired staff get the next day off when someone can cover"; grid tip "Tap a day: Full · AM · PM · Off."
+
 ## v24.54 · 2026-10-28 — Upgrades work from Supplies; staff take breaks; stuck prescriptions clear
 **From the week-7 report**
 - **Bug: the Upgrades list in Supplies did nothing.** Tapping "Fill station → Automatic counter" threw an error (10 times in your week 2): the button looked items up by number, but item ids are text. Your fill stations stayed on the slow counting tray, and the bin grew to 73 baskets. Fixed. Upgrading from the item card always worked. Supplies now also says when you're short of cash.

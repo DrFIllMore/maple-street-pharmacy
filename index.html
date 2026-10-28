@@ -291,7 +291,7 @@ button,.hud{touch-action:manipulation}
 .bck-micr{margin-top:10px;font-family:ui-monospace,Menlo,monospace;letter-spacing:.12em;font-size:.82em;color:#2d3b34}
 .bck-stamp{position:absolute;right:24%;top:40%;transform:rotate(-12deg);border:3px solid #b3261e;color:#b3261e;font-family:ui-monospace,Menlo,monospace;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:2px 10px;border-radius:4px;opacity:.85;background:rgba(255,255,255,.35)}
 .bck-note h2{margin:12px 0 4px}.bck-note p{margin:4px 0}
-.hadv{display:grid;gap:3px;font-size:.82em;margin:2px 0 6px;color:var(--ink-2)}.hadv>div{line-height:1.3}.hadv .good b{color:var(--good)}.hadv .bad b{color:var(--bad)}
+.hadv{display:block;font-size:.85em;line-height:1.35;margin:4px 0 6px;padding:6px 8px;border-radius:8px;background:var(--accent-soft,#e3f1e9);color:var(--ink)}.hadv>div{line-height:1.3}.hadv .good b{color:var(--good)}.hadv .bad b{color:var(--bad)}
 .gzn{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;border-top:2px solid #1f1b16;border-bottom:1px solid #1f1b16;padding:5px 2px;margin-top:6px;font-family:var(--sans);font-size:.82em}
 .gzn>b{text-transform:uppercase;letter-spacing:.08em;font-size:.85em}.gzn>span{font-weight:700}.gzn>span small{font-weight:400;color:#5b5348;margin-left:5px}.gzn>em{font-style:normal}
 .ig.igbig img{height:clamp(110px,11em,180px)}
@@ -374,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.54 · 2026-10-28';
+const BUILD='v24.55 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1362,6 +1362,16 @@ function hireAdvice(r){const h=(S.hist||[])[S.hist.length-1];if(!h||!h.qw)return
   const head=`the bottleneck — customers waited ~${mins(sc[r])} min at ${STAGE_OF[r]}, ${lost} gave up there`;
   if(share)return {v:'',t:`${head}. Every ${r==='tech'?'fill station':r==='rph'?'verify terminal':'window'} already has someone: ${r==='tech'?'another fill station (or the automatic counter)':r==='rph'?'a barcode scanner or a second terminal':'another window'} helps more than a hire (a hire adds ~+${gain}).`};
   return {v:pays?'good':even?'':'bad',t:`${head}. Likely +${gain} scripts ≈ ${fmt(val)}/wk vs ${fmt(wage)} wage${pays?' — pays for itself.':even?' — about breaks even; part-time may fit better.':' — doesn\'t pay yet.'}`};}
+/* one-line staffing summary for the Staff tab: where customers wait longest and the single best fix */
+const WAIT_AT={clerk:'at the windows',tech:'for filling',rph:'for the pharmacist\'s check'};
+const fmtWait=m=>m>=90?`~${Math.round(m/60)} h`:`~${Math.round(m/5)*5} min`;
+function staffHeadline(){const h=(S.hist||[])[S.hist.length-1];if(!h||!h.qw)return 'After your first week this shows where customers wait longest and what would help.';
+  const sc={clerk:(h.qw.win||0)+(h.qw.pick||0),tech:h.qw.bin||0,rph:h.qw.tray||0};const top=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];const m=sc[top]*5;
+  if(m<30)return 'Waits are short — no hire needed right now.';
+  const n=r=>S.staff.filter(w=>w.role===r&&!w.floater).length;
+  const fix=top==='tech'?(n('tech')>=objsOf('fill').length?(objsOf('fill').some(o=>!o.level)?'upgrade fill stations to the Automatic counter (Supplies) or build another fill station':'build another fill station'):'hire a technician'):top==='rph'?(objsOf('verify').some(o=>!o.level)?'upgrade the verify terminal to the Barcode scanner':'a second verify terminal and pharmacist'):(n('clerk')>=objsOf('dropoff').length+objsOf('register').length?'build another window or register':'hire a clerk');
+  return `<b>Customers wait longest ${WAIT_AT[top]}</b> (${fmtWait(m)}). Best fix: ${fix}.`;}
+const VERDICT={good:['✓ pays for itself','a pri'],'':['~ helps a little','a pri'],bad:['✕ not needed now','a']};
 function hireStaff(r,pt){if(S.cash<HIRE_FEE)return toast('Not enough cash for the hiring fee.');const p=mkStaff(freshName(),r);if(pt){p.pt=true;S.sched[p.id]=[...PT_DAYS];}if(S.running){p.startWk=S.week;p.startDay=S.day+1;}S.cash-=HIRE_FEE;if(S.running)S.wk.hireFees=(S.wk.hireFees||0)+HIRE_FEE;else S.preWk={...(S.preWk||{}),hireFees:((S.preWk||{}).hireFees||0)+HIRE_FEE};S.staff.push(p);SFX.cash();glog('staff',`${p.name} hired as ${pt?'part-time ':''}${ROLE[r].toLowerCase()}, ${fmt(pt?Math.round(WAGES[r]/2):WAGES[r])}/week${pt?' (Mon, Wed, Fri)':''} (${fmt(HIRE_FEE)} agency fee)${S.running?'. Starts tomorrow.':'.'}`);saveGame();return p;}
 /* Capacity: who spent this week's time where. One stacked bar per worker (share of their on-shift time), idle %, jobs per hour,
    and "off-role" time (work outside their own area, e.g. the pharmacist at the counter). Three plain-language notes at most. */
@@ -1447,11 +1457,10 @@ function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedul
         return `<div class="tm"><span class="who"><span class="pp">${staffPortrait(w,28)}</span><span class="nm"><b>${w.name}</b><small>${title(w)}</small><small class="st ${sc2}">${st}</small></span></span>
           <span class="em">${battery(w.floater?100:e,w.floater?'#c9c2b2':enCol(e))}<b style="color:${w.floater?'var(--ink-2)':enCol(e)}">${w.floater?'—':e+'%'}</b>${w.isYou||w.floater?'':`${moraleBox(m,moCol(m))}<b style="color:${moCol(m)}"><span class="hrt">♥</span>${m}</b>`}</span>
           ${cells}<span class="wg">${wage(w)}</span><button class="a more" data-more="${w.id}" aria-label="More about ${w.name}">⋯</button></div>`;}).join('');
-      sb=`<div class="team">${head}${rows}</div><div class="foot">Tap a day to cycle Full · AM · PM · Off (half days 55% wage). Energy: busy day about −30, quiet about −20, each night +23, a day off +45 more, Sunday +20. ⋯ = bonus, raise, let go.</div>`
-        +`<div class="lbl">Hire <span class="sub">· ${fmt(HIRE_FEE)} agency fee, starts next day</span></div><div class="hire">${['tech','clerk','rph'].map(r=>{const a=hireAdvice(r);return `<button class="a pri" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${S.cash<WAGES[r]*2?`needs ${fmt(WAGES[r]*2)} cash (two weeks' pay)`:(r==='tech'?'fills baskets':r==='clerk'?'drop-off, phones, register':'checks, consults, covers anything')}</small></button>`;}).join('')}${['tech','clerk'].map(r=>`<button class="a" data-h="pt-${r}" ${S.cash<WAGES[r]?'disabled':''}>Part-time ${ROLE[r].toLowerCase()} · ${fmt(Math.round(WAGES[r]/2))}/wk<small>Mon, Wed, Fri · change days in the grid</small></button>`).join('')}</div>
-        <div class="hadv">${['tech','clerk','rph'].map(r=>{const a=hireAdvice(r);return `<div class="${a.v}"><b>${ROLE[r]}:</b> ${a.t}</div>`;}).join('')}</div>
-        <div class="lbl">Day cover <span class="sub">· no fee, paid only for days booked in the grid</span></div><div class="hire">${['rph','tech','clerk'].map(r=>S.staff.some(w=>w.floater&&w.role===r)?'':`<button class="a" data-h="float-${r}">${r==='rph'?'Floater RPh':'Temp '+ROLE[r].toLowerCase()} · ${fmt(TEMP_DAY[r])}/day<small>${r==='rph'?'gray coat · covers the owner':'covers sick days and days off'}</small></button>`).join('')}</div>
-        <div class="lever"><div><div class="n">Keep everyone rested ${S.autoRest?'<span class="stamp pos">on</span>':''}</div><div class="h">Each evening, anyone running low (under 60% after the night's rest) gets tomorrow off when someone else in that role works, or a day-cover is booked if cash allows (${fmt(TEMP_DAY.tech)}–${fmt(TEMP_DAY.rph)}). Their regular schedule comes back the day after.</div></div><button class="a ${S.autoRest?'':'pri'}" id="autoRest">${S.autoRest?'Turn off':'Turn on'}</button></div>`;}
+      sb=`<div class="team">${head}${rows}</div><div class="foot">Tap a day: Full · AM · PM · Off. ⋯ = bonus, raise, let go.</div>`
+        +`<div class="hadv">${staffHeadline()}</div><div class="lbl">Hire <span class="sub">· ${fmt(HIRE_FEE)} fee, starts next day</span></div><div class="hire">${['tech','clerk','rph'].map(r=>{const a=hireAdvice(r);return `<button class="${VERDICT[a.v][1]}" data-h="${r}" ${S.cash<WAGES[r]*2?'disabled':''}>${ROLE[r]} · ${fmt(WAGES[r])}/wk<small>${S.cash<WAGES[r]*2?`needs ${fmt(WAGES[r]*2)} cash`:VERDICT[a.v][0]}</small></button>`;}).join('')}${['tech','clerk'].map(r=>`<button class="a" data-h="pt-${r}" ${S.cash<WAGES[r]?'disabled':''}>Part-time ${ROLE[r].toLowerCase()} · ${fmt(Math.round(WAGES[r]/2))}/wk<small>Mon · Wed · Fri</small></button>`).join('')}</div>
+        <div class="lbl">Day cover <span class="sub">· paid per booked day</span></div><div class="hire">${['rph','tech','clerk'].map(r=>S.staff.some(w=>w.floater&&w.role===r)?'':`<button class="a" data-h="float-${r}">${r==='rph'?'Floater RPh':'Temp '+ROLE[r].toLowerCase()} · ${fmt(TEMP_DAY[r])}/day<small>${r==='rph'?'covers the owner':'sick days, days off'}</small></button>`).join('')}</div>
+        <div class="lever"><div><div class="n">Keep everyone rested ${S.autoRest?'<span class="stamp pos">on</span>':''}</div><div class="h">Tired staff get the next day off when someone can cover.</div></div><button class="a ${S.autoRest?'':'pri'}" id="autoRest">${S.autoRest?'Turn off':'Turn on'}</button></div>`;}
     body=`<h2>Staff <small>${fmt(wages())}/week${(()=>{const h=(S.hist||[])[S.hist.length-1];const c=h?costPerRx(wages(),h.served):null;return c==null?'':` · ${fmt(c)} per Rx <span class="${c<=COST_OK?'pos':c<=COST_HIGH?'':'neg'}">(${c<=COST_OK?'healthy':c<=COST_HIGH?'high':'too high: under $20 is healthy'})</span>`;})()}</small></h2>${tabs}${sb}`;}
   if(officeTab==='promo'){const rv=S.rivalOn?Math.round((S.promo.pricematch>0?0:S.rival)*100):0;
     body=`<h2>Promote <small>bring people in</small></h2>
