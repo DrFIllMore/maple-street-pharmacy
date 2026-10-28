@@ -1,0 +1,406 @@
+<title>Maple Street Lot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one screen. Status bar on top, the lot fills the middle, tool dock at the bottom; Career slides over from the right. Tokens match the game. */
+:root{
+  --bg:#cfdad0; --panel:#fffdf7; --ink:#243028; --ink-2:#66736b; --line:#c9d3ca;
+  --accent:#1d9e75; --accent-ink:#085041; --accent-soft:#e1f5ee; --owed:#ba7517; --bad:#a32d2d; --bad-soft:#fcebeb; --good:#3b6d11; --gold:#c98a12;
+  --sans:"Nunito",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141a16; --panel:#1e2521; --ink:#eef1ec; --ink-2:#a2aca5; --line:#36403a;
+  --accent:#5dcaa5; --accent-ink:#e1f5ee; --accent-soft:#0f3a2e; --owed:#fac775; --bad:#f09595; --bad-soft:#3f1a1a; --good:#c0dd97; --gold:#f2c35b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a16; --panel:#1e2521; --ink:#eef1ec; --ink-2:#a2aca5; --line:#36403a;
+  --accent:#5dcaa5; --accent-ink:#e1f5ee; --accent-soft:#0f3a2e; --owed:#fac775; --bad:#f09595; --bad-soft:#3f1a1a; --good:#c0dd97; --gold:#f2c35b; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;overflow:hidden;-webkit-tap-highlight-color:transparent;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 10px;font-weight:800}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.chip{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px 10px;font-weight:800;min-width:0}
+.chip small{color:var(--ink-2);font-weight:700;font-size:.72em;letter-spacing:.05em;text-transform:uppercase}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.lvl{cursor:pointer}
+.lvl .badge{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:900;font-size:14px;flex:none}
+.lvl .xp{display:grid;gap:3px;min-width:0}
+.lvl .xp b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.92em}
+.trk{height:6px;border-radius:3px;background:var(--line);overflow:hidden;width:120px;max-width:30vw}
+.trk i{display:block;height:100%;background:var(--accent);transition:width .4s}
+.lane.ok{color:var(--accent-ink);background:var(--accent-soft)}
+.lane.bad{color:var(--bad);background:var(--bad-soft)}
+.sp{margin-left:auto;display:flex;gap:4px}
+.sp button{padding:5px 9px}
+.sp button.on,.seg button.on,.tool.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stage{position:relative;min-height:0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.hint{position:absolute;left:10px;bottom:10px;right:10px;pointer-events:none;display:flex}
+.hint span{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px 10px;font-weight:700;font-size:.9em;max-width:100%}
+.hint span.err{color:var(--bad);border-color:var(--bad)}
+.dock{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;border-radius:0}
+.tool{display:flex;align-items:center;gap:6px}
+.tool .lk{font-size:.75em;color:var(--ink-2);font-weight:800}
+.tool .pr{font-family:var(--mono);font-size:.8em;color:var(--ink-2)}
+.tool.on .pr,.tool.on .lk{color:#fff}
+.zoom{margin-left:auto;display:flex;gap:4px}
+/* career panel */
+.panel{position:absolute;top:0;right:0;bottom:0;width:min(360px,92%);background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .25s;z-index:5}
+.panel.open{transform:none}
+.panel header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.panel header h2{margin:0;font-size:1.05em;flex:1}
+.tabs{display:flex;gap:4px;padding:8px 12px 0}
+.tabs button{padding:4px 10px;font-size:.88em}
+.tabs button.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.pbody{overflow:auto;padding:10px 12px 14px;display:grid;gap:8px;align-content:start;min-height:0;flex:1}
+.lvcard{display:grid;gap:6px;padding:10px;border-radius:12px;background:var(--accent-soft)}
+.lvcard .t{display:flex;align-items:baseline;gap:8px}
+.lvcard .t b{font-size:1.25em}
+.lvcard .trk{width:100%;max-width:none;height:8px}
+.small{font-size:.86em;color:var(--ink-2);font-weight:700}
+.row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border-bottom:0}
+.row .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:900;background:var(--line);color:var(--ink-2);font-size:.85em}
+.row.done .ic{background:var(--accent);color:#fff}
+.row.now .ic{background:var(--gold);color:#fff}
+.row b{display:block;font-size:.95em}
+.row small{color:var(--ink-2);font-weight:600;display:block;line-height:1.3}
+.row .r{font-family:var(--mono);font-size:.82em;color:var(--ink-2);text-align:right;white-space:nowrap}
+.row .trk{width:100%;max-width:none;height:5px;margin-top:4px}
+.plan h3{margin:6px 0 2px;font-size:.95em}
+.plan p{margin:0;line-height:1.45;font-size:.9em}
+.plan ul{margin:2px 0 0;padding-left:18px;line-height:1.45;font-size:.9em}
+/* sheet */
+.sheet{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(380px,calc(100% - 24px));background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px;z-index:4;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.sheet h3{margin:0;font-size:1.05em;display:flex;justify-content:space-between;gap:8px}
+.sheet p{margin:0;line-height:1.4;font-size:.92em}
+.sheet .acts{display:flex;gap:6px;flex-wrap:wrap}
+.sheet .acts .pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toasts{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:grid;gap:6px;z-index:6;pointer-events:none;width:min(360px,calc(100% - 24px))}
+.toast{background:var(--ink);color:var(--panel);border-radius:12px;padding:8px 12px;font-weight:800;display:flex;gap:10px;align-items:center;animation:pop .3s ease-out}
+.toast i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;flex:none}
+.toast small{display:block;font-weight:600;opacity:.8}
+@keyframes pop{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.toast{animation:none}.panel{transition:none}}
+@media (max-width:560px){.tool .pr{display:none}.lvl .xp b{max-width:34vw}}
+@media (max-height:460px){.tool .pr{display:none}.dock button,.bar .chip,.sp button{padding:4px 8px;font-size:.88em}.lvl .badge{width:24px;height:24px}.dock{flex-wrap:nowrap;overflow:hidden}.zoom #zOut,.zoom #zIn{display:none}}
+</style>
+
+<div class="app">
+  <div class="bar">
+    <div class="chip lvl" id="lvlChip" role="button" tabindex="0" aria-label="Open career"><span class="badge" id="lvN">3</span><span class="xp"><b id="lvT">Trusted Name</b><span class="trk"><i id="lvBar"></i></span></span></div>
+    <div class="chip"><small>Cash</small><b class="num" id="cash">$0</b></div>
+    <div class="chip lane" id="lane"><small>Drive-thru</small><b id="laneT">—</b></div>
+    <div class="chip"><small>Served</small><b class="num" id="served">0</b></div>
+    <div class="sp" role="group" aria-label="Speed"><button id="sp0">❚❚</button><button id="sp1" class="on">▶</button><button id="sp3">▶▶</button></div>
+  </div>
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="toasts" id="toasts"></div>
+    <div class="hint"><span id="hint">Outside view: the lot, the street and the land next door.</span></div>
+    <div class="sheet" id="sheet" hidden></div>
+    <aside class="panel" id="panel" aria-label="Career">
+      <header><h2>Career</h2><button id="pClose" aria-label="Close">✕</button></header>
+      <div class="tabs"><button data-tab="level" class="on">Level</button><button data-tab="ach">Achievements</button><button data-tab="plan">How it fits</button></div>
+      <div class="pbody" id="pbody"></div>
+    </aside>
+  </div>
+  <div class="dock">
+    <div class="seg" role="group" aria-label="View"><button id="vIn">Inside</button><button id="vOut" class="on">Outside</button></div>
+    <button class="tool" data-tool="drive">Driveway <span class="pr">$40</span></button>
+    <button class="tool" data-tool="window">Window <span class="pr">$3.5k</span></button>
+    <button class="tool" data-tool="erase">Remove</button>
+    <button class="tool" data-tool="land">Land</button>
+    <button id="clerk2">+ Window clerk</button>
+    <div class="zoom"><button id="zOut" aria-label="Zoom out">−</button><button id="zIn" aria-label="Zoom in">+</button><button id="career">Career</button></div>
+  </div>
+</div>
+
+<script>
+(()=>{
+/* ---------- world ---------- */
+const GW=22,GD=18,STREET=[19,20],SIDEWALK=18;
+const LEVELS=[{t:'New Owner',xp:0},{t:'Neighborhood Pharmacist',xp:150},{t:'Trusted Name',xp:400},{t:'Community Anchor',xp:800},{t:'Maple Street Institution',xp:1400},{t:'Regional Name',xp:2200}];
+const UNLOCK={drive:2,window:3,land:4,expand:5,store2:6};
+const UNLOCK_TXT={1:'Run the store',2:'Pave a driveway',3:'Drive-thru window',4:'Buy the land next door',5:'Expand the floor onto your land',6:'Open a second store'};
+const COST={drive:40,window:3500,clerk2:140};
+const ACH=[
+ {id:'firstcar',t:'First drive-thru customer',d:'Serve one car at the window.',goal:1,stat:'cars',xp:50},
+ {id:'pave10',t:'Paved the way',d:'Lay 10 driveway tiles.',goal:10,stat:'paved',xp:40},
+ {id:'rush',t:'Rush hour',d:'Have 5 cars lined up at once.',goal:5,stat:'maxLine',xp:80},
+ {id:'streak',t:'Nobody drove off',d:'Serve 25 cars in a row without one driving past.',goal:25,stat:'streak',xp:100},
+ {id:'cars50',t:'Drive-thru regulars',d:'Serve 50 cars.',goal:50,stat:'cars',xp:120},
+ {id:'walk100',t:'Steady counter',d:'Serve 100 walk-in customers.',goal:100,stat:'walk',xp:80},
+ {id:'land',t:'Land owner',d:'Buy a lot next to the store.',goal:1,stat:'parcels',xp:100},
+ {id:'grow',t:'Room to grow',d:'Expand the floor onto your land.',goal:1,stat:'expanded',xp:150},
+ {id:'lv5',t:'Maple Street Institution',d:'Reach level 5.',goal:5,stat:'level',xp:0}];
+
+const G={
+  b:{x0:2,y0:4,x1:13,y1:12},
+  door:{x:13,y:10},
+  win:{x:13,y:6},
+  drive:new Set(),
+  parcels:{
+    N:{name:'North lot',x0:2,y0:0,x1:17,y1:3,price:18000,expand:9000,state:'sale'},
+    S:{name:'South lot',x0:2,y0:13,x1:17,y1:17,price:15000,expand:9000,state:'sale'}},
+  cash:24000,xp:720,level:3,clerks:1,
+  st:{cars:0,walk:0,paved:0,maxLine:0,streak:0,parcels:0,expanded:0,level:3,drovePast:0,walkLost:0},
+  ach:new Set(),
+  cars:[],peds:[],staff:[],speed:1,view:'out',tool:null,
+  t:0,nextCar:1.5,nextPed:1};
+const K=(x,y)=>x+','+y;
+/* example start: a drive-thru already built (level 3) */
+for(const [x,y] of [[18,9],[17,9],[16,9],[15,9],[14,9],[14,8],[14,7],[14,6],[14,5],[14,4],[15,4],[16,4],[17,4],[18,4]])G.drive.add(K(x,y));
+G.st.paved=G.drive.size;G.ach.add('pave10');
+
+const inB=(x,y)=>x>=G.b.x0&&x<=G.b.x1&&y>=G.b.y0&&y<=G.b.y1;
+const walkway=(x,y)=>y===G.door.y&&x>G.b.x1&&x<SIDEWALK;
+function parcelAt(x,y){for(const k in G.parcels){const p=G.parcels[k];if(x>=p.x0&&x<=p.x1&&y>=p.y0&&y<=p.y1)return k;}return null;}
+function owned(x,y){if(inB(x,y))return false;if(x>G.b.x1&&x<SIDEWALK&&y>=4&&y<=12)return true;const k=parcelAt(x,y);return !!(k&&G.parcels[k].state!=='sale');}
+function canPave(x,y){if(walkway(x,y)||inB(x,y))return false;if(x===SIDEWALK)return owned(x-1,y)&&y!==G.door.y;return owned(x,y);}
+function tileType(x,y){if(STREET.includes(x))return 'street';if(x===SIDEWALK)return G.drive.has(K(x,y))?'curb':'sidewalk';if(inB(x,y))return 'floor';if(walkway(x,y))return 'walk';if(G.drive.has(K(x,y)))return 'drive';if(owned(x,y))return 'lot';const k=parcelAt(x,y);if(k)return 'sale';return 'grass';}
+
+/* ---------- drive-thru lane ---------- */
+let LANE={ok:false,msg:'No window yet'};
+function winFront(){return G.win?[G.win.x+1,G.win.y]:null;}
+function bfs(from,to,block){const q=[from],prev=new Map([[K(...from),null]]);while(q.length){const c=q.shift();if(c[0]===to[0]&&c[1]===to[1])break;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const n=[c[0]+dx,c[1]+dy],k=K(...n);if(prev.has(k)||!G.drive.has(k))continue;if(block&&block.has(k)&&!(n[0]===to[0]&&n[1]===to[1]))continue;prev.set(k,c);q.push(n);}}
+  if(!prev.has(K(...to)))return null;const p=[];let c=to;while(c){p.unshift(c);c=prev.get(K(...c));}return p;}
+function computeLane(){
+  if(!G.win){LANE={ok:false,msg:'No window yet'};return;}
+  const f=winFront();if(!G.drive.has(K(...f))){LANE={ok:false,msg:'Pave the tile outside the window'};return;}
+  const curbs=[...G.drive].map(k=>k.split(',').map(Number)).filter(([x])=>x===SIDEWALK).filter(c=>bfs(f,c));
+  if(!curbs.length){LANE={ok:false,msg:'Connect the driveway to the street'};return;}
+  if(curbs.length<2){LANE={ok:false,msg:'Add a second exit to the street'};return;}
+  curbs.sort((a,b)=>b[1]-a[1]);const entry=curbs[0];
+  const inPath=bfs(entry,f);let best=null;
+  for(const c of curbs.slice(1)){const p=bfs(f,c,new Set(inPath.slice(0,-1).map(t=>K(...t))))||bfs(f,c);if(p&&(!best||p.length<best.length))best=p;}
+  LANE={ok:true,entry,exit:best[best.length-1],inPath,outPath:best,slots:inPath.length};
+  /* lane arrows */ARROW=new Map();const all=[...inPath,...best.slice(1)];for(let i=0;i<all.length-1;i++)ARROW.set(K(...all[i]),[all[i+1][0]-all[i][0],all[i+1][1]-all[i][1]]);}
+let ARROW=new Map();
+computeLane();
+
+/* ---------- XP, levels, achievements ---------- */
+const lvOf=xp=>{let l=1;for(let i=0;i<LEVELS.length;i++)if(xp>=LEVELS[i].xp)l=i+1;return l;};
+function addXP(n,why){if(n<=0)return;G.xp+=n;const l=lvOf(G.xp);if(l>G.level){G.level=l;G.st.level=l;toast('▲',`Level ${l}: ${LEVELS[l-1].t}`,`Unlocked: ${UNLOCK_TXT[l]}`);checkAch();}renderTop();}
+function stat(k,v,max){if(max)G.st[k]=Math.max(G.st[k],v);else G.st[k]=v;checkAch();}
+function bump(k,n=1){G.st[k]=(G.st[k]||0)+n;checkAch();}
+function checkAch(){for(const a of ACH){if(G.ach.has(a.id))continue;if((G.st[a.stat]||0)>=a.goal){G.ach.add(a.id);toast('★',a.t,a.xp?`+${a.xp} XP`:'Badge earned');if(a.xp)addXP(a.xp);}}if(G.panelOpen)renderPanel();}
+
+/* ---------- people & cars ---------- */
+const WINSPOT=()=>[G.win.x-1+.5,G.win.y+.5];
+const REG={stand:[7,10],clerk:[7,8]};/* customer stands at (7,10), clerk behind the counter at (7,8) */
+function mkStaff(){for(const c of G.cars)c.claim=false;for(const p of G.peds)p.claim=false;G.staff=[];for(let i=0;i<G.clerks;i++)G.staff.push({x:REG.clerk[0]+.5+i,y:REG.clerk[1]+.5,task:null,t:0,role:i===1?'window':'any',col:i?'#2f7fd6':'#1d9e75'});}
+mkStaff();
+const pedQueue=()=>G.peds.filter(p=>p.st==='queue').sort((a,b)=>a.seq-b.seq);
+let seq=0;
+function spawnPed(){const y=Math.random()<.5?2+Math.floor(Math.random()*3):13+Math.floor(Math.random()*4);G.peds.push({x:SIDEWALK+.5,y:y+.5,path:[[SIDEWALK,G.door.y],[G.door.x+1,G.door.y],[G.door.x,G.door.y],[11,10]],st:'in',seq:seq++,wait:0,col:['#e07a5f','#8a6f9e','#3d85c6','#c98a12','#5b8c5a'][Math.floor(Math.random()*5)]});}
+function spawnCar(){if(!LANE.ok)return;const e=LANE.entry;const first=LANE.inPath[0];
+  if(G.cars.some(c=>c.ti===0&&c.on==='lane'&&!c.served))/* lane full at the curb: drives past */{bump('drovePast');G.st.streak=0;toast('·','A car drove past','The drive-thru line reached the street.',1);return;}
+  G.cars.push({x:20.5,y:GD+1,on:'street',route:[[20,e[1]],[19,e[1]]],ti:-1,wait:0,col:['#c44536','#2d6a8f','#e9c46a','#6c757d','#2a9d8f','#f4f1de'][Math.floor(Math.random()*6)],served:false});}
+function carTileOcc(t,self){return G.cars.some(c=>c!==self&&c.on==='lane'&&c.tile&&c.tile[0]===t[0]&&c.tile[1]===t[1]);}
+
+function step(dt){
+  G.t+=dt;
+  /* spawns */
+  G.nextPed-=dt;if(G.nextPed<=0){spawnPed();G.nextPed=2.6+Math.random()*2.4;}
+  if(LANE.ok){G.nextCar-=dt;if(G.nextCar<=0){spawnCar();G.nextCar=2.8+Math.random()*2.6;}}
+  /* pedestrians */
+  for(const p of G.peds){
+    if(p.st==='in'){const tgt=p.path[0];if(!tgt){p.st='queue';continue;}if(move(p,tgt[0]+.5,tgt[1]+.5,3.4*dt))p.path.shift();}
+    else if(p.st==='queue'){const q=pedQueue();const i=q.indexOf(p);const spot=[REG.stand[0]+i,REG.stand[1]];move(p,spot[0]+.5,spot[1]+.5,3.4*dt);p.wait+=dt;if(p.wait>32&&i>1){p.st='out';p.mood='angry';p.path=[[G.door.x,G.door.y],[G.door.x+1,G.door.y],[SIDEWALK,G.door.y],[SIDEWALK,G.door.y+(Math.random()<.5?-6:5)]];bump('walkLost');}}
+    else if(p.st==='out'){const tgt=p.path[0];if(!tgt){p.gone=true;continue;}if(move(p,tgt[0]+.5,tgt[1]+.5,3.4*dt))p.path.shift();}}
+  G.peds=G.peds.filter(p=>!p.gone);
+  /* cars */
+  let inLine=0;
+  for(const c of G.cars){
+    if(c.on==='street'){const tgt=c.route[0];if(!tgt){c.on='lane';c.ti=0;c.tile=LANE.inPath[0];continue;}if(move(c,tgt[0]+.5,tgt[1]+.5,7*dt))c.route.shift();}
+    else if(c.on==='lane'){if(!LANE.ok){c.on='exit';c.route=[[19,c.tile[1]],[19,-3]];continue;}
+      const path=c.served?LANE.outPath:LANE.inPath;const cur=path[c.ti]||path[path.length-1];c.tile=cur;
+      const arrived=move(c,cur[0]+.5,cur[1]+.5,3.4*dt);
+      if(!c.served)inLine++;
+      if(arrived){
+        if(!c.served&&c.ti===path.length-1){c.st='window';c.wait+=dt;continue;}
+        const nx=path[c.ti+1];if(!nx){c.on='exit';c.route=[[19,cur[1]],[19,-3]];c.tile=null;continue;}
+        if(!carTileOcc(nx,c)){c.ti++;}else if(!c.served)c.wait+=dt;}}
+    else if(c.on==='exit'){const tgt=c.route[0];if(!tgt){c.gone=true;continue;}if(move(c,tgt[0]+.5,tgt[1]+.5,7*dt))c.route.shift();}}
+  G.cars=G.cars.filter(c=>!c.gone);
+  if(inLine>(G.st.maxLine||0))stat('maxLine',inLine,true);
+  /* clerks */
+  for(const s of G.staff){
+    if(s.task){const [tx,ty]=s.task.spot;if(move(s,tx,ty,3.4*dt)){s.t-=dt;if(s.t<=0)finish(s);}continue;}
+    const carAt=G.cars.find(c=>c.st==='window'&&!c.served&&!c.claim);
+    const ped=pedQueue()[0];const pedReady=ped&&!ped.claim&&Math.hypot(ped.x-(REG.stand[0]+.5),ped.y-(REG.stand[1]+.5))<.3;
+    const other=G.staff.find(o=>o!==s);
+    let pick=null;
+    if(s.role==='window'){if(carAt&&G.win)pick='win';}
+    else if(other&&other.role==='window'){if(pedReady)pick='reg';else if(carAt&&G.win&&other.task)pick='win';}
+    else{/* one clerk: take turns when both are waiting */if(carAt&&G.win&&pedReady)pick=s.last==='win'?'reg':'win';else if(carAt&&G.win)pick='win';else if(pedReady)pick='reg';}
+    if(pick)s.last=pick;
+    if(pick==='win'){carAt.claim=true;s.task={kind:'win',car:carAt,spot:WINSPOT()};s.t=1.8;}
+    else if(pick==='reg'){ped.claim=true;s.task={kind:'reg',ped,spot:[REG.clerk[0]+.5,REG.clerk[1]+.5]};s.t=1.6;}
+    else if(s.role==='window'&&G.win)move(s,...WINSPOT(),3*dt);}
+}
+function finish(s){const tk=s.task;s.task=null;
+  if(tk.kind==='win'){const c=tk.car;c.served=true;c.st=null;c.ti=0;c.claim=false;G.cash+=38;bump('cars');G.st.streak=(G.st.streak||0)+1;checkAch();fx(c.x,c.y,'+$38');addXP(6);}
+  else{const p=tk.ped;p.st='out';p.mood='happy';p.path=[[11,10],[G.door.x,G.door.y],[G.door.x+1,G.door.y],[SIDEWALK,G.door.y],[SIDEWALK,G.door.y+(Math.random()<.5?-7:6)]];G.cash+=38;bump('walk');fx(p.x,p.y,'+$38');addXP(4);}
+  renderTop();}
+function move(a,tx,ty,d){const dx=tx-a.x,dy=ty-a.y,l=Math.hypot(dx,dy);if(l<=d||l<.01){a.x=tx;a.y=ty;return true;}a.x+=dx/l*d;a.y+=dy/l*d;a.dir=Math.abs(dx)>Math.abs(dy)?'x':'y';return false;}
+
+/* ---------- rendering ---------- */
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');const TW=34,TH=17;
+const cam={z:1,ox:0,oy:0,zk:1};let CW=0,CH=0,DPR=1;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);CW=r.width;CH=r.height;cv.width=CW*DPR;cv.height=CH*DPR;fit();}
+function fit(){const R=G.view==='in'?{x0:G.b.x0-1,y0:G.b.y0-1,x1:G.b.x1+2,y1:G.b.y1+2}:{x0:0,y0:0,x1:GW,y1:GD};
+  const pts=[[R.x0,R.y0],[R.x1,R.y0],[R.x0,R.y1],[R.x1,R.y1]].map(([x,y])=>[(x-y)*TW/2,(x+y)*TH/2]);
+  const mnx=Math.min(...pts.map(p=>p[0])),mxx=Math.max(...pts.map(p=>p[0])),mny=Math.min(...pts.map(p=>p[1]))-60,mxy=Math.max(...pts.map(p=>p[1]));
+  const z=Math.min(CW/(mxx-mnx),CH/(mxy-mny))*.96*cam.zk;cam.z=z;cam.ox=CW/2-(mnx+mxx)/2*z+cam.px*z;cam.oy=CH/2-(mny+mxy)/2*z+cam.py*z;}
+cam.px=0;cam.py=0;
+const iso=(x,y,h=0)=>[(x-y)*TW/2*cam.z+cam.ox,(x+y)*TH/2*cam.z+cam.oy-h*cam.z];
+const untile=(sx,sy)=>{const a=(sx-cam.ox)/(TW/2*cam.z),b=(sy-cam.oy)/(TH/2*cam.z);return [Math.floor((a+b)/2),Math.floor((b-a)/2)];};
+function poly(pts,fill,stroke){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}}
+function flat(x,y,col,inset=0){poly([iso(x+inset,y+inset),iso(x+1-inset,y+inset),iso(x+1-inset,y+1-inset),iso(x+inset,y+1-inset)],col);}
+function prism(x,y,w,d,h,top,south,east){const A=iso(x,y+d),B=iso(x+w,y+d),C=iso(x+w,y),At=iso(x,y+d,h),Bt=iso(x+w,y+d,h),Ct=iso(x+w,y,h),Dt=iso(x,y,h);
+  poly([A,B,Bt,At],south);poly([B,C,Ct,Bt],east);poly([At,Bt,Ct,Dt],top);}
+const shade=(hex,k)=>{const n=parseInt(hex.slice(1),16);let r=n>>16,g=(n>>8)&255,b=n&255;r=Math.round(r*k);g=Math.round(g*k);b=Math.round(b*k);return `rgb(${Math.min(255,r)},${Math.min(255,g)},${Math.min(255,b)})`;};
+const TILE={grass:['#a9c48c','#a2bd85'],lot:['#b9d39c','#b2cc95'],sale:['#9db57f','#98b07a'],street:['#5b6168','#5b6168'],sidewalk:['#d9d4c7','#d2cdbf'],curb:['#6a7077','#6a7077'],drive:['#59606a','#555c66'],walk:['#d9d4c7','#d2cdbf'],floor:['#eadcc4','#e4d5bb']};
+const DARK={grass:['#3d4a35','#39452f'],lot:['#465639','#425134'],sale:['#36422f','#333e2c'],street:['#2a2e33','#2a2e33'],sidewalk:['#4a4740','#46433c'],curb:['#33373c','#33373c'],drive:['#30353b','#2d3237'],walk:['#4a4740','#46433c'],floor:['#5a5040','#554b3c']};
+const isDark=()=>css('--panel').toLowerCase()!=='#fffdf7';
+function draw(){
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,CW,CH);const z=cam.z;const dk=isDark();const PAL=dk?DARK:TILE;
+  /* ground */
+  for(let y=-2;y<GD+2;y++)for(let x=-2;x<GW+2;x++){const t=(x<0||y<0||x>=GW||y>=GD)?(STREET.includes(x)?'street':'grass'):tileType(x,y);flat(x,y,PAL[t][(x+y)&1]);}
+  /* street center line */
+  if(G.view==='out'){for(let y=-2;y<GD+2;y+=1){const a=iso(20,y+.15),b=iso(20,y+.6);ctx.strokeStyle=dk?'#c8b46a':'#f2d06b';ctx.lineWidth=2*z;ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();}}
+  /* parcels for sale: outline */
+  for(const k in G.parcels){const p=G.parcels[k];if(p.state==='floor')continue;const col=p.state==='sale'?(dk?'#c9b97a':'#7a6a2a'):(dk?'#8fd3b6':'#1d9e75');ctx.setLineDash([5*z,4*z]);poly([iso(p.x0,p.y0),iso(p.x1+1,p.y0),iso(p.x1+1,p.y1+1),iso(p.x0,p.y1+1)],null,col);ctx.setLineDash([]);}
+  /* lane arrows */
+  if(LANE.ok)for(const [k,[dx,dy]] of ARROW){const [x,y]=k.split(',').map(Number);const c=iso(x+.5,y+.5),n=iso(x+.5+dx*.28,y+.5+dy*.28),l=iso(x+.5-dx*.1+dy*.18,y+.5-dy*.1-dx*.18),r=iso(x+.5-dx*.1-dy*.18,y+.5-dy*.1+dx*.18);poly([n,l,c,r],dk?'#9aa1a8':'#e9e6dc');}
+  if(G.win){const f=winFront();if(!LANE.ok)flat(f[0],f[1],'rgba(226,75,74,.35)',.08);}
+  /* items, depth sorted */
+  const items=[];
+  const B=G.b;const HB=G.view==='out'?58:0;
+  if(G.view==='out')items.push({d:(B.x1+1)+B.y0-.5,f:()=>drawBuilding(dk)});
+  else{items.push({d:-99,f:()=>drawBackWalls(dk)});
+    for(let x=B.x0;x<=B.x1;x++)items.push({d:x+B.y1+1.2,f:()=>prism(x,B.y1+.9,1,.1,10,dk?'#7b8a94':'#e3e9ef',dk?'#5a6670':'#c4ccd4',dk?'#66737c':'#d3dae1')});
+    for(let y=B.y0;y<=B.y1;y++){if(y===G.door.y)continue;items.push({d:B.x1+1+y+.2,f:()=>{const isW=G.win&&y===G.win.y;prism(B.x1+.9,y,.1,1,isW?24:10,isW?'#8fd3e8':(dk?'#7b8a94':'#e3e9ef'),dk?'#5a6670':'#c4ccd4',isW?'#7cc6dd':(dk?'#66737c':'#d3dae1'));}});}
+    /* interior: back counters, register, chairs */
+    for(let x=B.x0+1;x<=B.x1-2;x++)items.push({d:x+B.y0+1,f:()=>prism(x,B.y0+.15,1,.7,16,dk?'#6b6f74':'#d8d2c4',dk?'#55595e':'#b9b2a2',dk?'#5f6368':'#c7c0b0')});
+    for(let x=6;x<=9;x++)items.push({d:x+9.5,f:()=>prism(x,9,1,.55,14,dk?'#a07b52':'#c9a26e',dk?'#7d5f3f':'#a8844f',dk?'#8d6b47':'#b8925e')});
+    if(G.win)items.push({d:B.x1+G.win.y-.5,f:()=>{const [sx,sy]=iso(G.win.x-.2,G.win.y+.5,30);label(sx,sy,'DRIVE-THRU',dk);}});
+    for(let i=0;i<3;i++)items.push({d:3+i+11.5,f:()=>prism(3+i+.2,11.2,.6,.6,8,dk?'#4c6a9a':'#5b84c4',dk?'#3a5278':'#4a6ea8',dk?'#41608a':'#5279b8')});}
+  for(const p of G.peds){if(G.view==='out'&&inB(Math.floor(p.x),Math.floor(p.y)))continue;items.push({d:p.x+p.y,f:()=>person(p.x,p.y,p.col,p.mood)});}
+  if(G.view==='in')for(const s of G.staff)items.push({d:s.x+s.y,f:()=>person(s.x,s.y,s.col,null,true)});
+  for(const c of G.cars)items.push({d:c.x+c.y+.4,f:()=>car(c,dk)});
+  if(G.view==='out'){for(const k in G.parcels){const p=G.parcels[k];if(p.state!=='sale')continue;const cx=(p.x0+p.x1+1)/2-3,cy=p.y0<G.b.y0?p.y0+1.5:p.y1+.5;items.push({d:cx+cy,f:()=>saleSign(cx,cy,p,dk)});}
+    if(G.win&&LANE.ok){const e=LANE.entry;items.push({d:e[0]+e[1]-1,f:()=>{const [sx,sy]=iso(e[0]+.5,e[1]+1.3,0);postSign(sx,sy,'DRIVE-THRU ↓',dk);}});}}
+  items.sort((a,b)=>a.d-b.d);for(const it of items)it.f();
+  /* fx */
+  for(const f of FX){const [sx,sy]=iso(f.x,f.y,30+f.t*30);ctx.globalAlpha=Math.max(0,1-f.t/1.2);ctx.fillStyle=dk?'#8fd3b6':'#1d7a5a';ctx.font=`900 ${Math.max(11,12*z)}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText(f.txt,sx,sy);ctx.globalAlpha=1;}
+  /* hover tile for tools */
+  if(HOVER&&G.tool&&G.tool!=='land'){const [x,y]=HOVER;const ok=G.tool==='drive'?canPave(x,y):G.tool==='erase'?G.drive.has(K(x,y)):G.tool==='window'?canWin(x,y):false;flat(x,y,ok?'rgba(29,158,117,.45)':'rgba(226,75,74,.4)',.06);}
+}
+function drawBackWalls(dk){const B=G.b,H=46;const c1=dk?'#56626b':'#d6dde4',c2=dk?'#4a555e':'#c8d0d8';
+  const a=iso(B.x0,B.y0),b=iso(B.x1+1,B.y0),c=iso(B.x0,B.y1+1);poly([a,b,[b[0],b[1]-H*cam.z],[a[0],a[1]-H*cam.z]],c1);poly([a,c,[c[0],c[1]-H*cam.z],[a[0],a[1]-H*cam.z]],c2);
+  const [sx,sy]=iso((B.x0+B.x1)/2,B.y0,32);ctx.fillStyle=dk?'#cfd8d2':'#3a4a40';ctx.font=`900 ${11*cam.z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('PHARMACY',sx,sy);
+  if(G.expanded){for(const k in G.parcels){const p=G.parcels[k];if(p.state!=='floor')continue;const cx=(p.x0+Math.min(p.x1,G.b.x1)+1)/2,cy=(p.y0+p.fy1+1)/2;const [qx,qy]=iso(cx,cy);ctx.fillStyle=dk?'#8fd3b6':'#1d7a5a';ctx.font=`900 ${10*cam.z}px Nunito,sans-serif`;ctx.fillText(`NEW FLOOR +${p.tiles} tiles`,qx,qy);}}}
+function drawBuilding(dk){const B=G.b,H=58;const wallS=dk?'#5a646b':'#e6e1d6',wallE=dk?'#4d565c':'#d5cfc2',roof=dk?'#3c4247':'#a9b0b6';
+  prism(B.x0,B.y0,B.x1-B.x0+1,B.y1-B.y0+1,H,roof,wallS,wallE);
+  /* roof edge + sign */const a=iso(B.x0,B.y1+1,H),b=iso(B.x1+1,B.y1+1,H);ctx.strokeStyle=dk?'#2a2f33':'#8d949a';ctx.lineWidth=3*cam.z;ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();
+  const [sx,sy]=iso((B.x0+B.x1+1)/2,B.y1+1,H-14);ctx.fillStyle='#1d9e75';const w=150*cam.z,h=16*cam.z;ctx.save();ctx.translate(sx,sy);ctx.transform(1,.5,0,1,0,0);ctx.fillRect(-w/2,-h/2,w,h);ctx.fillStyle='#fff';ctx.font=`900 ${10*cam.z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('MAPLE STREET PHARMACY',0,3.5*cam.z);ctx.restore();
+  /* door on east face */const d0=iso(B.x1+1,G.door.y+.15),d1=iso(B.x1+1,G.door.y+.85);poly([d0,d1,[d1[0],d1[1]-30*cam.z],[d0[0],d0[1]-30*cam.z]],dk?'#2b3a33':'#5d7a6c');
+  /* drive-thru window + canopy */if(G.win){const w0=iso(B.x1+1,G.win.y+.1,10),w1=iso(B.x1+1,G.win.y+.9,10);poly([w0,w1,[w1[0],w1[1]-18*cam.z],[w0[0],w0[1]-18*cam.z]],'#8fd3e8');
+const c0=iso(B.x1+1,G.win.y-.1,40),c1=iso(B.x1+2.1,G.win.y-.1,40),c2=iso(B.x1+2.1,G.win.y+1.1,40),c3=iso(B.x1+1,G.win.y+1.1,40);poly([c0,c1,c2,c3],'rgba(29,158,117,.85)');
+    const [lx,ly]=iso(B.x1+1.55,G.win.y+.5,46);label(lx,ly,'PICK-UP',dk);}}
+function label(sx,sy,t,dk){ctx.font=`900 ${Math.max(8,9*cam.z)}px Nunito,sans-serif`;ctx.textAlign='center';const w=ctx.measureText(t).width+10;ctx.fillStyle='#1d9e75';ctx.beginPath();ctx.roundRect?ctx.roundRect(sx-w/2,sy-9*cam.z,w,13*cam.z,4):ctx.rect(sx-w/2,sy-9*cam.z,w,13*cam.z);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(t,sx,sy+.5*cam.z);}
+function postSign(sx,sy,t,dk){ctx.fillStyle=dk?'#aaa':'#555';ctx.fillRect(sx-1,sy-26*cam.z,2,26*cam.z);label(sx,sy-26*cam.z,t,dk);}
+function saleSign(x,y,p,dk){const [sx,sy]=iso(x,y);ctx.fillStyle=dk?'#bbb':'#6b5a2a';ctx.fillRect(sx-1.5,sy-34*cam.z,3,34*cam.z);const t1=p.state==='sale'?'FOR SALE':'YOURS';const t2=`$${p.price/1000}k · Lv ${UNLOCK.land}`;ctx.font=`900 ${10*cam.z}px Nunito,sans-serif`;ctx.textAlign='center';const w=Math.max(ctx.measureText(t1).width,ctx.measureText(t2).width)+14;const h=30*cam.z;ctx.fillStyle=dk?'#f2c35b':'#fff3cf';ctx.strokeStyle='#c98a12';ctx.lineWidth=2;ctx.fillRect(sx-w/2,sy-34*cam.z-h,w,h);ctx.strokeRect(sx-w/2,sy-34*cam.z-h,w,h);ctx.fillStyle='#5a3b00';ctx.fillText(t1,sx,sy-34*cam.z-h+12*cam.z);ctx.font=`800 ${9*cam.z}px Nunito,sans-serif`;ctx.fillText(t2,sx,sy-34*cam.z-h+24*cam.z);}
+function person(x,y,col,mood,staff){const [sx,sy]=iso(x,y);const z=cam.z;ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(sx,sy,5*z,2.5*z,0,0,7);ctx.fill();ctx.fillStyle=col;ctx.beginPath();ctx.roundRect?ctx.roundRect(sx-4*z,sy-17*z,8*z,14*z,3*z):ctx.rect(sx-4*z,sy-17*z,8*z,14*z);ctx.fill();ctx.fillStyle='#f0c9a4';ctx.beginPath();ctx.arc(sx,sy-20*z,3.6*z,0,7);ctx.fill();if(staff){ctx.fillStyle='#fff';ctx.fillRect(sx-4*z,sy-16*z,8*z,3*z);}if(mood==='angry'){ctx.fillStyle='#e24b4a';ctx.font=`900 ${10*z}px Nunito`;ctx.textAlign='center';ctx.fillText('!',sx+7*z,sy-22*z);}}
+function car(c,dk){const z=cam.z;const along=c.dir==='y'?'y':'x';const w=along==='x'?.85:.5,d=along==='x'?.5:.85;const x=c.x-w/2,y=c.y-d/2;ctx.fillStyle='rgba(0,0,0,.22)';poly([iso(x,y),iso(x+w,y),iso(x+w,y+d),iso(x,y+d)],'rgba(0,0,0,.22)');
+  prism(x,y,w,d,9,shade(c.col,1),shade(c.col,.78),shade(c.col,.88));const ix=x+(along==='x'?w*.25:.06),iy=y+(along==='y'?d*.25:.06);prism(ix,iy,along==='x'?w*.5:w-.12,along==='y'?d*.5:d-.12,6,dk?'#9ccbe0':'#cfe9f5','#7fb2c8','#a8d2e4');
+  const [sx,sy]=[...iso(c.x,c.y)];if(c.st==='window'){ctx.fillStyle='#1d9e75';ctx.font=`900 ${10*z}px Nunito`;ctx.textAlign='center';ctx.fillText('💊',sx,sy-24*z);}else if(!c.served&&c.wait>14){ctx.fillStyle='#e24b4a';ctx.font=`900 ${10*z}px Nunito`;ctx.textAlign='center';ctx.fillText('beep',sx,sy-22*z);}}
+let FX=[];function fx(x,y,txt){FX.push({x,y,txt,t:0});}
+
+/* ---------- tools & input ---------- */
+function canWin(x,y){return x===G.b.x1&&y>=G.b.y0&&y<=G.b.y1&&y!==G.door.y&&owned(x+1,y)&&!walkway(x+1,y);}
+let HOVER=null,painting=false,panning=null,changed=false;
+function tileFromEvent(e){const r=cv.getBoundingClientRect();return untile(e.clientX-r.left,e.clientY-r.top);}
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);const t=tileFromEvent(e);HOVER=t;
+  if(!G.tool){const pk=parcelAt(...t);if(pk&&G.view==='out'&&!inB(...t)&&G.parcels[pk].state!=='floor'){openParcel(pk);return;}panning={x:e.clientX,y:e.clientY,px:cam.px,py:cam.py};return;}
+  if(G.tool==='land'){const pk=parcelAt(...t);if(pk)openParcel(pk);else hint('Tap a lot with a FOR SALE sign.',true);return;}
+  painting=true;applyTool(t);});
+cv.addEventListener('pointermove',e=>{const t=tileFromEvent(e);HOVER=t;if(panning){cam.px=panning.px+(e.clientX-panning.x)/cam.z;cam.py=panning.py+(e.clientY-panning.y)/cam.z;fit();}else if(painting&&(G.tool==='drive'||G.tool==='erase'))applyTool(t);});
+const up=()=>{painting=false;panning=null;if(changed){changed=false;computeLane();renderTop();}};
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('pointerleave',()=>{HOVER=null;});
+cv.addEventListener('wheel',e=>{e.preventDefault();cam.zk=Math.max(.6,Math.min(3,cam.zk*(e.deltaY<0?1.1:.9)));fit();},{passive:false});
+function applyTool(t){const [x,y]=t;const k=K(x,y);
+  if(G.tool==='drive'){if(G.drive.has(k))return;if(!canPave(x,y)){hint(inB(x,y)?'That\'s inside the store.':walkway(x,y)?'Keep the walkway to the door clear.':parcelAt(x,y)&&G.parcels[parcelAt(x,y)].state==='sale'?'You don\'t own that lot yet.':'You can only pave your own lot.',true);return;}if(G.cash<COST.drive){hint('Not enough cash.',true);return;}G.cash-=COST.drive;G.drive.add(k);bump('paved');changed=true;hint(`Driveway $${COST.drive}. ${LANE.ok?'':'Cars need a way in from the street, past the window, and back out.'}`);}
+  else if(G.tool==='erase'){if(G.drive.has(k)){G.drive.delete(k);G.cash+=20;changed=true;hint('Driveway removed (+$20).');}else if(G.win&&x===G.win.x&&y===G.win.y){G.win=null;G.cash+=1750;changed=true;hint('Window removed (+$1,750).');}}
+  else if(G.tool==='window'){if(!canWin(x,y)){hint('The window goes in the store\'s east wall, facing your lot.',true);return;}if(G.win){G.win={x,y};changed=true;hint('Window moved.');}else{if(G.cash<COST.window){hint('Not enough cash.',true);return;}G.cash-=COST.window;G.win={x,y};changed=true;hint('Drive-thru window built. A clerk works it from inside.');}painting=false;}
+  renderTop();}
+function setTool(t){if(t&&UNLOCK[t==='erase'?'drive':t]>G.level){toast('🔒',`Reach level ${UNLOCK[t]} first`,UNLOCK_TXT[UNLOCK[t]]);return;}G.tool=G.tool===t?null:t;document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('on',b.dataset.tool===G.tool));
+  if((G.tool==='drive'||G.tool==='window')&&G.view!=='out')setView('out');
+  hint(G.tool==='drive'?'Drag across your lot to pave. Cars need a way in from the street, past the window, and back out.':G.tool==='window'?'Tap the store\'s east wall to put the window there.':G.tool==='erase'?'Tap driveway or the window to remove it (half back).':G.tool==='land'?'Tap a lot with a FOR SALE sign.':G.view==='out'?'Outside view: the lot, the street and the land next door.':'Inside view: the clerk works the register and the drive-thru window.');}
+document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+function setView(v){G.view=v;document.getElementById('vIn').classList.toggle('on',v==='in');document.getElementById('vOut').classList.toggle('on',v==='out');cam.px=0;cam.py=0;cam.zk=1;fit();if(!G.tool)hint(v==='out'?'Outside view: the lot, the street and the land next door.':'Inside view: the clerk works the register and the drive-thru window.');}
+document.getElementById('vIn').onclick=()=>setView('in');document.getElementById('vOut').onclick=()=>setView('out');
+document.getElementById('zIn').onclick=()=>{cam.zk=Math.min(3,cam.zk*1.2);fit();};document.getElementById('zOut').onclick=()=>{cam.zk=Math.max(.6,cam.zk/1.2);fit();};
+for(const [id,s] of [['sp0',0],['sp1',1],['sp3',3]])document.getElementById(id).onclick=()=>{G.speed=s;document.querySelectorAll('.sp button').forEach(b=>b.classList.toggle('on',b.id===id));};
+document.getElementById('clerk2').onclick=()=>{if(G.clerks>=2){G.clerks=1;mkStaff();document.getElementById('clerk2').textContent='+ Window clerk';hint('Back to one clerk for the register and the window.');return;}G.clerks=2;mkStaff();document.getElementById('clerk2').textContent='− Window clerk';hint('A second clerk now works only the drive-thru window ($140 a day).');};
+function hint(t,err){const h=document.getElementById('hint');h.textContent=t;h.classList.toggle('err',!!err);}
+
+/* parcels */
+function openParcel(k){const p=G.parcels[k];const sh=document.getElementById('sheet');const w=p.x1-p.x0+1,d=p.y1-p.y0+1;
+  const lock=G.level<UNLOCK.land;const elock=G.level<UNLOCK.expand;const fl=floorTiles(p);
+  sh.innerHTML=p.state==='sale'?`<h3><span>${p.name}</span><span class="num">${w}×${d}</span></h3><p>Next door to the store. Buy it to pave more driveway and parking, or later to expand the store onto it (+${fl} floor tiles).</p><p class="small">${lock?`Needs level ${UNLOCK.land} (${LEVELS[UNLOCK.land-1].t}).`:`Price $${p.price.toLocaleString()} · rent +$80 a week.`}</p><div class="acts"><button class="pri" id="buy" ${lock||G.cash<p.price?'disabled':''}>Buy for $${p.price.toLocaleString()}</button><button id="shx">Close</button></div>`
+   :`<h3><span>${p.name} · yours</span><span class="num">${w}×${d}</span></h3><p>Pave it for parking and driveway, or expand the store onto the part next to the building (+${fl} floor tiles). The wall moves out and the new floor is empty, ready to build on.</p><p class="small">${elock?`Expanding needs level ${UNLOCK.expand} (${LEVELS[UNLOCK.expand-1].t}).`:`Build cost $${p.expand.toLocaleString()} · rent +$120 a week.`}</p><div class="acts"><button class="pri" id="exp" ${elock||G.cash<p.expand?'disabled':''}>Expand the store · $${p.expand.toLocaleString()}</button><button id="shx">Close</button></div>`;
+  sh.hidden=false;document.getElementById('shx').onclick=()=>sh.hidden=true;
+  const b=document.getElementById('buy');if(b)b.onclick=()=>{G.cash-=p.price;p.state='owned';bump('parcels');sh.hidden=true;hint(`${p.name} is yours. Pave it, or expand onto it at level ${UNLOCK.expand}.`);renderTop();};
+  const e=document.getElementById('exp');if(e)e.onclick=()=>{expand(k);sh.hidden=true;};}
+function floorTiles(p){const y0=p.y0<G.b.y0?p.y0:G.b.y1+1,y1=p.y0<G.b.y0?G.b.y0-1:Math.min(p.y1-1,G.b.y1+4);return (G.b.x1-G.b.x0+1)*(y1-y0+1);}
+function expand(k){const p=G.parcels[k];const n=floorTiles(p);G.cash-=p.expand;
+  for(const key of [...G.drive]){const [x,y]=key.split(',').map(Number);if(x<=G.b.x1&&parcelAt(x,y)===k)G.drive.delete(key);}
+  if(p.y0<G.b.y0){p.fy1=G.b.y0-1;G.b.y0=p.y0;}else{G.b.y1=Math.min(p.y1-1,G.b.y1+4);p.fy1=G.b.y1;p.y0=p.y0;}
+  p.state='floor';p.tiles=n;G.expanded=true;bump('expanded');computeLane();setView('in');hint(`The store grew by ${n} floor tiles. The wall moved out; the new space is empty.`);renderTop();}
+
+/* ---------- UI ---------- */
+function renderTop(){const l=G.level,cur=LEVELS[l-1].xp,nx=LEVELS[l]?LEVELS[l].xp:cur+1;document.getElementById('lvN').textContent=l;document.getElementById('lvT').textContent=LEVELS[l-1].t;document.getElementById('lvBar').style.width=Math.min(100,(G.xp-cur)/(nx-cur)*100)+'%';
+  document.getElementById('cash').textContent='$'+Math.round(G.cash).toLocaleString();document.getElementById('served').textContent=(G.st.cars+G.st.walk);
+  const ln=document.getElementById('lane');ln.classList.toggle('ok',LANE.ok);ln.classList.toggle('bad',!LANE.ok&&!!G.win);document.getElementById('laneT').textContent=LANE.ok?`Open · ${LANE.slots} in line max`:LANE.msg;
+  document.querySelectorAll('.tool').forEach(b=>{const t=b.dataset.tool;const need=UNLOCK[t==='erase'?'drive':t];const lk=need>G.level;let s=b.querySelector('.lk');if(lk&&!s){s=document.createElement('span');s.className='lk';b.appendChild(s);}if(s)s.textContent=lk?`🔒 Lv ${need}`:'';if(!lk&&s)s.remove();});
+  if(G.panelOpen)renderPanel();}
+let tab='level';
+function renderPanel(){const pb=document.getElementById('pbody');const l=G.level,cur=LEVELS[l-1].xp,nx=LEVELS[l]?LEVELS[l].xp:null;
+  if(tab==='level')pb.innerHTML=`<div class="lvcard"><div class="t"><b>Level ${l}</b><span>${LEVELS[l-1].t}</span></div><span class="trk"><i style="width:${nx?Math.min(100,(G.xp-cur)/(nx-cur)*100):100}%"></i></span><span class="small num">${G.xp} XP${nx?` · ${nx-G.xp} to level ${l+1}`:' · max level'}</span>${nx?`<span class="small">Next: ${UNLOCK_TXT[l+1]}</span>`:''}</div>
+    <div class="small">XP comes from running the store: +6 per drive-thru car, +4 per walk-in, and a bonus for each achievement.</div>
+    ${LEVELS.map((L,i)=>{const n=i+1;const cls=n<l?'done':n===l?'now':'';return `<div class="row ${cls}"><span class="ic">${n<=l?n:'🔒'}</span><span><b>${L.t}</b><small>${UNLOCK_TXT[n]}</small></span><span class="r">${L.xp} XP</span></div>`;}).join('')}`;
+  else if(tab==='ach')pb.innerHTML=`<div class="small">${G.ach.size} of ${ACH.length} earned</div>`+ACH.map(a=>{const v=Math.min(a.goal,G.st[a.stat]||0);const d=G.ach.has(a.id);return `<div class="row ${d?'done':''}"><span class="ic">${d?'★':'☆'}</span><span><b>${a.t}</b><small>${a.d}</small>${d?'':`<span class="trk"><i style="width:${v/a.goal*100}%"></i></span>`}</span><span class="r">${d?'done':`${v}/${a.goal}`}<br>${a.xp?`+${a.xp} XP`:'badge'}</span></div>`;}).join('');
+  else pb.innerHTML=`<div class="plan">
+    <h3>Outside view</h3><p>The store sits on a lot with the street on the east side. The outside view shows the roof, the lot, the street and the land next door. The inside view is today's game.</p>
+    <h3>Drive-thru</h3><ul><li>A window in an outside wall, worked by a clerk from inside.</li><li>Needs a paved lane: in from the street, past the window, and back out. The tile outside the window turns red until it connects.</li><li>Cars wait in the lane. When the line reaches the street, new cars drive past.</li><li>One clerk splits time between the register and the window. A second clerk can stay on the window.</li></ul>
+    <h3>More land</h3><ul><li>Lots next door are for sale from level ${UNLOCK.land}.</li><li>Pave them for a longer lane, or from level ${UNLOCK.expand} expand the store onto them. The wall moves out and the new floor starts empty.</li><li>Rent goes up with the space.</li></ul>
+    <h3>Levels and achievements</h3><ul><li>XP comes from running the store, plus a bonus for each achievement.</li><li>Levels unlock the drive-thru, land and expansion in order, so each week has a next goal.</li><li>In the full game, the level carries over to your next store.</li></ul>
+    <h3>Prototype limits</h3><p>Money, demand and service times here are simplified. In the game they use the real numbers for waits, patience, trust and insurers.</p></div>`;}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));renderPanel();});
+const openPanel=o=>{G.panelOpen=o;document.getElementById('panel').classList.toggle('open',o);if(o)renderPanel();};
+document.getElementById('career').onclick=()=>openPanel(!G.panelOpen);document.getElementById('lvlChip').onclick=()=>openPanel(!G.panelOpen);document.getElementById('lvlChip').onkeydown=e=>{if(e.key==='Enter')openPanel(!G.panelOpen);};document.getElementById('pClose').onclick=()=>openPanel(false);
+let lastToast=0;function toast(icon,t,s,quiet){const now=performance.now();if(quiet&&now-lastToast<4000)return;lastToast=now;const el=document.createElement('div');el.className='toast';el.innerHTML=`<i>${icon}</i><span>${t}${s?`<small>${s}</small>`:''}</span>`;const box=document.getElementById('toasts');box.appendChild(el);while(box.children.length>3)box.firstChild.remove();setTimeout(()=>el.remove(),3200);}
+
+/* ---------- loop ---------- */
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(G.speed>0){const n=G.speed;for(let i=0;i<n;i++)step(dt);}for(const f of FX)f.t+=dt;FX=FX.filter(f=>f.t<1.2);draw();requestAnimationFrame(frame);}
+window.addEventListener('resize',resize);new ResizeObserver(resize).observe(cv);
+/* open on a working moment: two cars already in the lane, two customers inside */
+{const L=LANE;const cols=['#c44536','#2d6a8f'];[L.inPath.length-1,L.inPath.length-3].forEach((ti,i)=>{const t=L.inPath[ti];G.cars.push({x:t[0]+.5,y:t[1]+.5,on:'lane',ti,tile:t,route:[],wait:0,col:cols[i],served:false,dir:'y'});});
+ for(let i=0;i<2;i++){G.peds.push({x:REG.stand[0]+i+.5,y:REG.stand[1]+.5,path:[],st:'queue',seq:seq++,wait:0,col:i?'#8a6f9e':'#e07a5f'});}}
+resize();renderTop();requestAnimationFrame(frame);
+window.__lot={G,computeLane,step,setView,setTool,expand,openParcel,LANE:()=>LANE};
+})();
+</script>

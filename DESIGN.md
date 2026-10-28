@@ -99,3 +99,47 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 ## Breaks and comfort items (v24.57)
 - With a break room, every staff member takes one lunch break per shift (from tick 36, about noon), one at a time: 4 ticks, +12 energy, +1 morale, ×1.06 speed for the rest of the day. Urgent breaks under 35%; idle breaks under 65%.
 - Comfort item cards (chair, restroom, snack, break room) show Holds / Now / Used (today, week, total) plus one line on what the item does.
+
+## Next expansion: outside lot, drive-thru, land, career levels (proposal, 2026-10-28)
+Prototype: `prototypes/lot-and-levels.html` (standalone, simplified numbers).
+
+### 1. Career level and achievements (lowest risk, ship first)
+- XP from play: +1 per Rx served, +2 per happy customer, +25 per net-positive week, +50 per trust milestone (60/70/80/90), plus each achievement's bonus.
+- Levels 1–10, XP needed = 150 · L^1.4. A title per level ("New Owner" → "Regional Name").
+- Levels replace the current week-based unlocks (`UNLOCKS`): restroom/snack (L2), break room (L3), driveway + drive-thru (L4), land (L5), expansion (L6), second store (L8+).
+- ~30 achievements in groups (service, money, staff, building, drive-thru), each with a progress bar. Toast on unlock; a Career page in the office drawer.
+- The career level is kept in its own localStorage key (`msp-career`), separate from the store save. A new store after a win or a loss starts at your career level, so winning feeds the next run.
+- Engine work: an `xp(n,why)` hook called from serve, endWeek and build; an `ACH` table checked at end of day; no change to the sim.
+
+### 2. Outside view and drive-thru (medium)
+- The world grid grows around the store: the store stays W×D; a lot ring of 4–6 tiles; the street on the east (the existing entrance side, `OUT` already sits at x≈21).
+- A camera toggle, Inside/Outside: outside draws the roof and the lot; inside is today's view.
+- New build items (outside only):
+  - **Driveway** ($40 a tile), on your own lot.
+  - **Drive-thru window** ($3,500), placed in an outside wall: a register variant whose customer tile is outside.
+  - **Menu board / canopy** (cosmetic, +trust).
+- **Lane rule:** a paved path from a curb tile → the tile outside the window → a second curb tile. The status chip says what's missing. The red tile shows where.
+- **Cars:** a new agent type that moves along the lane. Line capacity is the lane length. When the line reaches the curb, the car drives past (lost, like a walk-out but −0.05 trust). Patience is 1.3× a seated customer.
+- **Demand:** the drive-thru adds a new 10–15% of customers (parents, elderly, sick), and moves ~20% of pick-ups from the counter to the window.
+- **Staffing:** a clerk walks to the window. One clerk covering both shows the trade-off; a second clerk can be assigned to the window.
+- Engine work:
+  - second grid layer (`lot[y][x]`), car agents, lane path cache;
+  - outside camera; the window uses the existing register job with a different customer source;
+  - save migration (lot is empty for old saves).
+
+### 3. More land and floor expansion (highest risk)
+- North and south parcels for sale ($15–18k, from L5). Rent goes up per parcel.
+- An owned parcel can be paved (longer lane, parking: +walk-ins), or expanded into floor (L6, $9k). The wall moves out and the new floor starts empty.
+- **Engine work:**
+  - `W`/`D` become save-state (`S.W`, `S.D`); everything that reads them already uses the globals;
+  - expanding north or west shifts every object, person, script location, door, `OUT` and saved layout by (dx,dy) in one `shiftWorld()`;
+  - grid, reach and path caches are rebuilt;
+  - walls on the old edge are removed.
+- Test with the existing layout replays (user-layout-w9, wall-cutoff) plus a shift test that checks every script's `at` still points to a real object.
+
+### Order and size
+| Phase | Patches | Risk |
+|---|---|---|
+| 1 Career and achievements | 1–2 | low: no sim change |
+| 2 Outside view and drive-thru | 3 | medium: new agent and grid layer, balance |
+| 3 Land and expansion | 2 | high: coordinate shift, save migration |
