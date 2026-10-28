@@ -1,5 +1,13 @@
 # Changelog
 
+## v25.7 · 2026-10-28 — Cutscenes for the big moments
+Three short scenes (about 9 seconds each), drawn live from your own store in the game's 3D style. The game pauses while they play; tap **Skip ›** to end one early.
+- **Grand opening** (the first time you open, before Level 1 starts): a Gazette **breaking news** broadcast. LIVE bug, masthead, lower-third headline and a scrolling ticker. The camera swoops in to the front door, a crowd waits by balloons and a GRAND OPENING banner, the owner cuts the ribbon, and confetti flies.
+- **Level 1 complete**: a second Gazette breaking-news report, "Maple Street named the neighborhood's favorite pharmacy". A cheering crowd fills the lot under a VOTED #1 banner, with fireworks overhead. It plays before the Level 1 page in the week review.
+- **Level 2 starts** (tap the button on the Level 1 page): a **social media post** from @maplestreetrx. The camera circles to the back of the store to show a drive-thru preview: a window, a lane and cars looping past it. It then shows the new floor, outlined on the back lot with a crane. Likes, comments and shares count up under the caption.
+- **Replay**: once you've seen a scene, a 🎬 button for it appears on the Career page (the Rank tab).
+- Automated test browsers skip the scenes, so they don't change any test results.
+
 ## v25.6 · 2026-10-28 — Two levels: the store, then the outside
 **Level 1 · Main Street favorite**
 - Goal: **trust 90** and **$30,000 net earned** since opening, checked on a Saturday. It replaces the old goal (business value $20k, $5k cash, loan repaid, trust 70).

@@ -155,3 +155,13 @@ Prototype: `prototypes/lot-and-levels.html` (standalone, simplified numbers).
 - `MAJOR[1]`: trust ≥ 90 and `S.netTot` ≥ $30,000 (the sum of weekly net since opening). `MAJOR[2]`: trust ≥ 90, `S.netTot` ≥ $100,000, and `dtOpen()`. Checked at the end of the week, after the bank rules.
 - Finishing Level 1 sets `S.major=2` (the game continues), shows a page in the week review, and opens `MAJOR2_ITEMS` (stall, drive, dtwin), land and expansion, and the promotions marked `m2`. Finishing Level 2 sets `S.done='win'`.
 - Career XP levels are shown as "Rank" in the interface (the code still says level). Ranks open store items and the classic promotions only.
+
+## Cutscenes (v25.7)
+- Engine: `playCine(kind, done)` sets a `CINE` state. While it is set, `frame()` calls `drawCine()` instead of the normal draw. That function eases the camera between keyframes, forces the outside view (rotation 0, or 2 for the back of the store), draws the normal scene, then layers on the extras: crowd, ribbon, balloons, confetti, fireworks, the planned lane and crane. `endCine()` puts back the view, see-through mode, camera and speed.
+- The game is paused with `setSpeed(0)` and resumed at the saved speed. The HUD is hidden with `.app.cining`. The DOM overlay `#cine` holds the news or social frame and the Skip button.
+- Triggers:
+  - `startWeek` in week 1 → `open`, once per store (`S.openCine`).
+  - `showReview` with `w.majorUp` → `lvl1`, then the Level 1 page (`w.cine1`).
+  - The Level 1 page's button → `lvl2`, then the rest of the review.
+- Scenes seen are kept in `CAREER.scenes` for the replay buttons.
+- `navigator.webdriver` skips scenes unless `window.__cineTest` is set. Test API: `playCine`, `endCine`, `cine()`, `cineAt(ms)`.

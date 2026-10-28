@@ -4,7 +4,7 @@ const GAME=process.env.GAME||path.join(__dirname,'..','index.html');
 (async()=>{const b=await webkit.launch();const ctx=await b.newContext({viewport:{width:932,height:430}});await ctx.addInitScript(()=>{let x=8;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};});const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message+' '+(e.stack||'').split('\n')[1]));
 await pg.goto('file://'+GAME);await pg.waitForTimeout(300);
 const r=await pg.evaluate(()=>{localStorage.removeItem('msp-career');document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,7);a.hire('tech');a.hire('clerk');a.setBuild(false);S.major=2;S.cash=200000;S.reg=250;S.opened=true;S.week=6;
- const out={};out.lockedBuy=a.buyLand('N');
+ const out={};S.major=1;out.lockedBuy=a.buyLand('N');S.major=2;
  /* jump the career to level 6 */localStorage.setItem('msp-career',JSON.stringify({xp:1400,ach:{},tot:{},stores:0}));
  return out;});
 await pg.reload();await pg.waitForTimeout(300);
