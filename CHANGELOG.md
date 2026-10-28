@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.49 · 2026-10-28 — You can see the store phone
+- Until you build a phone desk, a small desk phone sits on the first drop-off window. That's where calls ring, and a free clerk or pharmacist answers them there. It blinks red with a ☎ while a call is waiting. Once you build a phone desk, calls move to the desk.
+
 ## v24.48 · 2026-10-28 — Phone calls before the phone desk
 - Phone-in prescriptions come in from day one. Until you build a phone desk, they ring at the drop-off window, and only a free clerk or pharmacist can answer. The missed-call message used to say "a phone desk sends calls to voicemail" even in week 1, when there was no phone desk to build. It now explains where calls ring, and says the phone desk unlocks after week 1 (or that you can build it, once it's available).
 - A "☎ ringing" tag pops up over the drop-off window when a call comes in and there's no phone desk.

@@ -374,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.48 · 2026-10-28';
+const BUILD='v24.49 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1694,7 +1694,7 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
     else{if(E&&Wn)seg(o.x,o.y+.5-T2,1,T2*2);else if(E)seg(o.x+.5-T2,o.y+.5-T2,.5+T2,T2*2);else if(Wn)seg(o.x,o.y+.5-T2,.5+T2,T2*2);
       if(N&&Sn)seg(o.x+.5-T2,o.y,T2*2,1);else if(Sn)seg(o.x+.5-T2,o.y+.5-T2,T2*2,.5+T2);else if(N)seg(o.x+.5-T2,o.y,T2*2,.5+T2);
       if((E||Wn)&&(N||Sn))seg(o.x+.5-T2,o.y+.5-T2,T2*2,T2*2);}}
-  else if(t==='dropoff'||t==='register'){const q=S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length;tint(o.x,o.y,w,d,q);box(o.x,o.y,w,d,.9,t==='dropoff'?'#c9a06a':'#b9925c');frontStrip(o,'#f1e9dc');const wt=S.scripts.filter(x=>x.at==='wtray:'+o.id).length;if(wt){const p=lw(o,T.w-.4,.3);stack(p[0],p[1],wt,'basket',28);}
+  else if(t==='dropoff'||t==='register'){const q=S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length;tint(o.x,o.y,w,d,q);box(o.x,o.y,w,d,.9,t==='dropoff'?'#c9a06a':'#b9925c');frontStrip(o,'#f1e9dc');if(t==='dropoff'&&!objsOf('phone').length&&objsOf('dropoff')[0]===o){/* the store's phone sits on the first drop-off window until there's a phone desk */const ring=S.scripts.some(x=>x.stage==='ringing');{const [px,py]=lpt(o,.3,.3);const zz=Z(),H=.9*TH*2*zz;const col=ring&&(Math.floor(performance.now()/250)%2)?'#c0392b':'#2b2f33';ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(px,py-H-2*zz,9*zz,4.5*zz,0,0,Math.PI*2);ctx.fill();ctx.fillRect(px-7*zz,py-H-6*zz,14*zz,4*zz);ctx.beginPath();ctx.ellipse(px,py-H-7*zz,9*zz,3*zz,0,0,Math.PI*2);ctx.fill();if(ring){ctx.fillStyle='#c0392b';ctx.font=`bold ${11*zz}px sans-serif`;ctx.textAlign='center';ctx.fillText('☎',px,py-H-14*zz);}}}const wt=S.scripts.filter(x=>x.at==='wtray:'+o.id).length;if(wt){const p=lw(o,T.w-.4,.3);stack(p[0],p[1],wt,'basket',28);}
     if(t==='register'){lbox(o,T.w-.7,.1,.5,.4,.4,'#2f3340');}else lbox(o,.5,.2,.5,.4,.25,'#5dcaa5');
     sign(cx-w/2,cy-.15,w,t==='dropoff'?'DROP OFF':'PICK UP',t==='dropoff'?'#fff':'#243028',t==='dropoff'?'#1d9e75':'#fac775');
     if(t==='dropoff'){const ring=S.scripts.some(x=>x.stage==='ringing')&&!objsOf('phone').length;if(ring&&Math.floor(perf/300)%2){const [sx,sy]=lpt(o,.4,.3);ctx.save();ctx.translate(sx,sy-30*z);ctx.scale(z,z);handset(0,0,'#e24b4a');ctx.restore();}}}
