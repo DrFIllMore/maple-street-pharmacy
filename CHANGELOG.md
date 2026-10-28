@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.54 · 2026-10-28 — Upgrades work from Supplies; staff take breaks; stuck prescriptions clear
+**From the week-7 report**
+- **Bug: the Upgrades list in Supplies did nothing.** Tapping "Fill station → Automatic counter" threw an error (10 times in your week 2): the button looked items up by number, but item ids are text. Your fill stations stayed on the slow counting tray, and the bin grew to 73 baskets. Fixed. Upgrading from the item card always worked. Supplies now also says when you're short of cash.
+- **Break room is used now.** Before, it only added +8 energy overnight, so you never saw anyone in it. Staff under 65% take a 20-minute break there when it's quiet, and anyone under 35% takes one even when it's busy. Each break restores about +12 energy; one person at a time. Breaks show in the Capacity tab. The overnight +8 and morale +2 a week stay.
+- **Stuck prescriptions clear.** A prescription still not ready after 2 trading days is cancelled: the customer got it elsewhere. It counts as lost, and the chat names the slowest step. Before, a backlog (73 baskets, 21 checks) made the expected wait "2 days" forever, so nearly every new customer left or chose come-back-later, and nobody sat down or used the snack machine.
+- Hire preview and District Manager count these cancellations against the bottleneck role.
+
 ## v24.52 · 2026-10-28 — Chat box and menu stay at the bottom
 - **Reported:** the chat box and the menu bar sat too high. **Cause:** dragging the chat's tab row moved the box, and the menu bar is aligned with it. A drag (easy to do by accident on a phone) had lifted both about 40 points, and the position was saved. The report showed the chat 46 points from the bottom instead of 8.
 - The chat box is now fixed at the bottom; dragging its tabs no longer moves it. Saved positions are ignored, so both go back down on reload. The corner grip still resizes the chat.
