@@ -61,7 +61,7 @@ function careStaff(w,floor){const s=S();let n=0;for(const x of s.staff){if(x.flo
 const payLoanIf=(w,buffer)=>{const s=S();if(s.loan>0&&cash()-buffer>500){A.payLoan(Math.min(s.loan,cash()-buffer));note(w,'loan');}};
 const POLICY={
   naive(w){payLoanIf(w,25000);},
-  cautious(w){payLoanIf(w,9000);careStaff(w,6000);const sg=signals();const a=sg.acts;const floor=6000;const want=a.includes('window')||a.includes('clerk')?'dropoff':a.includes('register')?'pickup':a.includes('tech')||a.includes('fill')?'fill':a.includes('chair')?'chairs':a.includes('phone')?'phone':a.includes('problem desk')?'problem':a.includes('counter')||a.includes('wall')?'security':null;
+  cautious(w){payLoanIf(w,9000);careStaff(w,6000);const sg=signals();const a=sg.acts.split(' | ').filter(x=>!/per prescription|could go|part-time/.test(x)).join(' | ');/* overstaffing advice is not a hiring request */const floor=6000;const want=a.includes('window')||a.includes('clerk')?'dropoff':a.includes('register')?'pickup':a.includes('tech')||a.includes('fill')?'fill':a.includes('chair')?'chairs':a.includes('phone')?'phone':a.includes('problem desk')?'problem':a.includes('counter')||a.includes('wall')?'security':null;
     if(want==='problem'){if(cash()>floor+800&&!objs('problem').length&&tryPlace('problem',1))note(w,'fix:problem');}else if(want)spend(want,floor,w);
     if(S().loan>0&&cash()>floor+2000){A.payLoan(1000);note(w,'loan');}},
   builder(w){payLoanIf(w,7000);careStaff(w,1500);const sg=signals();const floor=1500;const order=[];if(sg.over.includes('dropoff'))order.push('dropoff');if(sg.over.includes('register'))order.push('pickup');if(sg.over.includes('fill'))order.push('fill');if(sg.over.includes('verify'))order.push('verify');if(sg.missed>=2)order.push('phone');if(sg.intrude>=2)order.push('security');if(sg.lost>=5)order.push('chairs');
@@ -71,7 +71,7 @@ const POLICY={
     const sg=signals();for(const t of ['dropoff','register','fill']){s._overN=s._overN||{};if(sg.over.includes(t))s._overN[t]=(s._overN[t]||0)+1;if(s._overN[t]>=2){spend(t==='register'?'pickup':t,floor,w);s._overN[t]=0;}}},
   reactive(w){payLoanIf(w,7000);const s=S();const sg=signals();const floor=1200;const kinds=[...new Set(sg.posts.filter(p=>p.bad&&p.promise).map(p=>p.promise))];for(const k of kinds)spend(k,floor,w);if(sg.writeoff>=3&&!objs('problem').length&&cash()>floor+800&&tryPlace('problem',1))note(w,'fix:problem');},
   typical(w){const s=S();const sg=signals();const floor=2500;payLoanIf(w,8000);if(w>=2)s.autoRest=true;
-    if(sg.missed>=2&&!objs('phone').length&&cash()>floor+700&&tryPlace('phone',1))note(w,'build:phone');if(sg.writeoff>=2&&!objs('problem').length&&cash()>floor+800&&tryPlace('problem',1))note(w,'build:problem');
+    if(!objs('phone').length&&cash()>floor+500&&tryPlace('phone',1))note(w,'build:phone');/* the checklist lists it from day one */if(sg.writeoff>=2&&!objs('problem').length&&cash()>floor+800&&tryPlace('problem',1))note(w,'build:problem');
     const W={tech:800,clerk:650,rph:1800};s._lh=s._lh||0;
     for(const r of ['clerk','tech']){const a=A.hireAdvice(r);if(/nowhere to work/.test(a.t)&&sg.lost>=6&&cash()>floor+1200){if(tryPlace(r==='tech'?'fill':'dropoff'))note(w,'build:'+(r==='tech'?'fill':'dropoff'));continue;}
       if(w-s._lh>=2&&cash()>W[r]*2+floor&&(a.v==='good'||sg.lost>=10)&&s.staff.filter(x=>!x.floater).length<6){hire(r);s._lh=w;note(w,'hire:'+r);break;}}

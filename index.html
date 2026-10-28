@@ -374,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.49 · 2026-10-28';
+const BUILD='v24.50 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -409,7 +409,7 @@ const TYPES={
   fill:{short:'Tech counts pills',name:'Fill station',cost:1200,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'A tech counts and fills here. One tech works it at a time.',levels:[{n:'Counting tray',t:2},{n:'Automatic counter',t:1.2,cost:2500,h:'almost twice as fast'},{n:'Filling robot',t:.7,cost:8000,h:'fills almost on its own'}]},
   verify:{short:'Pharmacist checks',name:'Verify terminal',cost:900,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'A pharmacist checks every fill here. One pharmacist at a time.',levels:[{n:'Terminal',t:1},{n:'Barcode scanner',t:.65,cost:1500,h:'checks a third faster'}]},
   shelf:{short:'Finished bags wait',name:'Will-call shelf',cost:500,w:2,d:1,block:'all',sides:'staff',cat:'station',desc:'Finished bags wait for pick-up. Holds 16; when every shelf is full the pharmacist can\'t finish checks.'},
-  phone:{short:'Takes phone-in Rx',name:'Phone desk',cost:700,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Phone-in prescriptions get answered here by whoever is free (clerk, tech or pharmacist), and calls nobody reaches go to voicemail instead of being lost. Without one, calls can only be taken at a free drop-off window, and unanswered ones are lost.'},
+  phone:{short:'Phone-in Rx: ~1 in 4 customers',name:'Phone desk',cost:500,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'Lets customers phone in prescriptions — about a quarter of all business. Whoever is free answers (clerk, tech or pharmacist); calls nobody gets to go to voicemail. Without a phone desk those customers don\'t call at all.'},
   problem:{short:'Fixes rejected claims',name:'Problem desk',cost:800,w:1,d:1,block:'all',sides:'staff',cat:'station',desc:'A free clerk or the pharmacist appeals rejected claims here (70% get paid, vs 60% without the desk). Claims still expire if nobody gets to them.'},
   room:{short:'Private consult room, ready-made',name:'Consult room',cost:2500,w:4,d:5,block:'all',cat:'station',prefab:true,desc:'A consult desk walled in with two doors: customers come in at the front, the pharmacist through a staff-only door at the back. Private from day one, which earns more trust per visit. Placed as one piece; the parts can be moved or sold separately afterwards.'},
   consult:{short:'Shots & reviews · wall it in',name:'Consult desk',cost:1500,w:2,d:1,block:'all',sides:'both',cat:'station',desc:'Shots and med reviews. After placing, the floor shows where walls and a door go to make it private.'},
@@ -423,12 +423,12 @@ const TYPES={
   snack:{short:'Customers accept ~30% longer waits',name:'Snack machine',cost:650,w:1,d:1,block:'all',sides:'patient',cat:'furniture',desc:'With a snack machine in reach, customers accept about 30% longer waits at drop-off (more stay, fewer take their prescription to the chain). Anyone who buys a snack waits about 30% longer before giving up. Earns $2 a snack; one person at a time. Put it near the chairs.'},
   plant:{short:'People like plants',name:'Plant',cost:80,w:1,d:1,block:'all',cat:'furniture',desc:'People like plants.'},
 };
-const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','chair','restroom','wall','door','sdoor'];
-const PALETTE_MORE=['snack','mat','breakroom','phone','problem','room','consult','otc','medshelf','fridge','plant'];
+const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','phone','chair','restroom','wall','door','sdoor'];
+const PALETTE_MORE=['snack','mat','breakroom','problem','room','consult','otc','medshelf','fridge','plant'];
 const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE.filter(t=>(S.unlocked||[]).includes(t))]:PALETTE_START;
 /* equipment unlocks as the store earns it; each unlock is announced in the Gazette and badged NEW in Build */
 const UNLOCKS=[
-  {items:['phone','plant'],when:()=>S.week>=2,why:'Phone desk — phone-in prescriptions get answered without pulling a clerk off the window. Plants — a little trust each week.'},
+  {items:['plant'],when:()=>S.week>=2,why:'Plants — a little trust each week.'},
   {items:['snack'],when:()=>S.week>=2,why:'Snack machine — customers accept about 30% longer waits and stay instead of leaving. Earns $2 a snack.'},
   {items:['mat'],when:()=>S.week>=2,why:'Anti-fatigue mats — lay one where a tech or clerk stands; work there wears them out 25% slower.'},
   {items:['breakroom'],when:()=>S.week>=3&&S.staff.filter(w=>!w.floater).length>=3,why:'Break room — staff recover faster every night; cheaper than a hire when the team is worn out.'},
@@ -561,6 +561,7 @@ function readiness(){const r=[];const ok=(c,t)=>r.push({ok:!!c,t});
   ok(objsOf('bin').some(o=>passS(...staffTile(o))),'Basket bin');ok(objsOf('fill').some(o=>passS(...staffTile(o))),'Fill station');ok(objsOf('verify').some(o=>passS(...staffTile(o))),'Verify terminal');ok(objsOf('shelf').some(o=>passS(...staffTile(o))),'Will-call shelf');
   ok(objsOf('chair').filter(o=>adjReach(o.x,o.y)).length>=2,'Two chairs customers can reach');
   ok(S.staff.some(w=>w.role==='tech'),'A technician');ok(S.staff.some(w=>w.role==='clerk'),'A clerk');
+  r.push({ok:objsOf('phone').some(o=>passS(...staffTile(o))),t:'Phone desk (optional): about 1 in 4 customers phone in, only if you have one',soft:true});
   return r;}
 
 /* ============ economy helpers ============ */
@@ -591,7 +592,7 @@ function buyPromo(k){const P=PROMOS[k];if(S.cash<P.cost)return 'Not enough cash.
    a long wait ~12%. Regulars who walk out or get missed may leave. 1.5% drift away each week (+ more to the chain when service is poor). */
 function walkInPerDay(){let d=WALK_BASE*(S.hood||1)*acceptedShare()*(.4+S.trust/100)*priceWalk();if(S.mods.chain&&S.mods.chainK)d*=S.mods.chainK;if(S.mods.viral&&S.mods.viralK)d*=S.mods.viralK;if(S.mods.buzz)d*=(S.mods.buzzK||1.04);d*=1+promoBoost();d*=1-(S.promo.pricematch?0:(S.rival||0));if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;if(pressActive())d*=1+(S.press.bad?PRESS_BAD.demand:PRESS_GOOD.demand);return d;}
 function regPerDay(){let d=(S.reg||0)/REFILL_DAYS*Math.min(1,priceWalk()+.15);if(pressActive()&&S.press.bad)d*=.95;return d;}
-function demandPerDay(){return walkInPerDay()+regPerDay();}
+function demandPerDay(){return (walkInPerDay()+regPerDay())*(objsOf('phone').length?1:.75);}/* a quarter of customers phone in, only if you have a phone */
 function regShareNow(){const t=demandPerDay();return t>0?regPerDay()/t:0;}
 function regGain(x,why){S.reg=Math.max(0,(S.reg||0)+x);if(S.wk){if(x>0)S.wk.regNew=(S.wk.regNew||0)+x;else S.wk.regLost=(S.wk.regLost||0)-x;}}
 function pickPlan(){const r=Math.random()*acceptedShare();let acc=0;for(const k in PLANS){acc+=S.plans[k]?PLANS[k].share:PLANS[k].share*.25*priceMult();if(r<acc)return S.plans[k]?k:'cash';}return 'cash';}
@@ -607,7 +608,7 @@ function newScript(src){const plan=src==='consult'?null:pickPlan();const sc={id:
 function spawnPerson(kind,sc){const p={id:uid(),seq:S.sid++,script:sc?sc.id:null,kind,name:pick(PNAMES),shirt:pick(SHIRTS),skin:pick(SKINS),elderly:Math.random()<.25,sick:Math.random()<.18,x:OUT.x,y:OUT.y,state:'enter',q:null,qt:0,wait:0,seat:null,bob:Math.random()*6,mood:'content',exitMood:null,conf:0,path:null,goal:null,pv:-1,otc:Math.random()<.3};
   if(p.sick)p.patience=.8;else p.patience=1;if(S.loyalty){p.patience*=1.15;if(!p.otc&&Math.random()<.15)p.otc=true;}S.patients.push(p);SFX.door();return p;}
 function spawnWalkIn(){const sc=newScript('walk');sc.stage='withPatient';const p=spawnPerson('rx',sc);sc.patient=p.id;p.state='toQueue';p.q=pickQueue('dropoff');}
-function spawnPhone(){const sc=newScript('phone');sc.stage='ringing';sc.ring=0;SFX.ring();if(!objsOf('phone').length){const w=objsOf('dropoff')[0];if(w)fx(w,'☎ ringing','owed');}}
+function spawnPhone(){const sc=newScript('phone');sc.stage='ringing';sc.ring=0;SFX.ring();}
 function spawnE(){const b=objsOf('bin')[0];const sc=newScript('e');sc.stage='bin';sc.at=b?'bin:'+b.id:null;if(b)fx(b,'e-script','owed');}
 function spawnConsult(){if(!objsOf('consult').length)return;const p=spawnPerson('consult',null);p.state='toRoom';}
 function pickQueue(type){const os=objsOf(type).filter(o=>{const p=patientTile(o);return p&&reach.has(p.join(','));});if(!os.length)return null;return os.map(o=>[o,S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length]).sort((a,b)=>a[1]-b[1])[0][0].id;}
@@ -649,7 +650,7 @@ function findJob(w){let pri=PRI[w.role];if(!w.isYou&&!w.floater&&(w.morale??80)<
     if(kind==='clean'){const m=(S.mess||[]).find(m=>!m.claimed&&passS(m.x,m.y));if(m)return jobClean(w,m);}
     if(kind==='receive'){const box=S.inv.recv.find(b=>!b.claimed);const bin=binOf();if(box&&bin&&passS(...staffTile(bin)))return jobReceive(w,box,bin);}
     if(kind==='restock'){const sh=objsOf('otc').find(o=>(o.stock||0)<=OTC_CAP*.3&&!busyS[o.id]&&passS(...patientTile(o)));const bin=binOf();if(sh&&S.inv.otcBack>0&&bin)return jobRestock(w,sh,bin);}
-    if(kind==='phone'){const sc=S.scripts.filter(x=>x.stage==='ringing'&&!x.claimed).sort((a,b)=>(b.ring||0)-(a.ring||0))[0];if(sc&&objsOf('bin').length){const o=freeObj('phone',w)||(w.role!=='tech'?freeObj('dropoff',w):null);if(o)return jobPhone(w,o,sc);}}/* a phone desk lets anyone free pick up (techs too); without one, a clerk or the pharmacist takes it at a free drop-off window */
+    if(kind==='phone'){const sc=S.scripts.filter(x=>x.stage==='ringing'&&!x.claimed).sort((a,b)=>(b.ring||0)-(a.ring||0))[0];if(sc&&objsOf('bin').length){const o=freeObj('phone',w);if(o)return jobPhone(w,o,sc);}}/* a phone desk lets anyone free pick up (techs too); without one, a clerk or the pharmacist takes it at a free drop-off window */
     if(kind==='fill'){const sc=S.scripts.filter(x=>x.stage==='bin'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const o=freeObj('fill',w),v=objsOf('verify').filter(q=>passS(...staffTile(q))).sort((a,b)=>loadOf(a).n-loadOf(b).n)[0];if(o&&v&&(pileOf(sc)||binOf())&&passS(...staffTile(v)))return jobFill(w,o,sc,v);/* no bin left (removed mid-week): nothing to fill from */}}
     if(kind==='verify'){const sc=S.scripts.filter(x=>x.stage==='tray'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const sf=shelfFor();if(!sf){if(objsOf('shelf').length){S.wk.shelfFull=(S.wk.shelfFull||0)+1;glog('bad',`Will-call is full (${SHELF_CAP} bags a shelf). Checks wait until customers pick up — add a register, a clerk on pick-up, or another will-call shelf.`,'wcfull',36);}}else{const o=freeObj('verify',w);if(o)return jobVerify(w,o,sc,sf);}}}
     if(kind==='problem'){const sc=S.scripts.filter(x=>x.stage==='problem'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const o=freeObj('problem',w)||(w.role==='rph'?freeObj('verify',w):null);if(o)return jobProblem(w,o,sc);}}
@@ -722,7 +723,7 @@ function tick(){
   const h=9+S.tick*5/60;const rush=h<11?.75:h<13?1.35:h<16?.8:1.3;
   if(reach.size>1&&objsOf('dropoff').length&&!S.closedToday){const d=demandPerDay()/TICKS_DAY*rush;accW+=d*.5;accP+=d*.25;accE+=d*.25;}
   accC+=(objsOf('consult').length&&!S.closedToday?5*(.6+S.trust/120)*(S.mods.flu?1.8:1)*(S.vaxDoses>0?1:.45)/TICKS_DAY:0);
-  while(accW>=1){accW-=1;spawnWalkIn();}while(accP>=1){accP-=1;spawnPhone();}while(accE>=1){accE-=1;spawnE();}while(accC>=1){accC-=1;spawnConsult();}
+  while(accW>=1){accW-=1;spawnWalkIn();}while(accP>=1){accP-=1;if(objsOf('phone').length)spawnPhone();}/* no phone desk: those customers never call */while(accE>=1){accE-=1;spawnE();}while(accC>=1){accC-=1;spawnConsult();}
   const qd=new Set(),od=new Set(),sd=new Set();for(const p of S.patients){if(p.state==='queued')qd.add(p.q);else if(p.state==='toOtc'&&p.otcWait>0)od.add(p.otcT);else if(p.state==='waiting')sd.add(p.seat);}/* one pass over patients, not one per object */
   for(const o of S.objs){o.tt=(o.tt||0)+1;if(S.running){o.wkTt=(o.wkTt||0)+1;o.wkBt0=o.bt||0;}if(busyS[o.id]||((o.type==='dropoff'||o.type==='register')&&qd.has(o.id))||(o.type==='otc'&&od.has(o.id))||(o.type==='chair'&&sd.has(o.id))||(o.type==='restroom'&&o.occ))o.bt=(o.bt||0)+1;else if(o.type==='bin'||o.type==='shelf'){const {n,cap}=loadOf(o);o.bt=(o.bt||0)+Math.min(1,n/cap);}if(S.running)o.wkBt=(o.wkBt||0)+((o.bt||0)-(o.wkBt0||0));}
   /* staff shifts */
@@ -730,7 +731,7 @@ function tick(){
   const nInBack=S.patients.reduce((t,p)=>t+(p.state==='inBack'?1:0),0);
   for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;w.idleT=0;}else{w.idleT=(w.idleT||0)+1;if(w.idleT===24&&!w.isYou&&S.tick>12)glog('staff',`${w.name} has had nothing to do for two hours: ${idleWhy(w)}.`,'idle'+w.id,108);}}else w.idleT=0;
     if(w.plan){const st=w.plan.steps[w.step];if(st&&st.work!==undefined){if(!w.workMax){w.workMax=st.work;w.work=st.work;}const nIn=nInBack;w.work-=nIn?1/(1+.5*nIn):1;if(w.work<=0){w.workMax=0;w.step++;}const o=w.plan.steps.find(s=>s.go)?null:null;util[w.plan.name]=(util[w.plan.name]||0)+1;}}}
-  for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14&&!sc.vm){if(objsOf('phone').length){sc.vm=true;S.wk.voicemail=(S.wk.voicemail||0)+1;glog('ops','A call went to voicemail — someone will call back when free.','vm',24);}else{sc.stage='dead';if(sc.reg)regGain(-.3);S.wk.phoneMissed++;dTrust(-.2,'missed calls');glog('bad',objsOf('phone').length?'Missed a phone-in prescription: nobody was free to get to the phone desk.':`Missed a phone-in prescription. Until you have a phone desk, calls ring at the drop-off window and only a free clerk or pharmacist can pick up.${palette().includes('phone')?' A phone desk (Build) lets anyone answer and sends missed calls to voicemail.':' The phone desk unlocks after your first week.'}`,'missed',12);}}}}
+  for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14&&!sc.vm){if(objsOf('phone').length){sc.vm=true;S.wk.voicemail=(S.wk.voicemail||0)+1;glog('ops','A call went to voicemail — someone will call back when free.','vm',24);}else{sc.stage='dead';if(sc.reg)regGain(-.3);S.wk.phoneMissed++;dTrust(-.2,'missed calls');glog('bad','Missed a phone-in prescription: nobody was free to get to the phone desk.','missed',12);}}}}
   for(const o of objsOf('restroom'))if(o.occ&&!S.patients.some(p=>p.id===o.occ&&p.state==='inLoo'))o.occ=null;
   for(const o of objsOf('snack'))if(o.occ&&!S.patients.some(p=>p.id===o.occ&&p.state==='atSnack'))o.occ=null;
   for(const m of S.mess||[]){m.t++;if(m.t%6===0)dTrust(-.1,'mess on the floor');}/* nobody inside → free */
@@ -941,6 +942,7 @@ function makeInbox(){const w=S.wk,h=S.hist||[],last=h[h.length-1]||{},prev=h[h.l
     else if(idleObj.length&&objsOf(idleObj[0].type).length>1)act=`You have ${objsOf(idleObj[0].type).length} ${TYPES[idleObj[0].type].name.toLowerCase()}s and one ran at ${Math.round(wkBusy(idleObj[0])*100)}% all week. Sell the extra (half back) — more equipment doesn't help without the staff and customers to use it.`;
     else if(S.trust>=75&&S.cashPrice<52)act=`Trust is ${Math.round(S.trust)}. Raise the cash price $4; the neighborhood will carry it.`;
     else if(idleObj.length)act=`Your ${TYPES[idleObj[0].type].name.toLowerCase()} ran at ${Math.round(wkBusy(idleObj[0])*100)}% this week. Sell it and put the cash into something that moves product.`;
+    else if(!objsOf('phone').length)act='Build a phone desk: about a quarter of customers would phone in their prescriptions, and right now they can\'t reach you.';
     else if(!objsOf('otc').length&&palette().includes('otc'))act='An OTC shelf by the exit: a third of walk-ins buy something on the way out.';
     else if(!objsOf('consult').length&&palette().includes('consult'))act='A consult desk and the vaccine contract. Shots are the highest-margin thing you can sell.';
     else act='Push volume: a second clerk at drop-off and an ad in the paper.';
@@ -1035,7 +1037,7 @@ const PROMISES={
   pickup:{short:'shorter pick-up line',cost:500,test:(sn,w)=>objsOf('register').length>sn.regs||objsOf('register').some(o=>(o.level||0)>sn.regLvl)||(w['lost_at_pick-up']||0)<=Math.floor(sn.lostPick*.5)},
   fill:{short:'faster fills',cost:2500,test:(sn,w)=>objsOf('fill').length>sn.fills||objsOf('fill').some(o=>(o.level||0)>sn.fillLvl)||S.staff.filter(x=>x.role==='tech').length>sn.techs||(w.lost_waiting_for_the_fill||0)<=Math.floor(sn.lostFill*.5)},
   chairs:{short:'more seating',cost:200,test:(sn,w)=>objsOf('chair').length>=sn.chairs+2},
-  phone:{short:'answered phones',cost:700,test:(sn,w)=>objsOf('phone').length>0||w.phoneMissed<=1},
+  phone:{short:'answered phones',cost:500,test:(sn,w)=>objsOf('phone').length>0||w.phoneMissed<=1},
   stock:{short:'no more "come back Monday"',cost:0,test:(sn,w)=>w.backorder===0},
   security:{short:'closing the pharmacy off',cost:600,test:(sn,w)=>w.intrude===0},
   privacy:{short:'a private consult room',cost:720,test:(sn,w)=>objsOf('consult').some(o=>enclosed(o))},
@@ -1694,7 +1696,7 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
     else{if(E&&Wn)seg(o.x,o.y+.5-T2,1,T2*2);else if(E)seg(o.x+.5-T2,o.y+.5-T2,.5+T2,T2*2);else if(Wn)seg(o.x,o.y+.5-T2,.5+T2,T2*2);
       if(N&&Sn)seg(o.x+.5-T2,o.y,T2*2,1);else if(Sn)seg(o.x+.5-T2,o.y+.5-T2,T2*2,.5+T2);else if(N)seg(o.x+.5-T2,o.y,T2*2,.5+T2);
       if((E||Wn)&&(N||Sn))seg(o.x+.5-T2,o.y+.5-T2,T2*2,T2*2);}}
-  else if(t==='dropoff'||t==='register'){const q=S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length;tint(o.x,o.y,w,d,q);box(o.x,o.y,w,d,.9,t==='dropoff'?'#c9a06a':'#b9925c');frontStrip(o,'#f1e9dc');if(t==='dropoff'&&!objsOf('phone').length&&objsOf('dropoff')[0]===o){/* the store's phone sits on the first drop-off window until there's a phone desk */const ring=S.scripts.some(x=>x.stage==='ringing');{const [px,py]=lpt(o,.3,.3);const zz=Z(),H=.9*TH*2*zz;const col=ring&&(Math.floor(performance.now()/250)%2)?'#c0392b':'#2b2f33';ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(px,py-H-2*zz,9*zz,4.5*zz,0,0,Math.PI*2);ctx.fill();ctx.fillRect(px-7*zz,py-H-6*zz,14*zz,4*zz);ctx.beginPath();ctx.ellipse(px,py-H-7*zz,9*zz,3*zz,0,0,Math.PI*2);ctx.fill();if(ring){ctx.fillStyle='#c0392b';ctx.font=`bold ${11*zz}px sans-serif`;ctx.textAlign='center';ctx.fillText('☎',px,py-H-14*zz);}}}const wt=S.scripts.filter(x=>x.at==='wtray:'+o.id).length;if(wt){const p=lw(o,T.w-.4,.3);stack(p[0],p[1],wt,'basket',28);}
+  else if(t==='dropoff'||t==='register'){const q=S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length;tint(o.x,o.y,w,d,q);box(o.x,o.y,w,d,.9,t==='dropoff'?'#c9a06a':'#b9925c');frontStrip(o,'#f1e9dc');const wt=S.scripts.filter(x=>x.at==='wtray:'+o.id).length;if(wt){const p=lw(o,T.w-.4,.3);stack(p[0],p[1],wt,'basket',28);}
     if(t==='register'){lbox(o,T.w-.7,.1,.5,.4,.4,'#2f3340');}else lbox(o,.5,.2,.5,.4,.25,'#5dcaa5');
     sign(cx-w/2,cy-.15,w,t==='dropoff'?'DROP OFF':'PICK UP',t==='dropoff'?'#fff':'#243028',t==='dropoff'?'#1d9e75':'#fac775');
     if(t==='dropoff'){const ring=S.scripts.some(x=>x.stage==='ringing')&&!objsOf('phone').length;if(ring&&Math.floor(perf/300)%2){const [sx,sy]=lpt(o,.4,.3);ctx.save();ctx.translate(sx,sy-30*z);ctx.scale(z,z);handset(0,0,'#e24b4a');ctx.restore();}}}

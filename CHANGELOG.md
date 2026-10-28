@@ -1,5 +1,14 @@
 # Changelog
 
+## v24.50 · 2026-10-28 — The phone is its own station
+- **Reported:** the drop-off window was secretly also the store phone, so one $600 window did two jobs. Calls pulled the clerk away from customers in line, and you couldn't add or remove the phone separately.
+- The **drop-off window only takes walk-in prescriptions** now.
+- The **Phone desk is available from day one** ($500, down from $700). About 1 in 4 customers phone in their prescription, but only if you have one. Whoever is free answers it (clerk, tech or pharmacist), and calls nobody gets to go to voicemail.
+- **No phone desk = no phone-in customers**, with no missed calls and no trust loss. You just do about 25% less business. "Expected a day" reflects that.
+- The opening checklist lists the phone desk as optional and says what it's for. The District Manager suggests one if you don't have it.
+- Removed the small phone drawn on the drop-off window and the "ringing at the window" behavior.
+- Playtest (20 weeks, 3 games each): plays-like-a-person 3/3 (weeks 10–11), reactive 3/3, best play 3/3, careful 2/3, builder 2/3; naive and marketer no wins.
+
 ## v24.49 · 2026-10-28 — You can see the store phone
 - Until you build a phone desk, a small desk phone sits on the first drop-off window. That's where calls ring, and a free clerk or pharmacist answers them there. It blinks red with a ☎ while a call is waiting. Once you build a phone desk, calls move to the desk.
 
