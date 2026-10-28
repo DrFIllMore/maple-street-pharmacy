@@ -1,5 +1,13 @@
 # Changelog
 
+## v24.43 · 2026-10-28 — Snack machine
+- **New item: Snack machine** ($650, unlocks after week 1). Put it where waiting customers can reach it, near the chairs.
+  - At drop-off, customers accept about **30% longer waits** while it's in reach: more stay instead of coming back later, and fewer take their prescription to the chain.
+  - Customers waiting for their prescription (and some in long lines) walk over and buy a snack: they then wait **30% longer** before giving up, and go back to their own spot in line.
+  - Earns **$2 a snack**. One person at a time. The item card shows uses and earnings, and the Gazette shows "Snacks sold".
+- Tested over 4 games × 3 busy weeks: served +4%, walk-outs −17%, about 9 snacks a week, about +$160 a week overall. It pays for itself in about 4 weeks.
+- Gazette: "Calls missed" and "Consults" rows show only when they're above zero, so the page still fits on small phones.
+
 ## v24.42 · 2026-10-27 — Report a problem
 - **⋯ → Report a problem** (was "Debug report"). Type what felt wrong, then:
   - **Save report file**: a `.json` with the whole saved game, the last 400 chat lines, the debug log, device and layout info, performance counters and your note. On iPhone it opens the share sheet, so you can save to Files or send it straight to your chat with Claude.

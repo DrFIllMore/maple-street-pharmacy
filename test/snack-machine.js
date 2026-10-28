@@ -1,0 +1,11 @@
+const {webkit}=require('playwright');(async()=>{const b=await webkit.launch();
+for(const seed of [31,77,123,999])for(const withSnack of [false,true]){const ctx=await b.newContext({viewport:{width:932,height:430}});await ctx.addInitScript(s=>{let x=s;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};},seed);const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message+' '+(e.stack||'').split('\n')[1]));
+await pg.goto('file:///home/claude/maple-street-pharmacy/index.html');await pg.waitForTimeout(300);
+const r=await pg.evaluate((withSnack)=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,7);P('chair',5,7);P('chair',6,7);P('restroom',12,9,0);
+ S.opened=true;S.unlocked=Object.keys(__msp.TYPES);let placed=null;if(withSnack)placed=P('snack',7,8,0);a.hire('tech');a.hire('clerk');a.setBuild(false);S.reg=450;const out=[];
+ for(let k=0;k<3;k++){a.startWeek();a.setSpeed(0);while(S.running){for(let f=0;f<12;f++)a.motion(.016);a.tick();}document.getElementById('review').hidden=true;const h=S.hist[S.hist.length-1];out.push(`served ${h.served} lost ${h.lost} later ${S.wk.later||0} snacks ${S.wk.snacks||0} net ${h.net} lw ${JSON.stringify(h.lw)}`);}
+ const o=S.objs.find(x=>x.type==='snack');return {withSnack,placed,card:o?(a.openObj(o),document.getElementById('sheet').innerText.replace(/\s+/g,' ').slice(0,200)):'',out};},withSnack);
+const tot=r.out.map(l=>l.match(/served (\d+) lost (\d+) later (\d+) snacks (\d+) net (-?\d+)/).slice(1).map(Number)).reduce((t,x)=>t.map((v,i)=>v+x[i]),[0,0,0,0,0]);console.log(seed,withSnack?"snack":"none ","served",tot[0],"lost",tot[1],"later",tot[2],"snacks",tot[3],"net",tot[4],errs.length?errs:"");
+if(false){await pg.evaluate(()=>{const a=__msp.api,S=__msp.S;document.getElementById('sheet').hidden=true;a.startWeek();a.setSpeed(0);for(let i=0;i<70;i++){for(let f=0;f<12;f++)a.motion(.016);a.tick();}});await pg.waitForTimeout(200);await pg.screenshot({path:'snack.png'});}
+await ctx.close();}
+await b.close();})();
