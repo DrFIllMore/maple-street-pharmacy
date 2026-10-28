@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.48 · 2026-10-28 — Phone calls before the phone desk
+- Phone-in prescriptions come in from day one. Until you build a phone desk, they ring at the drop-off window, and only a free clerk or pharmacist can answer. The missed-call message used to say "a phone desk sends calls to voicemail" even in week 1, when there was no phone desk to build. It now explains where calls ring, and says the phone desk unlocks after week 1 (or that you can build it, once it's available).
+- A "☎ ringing" tag pops up over the drop-off window when a call comes in and there's no phone desk.
+
 ## v24.47 · 2026-10-28 — Pay the loan when you want
 - **Reported:** couldn't pay the loan by hand. **Cause:** the pay buttons kept a hidden $1,000 cash buffer. "Pay $500" needed $1,500 in cash, and "Pay it off" needed the loan plus $1,000. With low cash every button was greyed out, with no reason given.
 - Pay buttons now work with any cash on hand. If paying leaves less than $1,000, the chat reminds you that Saturday bills still come due.

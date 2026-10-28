@@ -374,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.47 · 2026-10-28';
+const BUILD='v24.48 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -607,7 +607,7 @@ function newScript(src){const plan=src==='consult'?null:pickPlan();const sc={id:
 function spawnPerson(kind,sc){const p={id:uid(),seq:S.sid++,script:sc?sc.id:null,kind,name:pick(PNAMES),shirt:pick(SHIRTS),skin:pick(SKINS),elderly:Math.random()<.25,sick:Math.random()<.18,x:OUT.x,y:OUT.y,state:'enter',q:null,qt:0,wait:0,seat:null,bob:Math.random()*6,mood:'content',exitMood:null,conf:0,path:null,goal:null,pv:-1,otc:Math.random()<.3};
   if(p.sick)p.patience=.8;else p.patience=1;if(S.loyalty){p.patience*=1.15;if(!p.otc&&Math.random()<.15)p.otc=true;}S.patients.push(p);SFX.door();return p;}
 function spawnWalkIn(){const sc=newScript('walk');sc.stage='withPatient';const p=spawnPerson('rx',sc);sc.patient=p.id;p.state='toQueue';p.q=pickQueue('dropoff');}
-function spawnPhone(){const sc=newScript('phone');sc.stage='ringing';sc.ring=0;SFX.ring();}
+function spawnPhone(){const sc=newScript('phone');sc.stage='ringing';sc.ring=0;SFX.ring();if(!objsOf('phone').length){const w=objsOf('dropoff')[0];if(w)fx(w,'☎ ringing','owed');}}
 function spawnE(){const b=objsOf('bin')[0];const sc=newScript('e');sc.stage='bin';sc.at=b?'bin:'+b.id:null;if(b)fx(b,'e-script','owed');}
 function spawnConsult(){if(!objsOf('consult').length)return;const p=spawnPerson('consult',null);p.state='toRoom';}
 function pickQueue(type){const os=objsOf(type).filter(o=>{const p=patientTile(o);return p&&reach.has(p.join(','));});if(!os.length)return null;return os.map(o=>[o,S.patients.filter(p=>p.q===o.id&&(p.state==='toQueue'||p.state==='queued')).length]).sort((a,b)=>a[1]-b[1])[0][0].id;}
@@ -730,7 +730,7 @@ function tick(){
   const nInBack=S.patients.reduce((t,p)=>t+(p.state==='inBack'?1:0),0);
   for(const w of S.staff){if(w.off||w.x>=W)continue;if(!w.plan){const j=findJob(w);if(j){w.plan=j;w.step=0;w.idleT=0;}else{w.idleT=(w.idleT||0)+1;if(w.idleT===24&&!w.isYou&&S.tick>12)glog('staff',`${w.name} has had nothing to do for two hours: ${idleWhy(w)}.`,'idle'+w.id,108);}}else w.idleT=0;
     if(w.plan){const st=w.plan.steps[w.step];if(st&&st.work!==undefined){if(!w.workMax){w.workMax=st.work;w.work=st.work;}const nIn=nInBack;w.work-=nIn?1/(1+.5*nIn):1;if(w.work<=0){w.workMax=0;w.step++;}const o=w.plan.steps.find(s=>s.go)?null:null;util[w.plan.name]=(util[w.plan.name]||0)+1;}}}
-  for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14&&!sc.vm){if(objsOf('phone').length){sc.vm=true;S.wk.voicemail=(S.wk.voicemail||0)+1;glog('ops','A call went to voicemail — someone will call back when free.','vm',24);}else{sc.stage='dead';if(sc.reg)regGain(-.3);S.wk.phoneMissed++;dTrust(-.2,'missed calls');glog('bad','Missed a phone-in prescription. A phone desk sends calls to voicemail instead.','missed',12);}}}}
+  for(const sc of S.scripts){if(sc.stage==='ringing'){sc.ring++;if(sc.ring>14&&!sc.vm){if(objsOf('phone').length){sc.vm=true;S.wk.voicemail=(S.wk.voicemail||0)+1;glog('ops','A call went to voicemail — someone will call back when free.','vm',24);}else{sc.stage='dead';if(sc.reg)regGain(-.3);S.wk.phoneMissed++;dTrust(-.2,'missed calls');glog('bad',objsOf('phone').length?'Missed a phone-in prescription: nobody was free to get to the phone desk.':`Missed a phone-in prescription. Until you have a phone desk, calls ring at the drop-off window and only a free clerk or pharmacist can pick up.${palette().includes('phone')?' A phone desk (Build) lets anyone answer and sends missed calls to voicemail.':' The phone desk unlocks after your first week.'}`,'missed',12);}}}}
   for(const o of objsOf('restroom'))if(o.occ&&!S.patients.some(p=>p.id===o.occ&&p.state==='inLoo'))o.occ=null;
   for(const o of objsOf('snack'))if(o.occ&&!S.patients.some(p=>p.id===o.occ&&p.state==='atSnack'))o.occ=null;
   for(const m of S.mess||[]){m.t++;if(m.t%6===0)dTrust(-.1,'mess on the floor');}/* nobody inside → free */
