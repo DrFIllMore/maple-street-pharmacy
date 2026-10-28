@@ -95,3 +95,7 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Target: a quiet store serves a walk-in in about 1 hour, so patience is roughly 2.5–4× the base service time.
 - Service trust per week: +3 / +1.5 / 0, down to −4 at worst (was −8).
 - Bank: a short Saturday pays interest only (no fee, no strike). A miss means not even the interest is paid. The first red Saturday is a warning; red strikes count from the second in a row. Insurer advance pays out all receivables now at 3% on top of the 6% fee.
+
+## Breaks and comfort items (v24.57)
+- With a break room, every staff member takes one lunch break per shift (from tick 36, about noon), one at a time: 4 ticks, +12 energy, +1 morale, ×1.06 speed for the rest of the day. Urgent breaks under 35%; idle breaks under 65%.
+- Comfort item cards (chair, restroom, snack, break room) show Holds / Now / Used (today, week, total) plus one line on what the item does.

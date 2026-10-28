@@ -1,0 +1,100 @@
+=== Maple Street Pharmacy debug ===
+build v24.56 · 2026-10-28 · 2026-10-28T06:35:57.730Z
+window 430×873 · dpr 3 · screen 430×932
+orientation portrait-primary · app 817×426 · rotated true · fps 60
+bar 389,69 35×762 · chat 8,69 86×355 · sheet hidden · review hidden · office hidden
+layout {"barL":87,"barR":39,"barY":3,"barH":41,"barF":11,"chat":[85,8,355.33333333333337,85.99999999999996,10],"size":0.85,"k":0.84} · window 430×873 @3 rot=true
+window insets top 56 bottom 0 left 0 right 4 · screen 430×873 @3 · safe-area 59/34/0/0 · rot=true · app 817×426
+ua Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1
+
+--- state ---
+week 7 day 6 tick 0 running=false opened=true speed=3 cash=8689 owed=12436 loan=12500 trust=65.3 stock=138 plans={"blue":true,"silver":true,"quick":true} price=52 mods={"cheap":1}
+objs fill@16,0L2 bin@15,0 verify@13,0L1 shelf@11,0 phone@18,0 register@12,3L1 dropoff@14,3 counter@16,3 restroom@13,12r2 wall@17,3r2 wall@18,3r2 wall@19,3r2 chair@9,5r1 chair@9,6r1 chair@9,7r1 chair@9,8r1 chair@9,9r1 chair@9,10r1 snack@19,5r3 medshelf@19,1r3 otc@19,10r3 breakroom@7,0 problem@9,0 wall@3,0r2 wall@3,1r2 wall@3,2r2 wall@3,3r2 wall@4,3r2 wall@5,3 wall@6,3 wall@7,3r2 wall@8,3 verify@5,0 register@10,3L1 wall@9,3 bin@4,0 · reach 201 tiles
+staff Morgan/rph/off, Theo/tech/off, Kenji/clerk/off, Felix/rph/off, Nia/clerk/off
+scripts ring0 with0 bin36 carried3 tray0 prob0 claim0 shelf7 back0 · people 0 () · claims open 2
+busy {} wk={"served":225,"lost":33,"consults":0,"otc":684,"cashIn":5918,"drug":3258,"paid":8456.239999999994,"fee":539.76,"trust0":67.59000000000296,"phoneMissed":0,"backorder":0,"writeoff":5,"annoyed":0,"ev":[{"k":"happy","name":"Yuki","el":false},{"k":"happy","name":"Mr. Chen","el":true},{"k":"happy","name":"Ruby","el":false},{"k":"happy","name":"Sam","el":false},{"k":"happy","name":"Mina","el":false},{"k":"happy","name":"Hector","el":false},{"k":"happy","name":"Tasha","el":false},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"happy","name":"Mr. Brooks","el":true},{"k":"happy","name":"Aunt Bea","el":false},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"happy","name":"Mr. Patel","el":false},{"k":"happy","name":"Mr. Chen","el":true},{"k":"happy","name":"Ruby","el":false},{"k":"happy","name":"Mr. Patel","el":true},{"k":"happy","name":"Yuki","el":true},{"k":"happy","name":"Mina","el":true},{"k":"happy","name":"Mr. Brooks","el":false},{"k":"happy","name":"Mina","el":false}],"built":["bin"],"maxTray":5,"intrude":0,"theft":0,"theftVal":0,"escorted":0,"looDenied":0,"tw":{"served":4.499999999999105,"walk-outs":-3.2999999999998124,"claims written off":-2.5,"press":-2,"perks":1},"reg0":300.09581929141,"hireFees":600,"qw":{"win":97,"pick":578,"bin":14220,"tray":189},"later":83,"regNew":51.84000000000003,"regLost":19.10905257263955,"snacks":23,"looUsed":18,"annoyedTicks":0,"_ps":225,"_pl":33,"leftAtClose":8,"lost_cancelled_after_2_days":5,"voicemail":6,"lost_wait_too_long":28,"press":[{"k":"lines","bad":true,"head":"Long lines at Maple Street — 8 walk out in a day"}],"interest":128,"billPay":3900,"billRent":650,"billDriver":0,"costs":8786,"loanPay":378,"complaints":[],"svcRate":0.12790697674418605,"promiseResults":[],"regEnd":333,"net":5588.239999999994,"bankNote":[],"unlocks":[]} demand/day=36.0
+
+--- activity (400) ---
+w6 Fri 10:00 [money] Hour: 0 served, 1 gave up, 1 annoyed right now, $0 in.
+w6 Fri 10:35 [money] Claim rejected by the insurer.
+w6 Fri 10:45 [ops] Wait is about 490 min — customers are dropping off and coming back later.
+w6 Fri 10:55 [money] Claim written off (appeal failed).
+w6 Fri 11:00 [money] Hour: 6 served, 0 gave up, $154 in.
+w6 Fri 11:05 [bad] Theo: bin has 31 baskets, I can't keep up.
+w6 Fri 11:40 [bad] Coach Riley heard the wait (~9h) and took the prescription to the chain.
+w6 Fri 12:00 [money] Hour: 3 served, 1 gave up, $54 in.
+w6 Fri 12:20 [money] Mrs. Alvarez grabbed a snack (+$2) and will wait longer.
+w6 Fri 1:00 [money] Hour: 4 served, 1 gave up, $71 in.
+w6 Fri 1:00 [ops] Line at pick-up: 4 waiting.
+w6 Fri 1:05 [bad] Theo: bin has 31 baskets, I can't keep up.
+w6 Fri 1:40 [bad] Tasha heard the wait (~8.5h) and took the prescription to the chain.
+w6 Fri 2:00 [money] Hour: 5 served, 1 gave up, $222 in.
+w6 Fri 2:35 [money] Mrs. Alvarez grabbed a snack (+$2) and will wait longer.
+w6 Fri 2:40 [bad] Derek heard the wait (~9h) and took the prescription to the chain.
+w6 Fri 3:00 [money] Hour: 6 served, 2 gave up, $184 in.
+w6 Fri 3:05 [bad] Theo: bin has 29 baskets, I can't keep up.
+w6 Fri 3:45 [ops] Wait is about 450 min — customers are dropping off and coming back later.
+w6 Fri 4:00 [money] Hour: 2 served, 1 gave up, 1 annoyed right now, $39 in.
+w6 Fri 4:55 [bad] Mina heard the wait (~9h) and took the prescription to the chain.
+w6 Fri 5:00 [money] Hour: 5 served, 1 gave up, 2 annoyed right now, $148 in.
+w6 Fri 5:05 [bad] Theo: bin has 30 baskets, I can't keep up.
+w6 Fri 6:00 [money] Hour: 3 served, 1 gave up, 1 annoyed right now, $128 in.
+w6 Sat 9:00 [money] Claim rejected by the insurer.
+w6 Sat 9:00 [bad] Ruby heard the wait (~11.5h) and took the prescription to the chain.
+w6 Sat 9:05 [money] Insurer remittance: +$2,079 (42 claims, $133 fees).
+w6 Sat 9:05 [bad] 1 prescription waited more than 2 days and was cancelled — those customers went to the chain. Speed up the slowest step (Flow).
+w6 Sat 9:20 [money] Claim written off (appeal failed).
+w6 Sat 9:45 [ops] Line at pick-up: 4 waiting.
+w6 Sat 9:45 [money] Claim rejected by the insurer.
+w6 Sat 10:00 [money] Hour: 2 served, 2 gave up, $39 in.
+w6 Sat 10:05 [bad] Theo: bin has 30 baskets, I can't keep up.
+w6 Sat 10:45 [money] Hector grabbed a snack (+$2) and will wait longer.
+w6 Sat 11:00 [money] Hour: 4 served, 0 gave up, $99 in.
+w6 Sat 11:10 [money] Claim rejected by the insurer.
+w6 Sat 11:35 [ops] Wait is about 475 min — customers are dropping off and coming back later.
+w6 Sat 12:00 [money] Hour: 7 served, 0 gave up, $208 in.
+w6 Sat 12:05 [bad] Theo: bin has 29 baskets, I can't keep up.
+w6 Sat 12:05 [bad] Mina heard the wait (~9h) and took the prescription to the chain.
+w6 Sat 12:10 [bad] Morgan: 4 fills waiting on me to check.
+w6 Sat 12:40 [money] Ruby grabbed a snack (+$2) and will wait longer.
+w6 Sat 1:00 [money] Hour: 2 served, 2 gave up, $106 in.
+w6 Sat 1:05 [ops] Line at pick-up: 4 waiting.
+w6 Sat 2:00 [money] Hour: 7 served, 0 gave up, $220 in.
+w6 Sat 2:05 [bad] Theo: bin has 34 baskets, I can't keep up.
+w6 Sat 2:30 [bad] Morgan: 5 fills waiting on me to check.
+w6 Sat 2:40 [money] Jordan grabbed a snack (+$2) and will wait longer.
+w6 Sat 2:40 [money] Claim rejected by the insurer.
+w6 Sat 3:00 [money] Hour: 2 served, 0 gave up, 1 annoyed right now, $69 in.
+w6 Sat 3:00 [ops] Wait is about 505 min — customers are dropping off and coming back later.
+w6 Sat 3:15 [ops] Line at pick-up: 4 waiting.
+w6 Sat 4:00 [money] Hour: 3 served, 0 gave up, 3 annoyed right now, $47 in.
+w6 Sat 4:00 [bad] Sam heard the wait (~12h) and took the prescription to the chain.
+w6 Sat 4:05 [bad] Theo: bin has 32 baskets, I can't keep up.
+w6 Sat 4:30 [bad] Morgan: 4 fills waiting on me to check.
+w6 Sat 5:00 [money] Hour: 3 served, 2 gave up, 4 annoyed right now, $45 in.
+w6 Sat 6:00 [money] Hour: 4 served, 0 gave up, 6 annoyed right now, $60 in.
+w6 Sat 6:00 [ops] Line at pick-up: 5 waiting.
+w6 — 9:00 [money] Counter $5,918, insurers $8,456 (fees $540). Wages $3,900, rent $650, drugs $3,258, hiring & bonuses $600, loan $378 (incl. $128 interest). Week net +$5,588.
+
+--- log (21) ---
+0.3s w1 [sys] start v24.56 · 2026-10-28 430×873 rot=true
+131.6s w1 [game] week 1 start {"staff":["rph","tech","clerk"],"objs":24,"cash":8860,"trust":50,"demand":21.1}
+186.4s w1 [game] week 1 end {"served":154,"lost":0,"paid":207,"costs":4610,"net":-971,"cash":889,"owed":6074,"trust":56.6}
+215.4s w2 [game] week 2 start {"staff":["rph","tech","clerk"],"objs":24,"cash":589,"trust":56.6,"demand":29.5}
+370.5s w2 [game] week 2 end {"served":176,"lost":0,"paid":3269,"costs":3348,"net":3811,"cash":3350,"owed":9894,"trust":59.6}
+382.9s w3 [game] week 3 start {"staff":["rph","tech","clerk"],"objs":26,"cash":2450,"trust":60.6,"demand":38}
+412.3s w3 [staff] Theo morale -5 (press) → 85
+412.3s w3 [staff] Kenji morale -5 (press) → 95
+427.0s w3 [game] week 3 end {"served":203,"lost":1,"paid":6561,"costs":4280,"net":6697,"cash":7647,"owed":11686,"trust":60.5}
+450.2s w4 [game] week 4 start {"staff":["rph","tech","clerk"],"objs":26,"cash":5347,"trust":60.8,"demand":34}
+578.7s w4 [staff] Theo morale -5 (press) → 80
+578.7s w4 [staff] Kenji morale -5 (press) → 95
+586.1s w4 [game] week 4 end {"served":207,"lost":3,"paid":8338,"costs":4828,"net":8368,"cash":9635,"owed":11794,"trust":59.5}
+638.1s w5 [game] week 5 start {"staff":["rph","tech","clerk"],"objs":32,"cash":6335,"trust":60.5,"demand":36.4}
+682.3s w5 [game] week 5 end {"served":217,"lost":2,"paid":8174,"costs":5041,"net":8575,"cash":6610,"owed":12150,"trust":67.6}
+801.6s w6 [game] week 6 start {"staff":["rph","tech","clerk","rph","clerk"],"objs":35,"cash":3450,"trust":67.6,"demand":48.5}
+836.8s w6 [staff] Theo morale -5 (press) → 94
+836.8s w6 [staff] Kenji morale -5 (press) → 95
+836.8s w6 [staff] Felix morale -5 (press) → 75
+836.8s w6 [staff] Nia morale -5 (press) → 75
+851.6s w6 [game] week 6 end {"served":225,"lost":33,"paid":8456,"costs":8786,"net":5588,"cash":8689,"owed":12436,"trust":65.3}

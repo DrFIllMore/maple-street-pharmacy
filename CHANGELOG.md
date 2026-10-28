@@ -1,5 +1,17 @@
 # Changelog
 
+## v24.57 · 2026-10-28 — Break room in daily use; clear cards for comfort items
+**From the week-7 report: "staff don't use the break room; items don't show capacity or use"**
+- **Why the break room sat empty:** breaks only started below 65% energy. Your busiest worker reached only about 75–80% by closing, and the night (+23%, +8% with a break room) refilled everyone to 100%. So nobody ever qualified.
+- **Lunch breaks:** with a break room, everyone takes one 20-minute break there from noon, one person at a time. Each break gives +12% energy, +1 morale, and 6% faster work for the rest of the shift. Anyone under 35% still breaks right away; under 65% they break when it's quiet. "ON BREAK" shows on the room. Tested on your layout: about 30 breaks a week and no loss in prescriptions served (198 vs 196 a week).
+- **Chair, restroom, snack machine and break room cards** now show the same four things:
+  - **Holds:** for example "1 inside · line of 2" or "1 staff member at a time"
+  - **Now:** "Free", or who is using it
+  - **Used:** today, this week and total
+  - **What it does:** in one line at the top
+
+  If an item went unused this week, the card says why. Chairs now count each customer who sits. The old "IDLE 0% / BUSY 44%" lines are gone for these items.
+
 ## v24.56 · 2026-10-28 — Fairer pace: patience, 3× speed, and a way out of debt
 **From "patience is too short for how fast the week goes; you can't recover from debt"**
 - **Bug: at 3× (▶▶) everyone walked 43% slower in game time.** The clock sped up 3× but walking only 1.7×, so every prescription took longer and walk-outs doubled (measured: 6 → 11 a week in a quiet store, 8 → 18 in a busy one). Walking now covers the same ground per game minute at every speed, and is a little quicker overall. A quiet-store visit drops from ~90–135 min to ~65 min.
