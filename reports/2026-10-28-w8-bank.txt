@@ -1,0 +1,86 @@
+=== Maple Street Pharmacy debug ===
+build v24.58 · 2026-10-28 · 2026-10-28T17:09:37.872Z
+window 430×873 · dpr 3 · screen 430×932
+orientation portrait-primary · app 817×426 · rotated true · fps 61
+bar 389,68 35×766 · chat 8,68 86×355 · sheet hidden · review hidden · office hidden
+layout {"barL":87,"barR":39,"barY":3,"barH":41,"barF":11,"chat":[85,8,355.33333333333337,85.99999999999996,10],"size":0.85,"k":0.84} · window 430×873 @3 rot=true
+window insets top 56 bottom 0 left 0 right 4 · screen 430×873 @3 · safe-area 0/0/0/0 · rot=true · app 817×426
+ua Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1
+
+--- state ---
+week 8 day 6 tick 0 running=false opened=true speed=3 cash=-2205 owed=11540 loan=8250 trust=55.4 stock=111 plans={"blue":true,"silver":true,"quick":true} price=52 mods={"viral":2,"viralK":0.85}
+objs fill@16,0L2 bin@15,0 verify@13,0L1 shelf@11,0 phone@18,0 register@12,3L1 restroom@13,12r2 chair@9,6r1 chair@9,7r1 chair@9,8r1 chair@9,9r1 chair@9,10r1 medshelf@19,1r3 otc@19,10r3 breakroom@7,0 problem@9,0 wall@3,0r2 wall@3,1r2 wall@3,2r2 wall@3,3r2 wall@4,3r2 wall@5,3 wall@6,3 wall@7,3r2 wall@8,3 verify@5,0 register@10,3L1 wall@9,3 bin@4,0 chair@9,11r1 snack@14,12r2 wall@19,6r2 wall@18,6r2 wall@17,6r2 counter@16,6 dropoff@14,6 wall@14,5 wall@14,4 fill@19,3r3L2 · reach 183 tiles
+staff Morgan/rph/off, Theo/tech/off, Kenji/clerk/off, Felix/rph/off, Nia/clerk/off
+scripts ring5 with0 bin25 carried0 tray1 prob0 claim0 shelf3 back0 · people 0 () · claims open 2
+busy {} wk={"served":202,"lost":55,"consults":0,"otc":675,"cashIn":5557,"drug":2165,"paid":8339.679999999997,"fee":532.3199999999999,"trust0":66.59000000000225,"phoneMissed":0,"backorder":0,"writeoff":3,"annoyed":0,"ev":[{"k":"happy","name":"Aunt Bea","el":true},{"k":"happy","name":"Yuki","el":false},{"k":"happy","name":"Derek","el":false},{"k":"gaveup","name":"Elena","where":"at drop-off","mood":"angry","el":true},{"k":"happy","name":"Hector","el":false},{"k":"gaveup","name":"Mina","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Grandpa Joe","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Ms. Okafor","el":false},{"k":"gaveup","name":"Derek","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Hector","el":true},{"k":"happy","name":"Hector","el":false},{"k":"happy","name":"Mr. Brooks","el":false},{"k":"gaveup","name":"Derek","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Jordan","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Grandpa Joe","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Grandpa Joe","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Elena","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Yuki","el":true},{"k":"gaveup","name":"Hector","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mrs. Nowak","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Grandpa Joe","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Patel","where":"at drop-off","mood":"angry","el":true},{"k":"happy","name":"Mr. Patel","el":false},{"k":"gaveup","name":"Mina","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Hector","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Ms. Okafor","el":false},{"k":"happy","name":"Jordan","el":false},{"k":"gaveup","name":"Mrs. Nowak","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Ms. Okafor","el":true},{"k":"gaveup","name":"Aunt Bea","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Yuki","el":true},{"k":"gaveup","name":"Ms. Okafor","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Mr. Brooks","el":true},{"k":"gaveup","name":"Coach Riley","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Hector","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Derek","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Yuki","el":false},{"k":"gaveup","name":"Mina","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Ms. Okafor","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Ms. Okafor","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Jordan","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Jordan","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Mrs. Nowak","el":false},{"k":"happy","name":"Ms. Okafor","el":false},{"k":"gaveup","name":"Grandpa Joe","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Coach Riley","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Elena","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Ms. Okafor","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Coach Riley","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Mina","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Sam","where":"at drop-off","mood":"angry","el":true},{"k":"happy","name":"Mina","el":true},{"k":"gaveup","name":"Grandpa Joe","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Derek","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Ruby","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Coach Riley","el":false},{"k":"gaveup","name":"Mrs. Alvarez","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Hector","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Mrs. Alvarez","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Yuki","where":"at drop-off","mood":"angry","el":false},{"k":"happy","name":"Ruby","el":true},{"k":"happy","name":"Mr. Brooks","el":false},{"k":"happy","name":"Ms. Okafor","el":false},{"k":"happy","name":"Tasha","el":false},{"k":"happy","name":"Derek","el":true},{"k":"gaveup","name":"Tasha","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Tasha","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mrs. Nowak","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Hector","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Mrs. Alvarez","where":"at drop-off","mood":"angry","el":true},{"k":"gaveup","name":"Sam","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at drop-off","mood":"angry","el":true},{"k":"happy","name":"Mrs. Nowak","el":false}],"built":[],"maxTray":6,"intrude":0,"theft":0,"theftVal":0,"escorted":0,"looDenied":0,"tw":{"walk-outs":-8.150000000000063,"served":4.0399999999999565,"claims written off":-1.5,"press":-4,"service":-1.6000000000000014},"reg0":332.8267667187704,"regLost":20.912135934688006,"lost_cancelled_after_2_days":2,"qw":{"win":3928,"pick":432,"bin":2236,"tray":176},"regNew":53.7900000000001,"looUsed":50,"annoyedTicks":0,"voicemail":55,"breaks":30,"lost_at_drop-off":53,"snacks":38,"_ps":202,"_pl":55,"leftAtClose":71,"loanPrepaid":355,"press":[{"k":"lines","bad":true,"head":"Long lines at Maple Street — 8 walk out in a day"}],"interest":83,"billPay":3900,"billRent":650,"billDriver":0,"costs":7070,"loanPay":355,"complaints":[],"svcRate":0.2140077821011673,"promiseResults":[],"regEnd":366,"net":6826.679999999997,"bankNote":[{"k":"cash","n":0,"t":"Closed the week at −$2,205. Warning only: get above $0 by next Saturday, or the bank starts counting (4 red weeks in a row closes the store)."}],"unlocks":[]} demand/day=34.0
+
+--- activity (390) ---
+w7 Fri 3:00 [money] Hour: 4 served, 1 gave up, 4 annoyed right now, $78 in.
+w7 Fri 3:05 [bad] Theo: bin has 13 baskets, I can't keep up.
+w7 Fri 3:05 [ops] Line at drop-off: 9 waiting.
+w7 Fri 3:15 [ops] A call went to voicemail — someone will call back when free.
+w7 Fri 3:20 [money] Elena grabbed a snack (+$2) and will wait longer.
+w7 Fri 3:35 [bad] Mrs. Alvarez gave up at drop-off.
+w7 Fri 3:45 [bad] 4 phones ringing, nobody free to answer.
+w7 Fri 4:00 [money] Hour: 2 served, 3 gave up, 5 annoyed right now, $43 in.
+w7 Fri 4:45 [staff] Nia has had nothing to do for two hours: between tasks.
+w7 Fri 4:50 [money] Derek grabbed a snack (+$2) and will wait longer.
+w7 Fri 5:00 [money] Hour: 1 served, 0 gave up, 2 annoyed right now, $21 in.
+w7 Fri 5:05 [bad] Theo: bin has 12 baskets, I can't keep up.
+w7 Fri 5:05 [ops] Line at drop-off: 11 waiting.
+w7 Fri 5:15 [ops] A call went to voicemail — someone will call back when free.
+w7 Fri 5:20 [money] Claim rejected by the insurer.
+w7 Fri 5:40 [bad] Yuki gave up at drop-off.
+w7 Fri 5:45 [bad] 5 phones ringing, nobody free to answer.
+w7 Fri 6:00 [money] Hour: 3 served, 1 gave up, 6 annoyed right now, $176 in.
+w7 Fri 6:00 [bad] 📰 Gazette: "Long lines at Maple Street — 8 walk out in a day" — customers −15%, trust −2, team morale −5 for 3 days.
+w7 Sat 9:05 [money] Insurer remittance: +$1,318 (27 claims, $84 fees).
+w7 Sat 10:05 [bad] Theo: bin has 20 baskets, I can't keep up.
+w7 Sat 10:15 [ops] A call went to voicemail — someone will call back when free.
+w7 Sat 10:15 [bad] Morgan: 6 fills waiting on me to check.
+w7 Sat 10:45 [bad] 4 phones ringing, nobody free to answer.
+w7 Sat 11:00 [money] Hour: 4 served, 0 gave up, 1 annoyed right now, $69 in.
+w7 Sat 11:00 [ops] Line at drop-off: 4 waiting.
+w7 Sat 11:25 [ops] Line at pick-up: 4 waiting.
+w7 Sat 11:50 [staff] Fill station upgraded to Automatic counter.
+w7 Sat 12:00 [money] Tasha grabbed a snack (+$2) and will wait longer.
+w7 Sat 12:00 [money] Hour: 5 served, 0 gave up, 1 annoyed right now, $169 in.
+w7 Sat 12:05 [bad] Theo: bin has 13 baskets, I can't keep up.
+w7 Sat 12:30 [ops] A call went to voicemail — someone will call back when free.
+w7 Sat 12:40 [staff] Fill station upgraded to Filling robot.
+w7 Sat 12:45 [bad] 5 phones ringing, nobody free to answer.
+w7 Sat 12:45 [ops] Insurers owe you $10,782; you have $1,866.
+w7 Sat 1:00 [money] Hour: 5 served, 0 gave up, 5 annoyed right now, $130 in.
+w7 Sat 1:00 [ops] Line at drop-off: 9 waiting.
+w7 Sat 1:25 [money] Claim rejected by the insurer.
+w7 Sat 1:35 [money] Mr. Chen grabbed a snack (+$2) and will wait longer.
+w7 Sat 2:00 [money] Hour: 7 served, 0 gave up, 7 annoyed right now, $219 in.
+w7 Sat 2:05 [bad] Theo: bin has 12 baskets, I can't keep up.
+w7 Sat 2:30 [bad] Tasha gave up at drop-off.
+w7 Sat 2:45 [bad] 5 phones ringing, nobody free to answer.
+w7 Sat 3:00 [money] Hour: 3 served, 4 gave up, 6 annoyed right now, $54 in.
+w7 Sat 3:00 [ops] Line at drop-off: 7 waiting.
+w7 Sat 3:05 [ops] A call went to voicemail — someone will call back when free.
+w7 Sat 3:30 [bad] Sam gave up at drop-off.
+w7 Sat 3:35 [money] Ruby grabbed a snack (+$2) and will wait longer.
+w7 Sat 4:00 [money] Hour: 3 served, 3 gave up, 2 annoyed right now, $56 in.
+w7 Sat 4:05 [bad] Theo: bin has 13 baskets, I can't keep up.
+w7 Sat 4:45 [bad] 4 phones ringing, nobody free to answer.
+w7 Sat 5:00 [money] Hour: 1 served, 0 gave up, 4 annoyed right now, $24 in.
+w7 Sat 5:00 [ops] Line at drop-off: 9 waiting.
+w7 Sat 5:15 [ops] Nia restocked the OTC shelf (+24).
+w7 Sat 5:20 [ops] A call went to voicemail — someone will call back when free.
+w7 Sat 5:40 [money] Mrs. Alvarez grabbed a snack (+$2) and will wait longer.
+w7 Sat 6:00 [money] Hour: 3 served, 0 gave up, 6 annoyed right now, $102 in.
+w7 — 9:00 [bad] The Gazette noted your promise about waits didn't hold (55 gave up vs 33). −2 trust.
+w7 — 9:00 [money] Counter $5,557, insurers $8,340 (fees $532). Wages $3,900, rent $650, drugs $2,165, loan $355 (incl. $83 interest). Week net +$6,827.
+w7 — 9:00 [bad] Bank notice: Closed the week at −$2,205. Warning only: get above $0 by next Saturday, or the bank starts counting (4 red weeks in a row closes the store).
+
+--- log (7) ---
+0.4s w7 [sys] start v24.58 · 2026-10-28 430×873 rot=true
+84.7s w7 [game] week 7 start {"staff":["rph","tech","clerk","rph","clerk"],"objs":39,"cash":3469,"trust":66.6,"demand":37.3}
+121.5s w7 [staff] Theo morale -5 (press) → 95
+121.5s w7 [staff] Kenji morale -5 (press) → 95
+121.5s w7 [staff] Felix morale -5 (press) → 87
+121.5s w7 [staff] Nia morale -5 (press) → 87
+128.8s w7 [game] week 7 end {"served":202,"lost":55,"paid":8340,"costs":7070,"net":6827,"cash":-2205,"owed":11540,"trust":55.4}

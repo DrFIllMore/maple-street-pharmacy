@@ -27,3 +27,4 @@ New reports go in `reports/`, and you can load them with `tools/load-report.js` 
 | 20 | v24.55 | Patience feels too short; can't recover from debt | At 3× speed walking ran 43% slower in game time (walk-outs doubled); patience below the time a quiet store needs; nothing eased the debt loop | v24.56 |
 | 21 | v24.56 (wk 7 report) | Break room never used; comfort items don't show capacity or use | Break threshold (65%) was never reached because the night refilled energy; cards mixed a station "busy %" with use counts | v24.57 |
 | 22 | v24.57 (wk 7 report) | Can't place or move a wall anywhere | A wall on the drop-off's staff tile cut it off; every later placement or move was then blamed for it and refused; the error went to the hidden chat | v24.58 |
+| 23 | v24.58 (wk 8 report) | Gazette "Week net +$6,827" but the bank said cash closed at −$2,205 | Equipment bought or upgraded wasn't in the week's money; bank warning said 4 red weeks instead of 4 more | v24.59 |

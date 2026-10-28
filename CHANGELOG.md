@@ -1,5 +1,12 @@
 # Changelog
 
+## v24.59 · 2026-10-28 — Gazette money matches your cash
+**From the week-8 report: "the bank message is not correct"**
+- **Bug:** the Gazette showed "Week net +$6,827" while the bank said you closed at −$2,205. Both numbers were real, but the $10,500 of fill-station upgrades bought on Saturday (Automatic counter $2,500 + Filling robot $8,000) never appeared in the week's money. Building, upgrading and selling equipment weren't recorded at all.
+- **Fix:** the Gazette's money column now has an **Equipment & upgrades** row (or **Equipment sold**). A **Loans, deals & other** row covers borrowing, extra loan payments, promos and contracts. The bottom line is **Cash change**: exactly how much your cash moved since last Saturday. Purchases made between weeks count toward the next week. The chat's weekly money line adds equipment and the cash change too.
+- **Bank warning wording:** "4 red weeks in a row closes the store" was wrong, because the first red week is only a warning. It now says "4 more red Saturdays in a row close the store."
+- Test: `test/gazette-cash.js` buys equipment mid-week and between weeks and checks that Cash change equals the real change.
+
 ## v24.58 · 2026-10-28 — Build: one walled-off station no longer blocks every move
 **From the week-7 report: "can't place the wall in the spot"**
 - **Bug:** the wall on the tile right behind the drop-off window (where the clerk stands) cut staff off from the window. After that, the game refused every move or placement with "Staff couldn't reach the drop-off window from there", including moving that wall away. Your log shows 50 refused tries.
