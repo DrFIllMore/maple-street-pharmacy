@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.52 · 2026-10-28 — Chat box and menu stay at the bottom
+- **Reported:** the chat box and the menu bar sat too high. **Cause:** dragging the chat's tab row moved the box, and the menu bar is aligned with it. A drag (easy to do by accident on a phone) had lifted both about 40 points, and the position was saved. The report showed the chat 46 points from the bottom instead of 8.
+- The chat box is now fixed at the bottom; dragging its tabs no longer moves it. Saved positions are ignored, so both go back down on reload. The corner grip still resizes the chat.
+
 ## v24.51 · 2026-10-28 — Layout stays put after typing
 - On iPhone, typing in a text box (like the new "What went wrong?" note in Report a problem) opens the keyboard, which shrinks and scrolls the page. After it closed, the page could stay scrolled up, leaving the chat box and the Build bar shifted. Leaving any text box now scrolls the page back and re-fits the layout, and any stray page scroll is undone while you're not typing.
 

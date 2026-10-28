@@ -22,3 +22,4 @@ New reports go in `reports/`, and you can load them with `tools/load-report.js` 
 | 15 | v24.44 (wk 5 report) | New register unused; customers stuck in one pick-up line; snack machine "never used" | Register placed facing the pharmacy (front unreachable), no warning. Snack machine far from the chairs, and most customers come back later | v24.45 |
 | 16 | v24.46 | Can't pay the loan by hand, even paused | Pay buttons needed $1,000 extra cash on hand, with no reason shown. Also no way to pay the week's bill early | v24.47 |
 | 17 | v24.49 | Phone calls in week 1 with no phone; drop-off window doing two jobs | Calls rang at the drop-off window until a phone desk unlocked (week 2), competing with walk-ins | v24.50 |
+| 18 | v24.51 | Chat box and menu bar sit too high | Chat box was draggable by its tabs (easy to drag by accident); position saved; menu aligned to it | v24.52 |
