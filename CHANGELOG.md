@@ -1,5 +1,10 @@
 # Changelog
 
+## v25.2 · 2026-10-28 — See-through view
+- New **See-thru** button (eye icon) next to Inside/Outside. It shows the store and the parking lot together, with the building's walls and roof faded, so you can watch staff and customers inside while cars park and people walk in outside.
+- Tap it again to bring the solid walls and roof back. 360° rotates it like any view.
+- In see-through, tapping inside the store opens items and people as usual; Build uses the outside tools. The choice is remembered.
+
 ## v25.1 · 2026-10-28 — The store's front walls show
 - **Reported:** "How does the player tell where the store wall is? One side looks missing."
 - In the inside view, the two walls nearest the camera were left out entirely so you could see in. With the lot now drawn around the store, that read as a missing wall.
