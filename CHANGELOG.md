@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.45 · 2026-10-28 — Backwards register
+- **Reported:** a second register was built, but no clerk worked it and customers kept lining up at the first one. **Cause:** it was rotated with its front facing the pharmacy, so customers couldn't reach it, and the game gave no warning. Two clerks stood idle while 10–12 people waited at the one working register. In a replay of that store: walk-outs at pick-up went from 18 a week to 0 once it was turned around.
+- A drop-off window, register or consult desk placed backwards is now **turned around automatically**, with a chat note, when that fixes it.
+- Leaving Build warns about any customer station whose front can't be reached (window, register, consult desk, restroom, snack machine, OTC shelf). Its item card says the same in red, with the fix.
+- Snack machine: customers in long lines grab snacks more often (and return to their spot), and the chat notes snack purchases so you can see it working. Put it near the chairs: in a busy store most people drop off and come back later, so only the ones waiting in the store use it.
+
 ## v24.44 · 2026-10-28 — New items show up in games already in progress
 - **Bug:** items added in an update (like the snack machine) only unlocked at the next Saturday close, so a game past week 1 didn't show them yet. Unlocks are now checked when a saved game loads and whenever Build opens.
 - Items marked **NEW** now sit at the front of the Build bar, so they're visible without scrolling. The badge clears once you place one.
