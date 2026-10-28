@@ -88,3 +88,10 @@ Lines: generics $11 (step 25), specialty $55 (step 5, 10%/wk spoilage, fridge), 
 - Day cover: floater/temps per role (rph 400, tech 170, clerk 140 a day). Part-time: F O F O F O.
 - Keep everyone rested: at day end, energy < 60 (after night) → tomorrow off if a same-role teammate works, else book cover if cash ≥ cost + $1,500.
 - Mat: work drain ×0.75 on that tile. Break room: +8 night recovery, +2 morale/wk.
+
+## Pace, patience and debt relief (v24.56)
+- One tick = 5 game minutes at every speed. Walking is per tick (`WALK_K`=2 × speed), so faster play never makes service slower.
+- Patience: line 30 ticks (2.5 h), standing 36 (3 h), seated 51 (~4 h). Come-back-later starts at a 24-tick (2 h) expected wait.
+- Target: a quiet store serves a walk-in in about 1 hour, so patience is roughly 2.5–4× the base service time.
+- Service trust per week: +3 / +1.5 / 0, down to −4 at worst (was −8).
+- Bank: a short Saturday pays interest only (no fee, no strike). A miss means not even the interest is paid. The first red Saturday is a warning; red strikes count from the second in a row. Insurer advance pays out all receivables now at 3% on top of the 6% fee.

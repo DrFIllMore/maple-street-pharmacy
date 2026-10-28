@@ -1,5 +1,16 @@
 # Changelog
 
+## v24.56 · 2026-10-28 — Fairer pace: patience, 3× speed, and a way out of debt
+**From "patience is too short for how fast the week goes; you can't recover from debt"**
+- **Bug: at 3× (▶▶) everyone walked 43% slower in game time.** The clock sped up 3× but walking only 1.7×, so every prescription took longer and walk-outs doubled (measured: 6 → 11 a week in a quiet store, 8 → 18 in a busy one). Walking now covers the same ground per game minute at every speed, and is a little quicker overall. A quiet-store visit drops from ~90–135 min to ~65 min.
+- **Customers are 1.5× more patient:** about 2.5 h in line, 3 h standing, about 4 h in a chair (was 100 min, 2 h, 2.8 h). They start choosing "come back later" at a 2 h expected wait (was 80 min).
+- **A bad service week costs at most −4 trust** (was −8), so one rough week doesn't wreck the next.
+- **Bank relief when you're short:**
+  - If Saturday cash can't cover the full loan bill, the bank takes **interest only**, with no fee and no strike. A missed payment now means not even covering the interest.
+  - The **first Saturday in the red is a warning**. Strikes start with the second red week in a row. Borrowing stays open after a warning week.
+- **Get insurer money now:** when Saturday looks tight, the Money page shows "💵 Get $X from insurers now (3% fee)". It pays out everything insurers owe today, minus 3% on top of their usual 6%.
+- Test: `test/debt-recovery.js` starts a small store at −$1,500 and trust 35. Old build: cash recovers but trust slides to 21–30. New build: 4 of 4 runs recover, trust climbs to 46–57, regulars 140 → ~260.
+
 ## v24.55 · 2026-10-28 — Staff tab: less to read
 - The three paragraphs of hire advice are now **one line** above the Hire buttons: where customers wait longest and the single best fix. For example: "Customers wait longest for filling (~50 min). Best fix: upgrade fill stations to the Automatic counter (Supplies) or build another fill station." Waits over 90 minutes are shown in hours.
 - Each hire button carries a short verdict in place of the job description: **✓ pays for itself**, **~ helps a little**, or **✕ not needed now**.
