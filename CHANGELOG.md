@@ -1,5 +1,9 @@
 # Changelog
 
+## v24.44 · 2026-10-28 — New items show up in games already in progress
+- **Bug:** items added in an update (like the snack machine) only unlocked at the next Saturday close, so a game past week 1 didn't show them yet. Unlocks are now checked when a saved game loads and whenever Build opens.
+- Items marked **NEW** now sit at the front of the Build bar, so they're visible without scrolling. The badge clears once you place one.
+
 ## v24.43 · 2026-10-28 — Snack machine
 - **New item: Snack machine** ($650, unlocks after week 1). Put it where waiting customers can reach it, near the chairs.
   - At drop-off, customers accept about **30% longer waits** while it's in reach: more stay instead of coming back later, and fewer take their prescription to the chain.
