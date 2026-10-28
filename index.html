@@ -374,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.50 · 2026-10-28';
+const BUILD='v24.51 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1596,7 +1596,7 @@ function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
 function fitWorld(){userCam=false;offShift=0;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
-let rsT,lastVW=0,lastVH=0;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();const big=Math.abs(VW-lastVW)>120||Math.abs(VH-lastVH)>120;if(!userCam||big)fitWorld();lastVW=VW;lastVH=VH;},80);};window.addEventListener('resize',onRs);window.addEventListener('orientationchange',onRs);if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);if(screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',onRs);
+let rsT,lastVW=0,lastVH=0;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();const big=Math.abs(VW-lastVW)>120||Math.abs(VH-lastVH)>120;if(!userCam||big)fitWorld();lastVW=VW;lastVH=VH;},80);};window.addEventListener('resize',onRs);window.addEventListener('orientationchange',onRs);/* iOS: after typing in a text box the keyboard leaves the page scrolled up, shifting the chat and Build bar. Put it back. */document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName))setTimeout(()=>{window.scrollTo(0,0);onRs();},150);});window.addEventListener('scroll',()=>{const t=(document.activeElement||{}).tagName||'';if(!/INPUT|TEXTAREA/.test(t)&&(window.scrollY||window.scrollX))window.scrollTo(0,0);},{passive:true});if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);if(screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',onRs);
 const vw=(x,y)=>cam.r===0?[x,y]:cam.r===1?[D-y,x]:cam.r===2?[W-x,D-y]:[y,W-x];
 const unvw=(a,b)=>cam.r===0?[a,b]:cam.r===1?[b,D-a]:cam.r===2?[W-a,D-b]:[W-b,a];
 const isoV=(a,b)=>[cam.x+(a-b)*TW*cam.z,cam.y+(a+b)*TH*cam.z];const iso=(x,y)=>isoV(...vw(x,y));const Z=()=>cam.z;

@@ -1,5 +1,8 @@
 # Changelog
 
+## v24.51 · 2026-10-28 — Layout stays put after typing
+- On iPhone, typing in a text box (like the new "What went wrong?" note in Report a problem) opens the keyboard, which shrinks and scrolls the page. After it closed, the page could stay scrolled up, leaving the chat box and the Build bar shifted. Leaving any text box now scrolls the page back and re-fits the layout, and any stray page scroll is undone while you're not typing.
+
 ## v24.50 · 2026-10-28 — The phone is its own station
 - **Reported:** the drop-off window was secretly also the store phone, so one $600 window did two jobs. Calls pulled the clerk away from customers in line, and you couldn't add or remove the phone separately.
 - The **drop-off window only takes walk-in prescriptions** now.
