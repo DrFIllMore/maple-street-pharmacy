@@ -1,5 +1,10 @@
 # Changelog
 
+## v25.1 · 2026-10-28 — The store's front walls show
+- **Reported:** "How does the player tell where the store wall is? One side looks missing."
+- In the inside view, the two walls nearest the camera were left out entirely so you could see in. With the lot now drawn around the store, that read as a missing wall.
+- Those two walls are now drawn low, like a cut-away dollhouse, with a darker top edge and a corner post. The entrance (and a drive-thru window) leaves a gap. The back two walls stay tall. It works in all four 360° views.
+
 ## v25.0 · 2026-10-28 — Outside: parking, drive-thru, land, and career levels
 **Outside view, with 360°**
 - A new **Outside** button next to 360° steps out of the store. You see the roof, the storefront with its sign, the parking lot, the sidewalk, the street, trees, lamps and the lots next door. 360° turns the whole property. Tap the store to go back in.

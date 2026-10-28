@@ -381,7 +381,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v25.0 · 2026-10-28';
+const BUILD='v25.1 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1818,6 +1818,7 @@ function drawScene(){
   for(const w of S.staff){if(w.off||w.x>=W+1||(OUTV&&inStore(w.x,w.y)))continue;const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
     const cue=S.running&&!st&&(w.idleT||0)>=6?(idleWhy(w).startsWith('waiting')?'wait':'idle'):null;const eb=enBand(w);const wen=w.floater?100:w.energy;const wm=eb==='risk'||eb==='empty'?'angry':eb==='exhausted'?'sad':null;items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{cue,role:w.floater&&w.role==='rph'?'float':w.role,mood:wm,energy:wen,shirt:w.role==='tech'?'#2f7fd6':w.role==='clerk'?'#1d9e75':'#9aa3b5',coat:w.floater?'#aeb4bd':w.role==='rph'?'#f6f6f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.carryKind==='box'?'box':(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket')):null,carryN:w.carry.length,prog})});}
   for(const p of S.patients){if(p.state==='pending'||p.state==='inLoo'||p.arrWait||p.dt||(OUTV&&inStore(p.x,p.y)))continue;const m=moodOf(p);items.push({x:p.x,y:p.y,d:depth(p.x,p.y),f:()=>person(p.x,p.y,{shirt:p.shirt,skin:p.skin,walking:p.walking,bob:p.bob,mood:m,cane:p.elderly,sick:p.sick,carry:p.stole?'basket':p.carryOtc?'otc':null,carryN:p.stole?1:(p.carryOtc||0),hair:p.elderly?'#cfcfcf':'#3a2a1e'})});}
+  if(!OUTV)frontWalls(items);
   lotItems(items);
   items.sort((a,b)=>a.d-b.d);
   if(OUTV){/* far side of the building first, then the building, then the near side */const near=[];for(const it of items){if(it.x!==undefined&&!behindStore(it.x,it.y))near.push(it);else it.f();}drawExterior();for(const it of near)it.f();}
@@ -2099,6 +2100,15 @@ function drawParcels(){const z=Z();for(const k of ['N','S','W']){const r=parcelR
     if(!own){ctx.setLineDash([5*z,4*z]);poly([iso(r.x0,r.y0),iso(r.x1,r.y0),iso(r.x1,r.y1),iso(r.x0,r.y1)],null,'rgba(110,90,40,.7)');ctx.setLineDash([]);}}}
 function parcelSigns(items){for(const k of ['N','S','W']){if(landState().own[k])continue;const r=parcelRect(k);const cx=(r.x0+r.x1)/2,cy=(r.y0+r.y1)/2;items.push({d:depth(cx,cy),x:cx,y:cy,f:()=>{const z=Z();const [sx,sy]=iso(cx,cy);ctx.fillStyle='#6b5a2a';ctx.fillRect(sx-1.5*z,sy-30*z,3*z,30*z);const t1='FOR SALE',t2=`${fmt(LAND[k].price)} · Lv ${LAND_LV}`;ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';const w=Math.max(ctx.measureText(t1).width,ctx.measureText(t2).width)+12*z,h=26*z;ctx.fillStyle='#fff3cf';ctx.strokeStyle='#c98a12';ctx.lineWidth=2;ctx.fillRect(sx-w/2,sy-30*z-h,w,h);ctx.strokeRect(sx-w/2,sy-30*z-h,w,h);ctx.fillStyle='#5a3b00';ctx.fillText(t1,sx,sy-30*z-h+11*z);ctx.font=`800 ${8*z}px Nunito,sans-serif`;ctx.fillText(t2,sx,sy-30*z-h+21*z);}});}}
 
+/* inside view: the two walls nearest the camera are drawn low (a cut-away), so the store's edge is clear on every side
+   while the floor stays visible. The entrance and a drive-thru window leave a gap. */
+const LOW_WALL=16;
+function frontWalls(items){const z=Z();const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const H=LOW_WALL*z;
+  const gaps=new Set();const mark=(x,y)=>{const v=vw(x+.5,y+.5);if(v[0]>VWd-1)gaps.add('R'+Math.floor(v[1]));if(v[1]>VDd-1)gaps.add('L'+Math.floor(v[0]));};mark(DOOR.x,DOOR.y);for(const o of objsOf('dtwin')){const pt=patientTile(o);if(pt&&!inb(pt[0],pt[1]))mark(o.x,o.y);}
+  const seg=(a0,b0,a1,b1,col,cap)=>{const p=isoV(a0,b0),q=isoV(a1,b1);poly([p,q,[q[0],q[1]-H],[p[0],p[1]-H]],col);ctx.strokeStyle=cap;ctx.lineWidth=2.2*z;ctx.beginPath();ctx.moveTo(p[0],p[1]-H);ctx.lineTo(q[0],q[1]-H);ctx.stroke();};
+  for(let b=0;b<VDd;b++){if(gaps.has('R'+b))continue;items.push({d:VWd+b+.9,f:()=>seg(VWd,b,VWd,b+1,'#b5cbbf','#93ab9e')});}
+  for(let a=0;a<VWd;a++){if(gaps.has('L'+a))continue;items.push({d:a+VDd+.9,f:()=>seg(a,VDd,a+1,VDd,'#bccbda','#9aacbd')});}
+  /* corner post */items.push({d:VWd+VDd+.95,f:()=>{const p=isoV(VWd,VDd);ctx.fillStyle='#93a5b4';ctx.fillRect(p[0]-1.5*z,p[1]-H,3*z,H);}});}
 /* ============ frame ============ */
 let perf=0,last=0,fps=0,fpsN=0,fpsT=0;
 let lastDraw=0;
