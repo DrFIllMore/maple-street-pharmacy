@@ -1,5 +1,42 @@
 # Changelog
 
+## v25.3 · 2026-10-28 — Levels unlock everything; more marketing
+**Levels, not weeks, open new things**
+- Nothing unlocks by week or trust any more. Each level opens items, promotions, or both:
+
+| Level | XP | Unlocks |
+|---|---|---|
+| 1 New Owner | 0 | Basics · Flyers, Loyalty cards |
+| 2 Neighborhood Pharmacist | 120 | Plant, snack machine, mats, problem desk · Social push |
+| 3 Trusted Name | 364 | Break room, OTC shelf · Local paper ad, Health fair booth |
+| 4 Community Anchor | 696 | Drive-thru, consult room · Radio spot, Price-match week |
+| 5 Maple Street Institution | 1,103 | Fridge, stock shelf, buying land · Billboard |
+| 6 Regional Name | 1,577 | Expanding the store · Drive-thru coupons |
+| 7 District Leader | 2,116 | TV spot |
+| 8 Chain Owner | 2,717 | Little League sponsor |
+| 9 Health Network Founder | 3,373 | Senior center partnership |
+| 10 Legend of Maple Street | 4,085 | Regional campaign + a gold storefront sign |
+
+- Pace on a typical store: level 2 by the end of week 1, level 3 in week 2, level 4 (drive-thru) around week 4.
+- **Something to look forward to:**
+  - Locked items show greyed in Build with a 🔒 and their level; tapping one says how much XP is left.
+  - The Level page lists the next two levels and what each unlocks.
+  - A thin XP bar sits under the Level button.
+  - At 80% of the way to the next level, the chat says what's coming.
+  - Leveling up shows a banner listing what just unlocked.
+
+**Marketing**
+- 8 new promotions: Health fair booth, Radio spot, Billboard, Drive-thru coupons, TV spot, Little League sponsor, Senior center partnership and Regional campaign. Each one does something different:
+  - The fair adds trust and regulars.
+  - The coupons move more pick-ups to the window.
+  - The sponsorship adds trust every week.
+  - The senior center brings older, more patient regulars.
+- One campaign per channel at a time (print, online, events, radio, outdoor, TV, and so on). The page marks a channel as busy.
+- When a campaign ends, the chat and the Promote page show its results: about how many extra customers it brought and their margin against what it cost. A store that's already full won't get much from ads.
+- Promote lists only what's open, plus the next two to come.
+
+Test: `test/promotions.js`.
+
 ## v25.2 · 2026-10-28 — See-through view
 - New **See-thru** button (eye icon) next to Inside/Outside. It shows the store and the parking lot together, with the building's walls and roof faded, so you can watch staff and customers inside while cars park and people walk in outside.
 - Tap it again to bring the solid walls and roof back. 360° rotates it like any view.
