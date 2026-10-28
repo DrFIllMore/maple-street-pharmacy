@@ -1,5 +1,14 @@
 # Changelog
 
+## v24.58 · 2026-10-28 — Build: one walled-off station no longer blocks every move
+**From the week-7 report: "can't place the wall in the spot"**
+- **Bug:** the wall on the tile right behind the drop-off window (where the clerk stands) cut staff off from the window. After that, the game refused every move or placement with "Staff couldn't reach the drop-off window from there", including moving that wall away. Your log shows 50 refused tries.
+  - **Fix:** a placement is refused only if it cuts off a station that was reachable before. Moving a wall is now treated like building one: it warns instead of refusing.
+- **New rule:** nothing solid can go on the tile where staff stand to work a station, or where customers stand at a window, register, restroom or snack machine. The message says which station it is.
+- **Build messages are visible:** errors used to go only to the chat, which the Build bar covers, so a refused tap looked like nothing happened. They now show in red on the Build bar.
+- Repeated identical chat lines collapse into one with a count ("… ×12").
+- Test: `test/wall-cutoff.js` rebuilds your layout. Old build: moving the chair or the wall was refused. New build: both work, and the wall can't go back on the clerk's tile.
+
 ## v24.57 · 2026-10-28 — Break room in daily use; clear cards for comfort items
 **From the week-7 report: "staff don't use the break room; items don't show capacity or use"**
 - **Why the break room sat empty:** breaks only started below 65% energy. Your busiest worker reached only about 75–80% by closing, and the night (+23%, +8% with a break room) refilled everyone to 100%. So nobody ever qualified.

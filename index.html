@@ -374,7 +374,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.57 · 2026-10-28';
+const BUILD='v24.58 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -494,6 +494,7 @@ function findExposed(){exposed=new Set();for(const o of S.objs){if(!BACK_TYPES.i
 const secured=()=>exposed.size===0;
 const passS=(x,y)=>inb(x,y)&&!grid[y][x].bs;
 function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(const [tx,ty] of footprint(o)){if(!inb(tx,ty))return 'Off the floor.';if(tx===DOOR.x&&ty===DOOR.y)return 'That\'s the entrance.';if(grid[ty][tx].o)return 'Something is already there.';}
+  {const fp=footprint(o).map(t=>t.join(','));for(const q of S.objs){const QT=TYPES[q.type];if(!QT.sides||q.id===o.ignoreId)continue;const st=staffTile(q),pt=patientTile(q);if(T.block!=='none'&&T.block!=='patients'&&st&&fp.includes(st.join(',')))return `That's where staff stand to work the ${QT.name.toLowerCase()}.`;if(T.block!=='none'&&FRONT_TYPES.includes(q.type)&&pt&&fp.includes(pt.join(',')))return `That's where customers stand at the ${QT.name.toLowerCase()}.`;}}
   if(T.sides){const st=staffTile(o),pt=patientTile(o);if(st&&(!inb(st[0],st[1])||grid[st[1]][st[0]].o))return 'Staff need to stand on the '+(T.sides==='both'?'back':'front')+' side.';if(pt&&(!inb(pt[0],pt[1])||grid[pt[1]][pt[0]].o))return 'Customers need to stand in front.';}
   return null;}
 const dayIdx=()=>S.opened?(S.week-1)*DAYS_WEEK+(S.running?S.day:0):0;
@@ -506,8 +507,9 @@ function roomParts(o){/* 4×5 local box: desk at (1..2,2) facing +ly; customer r
   for(let lx=0;lx<4;lx++)for(let ly=0;ly<5;ly++){const edge=lx===0||lx===3||ly===0||ly===4;if(!edge)continue;const [wx,wy]=M(lx,ly);if(lx===1&&ly===4)parts.push({type:'door',x:wx,y:wy,rot:r});else if(lx===1&&ly===0)parts.push({type:'sdoor',x:wx,y:wy,rot:(r+2)&3});else parts.push({type:'wall',x:wx,y:wy,rot:(r&1)?1:0});}
   return parts;}
 /* would this placement leave any station (or the new one) unreachable for staff? simulated, then undone */
-function blocksStaff(type,x,y,rot,ignoreId){const parts=TYPES[type].prefab?roomParts({x,y,rot}):[{type,x,y,rot:rot||0}];const temp=parts.map(pt=>({id:'tmp'+Math.random(),type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0}));const saved=S.objs;S.objs=[...S.objs.filter(o=>o.id!==ignoreId),...temp];rebuildGrid();
-  const bad=S.objs.find(o=>(TYPES[o.type].sides==='staff'||TYPES[o.type].sides==='both')&&!staffCanReach(o));S.objs=saved;rebuildGrid();return bad?TYPES[bad.type].name:null;}
+function blocksStaff(type,x,y,rot,ignoreId){const parts=TYPES[type].prefab?roomParts({x,y,rot}):[{type,x,y,rot:rot||0}];const temp=parts.map(pt=>({id:'tmp'+Math.random(),type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0}));const saved=S.objs;const cut=()=>S.objs.filter(o=>(TYPES[o.type].sides==='staff'||TYPES[o.type].sides==='both')&&!staffCanReach(o));
+  /* stations already cut off before this placement don't count against it (otherwise one walled-in station blocks every later build or move) */const before=new Set(cut().map(o=>o.id));S.objs=[...S.objs.filter(o=>o.id!==ignoreId),...temp];rebuildGrid();
+  const bad=cut().find(o=>!before.has(o.id));S.objs=saved;rebuildGrid();return bad?TYPES[bad.type].name:null;}
 function place(type,x,y,rot){if(!palette().includes(type))return 'Not available yet.';const err=canPlace(type,x,y,rot);if(err)return err;{const b=blocksStaff(type,x,y,rot);if(b){if(['wall','counter'].includes(type))glog('bad',`Staff can't reach the ${b.toLowerCase()} now — leave a gap or put a staff door in that wall.`,'cutoff'+b,6);else return `Staff couldn't reach the ${b.toLowerCase()} from there.`;}}const T=TYPES[type];if(S.cash<T.cost)return 'Not enough cash.';S.cash-=T.cost;
   S.newItems=(S.newItems||[]).filter(t=>t!==type);
   if(T.prefab){const gid=uid();let desk=null;for(const pt of roomParts({x,y,rot})){const id=uid();const ob={id,type:pt.type,x:pt.x,y:pt.y,rot:pt.rot,level:0,t0:performance.now(),born:dayIdx(),bornWk:S.week,earnAll:0,group:gid};S.objs.push(ob);if(pt.type==='consult')desk=ob;}justPlaced={id:desk.id,t:performance.now()};if(S.wk&&S.wk.built)S.wk.built.push('consult');rebuildGrid();nudgeAll();glog('staff',`Built a ${T.name.toLowerCase()} for ${fmt(T.cost)}: desk, walls, a customer door in front and a staff door behind. Private from day one.`);shotTip();SFX.build();saveGame();return null;}
@@ -523,7 +525,7 @@ function removeObj(id){const i=S.objs.findIndex(o=>o.id===id);if(i<0)return;cons
   const back=Math.round(invested(o)/2);S.cash+=back;S.objs.splice(i,1);rebuildGrid();nudgeAll();glog('staff',`Removed the ${T.name.toLowerCase()} (+${fmt(back)}).`);/* half of everything spent on it, upgrades included */saveGame();return null;}
 let held=null,ghostAt=null; /* object picked up for moving; ghostAt = proposed tile */
 function pickUp(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';held={o,ox:o.x,oy:o.y,orot:o.rot};S.objs.splice(S.objs.indexOf(o),1);rebuildGrid();nudgeAll();tool='move';rot=o.rot;return null;}
-function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if(((rot&1)?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;{const b=blocksStaff(o.type,x,y,rot);if(b)return `Staff couldn't reach the ${b.toLowerCase()} from there.`;}o.x=x;o.y=y;o.rot=rot;S.objs.push(o);justPlaced={id:o.id,t:performance.now()};held=null;ghostAt=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
+function putDown(x,y){if(!held)return;const o=held.o;const T=TYPES[o.type];if(((rot&1)?T.d:T.w)>1&&x===W-1)x--;const err=canPlace(o.type,x,y,rot);if(err)return err;{const b=blocksStaff(o.type,x,y,rot);if(b){if(['wall','counter'].includes(o.type))glog('bad',`Staff can't reach the ${b.toLowerCase()} now — leave a gap or put a staff door in that wall.`,'cutoff'+b,6);else return `Staff couldn't reach the ${b.toLowerCase()} from there.`;}}o.x=x;o.y=y;o.rot=rot;S.objs.push(o);justPlaced={id:o.id,t:performance.now()};held=null;ghostAt=null;tool=null;rebuildGrid();nudgeAll();SFX.build();glog('staff',`Moved the ${T.name.toLowerCase()}.`);saveGame();return null;}
 function turnObj(id){const o=S.objs.find(x=>x.id===id);if(!o)return 'Nothing there.';if(busyS[id])return 'Someone is using it.';const i=S.objs.indexOf(o);S.objs.splice(i,1);rebuildGrid();const r0=o.rot||0;for(let k=1;k<4;k++){const r=(r0+k)&3;if(TYPES[o.type].two&&((r^r0)&1)===0)continue;if(!canPlace(o.type,o.x,o.y,r)&&!blocksStaff(o.type,o.x,o.y,r)){o.rot=r;S.objs.splice(i,0,o);rebuildGrid();nudgeAll();SFX.click();saveGame();return null;}}S.objs.splice(i,0,o);rebuildGrid();return 'No room to turn it here. Move it instead.';}
 function cancelMove(){ghostAt=null;if(!held)return;const o=held.o;o.x=held.ox;o.y=held.oy;o.rot=held.orot;S.objs.push(o);held=null;rebuildGrid();}
 function nudgeAll(){for(const a of [...S.staff,...S.patients]){a.path=null;a.pv=-1;const tx=Math.floor(a.x),ty=Math.floor(a.y);if(inb(tx,ty)&&!a.role&&grid[ty][tx].seat&&a.seat===grid[ty][tx].o)continue;if(inb(tx,ty)&&(a.role?grid[ty][tx].bs:grid[ty][tx].bp)){const t=nearestFree(tx,ty,!!a.role);if(t){a.x=t[0]+.5;a.y=t[1]+.5;}}}}
@@ -1250,17 +1252,17 @@ function renderPalette(){const el=$('palItems');el.innerHTML=[...palette()].sort
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
   $('palRot').textContent=(tool&&TYPES[tool]&&TYPES[tool].two)?'Rotate · '+((rot&1)?'↕':'↔'):'Rotate · '+FACE_N[rot&3];$('palRot').onclick=()=>{rot=(rot+1)&3;renderPalette();SFX.click();};
-  $('palDone').onclick=()=>{if(held&&ghostAt){const err=putDown(ghostAt[0],ghostAt[1]);if(err)toast(err);renderPalette();palHint();return;}if(!S.opened)showChecklist();else setBuild(false);};$('palDone').textContent=held?'Place here':S.opened?'Done':'Ready to open?';
+  $('palDone').onclick=()=>{if(held&&ghostAt){const err=putDown(ghostAt[0],ghostAt[1]);renderPalette();palHint();if(err)toast(err);return;}if(!S.opened)showChecklist();else setBuild(false);};$('palDone').textContent=held?'Place here':S.opened?'Done':'Ready to open?';
   $('camBtn').onclick=rotateCam;}
 function palHint(){let t;if(tool==='erase')t='Tap something to sell it.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". Rotate turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Use Rotate to face it another way.':'');
   else if(!S.opened){const need=readiness().find(r=>!r.ok&&Object.keys(NEXT_HINT).some(k=>r.t.startsWith(k)));t=need?`Next: ${need.t.replace(/ customers can reach.*|$/,'')}. Tap it below, then tap the floor.`:'Everything is placed. Tap "Ready to open?"';}
   else t='Pick something to build, then tap the floor.';$('palHint').textContent=t;}
-function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}if(err)toast(err);renderPalette();palHint();return;}
+function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}renderPalette();palHint();if(err)toast(err);return;}
   if(tool==='erase'){const c=inb(tx,ty)?grid[ty][tx]:null;if(c&&c.o){const err=removeObj(c.o);if(err)toast(err);}return;}
   if(!tool)return;const T=TYPES[tool];const o={type:tool,x:tx,y:ty,rot};/* center 2-wide items under the finger */if(((rot&1)?T.d:T.w)>1&&tx===W-1)o.x=tx-1;
-  const err=place(tool,o.x,o.y,rot);if(err)toast(err);else{renderPalette();if(tool==='consult'){$('palHint').textContent='Now ring it with walls and put one door on the orange tile. Private = more trust per visit. (Or sell it and place a ready-made Consult room.)';}if(tool==='room'){$('palHint').textContent='Consult room placed: private from the start. The pharmacist works it; customers enter through the door.';}if(tool==='wall'||tool==='counter'||tool==='chair')return;/* keep tool for painting */}}
+  const err=place(tool,o.x,o.y,rot);if(err)toast(err);else{renderPalette();palHint();if(tool==='consult'){$('palHint').textContent='Now ring it with walls and put one door on the orange tile. Private = more trust per visit. (Or sell it and place a ready-made Consult room.)';}if(tool==='room'){$('palHint').textContent='Consult room placed: private from the start. The pharmacist works it; customers enter through the door.';}if(tool==='wall'||tool==='counter'||tool==='chair')return;/* keep tool for painting */}}
 function startMove(id){closeSheet();if(!buildOn)setBuild(true);const err=pickUp(id);if(err)toast(err);renderPalette();palHint();}
-function toast(t){glog('ops',t);}
+function toast(t){glog('ops',t);if(buildOn){const h=$('palHint');if(h){h.innerHTML=`<b class="neg">✕ ${t}</b>`;h.dataset.err=1;}}}
 
 /* ============ sheets ============ */
 function sheet(html){$('sheet').classList.toggle('wide',html.includes('class="wm"'));$('sheet').classList.toggle('wk',html.includes('class="wkc"'));if(S.coverPending&&!html.includes('id="cvF"')){S.coverPending=false;closeToday();}const el=$('sheet');el.innerHTML=rxHead()+html+'<button class="x" aria-label="Close">×</button>';el.hidden=false;el.querySelector('.x').onclick=closeSheet;}
@@ -1535,6 +1537,7 @@ function layoutText(){return `layout ${JSON.stringify({barL:L.barL,barR:L.barR,b
 function copyText(txt,msgId){const done=()=>{$(msgId).textContent='Copied. Paste it to Claude.';setTimeout(()=>$(msgId).textContent='',3000);};const fb=()=>{const ta=$('dbgTa');ta.value=txt;ta.readOnly=true;ta.style.left='0';ta.style.width='100%';ta.style.height='120px';ta.select();try{document.execCommand('copy');done();}catch(e){$(msgId).textContent='Select the box and copy manually.';}setTimeout(()=>{ta.style.left='-9999px';ta.style.width='10px';ta.style.height='10px';},6000);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,()=>{$(msgId).textContent='Copy blocked here. Try again, or screenshot.';});else fb();}
 const GL=[];let logFilter='all';const glast={};
 function glog(type,text,key,cool){const now=(S?S.week:0)*1000+(S?S.day*TICKS_DAY+S.tick:0);if(key){if(glast[key]!==undefined&&now-glast[key]<(cool||12))return;glast[key]=now;}
+  {const l=GL[GL.length-1];if(l&&l.text.replace(/ ×\d+$/,'')===text&&l.type===type&&l.wk===(S?S.week:0)&&l.day===(S?S.day:0)){l.rep=(l.rep||1)+1;l.text=`${text} ×${l.rep}`;renderChat();return;}}
   GL.push({wk:S?S.week:0,day:S?S.day:0,tick:S?S.tick:0,type,text,n:++glogN});if(GL.length>400)GL.shift();renderChat();}
 let glogN=0;
 const stamp=e=>`${DAYS[e.day]?DAYS[e.day].slice(0,3):'—'} ${clockAt(e.tick)}`;

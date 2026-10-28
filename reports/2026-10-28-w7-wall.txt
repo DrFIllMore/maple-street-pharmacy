@@ -1,0 +1,80 @@
+=== Maple Street Pharmacy debug ===
+build v24.57 · 2026-10-28 · 2026-10-28T15:25:28.861Z
+window 430×873 · dpr 3 · screen 430×932
+orientation portrait-primary · app 817×426 · rotated true · fps 61
+bar 389,68 35×766 · chat 8,68 86×355 · sheet hidden · review hidden · office hidden
+layout {"barL":87,"barR":39,"barY":3,"barH":41,"barF":11,"chat":[85,8,355.33333333333337,85.99999999999996,10],"size":0.85,"k":0.84} · window 430×873 @3 rot=true
+window insets top 56 bottom 0 left 0 right 4 · screen 430×873 @3 · safe-area 0/0/0/0 · rot=true · app 817×426
+ua Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1
+
+--- state ---
+week 7 day 6 tick 0 running=false opened=true speed=3 cash=6569 owed=12436 loan=10500 trust=65.6 stock=138 plans={"blue":true,"silver":true,"quick":true} price=52 mods={"cheap":1}
+objs fill@16,0L2 bin@15,0 verify@13,0L1 shelf@11,0 phone@18,0 register@12,3L1 restroom@13,12r2 chair@9,6r1 chair@9,7r1 chair@9,8r1 chair@9,9r1 chair@9,10r1 medshelf@19,1r3 otc@19,10r3 breakroom@7,0 problem@9,0 wall@3,0r2 wall@3,1r2 wall@3,2r2 wall@3,3r2 wall@4,3r2 wall@5,3 wall@6,3 wall@7,3r2 wall@8,3 verify@5,0 register@10,3L1 wall@9,3 bin@4,0 chair@9,11r1 snack@14,12r2 wall@19,6r2 wall@18,6r2 wall@17,6r2 counter@16,6 dropoff@14,6 wall@14,5 · reach 229 tiles
+staff Morgan/rph/off, Theo/tech/off, Kenji/clerk/off, Felix/rph/off, Nia/clerk/off
+scripts ring0 with0 bin39 carried0 tray0 prob0 claim0 shelf7 back0 · people 0 () · claims open 2
+busy {} wk={"served":225,"lost":33,"consults":0,"otc":684,"cashIn":5918,"drug":3258,"paid":8456.239999999994,"fee":539.76,"trust0":67.59000000000296,"phoneMissed":0,"backorder":0,"writeoff":5,"annoyed":0,"ev":[{"k":"happy","name":"Yuki","el":false},{"k":"happy","name":"Mr. Chen","el":true},{"k":"happy","name":"Ruby","el":false},{"k":"happy","name":"Sam","el":false},{"k":"happy","name":"Mina","el":false},{"k":"happy","name":"Hector","el":false},{"k":"happy","name":"Tasha","el":false},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"happy","name":"Mr. Brooks","el":true},{"k":"happy","name":"Aunt Bea","el":false},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"happy","name":"Mr. Patel","el":false},{"k":"happy","name":"Mr. Chen","el":true},{"k":"happy","name":"Ruby","el":false},{"k":"happy","name":"Mr. Patel","el":true},{"k":"happy","name":"Yuki","el":true},{"k":"happy","name":"Mina","el":true},{"k":"happy","name":"Mr. Brooks","el":false},{"k":"happy","name":"Mina","el":false}],"built":["bin","wall","wall"],"maxTray":5,"intrude":0,"theft":0,"theftVal":0,"escorted":0,"looDenied":0,"tw":{"served":4.499999999999105,"walk-outs":-3.2999999999998124,"claims written off":-2.5,"press":-2,"perks":1,"replies":0.29999999999999716},"reg0":300.09581929141,"hireFees":600,"qw":{"win":97,"pick":578,"bin":14220,"tray":189},"later":83,"regNew":51.84000000000003,"regLost":19.10905257263955,"snacks":23,"looUsed":18,"annoyedTicks":0,"_ps":225,"_pl":33,"leftAtClose":8,"lost_cancelled_after_2_days":5,"voicemail":6,"lost_wait_too_long":28,"press":[{"k":"lines","bad":true,"head":"Long lines at Maple Street — 8 walk out in a day"}],"interest":128,"billPay":3900,"billRent":650,"billDriver":0,"costs":8786,"loanPay":378,"complaints":[],"svcRate":0.12790697674418605,"promiseResults":[],"regEnd":333,"net":5588.239999999994,"bankNote":[],"unlocks":[]} demand/day=36.0
+
+--- activity (140) ---
+w7 — 9:00 [staff] Moved the chair.
+w7 — 9:00 [staff] Moved the snack machine.
+w7 — 9:00 [staff] Moved the wall.
+w7 — 9:00 [staff] Moved the wall.
+w7 — 9:00 [staff] Moved the wall.
+w7 — 9:00 [staff] Moved the counter.
+w7 — 9:00 [staff] Moved the drop-off window.
+w7 — 9:00 [bad] Staff can't reach the drop-off window now — leave a gap or put a staff door in that wall.
+w7 — 9:00 [staff] Built a wall for $60.
+w7 — 9:00 [staff] Built a wall for $60.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+w7 — 9:00 [ops] Staff couldn't reach the drop-off window from there.
+
+--- log (1) ---
+0.2s w7 [sys] start v24.57 · 2026-10-28 430×873 rot=true
