@@ -1,5 +1,28 @@
 # Changelog
 
+## v25.6 · 2026-10-28 — Two levels: the store, then the outside
+**Level 1 · Main Street favorite**
+- Goal: **trust 90** and **$30,000 net earned** since opening, checked on a Saturday. It replaces the old goal (business value $20k, $5k cash, loan repaid, trust 70).
+- You play inside the store. The parking lot is there with its 6 spaces, and you can watch customers park and walk in, but you can't build outside yet.
+- Classic marketing: flyers and loyalty cards to start; social push, the paper ad and price-match week open with career rank.
+
+**Level 1 complete → Level 2 · Destination pharmacy**
+- A full page in the week review announces it, and lists what just opened:
+  - more **parking spaces**;
+  - the **driveway and drive-thru window**;
+  - **buying land** and **expanding the store**;
+  - all **8 new campaigns** (health fair, radio, billboard, drive-thru coupons, TV, Little League, senior center, regional).
+- Goal: **trust 90**, **$100,000 net earned** since opening, and **a working drive-thru**. Finishing it wins: "open your second store".
+- The top bar's goal meter is labelled Level 1 / Level 2, and the intro and the strip under the bar show the current level's targets.
+
+**Career rank (was "level")**
+- The XP ladder is now called **rank**, so it doesn't get mixed up with Level 1 / Level 2. The bottom-bar button reads ⭐ Rank.
+- Ranks still open store items early (snack machine, break room, consult room…) and the classic campaigns. Outside items and the new campaigns now come only from Level 2.
+- Locked items in Build say either "🔒 Rank 3" or "🔒 Level 2".
+- New badge: **Main Street favorite** (finish Level 1, +200 XP). "Second store" now means finishing Level 2, and "Fast growth" means finishing it by week 30.
+
+Test: `test/major-levels.js`. The robot playtests count finishing Level 1 as a win, since robots don't build drive-thrus.
+
 ## v25.5 · 2026-10-28 — Bug sweep and speed-up after the v25 updates
 **Bugs fixed** (found by a 24-week soak test with every feature on, and an independent code review)
 - **Reloading a game with a driveway broke the game.** The driveway lookup was saved into the game file, came back empty, and threw an error every frame. It's no longer saved, and old saves are cleaned up on load.

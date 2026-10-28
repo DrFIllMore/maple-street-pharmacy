@@ -13,5 +13,5 @@ const r=await pg.evaluate(()=>{localStorage.removeItem('msp-career');document.ge
 // a new store keeps the level
 await pg.reload();await pg.waitForTimeout(300);
 const r2=await pg.evaluate(()=>{const lv=document.getElementById('lvN').textContent;return {lvAfterReload:lv,cheerHidden:document.getElementById('cheer').hidden};});
-const ok=+r.levels.split(',').pop()>=3&&r.unlocked.includes('dtwin')===(+r.levels.split(',').pop()>=4)&&r.careerTab&&r.saved&&r2.lvAfterReload===r.levels.split(',').pop()&&!errs.length;
+const ok=+r.levels.split(',').pop()>=3&&!r.unlocked.includes('dtwin')&&r.careerTab&&r.saved&&r2.lvAfterReload===r.levels.split(',').pop()&&!errs.length;
 console.log(JSON.stringify({...r,...r2}),errs,ok?'PASS':'FAIL');await b.close();})();

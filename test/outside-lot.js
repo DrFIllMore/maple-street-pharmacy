@@ -3,7 +3,7 @@ const {webkit}=require('playwright');const path=require('path');
 const GAME=process.env.GAME||path.join(__dirname,'..','index.html');
 (async()=>{const b=await webkit.launch();const ctx=await b.newContext({viewport:{width:932,height:430}});await ctx.addInitScript(()=>{let x=4;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};});const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
 await pg.goto('file://'+GAME);await pg.waitForTimeout(300);
-const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);a.hire('tech');a.hire('clerk');a.setBuild(false);S.cash=20000;S.reg=200;
+const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);a.hire('tech');a.hire('clerk');a.setBuild(false);S.major=2;S.cash=20000;S.reg=200;
  const out={stalls0:a.lotState().stalls.length,k0:+a.parkK().toFixed(3)};
  out.badSpot=a.placeStall(5,5);out.dup=a.placeStall(21,5);
  for(const y of [0,1,2,3,12,13])out['add'+y]=a.placeStall(24,y);out.stalls1=a.lotState().stalls.length;out.k1=+a.parkK().toFixed(3);

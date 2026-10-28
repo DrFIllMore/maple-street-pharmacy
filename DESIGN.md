@@ -150,3 +150,8 @@ Prototype: `prototypes/lot-and-levels.html` (standalone, simplified numbers).
 - Drive-thru: `dtwin` is a station whose customer tile is outside. `computeLane` finds paved gates next to the lot's road (aisle and connector rows), picks the in/out pair with the longest queue, and needs two distinct gates. Pick-ups (not walk-ins waiting inside) use it 45% of the time. Lane patience is 1.3× the line patience. Demand ×1.10 while it's open.
 - Career: kept in `msp-career` in localStorage, separate from the store save. Level L needs 100·(L−1)^1.6 XP. `LV_ITEMS` opens Build items early; normal unlock rules still apply too.
 - Land: `S.lot.own` / `S.lot.exp`. Store size and door row are saved as `S.W`, `S.D`, `S.doorY`; `syncDims()` runs in `rebuildGrid()`. Expanding north or west shifts every position (items, staff, people, mess, parking rows, driveway) so the store keeps its corner at 0,0. Driveway that ends up inside comes up for half back. A drive-thru window on the wall being moved blocks the expansion.
+
+## Major levels (v25.6)
+- `MAJOR[1]`: trust ≥ 90 and `S.netTot` ≥ $30,000 (the sum of weekly net since opening). `MAJOR[2]`: trust ≥ 90, `S.netTot` ≥ $100,000, and `dtOpen()`. Checked at the end of the week, after the bank rules.
+- Finishing Level 1 sets `S.major=2` (the game continues), shows a page in the week review, and opens `MAJOR2_ITEMS` (stall, drive, dtwin), land and expansion, and the promotions marked `m2`. Finishing Level 2 sets `S.done='win'`.
+- Career XP levels are shown as "Rank" in the interface (the code still says level). Ranks open store items and the classic promotions only.
