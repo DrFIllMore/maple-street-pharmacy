@@ -20,3 +20,4 @@ New reports go in `reports/`, and you can load them with `tools/load-report.js` 
 | 13 | v24.39 (audit) | Insurer pay time wrong; forecasts disagreed; Gazette money didn't add up | Old fields; generic-only order cost; recomputed wages | v24.40 |
 | 14 | v24.40 | 92% served yet trust didn't move; customers "don't wait" | Each walk-out = 10 served; no recovery; whole process had to fit in one visit | v24.41 |
 | 15 | v24.44 (wk 5 report) | New register unused; customers stuck in one pick-up line; snack machine "never used" | Register placed facing the pharmacy (front unreachable), no warning. Snack machine far from the chairs, and most customers come back later | v24.45 |
+| 16 | v24.46 | Can't pay the loan by hand, even paused | Pay buttons needed $1,000 extra cash on hand, with no reason shown. Also no way to pay the week's bill early | v24.47 |

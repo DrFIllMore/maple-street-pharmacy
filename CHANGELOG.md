@@ -1,5 +1,11 @@
 # Changelog
 
+## v24.47 · 2026-10-28 — Pay the loan when you want
+- **Reported:** couldn't pay the loan by hand. **Cause:** the pay buttons kept a hidden $1,000 cash buffer. "Pay $500" needed $1,500 in cash, and "Pay it off" needed the loan plus $1,000. With low cash every button was greyed out, with no reason given.
+- Pay buttons now work with any cash on hand. If paying leaves less than $1,000, the chat reminds you that Saturday bills still come due.
+- **New: "Pay this week's $X now"** pays the coming Saturday's loan bill early, during the week (paused or running) or between weeks. It counts as paid on time and clears the missed-payment count on Saturday. The button then reads "Paid this week ✓" and the Saturday forecast drops the loan line.
+- With under $500 in cash, the loan tile says why you can't pay ("you have $200; insurer checks arrive through the week").
+
 ## v24.46 · 2026-10-28 — One warning, and existing stores fixed
 - The item card showed the "can't reach" warning twice (in the status line and again in red underneath), which pushed the buttons off the card. Now it's one short line: "Customers can't reach the front — tap ↻ to turn it" (or "move it" for a restroom, snack machine or OTC shelf).
 - Saved games with a backwards window, register or consult desk get it turned around when the game loads, with a chat note.
