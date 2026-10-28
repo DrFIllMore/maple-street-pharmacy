@@ -143,3 +143,10 @@ Prototype: `prototypes/lot-and-levels.html` (standalone, simplified numbers).
 | 1 Career and achievements | 1–2 | low: no sim change |
 | 2 Outside view and drive-thru | 3 | medium: new agent and grid layer, balance |
 | 3 Land and expansion | 2 | high: coordinate shift, save migration |
+
+## Outside, drive-thru, career and land (v25.0, built)
+- World coordinates are shared: store x 0..W-1, y 0..D-1. East of the store, in order: front sidewalk (x=W), parking row A (W+1..W+2), aisle (W+3), row B (W+4..W+5), planter strip, public sidewalk (W+7), two-lane street (W+8..W+9). The north connector row (y=-1) is the exit; the south one (y=D) is the entrance.
+- Customers: `planArrival` picks car (60%, older customers 80%) when a space is free, otherwise the sidewalk. The patient object exists from the start; its outside walk runs before the normal indoor logic, and patience timers only run indoors. Leaving customers become runtime walkers (not saved). Cars, walkers and street traffic are cleared every week.
+- Drive-thru: `dtwin` is a station whose customer tile is outside. `computeLane` finds paved gates next to the lot's road (aisle and connector rows), picks the in/out pair with the longest queue, and needs two distinct gates. Pick-ups (not walk-ins waiting inside) use it 45% of the time. Lane patience is 1.3× the line patience. Demand ×1.10 while it's open.
+- Career: kept in `msp-career` in localStorage, separate from the store save. Level L needs 100·(L−1)^1.6 XP. `LV_ITEMS` opens Build items early; normal unlock rules still apply too.
+- Land: `S.lot.own` / `S.lot.exp`. Store size and door row are saved as `S.W`, `S.D`, `S.doorY`; `syncDims()` runs in `rebuildGrid()`. Expanding north or west shifts every position (items, staff, people, mess, parking rows, driveway) so the store keeps its corner at 0,0. Driveway that ends up inside comes up for half back. A drive-thru window on the wall being moved blocks the expansion.

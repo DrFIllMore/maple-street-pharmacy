@@ -1,0 +1,22 @@
+// v25 land: buy the lots next door, expand the store north / south / back; items keep their places; saves keep the size.
+const {webkit}=require('playwright');const path=require('path');
+const GAME=process.env.GAME||path.join(__dirname,'..','index.html');
+(async()=>{const b=await webkit.launch();const ctx=await b.newContext({viewport:{width:932,height:430}});await ctx.addInitScript(()=>{let x=8;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};});const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message+' '+(e.stack||'').split('\n')[1]));
+await pg.goto('file://'+GAME);await pg.waitForTimeout(300);
+const r=await pg.evaluate(()=>{localStorage.removeItem('msp-career');document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,7);a.hire('tech');a.hire('clerk');a.setBuild(false);S.cash=200000;S.reg=250;S.opened=true;S.week=6;
+ const out={};out.lockedBuy=a.buyLand('N');
+ /* jump the career to level 6 */localStorage.setItem('msp-career',JSON.stringify({xp:1400,ach:{},tot:{},stores:0}));
+ return out;});
+await pg.reload();await pg.waitForTimeout(300);
+const r2=await pg.evaluate(()=>{const a=__msp.api,S=__msp.S;const out={lv:document.getElementById('lvN').textContent};const fill=()=>S.objs.find(o=>o.type==='fill');const f0=[fill().x,fill().y];
+ out.expandBeforeBuy=a.expandStore('N');out.buyN=a.buyLand('N');out.rentAfterBuy=S.rent;
+ out.expandN=a.expandStore('N');const f1=[fill().x,fill().y];out.dimsN=`${S.W||20}x${S.D||14} door y ${S.doorY}`;out.fillShift=`${f0}→${f1}`;out.twice=a.expandStore('N');
+ out.buyW=a.buyLand('W');out.expandW=a.expandStore('W');out.buyS=a.buyLand('S');
+ /* a drive-thru window on the south wall blocks growing south */S.unlocked=(S.unlocked||[]).concat('dtwin');out.dtPlace=a.place('dtwin',6,(S.D)-1,0);out.expandSBlocked=a.expandStore('S');
+ const dt=S.objs.find(o=>o.type==='dtwin');a.removeObj?0:0;S.objs=S.objs.filter(o=>o!==dt);out.expandS=a.expandStore('S');
+ out.dims=`${S.W}x${S.D}`;out.rent=S.rent;
+ document.getElementById('review').hidden=true;a.startWeek();a.setSpeed(0);S.speed=1;for(let t=0;t<108*2;t++){for(let f=0;f<12;f++)a.motion(.016);a.tick();}out.served=S.wk.served;return out;});
+await pg.evaluate(()=>{__msp.api.saveGame?0:0;});await pg.reload();await pg.waitForTimeout(300);
+const r3=await pg.evaluate(()=>{const S=__msp.S;return {dimsAfterReload:`${S.W}x${S.D}`};});
+const ok=/level/i.test(r.lockedBuy)&&r2.expandBeforeBuy&&!r2.buyN&&!r2.expandN&&r2.dimsN.startsWith('20x18')&&r2.twice&&!r2.buyW&&!r2.expandW&&!r2.dtPlace&&/drive-thru/.test(r2.expandSBlocked||'')&&!r2.expandS&&r2.dims==='24x22'&&r2.served>0&&!errs.length;
+console.log(JSON.stringify({...r,...r2,...r3}),errs,ok?'PASS':'FAIL');await b.close();})();

@@ -1,5 +1,32 @@
 # Changelog
 
+## v25.0 · 2026-10-28 — Outside: parking, drive-thru, land, and career levels
+**Outside view, with 360°**
+- A new **Outside** button next to 360° steps out of the store. You see the roof, the storefront with its sign, the parking lot, the sidewalk, the street, trees, lamps and the lots next door. 360° turns the whole property. Tap the store to go back in.
+- **Customers arrive like real people.**
+  - Most drive in, park in a free space, get out, walk to the door, and drive away when they're done. Older customers take the space nearest the door.
+  - Others walk in along the sidewalk from either end of the street.
+  - Passers-by and through traffic keep the street alive.
+  - Walking in doesn't cost patience, and served counts match the old build (172 vs 174 a week on a busy store).
+- **Parking spaces** (Build, outside, $350 each). There are 6 to start, and the two rows hold 26. When the lot is full, drivers park on the street and walk. Each space above 6 brings about 1.5% more customers, up to +15%.
+
+**Drive-thru (opens at level 4)**
+- A **Drive-thru window** goes against the north, south or west wall, facing out. A clerk hands bags out from inside.
+- Go Outside and paint a **Driveway** ($40 a tile; drag to paint). The lane must run from the parking lot, past the window, and back to the lot. The tile outside the window shows red until the lane connects, and the build hint says what's missing.
+- Many pick-up customers drive through instead of coming in, and the drive-thru brings about 10% more customers. Cars wait in the lane. If the line reaches the lot, new cars drive past, which counts as a walk-out "at the drive-thru". Test week: 59 drive-thru pick-ups.
+
+**Career level and badges**
+- **Getting XP:** +1 per prescription, +25 a week in the black, +15 a week with under 5% walking out, plus a bonus for each of 23 badges. There are 10 levels, from New Owner to Legend of Maple Street.
+- **What levels unlock:** items open early in Build: level 2 plant, snack machine and mats; level 3 break room, OTC shelf and problem desk; level 4 drive-thru and consult room; level 5 fridge and stock shelf, plus buying land; level 6 expanding the store.
+- **Where to see it:** the new **Level** button in the bottom bar shows your level, XP, what the next level opens, and all badges (tap a badge to see what it takes). Level-ups and badges show a short banner at the top.
+- **Carry-over:** your level and badges stay with you when you start a new store, after a win or a loss.
+
+**Land and a bigger store**
+- Three lots next door are for sale from level 5: north and south $15,000 each, the back lot $12,000. Tap one from the Outside view. Owning a lot widens your property, so there's more room for a drive-thru lane.
+- From level 6, expand the store 4 rows or columns onto a lot you own ($10,000, between weeks). The wall moves out, every item stays where it was, and the new floor starts empty. The largest store is 24×22 (it starts at 20×14). Rent goes up with each lot and each expansion.
+
+Tests: `test/outside-lot.js`, `test/drive-thru.js`, `test/career.js`, `test/land.js`.
+
 ## v24.59 · 2026-10-28 — Gazette money matches your cash
 **From the week-8 report: "the bank message is not correct"**
 - **Bug:** the Gazette showed "Week net +$6,827" while the bank said you closed at −$2,205. Both numbers were real, but the $10,500 of fill-station upgrades bought on Saturday (Automatic counter $2,500 + Filling robot $8,000) never appeared in the week's money. Building, upgrading and selling equipment weren't recorded at all.

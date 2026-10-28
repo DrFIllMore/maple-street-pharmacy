@@ -66,7 +66,12 @@
 .wm .wr.tot{border-top:2px solid var(--ink);margin-top:3px;font-weight:900}.wm .wr.tot.pos b{color:var(--good)}.wm .wr.tot.neg b{color:var(--bad)}
 .wm .wsat{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 6px;padding:5px 8px;border-radius:8px;background:rgba(0,0,0,.04);font-weight:700}.wm .wsat b{font-family:var(--mono)}.wm .wsat b.neg{color:var(--bad)}.wm .wsat b.warn{color:#b8730f}.wm .advb{display:block;width:100%;margin:0 0 6px;padding:4px 8px;font-size:.92em;line-height:1.25;border-radius:8px;background:var(--accent);color:#fff;font-weight:800;text-align:center}.wm .advb small{font-weight:600;opacity:.85}
 .sheet.wide{width:min(430px,72%)}
-.sheet .acts{flex-wrap:wrap}.lnk{border:0;background:none;padding:0;font:inherit;font-weight:800;color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.sheet .acts{flex-wrap:wrap}
+#cheer{position:absolute;left:50%;top:calc(var(--barY) + var(--barH) + 10px);transform:translateX(-50%);z-index:60;display:flex;gap:10px;align-items:center;background:var(--ink);color:var(--panel-solid);border-radius:14px;padding:8px 14px;max-width:min(460px,80%);pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}#cheer i{font-style:normal;width:28px;height:28px;border-radius:50%;background:#c98a12;color:#fff;display:grid;place-items:center;font-weight:900;flex:none}#cheer b{display:block;font-size:1em}#cheer small{display:block;font-size:.82em;opacity:.85;font-weight:600}#cheer.go{animation:cheerIn .35s ease-out}@keyframes cheerIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}@media (prefers-reduced-motion:reduce){#cheer.go{animation:none}}
+.lvtrk{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:4px 0}.lvtrk i{display:block;height:100%;background:var(--accent)}
+.achg{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px;margin-top:4px}.drawer .ach,.ach{position:relative;height:28px!important;font-size:15px!important;min-height:0;min-width:0;width:auto;border-radius:9px;border:1px solid var(--line);background:rgba(0,0,0,.04);display:grid;place-items:center;font-size:17px;padding:0;overflow:hidden}.ach span{filter:grayscale(1);opacity:.45}.ach.done{background:var(--accent-soft);border-color:var(--accent)}.ach.done span{filter:none;opacity:1}.ach.sel{outline:2px solid var(--accent);outline-offset:1px}.ach em{position:absolute;left:0;bottom:0;height:3px;background:var(--accent)}
+.sb i.lv{background:var(--accent);color:#fff}
+.lnk{border:0;background:none;padding:0;font:inherit;font-weight:800;color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -328,7 +333,9 @@ button,.hud{touch-action:manipulation}
     <button class="sb" data-tab="promo"><span>📢</span>Promote</button>
     <button class="sb" data-tab="feed" id="feedBtn"><span>📣</span>Feed<i id="feedN" hidden>new</i></button>
     <button class="sb" data-tab="inbox" id="inboxBtn"><span>✉️</span>Inbox<i id="inboxN" hidden>4</i></button>
+    <button class="sb" data-tab="career" id="careerBtn"><span>⭐</span>Level<i class="lv" id="lvN">1</i></button>
   </div>
+  <div id="cheer" role="status" aria-live="polite" hidden></div>
   <div class="hud menu" id="menu" hidden>
     <button id="mStaff">Staff</button><button id="mOffice">Manage</button><button id="mChat">Chat: shown</button><button id="mSize">HUD size: M</button><button id="mSound">Sound: on</button><button id="mWin">Adjust window</button><button id="mDbg">Report a problem</button>
   </div>
@@ -338,7 +345,7 @@ button,.hud{touch-action:manipulation}
     <div class="ll" id="chatLines"></div>
     <div class="grip" id="chatGrip" aria-label="Resize"></div>
   </div>
-  <div class="hud viewc" id="viewc"><span id="spd"></span><button class="spd cam" id="camBtn" aria-label="Rotate view 90°" title="Rotate view"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><small>360°</small></button></div>
+  <div class="hud viewc" id="viewc"><span id="spd"></span><button class="spd cam" id="camBtn" aria-label="Rotate view 90°" title="Rotate view"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><small>360°</small></button><button class="spd cam" id="viewBtn" aria-label="Go outside to the lot" title="Inside / outside"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><small>Outside</small></button></div>
   <div class="hud panel palette" id="palette" hidden>
     <div class="row"><div class="items" id="palItems"></div></div>
     <div class="row"><span class="hint" id="palHint">Pick something to build, then tap the floor.</span><button class="pb" id="palRot">↻</button><button class="pb primary" id="palDone">Ready to open?</button></div>
@@ -374,7 +381,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v24.59 · 2026-10-28';
+const BUILD='v25.0 · 2026-10-28';
 const fmt=n=>(n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -399,7 +406,7 @@ const WALK_K=2;/* walking pace (tiles per tick scale) */
 const RTS_DAYS=5,WALK_BASE=17,REG_START=140,REFILL_DAYS=24,REG_CONV_GOOD=.45,REG_CONV_SLOW=.12,REG_CHURN=.015;   /* 5 game minutes per tick */
 
 /* ============ floor & object types ============ */
-const W=20,D=14,DOOR={x:19,y:8},OUT={x:21.5,y:8.5};
+let W=20,D=14;const DOOR={x:19,y:8},OUT={x:21.5,y:8.5};/* store size and door can grow with land (v25); synced from S in rebuildGrid */
 const TYPES={
   wall:{two:true,short:'Blocks everyone',name:'Wall',cost:60,w:1,d:1,block:'all',cat:'build',desc:'Solid. Rooms need a door.'},
   door:{short:'Walk-through in a wall',name:'Door',cost:120,w:1,d:1,block:'none',cat:'build',desc:'Goes in a wall line. Swings toward the side you face it. Doors keep a walled consult room private.'},
@@ -421,15 +428,19 @@ const TYPES={
   medshelf:{short:'Looks the part, +3% customers',name:'Stock shelf',cost:400,w:2,d:1,block:'all',cat:'furniture',desc:'Generics get put away here, and the back room looks like a pharmacy: about 3% more customers.'},
   fridge:{short:'Cold storage for specialty meds',name:'Fridge',cost:1200,w:1,d:1,block:'all',cat:'station',desc:'Keeps specialty medicines. Needed for the specialty contract (Supplies).'},
   mat:{short:'Staff tire 25% slower here',name:'Anti-fatigue mat',cost:120,w:1,d:1,block:'none',cat:'furniture',desc:'Put it where staff stand to work (in front of a fill station, verify terminal or window). Hands-on work there drains 25% less energy.'},
+  dtwin:{short:'Pick-ups from the car',name:'Drive-thru window',cost:3500,w:1,d:1,block:'all',sides:'both',cat:'station',desc:'Goes against the north, south or west wall, facing out. A clerk hands bags out from inside. Cars need a driveway lane: from the parking lot, past the window, and back to the lot. Brings about 10% more customers, and many pick-ups use it instead of the counter.'},
+  drive:{short:'Lane for the drive-thru',name:'Driveway',cost:40,w:1,d:1,block:'none',cat:'outside',outside:true,desc:'Pave around the sides and back of the store. Drag to pave a line. Cars need a lane from the lot, past the drive-thru window, and back to the lot.'},
+  stall:{short:'+1.5% customers each above 6',name:'Parking space',cost:350,w:2,d:1,block:'none',cat:'outside',outside:true,desc:'Outside, in the lot. Customers who drive park here; when every space is taken they park on the street and walk. Each space above 6 brings about 1.5% more customers (up to +15%).'},
   breakroom:{short:'Staff take breaks here',name:'Break room',cost:1400,w:2,d:2,block:'all',sides:'staff',cat:'furniture',desc:'A couch and a coffee pot in the back. Staff under 65% take a 20-minute break here when there\'s a lull, and anyone under 35% takes one even when it\'s busy (+12 energy each, one person at a time). Every night staff also recover +8 more, and morale +2 a week.'},
   snack:{short:'Customers accept ~30% longer waits',name:'Snack machine',cost:650,w:1,d:1,block:'all',sides:'patient',cat:'furniture',desc:'With a snack machine in reach, customers accept about 30% longer waits at drop-off (more stay, fewer take their prescription to the chain). Anyone who buys a snack waits about 30% longer before giving up. Earns $2 a snack; one person at a time. Put it near the chairs.'},
   plant:{short:'People like plants',name:'Plant',cost:80,w:1,d:1,block:'all',cat:'furniture',desc:'People like plants.'},
 };
 const PALETTE_START=['dropoff','register','counter','bin','fill','verify','shelf','phone','chair','restroom','wall','door','sdoor'];
-const PALETTE_MORE=['snack','mat','breakroom','problem','room','consult','otc','medshelf','fridge','plant'];
-const palette=()=>S.opened?[...PALETTE_START,...PALETTE_MORE.filter(t=>(S.unlocked||[]).includes(t))]:PALETTE_START;
+const PALETTE_MORE=['dtwin','snack','mat','breakroom','problem','room','consult','otc','medshelf','fridge','plant'];
+const palette=()=>[...(S.opened?[...PALETTE_START,...PALETTE_MORE.filter(t=>(S.unlocked||[]).includes(t))]:PALETTE_START),'stall','drive'];
 /* equipment unlocks as the store earns it; each unlock is announced in the Gazette and badged NEW in Build */
 const UNLOCKS=[
+  {items:['dtwin'],when:()=>false,why:'Drive-thru window (level 4) — put it on a side or back wall, then go Outside and pave a lane from the parking lot, past the window, and back. Pick-ups come by car; about 10% more customers.'},
   {items:['plant'],when:()=>S.week>=2,why:'Plants — a little trust each week.'},
   {items:['snack'],when:()=>S.week>=2,why:'Snack machine — customers accept about 30% longer waits and stay instead of leaving. Earns $2 a snack.'},
   {items:['mat'],when:()=>S.week>=2,why:'Anti-fatigue mats — lay one where a tech or clerk stands; work there wears them out 25% slower.'},
@@ -439,7 +450,7 @@ const UNLOCKS=[
   {items:['room','consult'],when:()=>S.week>=3&&(S.remits||0)>=1&&S.cash>=4000,why:'Consult room — flu shots and medication reviews. Flu shots need this room AND the vaccine contract in Supplies ($600, 50 doses); your pharmacist gives each shot ($40). Without the contract it\'s $20 reviews only.'},
   {items:['fridge'],when:()=>objsOf('consult').length>0&&S.trust>=70,why:'Fridge — cold-chain storage; the specialty contract follows.'},
   {items:['medshelf'],when:()=>S.trust>=80||(S.hist||[]).some(h=>h.served>=150),why:'Stock shelf — proper storage lifts demand a little and keeps generics in one place.'}];
-function checkUnlocks(late){S.unlocked=S.unlocked||[];S.newItems=S.newItems||[];const got=[];for(const u of UNLOCKS){const missing=u.items.filter(t=>!S.unlocked.includes(t));if(!missing.length||!u.when())continue;S.unlocked.push(...missing);S.newItems.push(...missing);got.push({items:missing,why:u.why});glog('event',`New in Build: ${missing.map(t=>TYPES[t].name).join(' and ')}. ${u.why}`);}if(!late)S.wk.unlocks=got;return got;}
+function checkUnlocks(late){S.unlocked=S.unlocked||[];S.newItems=S.newItems||[];const got=[];for(const u of UNLOCKS){const missing=u.items.filter(t=>!S.unlocked.includes(t));if(!missing.length||!(u.when()||missing.every(t=>Object.entries(LV_ITEMS).some(([l,v])=>+l<=careerLevel()&&v.includes(t)))))continue;S.unlocked.push(...missing);S.newItems.push(...missing);got.push({items:missing,why:u.why});glog('event',`New in Build: ${missing.map(t=>TYPES[t].name).join(' and ')}. ${u.why}`);}if(!late)S.wk.unlocks=got;return got;}
 const NEXT_HINT={'Drop-off window':'dropoff','Register':'register','Basket bin':'bin','Fill station':'fill','Verify terminal':'verify','Will-call shelf':'shelf','Two chairs':'chair'};
 const ROLE={tech:'Technician',clerk:'Clerk',rph:'Pharmacist'};const ROLE_ORDER={rph:0,tech:1,clerk:2};const staffSorted=()=>[...S.staff].sort((a,b)=>(ROLE_ORDER[a.role]-ROLE_ORDER[b.role])||(b.isYou?1:0)-(a.isYou?1:0)||a.name.localeCompare(b.name));const ROLE_SHORT={tech:'TECH',clerk:'CLERK',rph:'PHARMACIST',float:'FLOATER'};const ROLE_COL={tech:'#2f7fd6',clerk:'#1d9e75',rph:'#f6f6f4',float:'#aeb4bd'};const roleName=w=>w.floater?'Floater pharmacist':ROLE[w.role];const WAGES={tech:800,clerk:650,rph:1800};
 /* insurance plans (contracts) */
@@ -482,7 +493,7 @@ function backTile(o){const f=facing(o);return edgeTile(o,[-f[0],-f[1]]);}
 function staffTile(o){const T=TYPES[o.type];if(T.sides==='both')return backTile(o);if(T.sides==='staff')return frontTile(o);return null;}
 function patientTile(o){const T=TYPES[o.type];if(T.sides==='both'||T.sides==='patient')return frontTile(o);return null;}
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<D;
-function rebuildGrid(){grid=[];for(let y=0;y<D;y++){grid[y]=[];for(let x=0;x<W;x++)grid[y][x]={o:null,bp:false,bs:false,seat:null};}
+function rebuildGrid(){if(typeof syncDims==='function')syncDims();grid=[];for(let y=0;y<D;y++){grid[y]=[];for(let x=0;x<W;x++)grid[y][x]={o:null,bp:false,bs:false,seat:null};}
   for(const o of S.objs){const T=TYPES[o.type];for(const [x,y] of footprint(o)){if(!inb(x,y))continue;const c=grid[y][x];c.o=o.id;if(T.block==='all'){c.bp=true;c.bs=true;}else if(T.block==='patients'){c.bp=true;}if(T.seat){c.seat=o.id;c.bp=true;c.bs=true;/* a chair is solid; only the person sitting in it may step onto it */}}}
   grid[DOOR.y][DOOR.x].bp=false;grid[DOOR.y][DOOR.x].bs=false;
   reach=new Set();const q=[[DOOR.x,DOOR.y]];reach.add(DOOR.x+','+DOOR.y);while(q.length){const [x,y]=q.shift();for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(!inb(nx,ny)||grid[ny][nx].bp)continue;const k=nx+','+ny;if(!reach.has(k)){reach.add(k);q.push([nx,ny]);}}}findExposed();
@@ -495,7 +506,8 @@ const secured=()=>exposed.size===0;
 const passS=(x,y)=>inb(x,y)&&!grid[y][x].bs;
 function canPlace(type,x,y,rot){const T=TYPES[type];const o={type,x,y,rot};for(const [tx,ty] of footprint(o)){if(!inb(tx,ty))return 'Off the floor.';if(tx===DOOR.x&&ty===DOOR.y)return 'That\'s the entrance.';if(grid[ty][tx].o)return 'Something is already there.';}
   {const fp=footprint(o).map(t=>t.join(','));for(const q of S.objs){const QT=TYPES[q.type];if(!QT.sides||q.id===o.ignoreId)continue;const st=staffTile(q),pt=patientTile(q);if(T.block!=='none'&&T.block!=='patients'&&st&&fp.includes(st.join(',')))return `That's where staff stand to work the ${QT.name.toLowerCase()}.`;if(T.block!=='none'&&FRONT_TYPES.includes(q.type)&&pt&&fp.includes(pt.join(',')))return `That's where customers stand at the ${QT.name.toLowerCase()}.`;}}
-  if(T.sides){const st=staffTile(o),pt=patientTile(o);if(st&&(!inb(st[0],st[1])||grid[st[1]][st[0]].o))return 'Staff need to stand on the '+(T.sides==='both'?'back':'front')+' side.';if(pt&&(!inb(pt[0],pt[1])||grid[pt[1]][pt[0]].o))return 'Customers need to stand in front.';}
+  if(type==='dtwin'){const pt=patientTile(o);if(!pt||inb(pt[0],pt[1]))return 'The drive-thru window goes against an outside wall, facing out (Rotate turns it).';if(pt[0]>=W)return 'Use the north, south or west wall: the front wall is the entrance and parking.';if(objsOf('dtwin').some(q=>q.id!==o.ignoreId)&&!o.moving)return 'One drive-thru window per store.';}
+  if(T.sides){const st=staffTile(o),pt=patientTile(o);if(st&&(!inb(st[0],st[1])||grid[st[1]][st[0]].o))return 'Staff need to stand on the '+(T.sides==='both'?'back':'front')+' side.';if(type!=='dtwin'&&pt&&(!inb(pt[0],pt[1])||grid[pt[1]][pt[0]].o))return 'Customers need to stand in front.';}
   return null;}
 const dayIdx=()=>S.opened?(S.week-1)*DAYS_WEEK+(S.running?S.day:0):0;
 /* ledger is dated in trading days: curDay = today while open, the night before Monday between weeks */
@@ -596,7 +608,7 @@ function buyPromo(k){const P=PROMOS[k];if(S.cash<P.cost)return 'Not enough cash.
    Walk-ins: new faces from the neighborhood. Trust, plans you take, price, ads, the chain and the press move them; the neighborhood slowly grows.
    Regulars: patients who came back. Each refills about every 4 weeks (24 trading days). A good first visit makes ~45% of new patients regulars;
    a long wait ~12%. Regulars who walk out or get missed may leave. 1.5% drift away each week (+ more to the chain when service is poor). */
-function walkInPerDay(){let d=WALK_BASE*(S.hood||1)*acceptedShare()*(.4+S.trust/100)*priceWalk();if(S.mods.chain&&S.mods.chainK)d*=S.mods.chainK;if(S.mods.viral&&S.mods.viralK)d*=S.mods.viralK;if(S.mods.buzz)d*=(S.mods.buzzK||1.04);d*=1+promoBoost();d*=1-(S.promo.pricematch?0:(S.rival||0));if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;if(pressActive())d*=1+(S.press.bad?PRESS_BAD.demand:PRESS_GOOD.demand);return d;}
+function walkInPerDay(){let d=WALK_BASE*(S.hood||1)*acceptedShare()*(.4+S.trust/100)*priceWalk();if(S.mods.chain&&S.mods.chainK)d*=S.mods.chainK;if(S.mods.viral&&S.mods.viralK)d*=S.mods.viralK;if(S.mods.buzz)d*=(S.mods.buzzK||1.04);d*=1+promoBoost();d*=1-(S.promo.pricematch?0:(S.rival||0));if(S.mods.referral)d+=7;if(objsOf('medshelf').length)d*=1.03;d*=parkK()*dtK();if(pressActive())d*=1+(S.press.bad?PRESS_BAD.demand:PRESS_GOOD.demand);return d;}
 function regPerDay(){let d=(S.reg||0)/REFILL_DAYS*Math.min(1,priceWalk()+.15);if(pressActive()&&S.press.bad)d*=.95;return d;}
 function demandPerDay(){return (walkInPerDay()+regPerDay())*(objsOf('phone').length?1:.75);}/* a quarter of customers phone in, only if you have a phone */
 function regShareNow(){const t=demandPerDay();return t>0?regPerDay()/t:0;}
@@ -623,7 +635,7 @@ function queueTile(o,k){const l=queueLine(o);return l[Math.min(k,l.length-1)];}
 const qIndex=p=>S.patients.filter(o=>o.q===p.q&&(o.state==='toQueue'||o.state==='queued')).sort((a,b)=>a.seq-b.seq).indexOf(p);
 function returnForPickup(sc){const r=pickQueue('register');if(!r)return;
   if(sc.src==='walk'){const p=S.patients.find(x=>x.id===sc.patient);if(p&&p.state!=='leaving'){p.q=r;p.qt=0;p.seat=null;p.seq=S.sid++;routeViaOtc(p);return;}}
-  const p=spawnPerson('pickup',sc);sc.patient=p.id;p.state='pending';p.delay=Math.floor(rnd(4,14));p.q=r;}
+  if(dtOpen()&&Math.random()<DT_SHARE){spawnDtPickup(sc);return;}const p=spawnPerson('pickup',sc);sc.patient=p.id;p.state='pending';p.delay=Math.floor(rnd(4,14));p.q=r;}
 function routeViaOtc(p){const sh=p.otc?objsOf('otc').find(o=>(o.stock||0)>0&&reach.has(patientTile(o).join(','))):null;if(sh){p.state='toOtc';p.otcT=sh.id;p.otcWait=0;}else p.state='toQueue';}
 function fx(o,text,kind){const t=o.x!==undefined?[o.x+(TYPES[o.type]?((o.rot&1)?TYPES[o.type].d:TYPES[o.type].w)/2:.5),o.y+.5]:[o[0],o[1]];S.fx.push({x:t[0],y:t[1],text,kind,t:0});if(S.fx.length>14)S.fx.shift();if(text==='claim rejected')glog('money','Claim rejected by the insurer.','rej',6);}
 function freeSeat(p){const taken=new Set(S.patients.map(o=>o.seat));const cs=objsOf('chair').filter(c=>adjReach(c.x,c.y)&&!taken.has(c.id));if(!cs.length)return null;cs.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return cs[0];}
@@ -656,7 +668,7 @@ const BREAK_GAIN=3,BREAK_T=4,LUNCH_T=36,REFRESH=1.06;/* lunch from noon; refresh
 const dayKey=()=>S.week*10+S.day;
 function breakJob(w,mode){if(w.floater)return null;const br=objsOf('breakroom').find(o=>{const t=staffTile(o);return t&&passS(t[0],t[1]);});if(!br)return null;const e=w.energy??100;
   if(mode==='urgent'?e>=35:mode==='lunch'?(S.tick<LUNCH_T||w.brDay===dayKey()):e>=65)return null;if(S.staff.some(x=>x!==w&&x.plan&&x.plan.name==='break'))return null;const now=S.day*TICKS_DAY+S.tick;if(w.lastBreak!=null&&now-w.lastBreak<24&&now>=w.lastBreak)return null;w.lastBreak=now;
-  return {name:'break',br:br.id,steps:[{go:staffTile(br)},{rest:BREAK_T,label:'on a break'},{fn:()=>{S.wk.breaks=(S.wk.breaks||0)+1;useBump(br);w.brDay=dayKey();w.refDay=dayKey();if(!w.isYou)dMorale(w,1,'break');}}]};}
+  return {name:'break',br:br.id,steps:[{go:staffTile(br)},{rest:BREAK_T,label:'on a break'},{fn:()=>{S.wk.breaks=(S.wk.breaks||0)+1;CAREER.tot.breaks++;useBump(br);w.brDay=dayKey();w.refDay=dayKey();if(!w.isYou)dMorale(w,1,'break');}}]};}
 const useBump=o=>{if(o){o.uses=(o.uses||0)+1;o.usesWk=(o.usesWk||0)+1;o.usesAll=(o.usesAll||0)+1;}};
 function findJob(w){let pri=PRI[w.role];if(!w.isYou&&!w.floater&&(w.morale??80)<MO.low)pri=pri.filter(k=>CORE[w.role].includes(k));if(w.role!=='tech'){const qd=objsOf('dropoff').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0),qr=objsOf('register').reduce((t,o)=>t+S.patients.filter(p=>p.q===o.id&&p.state==='queued').length,0);if(w.role==='clerk')pri=qd>qr?['clean','intake','pickup','receive','phone','restock','problem']:['clean','pickup','intake','receive','phone','restock','problem'];if((qd+qr)>=3&&S.scripts.some(x=>x.stage==='ringing'))pri=pri.filter(k=>k!=='phone');if(w.role==='rph'&&S.staff.some(x=>x.role==='clerk'&&!x.off&&x.x<W&&!x.plan))pri=pri.filter(k=>!['intake','pickup','phone'].includes(k));if(w.role==='rph'&&!rphMayFill(qd+qr))pri=pri.filter(k=>k!=='fill');/* the bench is the tech's: fill only on a station no tech needs, when the lines are slow *//* don't take a clerk's window while a clerk stands idle */}
   {const sn=S.patients.find(p=>(p.state==='inBack'||(p.state==='sneak'&&p.snT>=3))&&!p.escort);if(sn&&(w.role!=='tech'||!S.staff.some(x=>x.role!=='tech'&&!x.off&&!x.plan)))return jobEscort(w,sn);}
@@ -669,7 +681,7 @@ function findJob(w){let pri=PRI[w.role];if(!w.isYou&&!w.floater&&(w.morale??80)<
     if(kind==='fill'){const sc=S.scripts.filter(x=>x.stage==='bin'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const o=freeObj('fill',w),v=objsOf('verify').filter(q=>passS(...staffTile(q))).sort((a,b)=>loadOf(a).n-loadOf(b).n)[0];if(o&&v&&(pileOf(sc)||binOf())&&passS(...staffTile(v)))return jobFill(w,o,sc,v);/* no bin left (removed mid-week): nothing to fill from */}}
     if(kind==='verify'){const sc=S.scripts.filter(x=>x.stage==='tray'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const sf=shelfFor();if(!sf){if(objsOf('shelf').length){S.wk.shelfFull=(S.wk.shelfFull||0)+1;glog('bad',`Will-call is full (${SHELF_CAP} bags a shelf). Checks wait until customers pick up — add a register, a clerk on pick-up, or another will-call shelf.`,'wcfull',36);}}else{const o=freeObj('verify',w);if(o)return jobVerify(w,o,sc,sf);}}}
     if(kind==='problem'){const sc=S.scripts.filter(x=>x.stage==='problem'&&!x.claimed).sort((a,b)=>a.t0-b.t0)[0];if(sc){const o=freeObj('problem',w)||(w.role==='rph'?freeObj('verify',w):null);if(o)return jobProblem(w,o,sc);}}
-    if(kind==='pickup'){for(const o of objsOf('register')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.state==='queued'&&x.arrived&&qIndex(x)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='shelf'&&!sc.claimed)return jobPickup(w,o,p,sc);}}}
+    if(kind==='pickup'){for(const o of objsOf('dtwin')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.dt&&x.state==='queued'&&x.atWin);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='shelf'&&!sc.claimed)return jobPickup(w,o,p,sc);}}for(const o of objsOf('register')){if(busyS[o.id]||!passS(...staffTile(o)))continue;const p=S.patients.find(x=>x.q===o.id&&x.state==='queued'&&x.arrived&&qIndex(x)===0);if(p){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='shelf'&&!sc.claimed)return jobPickup(w,o,p,sc);}}}
     if(kind==='consult'){for(const o of objsOf('consult').filter(q=>!busyS[q.id]&&passS(...staffTile(q))).sort((q1,q2)=>dist(staffTile(q1),w)-dist(staffTile(q2),w))){const p=S.patients.find(x=>x.kind==='consult'&&x.state==='atRoom'&&x.room===o.id);if(p)return jobConsult(w,o,p);}}
   }return null;}
 function claim(w,o,sc){busyS[o.id]=w.id;if(sc)sc.claimed=w.id;o.wkJobs=(o.wkJobs||0)+1;}function release(o,sc){delete busyS[o.id];if(sc)sc.claimed=null;}
@@ -716,9 +728,9 @@ function serviceTrust(r){let v=r<.05?3:r<.10?1.5:r<.15?0:-Math.min(4,(r-.15)*25)
 const absT=()=>S.day*TICKS_DAY+S.tick;
 function expectedWait(){const ahead=S.scripts.filter(x=>['bin','carried','tray','problem'].includes(x.stage)).length;const now=absT();const done=(S.bagLog||[]).filter(t=>now-t<=36&&now>=t).length;const rate=done/36;return Math.round(ahead/Math.max(rate,.08)+4);}
 function bagIt(w,sc,shelf){S.bagLog=(S.bagLog||[]).filter(t=>absT()-t<=36&&absT()>=t);S.bagLog.push(absT());delete sc.toShelf;sc.claimed=null;sc.stage='shelf';sc.shelfAt=pressDay();sc.at=shelf?'shelf:'+shelf.id:null;SFX.paper();if(sc.abandoned)sc.unclaimed=true;else if(!sc.tomorrow)returnForPickup(sc);}
-function jobPickup(w,o,p,sc){claim(w,o,sc);p.state='served';return {name:'pickup',steps:[{go:staffTile(o)},{fn:()=>{w.carry=[sc];sc.at=null;}},{work:TYPES.register.levels[o.level||0].t,label:'ringing up'},{fn:()=>{w.carry=[];pay(sc,p,o);release(o,sc);sc.stage='done';p.state='leaving';p.exitMood=(S.day*TICKS_DAY+S.tick-sc.t0)<20?'happy':'content';}}]};}
+function jobPickup(w,o,p,sc){claim(w,o,sc);p.state='served';return {name:'pickup',steps:[{go:staffTile(o)},{fn:()=>{w.carry=[sc];sc.at=null;}},{work:TYPES.register.levels[o.level||0].t,label:'ringing up'},{fn:()=>{w.carry=[];pay(sc,p,o);if(o.type==='dtwin'){S.wk.dtServed=(S.wk.dtServed||0)+1;CAREER.tot.dt++;}release(o,sc);sc.stage='done';p.state='leaving';p.exitMood=(S.day*TICKS_DAY+S.tick-sc.t0)<20?'happy':'content';}}]};}
 function jobConsult(w,o,p){claim(w,o,null);p.state='served';const priv=enclosed(o);return {name:'consult',steps:[{go:staffTile(o)},{work:4/eff(w),label:'consulting'},{fn:()=>{const shot=S.vaxDoses>0;if(shot){S.vaxDoses--;S.inv.used.vax++;}const fee=shot?CONSULT:REVIEW_FEE;o.earn=(o.earn||0)+fee;o.earnAll=(o.earnAll||0)+fee;S.cash+=fee;S.wk.cashIn+=fee;S.wk.consults++;dTrust(priv?.4:.2,'consults');if(Math.random()<.3)S.wk.ev.push({k:'consult',name:p.name,priv,shot});fx(o,`+$${fee} · +${priv?.4:.2} trust`,'cash');if(!shot&&S.contracts.vax&&!S.wk.noDoseSaid){S.wk.noDoseSaid=true;glog('bad','Out of vaccine doses. Buy more in Supplies.');}SFX.register();release(o,null);p.state='leaving';p.exitMood='happy';}}]};}
-function pay(sc,p,o){S.wk.served++;{const good=!sc.later&&(p.qt||0)<6&&(p.wait||0)<14;if(!sc.reg)regGain(good?REG_CONV_GOOD:REG_CONV_SLOW);else if(!good)regGain(-.15);}S.dayServed=(S.dayServed||0)+1;dTrust(.02,'served');if((p.qt||0)<4&&(p.wait||0)<8&&Math.random()<.12)S.wk.ev.push({k:'happy',name:p.name,el:p.elderly});let otc=0;if(p.carryOtc){otc=OTC*(p.carryOtc);S.inv.used.otc+=p.carryOtc;}
+function pay(sc,p,o){S.wk.served++;careerServed();{const good=!sc.later&&(p.qt||0)<6&&(p.wait||0)<14;if(!sc.reg)regGain(good?REG_CONV_GOOD:REG_CONV_SLOW);else if(!good)regGain(-.15);}S.dayServed=(S.dayServed||0)+1;dTrust(.02,'served');if((p.qt||0)<4&&(p.wait||0)<8&&Math.random()<.12)S.wk.ev.push({k:'happy',name:p.name,el:p.elderly});let otc=0;if(p.carryOtc){otc=OTC*(p.carryOtc);S.inv.used.otc+=p.carryOtc;}
   const sp=sc.special?SPECIAL_ADD:0;if(sc.special){S.wk.special=(S.wk.special||0)+1;}
   if(o){const v=(sc.plan&&sc.plan!=='cash'?COPAY+(PLANS[sc.plan].rate+sp):S.cashPrice+sp)+otc;o.earn=(o.earn||0)+v;o.earnAll=(o.earnAll||0)+v;}if(otc){const os=objsOf('otc')[0];if(os){os.earn=(os.earn||0)+otc;os.earnAll=(os.earnAll||0)+otc;}}
   if(sc.plan&&sc.plan!=='cash'){const pl=PLANS[sc.plan];if(!S.saidCopay){S.saidCopay=true;glog('money',`First insured sale: the customer pays the ${fmt(COPAY)} copay now; ${pl.name} pays the ${fmt(pl.rate)} rate ${pl.days} days from now, in the morning, minus a 6% fee. Watch "Insurers owe".`);}S.cash+=COPAY+otc;S.wk.cashIn+=COPAY+otc;S.ledger.push({dueDay:curDay()+pl.days,amt:pl.rate+sp,plan:sc.plan});fx(o,`+$${COPAY+otc} · $${pl.rate+sp} owed${sp?' ❄':''}`,'owed');}
@@ -732,7 +744,7 @@ function moodOf(p){if(p.state==='leaving')return p.exitMood||'content';if(p.conf
 
 /* ============ tick ============ */
 let accW=0,accP=0,accE=0,accC=0,hourSnap={served:0,lost:0,cashIn:0,missed:0,annoyed:0};/* loadGame nulls it; the first tick re-bases it on the saved week */const util={};
-function tick(){
+function tick(){dtTick();if(S.tick%6===0)careerSeated();
   if(!hourSnap)hourSnap={served:S.wk.served||0,lost:S.wk.lost||0,cashIn:S.wk.cashIn||0,missed:S.wk.phoneMissed||0};
   S.tick++;if(S.tick===1)morning();
   const h=9+S.tick*5/60;const rush=h<11?.75:h<13?1.35:h<16?.8:1.3;
@@ -754,7 +766,7 @@ function tick(){
   shotTick();
   /* patients */
   for(const p of S.patients){
-    if(p.state==='queued'){p.qt++;if(p.qt>PAT_LINE*p.patience)leave(p,'angry');}
+    if(p.state==='queued'){p.qt++;if(p.qt>PAT_LINE*(p.dt?DT_PAT:1)*p.patience)leave(p,'angry');}
     if(p.state==='waiting'){p.wait++;if(p.wait>(p.seat?PAT_SEAT:PAT_STAND)*p.patience)leave(p,'angry');}
     if(p.state==='atRoom'){p.qt++;if(p.qt===3){const o=objById(p.room);if(o&&!staffCanReach(o))glog('bad',`${p.name} is waiting in the consult room but the pharmacist has no way to the desk. Put a staff door in the wall behind it.`,'noreachconsult',60);}if(p.qt>10)leave(p,'annoyed');}
     if(p.state==='pending'){p.delay--;if(p.delay<=0){p.seq=S.sid++;routeViaOtc(p);}}
@@ -766,7 +778,7 @@ function tick(){
     if(p.state==='inLoo'){p.inT++;if(p.inT>=(p.sick&&!p.relieved?LOO_T_SICK:LOO_T)){const o=objById(p.looT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;o.usesWk=(o.usesWk||0)+1;}if(p.sick)p.relieved=true;p.patience=Math.min(2,p.patience*1.2);p.loo='done';S.wk.looUsed=(S.wk.looUsed||0)+1;sendBack(p);}}
     if(!p.snack&&(p.state==='waiting'||p.state==='queued')&&p.kind!=='consult'&&Math.random()<(p.state==='waiting'?SNACK_P.wait:SNACK_P.line)){const sm=objsOf('snack').filter(o=>!o.occ&&reach.has(patientTile(o).join(','))).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0];if(sm){p.snack='going';p.prev={state:p.state,q:p.q,seat:p.seat,seq:p.seq};p.seat=null;p.state='toSnack';p.snackT=sm.id;}}
     if(p.state==='toSnack'&&p.arrivedSnack){const o=objById(p.snackT);if(!o||(o.occ&&o.occ!==p.id)){p.snack='done';sendBack(p);}else{o.occ=p.id;p.state='atSnack';p.inT=0;}}
-    if(p.state==='atSnack'){p.inT++;if(p.inT>=2){const o=objById(p.snackT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;o.usesWk=(o.usesWk||0)+1;o.earn=(o.earn||0)+SNACK_NET;o.earnAll=(o.earnAll||0)+SNACK_NET;fx(o,'+$'+SNACK_NET,'cash');}S.cash+=SNACK_NET;S.wk.cashIn+=SNACK_NET;S.wk.snacks=(S.wk.snacks||0)+1;glog('money',`${p.name} grabbed a snack (+${fmt(SNACK_NET)}) and will wait longer.`,'snack',18);p.patience=Math.min(2.4,p.patience*SNACK_BOOST);p.snack='done';sendBack(p);}}
+    if(p.state==='atSnack'){p.inT++;if(p.inT>=2){const o=objById(p.snackT);if(o){o.occ=null;o.uses=(o.uses||0)+1;o.usesAll=(o.usesAll||0)+1;o.usesWk=(o.usesWk||0)+1;o.earn=(o.earn||0)+SNACK_NET;o.earnAll=(o.earnAll||0)+SNACK_NET;fx(o,'+$'+SNACK_NET,'cash');}S.cash+=SNACK_NET;S.wk.cashIn+=SNACK_NET;S.wk.snacks=(S.wk.snacks||0)+1;CAREER.tot.snacks++;glog('money',`${p.name} grabbed a snack (+${fmt(SNACK_NET)}) and will wait longer.`,'snack',18);p.patience=Math.min(2.4,p.patience*SNACK_BOOST);p.snack='done';sendBack(p);}}
     if(p.sick&&!p.relieved&&(p.state==='queued'||p.state==='waiting'||p.state==='toLoo')&&Math.random()<VOMIT_P){p.relieved=true;beSick(p);}
     if(exposed.size&&(p.state==='queued'||p.state==='waiting')&&p.kind!=='consult'&&Math.random()<.01*(1+exposed.size/6)){p.prev={state:p.state,q:p.q,seat:p.seat};p.seat=null;p.state='sneak';p.snT=0;p.target=pick([...exposed]).split(',').map(Number);p.inT=0;p.escort=null;}
     if(p.state==='sneak')p.snT++;if(p.state==='inBack'){p.inT++;if(p.inT>=2&&Math.random()<(p.escort?.08:.2)){const units=Math.min(S.stock,Math.floor(rnd(4,9)));let val=units*S.unitCost;S.stock-=units;if(S.inv.brand>0&&Math.random()<.3){S.inv.brand--;val+=SPECIAL_COST;}S.wk.theft++;S.wk.theftVal+=val;p.stole=true;p.state='leaving';p.exitMood='content';p.q=null;goTo(p,DOOR.x,DOOR.y);S.wk.ev.push({k:'theft',name:p.name,val});dTrust(-.5,'security');fx([p.x,p.y],'−'+fmt(val)+' stolen','bad');glog('bad',`Someone walked out of the pharmacy area with stock worth ${fmt(val)}.`,'theft',10);SFX.sigh();}}
@@ -785,7 +797,7 @@ function stationFix(o){const n=r=>S.staff.filter(w=>w.role===r&&!w.floater).leng
   return 'build another';}
 function waitLabel(sc){const st=sc&&sc.stage;if(st==='tray')return objsOf('shelf').length&&!shelfFor()?'waiting, will-call full':'waiting for the check';if(st==='problem')return 'waiting on a claim';if(st==='backorder')return 'waiting, out of stock';return 'waiting for the fill';}
 function leave(p,mood){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage!=='done'){sc.abandoned=true;if(sc.stage==='withPatient')sc.stage='dead';if(sc.stage==='shelf')sc.unclaimed=true;}
-  const where=(p.state==='toLoo'||p.state==='inLoo'||p.loo==='denied'&&p.state!=='leaving')?'needing the restroom':(p.state==='sneak'||p.state==='inBack')?'in the store':(p.state==='waiting'||p.state==='toSeat')?waitLabel(sc):(p.state==='queued'||p.state==='toQueue')&&p.q&&objById(p.q)?(objById(p.q).type==='register'?'at pick-up':'at drop-off'):p.conf>0?'at the door':'in the store';
+  const where=p.dt?'at the drive-thru':(p.state==='toLoo'||p.state==='inLoo'||p.loo==='denied'&&p.state!=='leaving')?'needing the restroom':(p.state==='sneak'||p.state==='inBack')?'in the store':(p.state==='waiting'||p.state==='toSeat')?waitLabel(sc):(p.state==='queued'||p.state==='toQueue')&&p.q&&objById(p.q)?(objById(p.q).type==='register'?'at pick-up':'at drop-off'):p.conf>0?'at the door':'in the store';
   if(mood!=='content')S.wk.ev.push({k:'gaveup',name:p.name,where,mood,el:p.elderly});
   p.state='leaving';p.q=null;p.seat=null;p.exitMood=mood;p.conf=0;goTo(p,DOOR.x,DOOR.y);
   if(mood!=='content'&&(p.kind!=='consult'||mood==='angry')){if(sc&&sc.reg)regGain(-.5);S.wk.lost++;S.wk['lost_'+where.replace(/ /g,'_')]=(S.wk['lost_'+where.replace(/ /g,'_')]||0)+1;dTrust(mood==='angry'?-.15:-.1,'walk-outs');SFX.sigh();glog('bad',`${p.name} gave up ${where}${mood==='confused'?' (couldn\'t get in)':''}.`,'walk',12);}}
@@ -816,7 +828,7 @@ function autoRestPlan(){S.autoOff=(S.autoOff||[]).filter(a=>{if(a.day!==S.day)re
 function endDay(){if((S.mess||[]).length){S.mess=[];glog('ops','The night cleaner mopped up what was left on the floor.');}
   const u={};for(const t of ['fill','verify','intake','pickup'])u[t]=Math.min(1,(util[t]||0)/(TICKS_DAY*Math.max(1,t==='fill'?objsOf('fill').length:t==='verify'?objsOf('verify').length:t==='intake'?objsOf('dropoff').length:objsOf('register').length)));for(const k in util)delete util[k];
   const w=S.wk;const dayServed=w.served-(w._ps||0),dayLost=w.lost-(w._pl||0);w._ps=w.served;w._pl=w.lost;
-  pressDaily(dayServed,dayLost);S.days.push({w:S.week,d:S.day,served:dayServed,lost:dayLost,cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1),util:u,stock:S.stock,annoyed:w.annoyedTicks||0});w.annoyedTicks=0;if(S.days.length>60)S.days.shift();
+  pressDaily(dayServed,dayLost);careerDay(dayServed,dayLost);S.days.push({w:S.week,d:S.day,served:dayServed,lost:dayLost,cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1),util:u,stock:S.stock,annoyed:w.annoyedTicks||0});w.annoyedTicks=0;if(S.days.length>60)S.days.shift();
   for(const st of S.staff){const sh=(S.sched[st.id]||['F','F','F','F','F','F'])[S.day];
     if(st.sick>0){st.sick--;st.energy=clamp(st.energy+EN.night+15,0,100);if(!st.sick)glog('staff',`${st.name} is back tomorrow.`);continue;}
     const worked=sh!=='O'&&!st.floater&&!S.closedToday;if(worked&&!st.isYou&&st.energy<EN.risk)dMorale(st,-10,'ran on empty');
@@ -834,7 +846,7 @@ function endDay(){if((S.mess||[]).length){S.mess=[];glog('ops','The night cleane
 /* ============ week ============ */
 let timer=null;
 function setSpeed(n){if(n>0&&S.coverPending&&$('sheet').hidden){S.coverPending=false;closeToday();}S.speed=n;clearInterval(timer);if(n>0&&S.running)timer=setInterval(timedTick,TICK_MS/n);renderHud();}
-function startWeek(){{const op=S.claims.filter(c=>c.status==='open');S.claims=[...S.claims.filter(c=>c.status!=='open').slice(-30),...op];}audioInit();cancelMove();PROPCACHE=null;S.stage=null;$('resume').hidden=true;if(!S.opened&&!S.speedSet)S.speed=3;if(S.openBuildNext){S.openBuildNext=false;setTimeout(()=>setBuild(true),400);}if(!S.opened)glog('ops','Open for business. New equipment unlocks as the store earns it — the Gazette announces each one.');SHOTS={};for(const o of S.objs){o.earn=0;o.wkTt=0;o.wkBt=0;o.wkJobs=0;o.usesWk=0;}S.inv.used={gen:0,brand:0,vax:0,otc:0};S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;if(S.cashClose!==undefined)S.wk.cashStart=S.cashClose;S.wk.reg0=S.reg||0;if(S.preWk){Object.assign(S.wk,S.preWk);S.preWk=null;}S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
+function startWeek(){lotReset();{const op=S.claims.filter(c=>c.status==='open');S.claims=[...S.claims.filter(c=>c.status!=='open').slice(-30),...op];}audioInit();cancelMove();PROPCACHE=null;S.stage=null;$('resume').hidden=true;if(!S.opened&&!S.speedSet)S.speed=3;if(S.openBuildNext){S.openBuildNext=false;setTimeout(()=>setBuild(true),400);}if(!S.opened)glog('ops','Open for business. New equipment unlocks as the store earns it — the Gazette announces each one.');SHOTS={};for(const o of S.objs){o.earn=0;o.wkTt=0;o.wkBt=0;o.wkJobs=0;o.usesWk=0;}S.inv.used={gen:0,brand:0,vax:0,otc:0};S.running=true;S.opened=true;S.day=0;S.tick=0;S.wk=blank();S.wk.trust0=S.trust;if(S.cashClose!==undefined)S.wk.cashStart=S.cashClose;S.wk.reg0=S.reg||0;if(S.preWk){Object.assign(S.wk,S.preWk);S.preWk=null;}S.patients=[];S.fx=[];S.scripts=S.scripts.filter(sc=>['bin','tray','problem','shelf','claim','backorder'].includes(sc.stage)&&!sc.abandoned);
   for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;w.wkTicks=0;w.wkIdle=0;w.wkJobs=0;w.wkAct={};}for(const k in busyS)delete busyS[k];for(const sc of S.scripts){sc.claimed=null;delete sc.toShelf;}hourSnap={served:0,lost:0,cashIn:0,missed:0};
   $('review').hidden=true;$('office').hidden=true;closeSheet();setSpeed(S.speed||1);duck();SFX.bell();
   if(adv){glog('event',adv);adv='';}const due=dueThisWeek();glog('money',S.week===1?`Week 1 opens. Insurers pay 7–12 days after each sale, so the first checks land around Monday of week 2. Expect ~${Math.round(demandPerDay())} prescriptions a day.`:`Week ${S.week} opens. Insurers pay ${fmt(Math.round(due))} this week. Expect ~${Math.round(demandPerDay())} prescriptions a day.`);saveGame();
@@ -849,7 +861,7 @@ function bankNotes(){const b=S.bank||{red:0,miss:0},out=[];
   if(b.red>0)out.push({k:'cash',n:b.red,t:b.red>=BANK_STRIKES?`Closed in the red ${b.redRun||b.red} Saturdays in a row. The bank has shut the account.`:`Closed the week at ${fmt(S.cash)} (strike ${b.red} of ${BANK_STRIKES}). ${b.red===BANK_STRIKES-1?'Final notice: end next Saturday below $0 and the bank shuts the pharmacy.':'Get back above $0 by Saturday close to reset the count.'}`});
   if(S.trustZero||S.trust<=0)out.push({k:'trust',n:0,t:'Trust reached 0. The bank has pulled the store\'s credit.'});else if(S.trust<15)out.push({k:'trust',n:0,t:`Trust is ${Math.round(S.trust)}. If it reaches 0, the bank pulls the store's credit and the pharmacy closes.`});
   return out;}
-function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();for(const p of S.patients){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='withPatient')sc.stage='dead';}S.patients=[];S.fx=[];
+function endWeek(){lotReset();S.running=false;clearInterval(timer);duck();SFX.bell();closeSheet();for(const p of S.patients){const sc=S.scripts.find(x=>x.id===p.script);if(sc&&sc.stage==='withPatient')sc.stage='dead';}S.patients=[];S.fx=[];
   /* everyone goes home: the floor shows only what you built */for(const w of S.staff){for(const c of w.carry){const b=binOf();if(c.stage){c.stage='bin';c.at=b?'bin:'+b.id:null;c.claimed=null;}}w.carry=[];w.carryKind=null;w.plan=null;w.goal=null;w.path=null;w.off=true;w.x=OUT.x;w.y=OUT.y;w.energy=clamp((w.energy||0)+EN.sunday,0,100);}for(const k in busyS)delete busyS[k];
   const paid=S.wk.paid||0,fee=S.wk.fee||0;const interest=loanInt();S.wk.interest=interest;
   const paidAlready=(S.wk.bonus||0)+(S.wk.hireFees||0);const bills=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0)+S.rent+(S.mods.delivery?60:0);S.cash-=bills;S.wk.billPay=wages()+(S.wk.floatOnce||0)+(S.wk.exitPay||0);S.wk.billRent=S.rent;S.wk.billDriver=S.mods.delivery?60:0;/* the Gazette shows what was actually paid */
@@ -866,7 +878,7 @@ function endWeek(){S.running=false;clearInterval(timer);duck();SFX.bell();closeS
   glog('money',`Counter ${fmt(S.wk.cashIn)}, insurers ${fmt(paid)} (fees ${fmt(fee)}). Wages ${fmt(S.wk.billPay)}, rent ${fmt(S.rent)}, drugs ${fmt(S.wk.drug)}${S.wk.billDriver?`, driver ${fmt(S.wk.billDriver)}`:''}${paidAlready?`, hiring & bonuses ${fmt(paidAlready)}`:''}${S.wk.theft?` · stock stolen ${fmt(S.wk.theftVal)} (not cash)`:''}, loan ${S.wk.missed?'missed':fmt(loanPay)+(interest?` (incl. ${fmt(interest)} interest)`:'')}. Week net ${S.wk.net>=0?'+':''}${fmt(S.wk.net)}${S.wk.equip?`, equipment ${S.wk.equip>0?'−':'+'}${fmt(Math.abs(Math.round(S.wk.equip)))}`:''}${S.wk.cashNet!==undefined&&S.wk.cashNet!==Math.round(S.wk.net)?`. Cash ${S.wk.cashNet>=0?'+':''}${fmt(S.wk.cashNet)} for the week`:''}.`);
   log('game',`week ${S.week} end`,{served:S.wk.served,lost:S.wk.lost,paid:Math.round(paid),costs:Math.round(costs),net:Math.round(S.wk.net),cash:Math.round(S.cash),owed:owedTotal(),trust:+S.trust.toFixed(1)});
   /* the first Saturday in the red is a warning; strikes start with the second in a row */S.bank.redRun=S.cash<0?(S.bank.redRun??S.bank.red??0)+1:0;S.bank.red=Math.max(0,S.bank.redRun-1);S.wk.bankNote=bankNotes();
-  if(S.trustZero||S.trust<=0){S.done='lose';S.doneWhy='trust';}else if(S.bank.miss>=BANK_STRIKES){S.done='lose';S.doneWhy='loan';}else if(S.bank.red>=BANK_STRIKES){S.done='lose';S.doneWhy='cash';}else if(worth()>=GOAL_CASH&&S.cash>=GOAL_HAND&&S.trust>=GOAL_TRUST&&S.loan<=0)S.done='win';
+  if(S.trustZero||S.trust<=0){S.done='lose';S.doneWhy='trust';}else if(S.bank.miss>=BANK_STRIKES){S.done='lose';S.doneWhy='loan';}else if(S.bank.red>=BANK_STRIKES){S.done='lose';S.doneWhy='cash';}else if(worth()>=GOAL_CASH&&S.cash>=GOAL_HAND&&S.trust>=GOAL_TRUST&&S.loan<=0)S.done='win';careerWeek();
   for(const n of S.wk.bankNote)glog('bad','Bank notice: '+n.t);
   for(const k in S.promo){if(S.promo[k]>0)S.promo[k]--;}if(S.week>=3){if(!S.rivalOn){S.rivalOn=true;S.rival=.12;glog('bad','A chain pharmacy opened across the street. It will take some of your walk-ins unless you fight back (Promote).');}else S.rival=Math.max(0,Math.min(.35,S.rival+(S.promo.pricematch>0||S.promo.paper>0?-.04:.015)));}
   S.totWriteoff=(S.totWriteoff||0)+(S.wk.writeoff||0);checkUnlocks();
@@ -1194,7 +1206,7 @@ function bankCheck(prev){const b=S.bank,w=S.wk,amt=w.missed,left=BANK_STRIKES-b.
   <div class="btns"><button class="big" id="chkOk">Understood: to the Gazette ▶</button></div>`);
   $('chkOk').onclick=()=>{SFX.click();w.checkSeen=true;saveGame();showReview();};}
 function showReview(){closeAll();setStage('review');const w=S.wk,prev=S.week-1;
-  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Business worth ${fmt(Math.round(worth()))} (cash ${fmt(S.cash)}), loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>${S.doneWhy==='loan'?'The bank foreclosed':S.doneWhy==='trust'?'The bank pulled your credit':'The bank shut the pharmacy'}</h2><p class="sub">Week ${prev}. ${S.doneWhy==='loan'?`Loan payments missed ${BANK_STRIKES+1} Saturdays in a row. Loan left ${fmt(S.loan)}.`:S.doneWhy==='trust'?'Trust fell to 0. Customers stopped coming and the bank stopped lending.':S.doneWhy==='cash'?`Cash below $0 at close ${BANK_STRIKES+1} Saturdays in a row. Cash ${fmt(S.cash)}.`:`Cash ${fmt(S.cash)}. Too much owed, not enough in hand.`}</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
+  if(S.done){page(S.done==='win'?`<h2>Open your second store</h2><p class="sub">Week ${prev}. Business worth ${fmt(Math.round(worth()))} (cash ${fmt(S.cash)}), loan repaid, trust ${Math.round(S.trust)}. The block is yours.</p><p class="sub">Career level ${careerLevel()} · ${LV_TITLES[careerLevel()-1]} · +${(S.runXp||0).toLocaleString()} XP from this store. Your level carries over to the next store.</p><div class="btns"><button class="big" id="again">Start over</button></div>`:`<h2>${S.doneWhy==='loan'?'The bank foreclosed':S.doneWhy==='trust'?'The bank pulled your credit':'The bank shut the pharmacy'}</h2><p class="sub">Week ${prev}. ${S.doneWhy==='loan'?`Loan payments missed ${BANK_STRIKES+1} Saturdays in a row. Loan left ${fmt(S.loan)}.`:S.doneWhy==='trust'?'Trust fell to 0. Customers stopped coming and the bank stopped lending.':S.doneWhy==='cash'?`Cash below $0 at close ${BANK_STRIKES+1} Saturdays in a row. Cash ${fmt(S.cash)}.`:`Cash ${fmt(S.cash)}. Too much owed, not enough in hand.`}</p><p class="sub">Career level ${careerLevel()} · +${(S.runXp||0).toLocaleString()} XP from this store. Your level and badges carry over to the next store.</p><div class="btns"><button class="big" id="again">Start over</button></div>`);$('again').onclick=()=>{S=fresh();GL.length=0;try{localStorage.removeItem('msp-save');}catch(e){}rebuildGrid();renderHud();showIntro();};return;}
   if(prev<1||!S.opened){reviewDecide();return;}
   if(w.missed&&(S.bank||{}).miss>=1&&!w.checkSeen){bankCheck(prev);return;}
   const lostWhy=Object.keys(w).filter(k=>k.startsWith('lost_')).map(k=>`${w[k]} ${k.slice(5).replace(/_/g,' ')}`).join(', ');const d=S.trust-w.trust0;const rw=runwayWeeks();
@@ -1250,16 +1262,17 @@ $('floorX').onclick=toFloor;
 function setBuild(on){if(on&&S&&S.opened)checkUnlocks(true);if(!on){cancelMove();if(S&&S.objs)frontWarnings();}buildOn=on;$('palette').hidden=!on;$('buildBtn').classList.toggle('on',on);$('app').classList.toggle('building',on);if(!on){tool=null;}renderPalette();renderHud();if(!userCam)fitWorld();}
 const ICONS={};
 function iconFor(type){if(ICONS[type])return ICONS[type];try{const off=document.createElement('canvas');off.width=76;off.height=66;const o2=off.getContext('2d');const save={ctx,x:cam.x,y:cam.y,z:cam.z,r:cam.r};ctx=o2;cam.x=38;cam.y=46;cam.z=.8;cam.r=0;const T=TYPES[type];if(T.w>1){cam.z=.6;cam.x=38;cam.y=44;}if(T.w>=4){cam.z=.27;cam.x=43;cam.y=18;}drawObj({id:'icon',type,x:0,y:0,rot:0,level:0,t0:0});ctx=save.ctx;cam.x=save.x;cam.y=save.y;cam.z=save.z;cam.r=save.r;ICONS[type]=off.toDataURL();return ICONS[type];}catch(e){return '';}}
-function renderPalette(){const el=$('palItems');el.innerHTML=[...palette()].sort((a,b)=>((S.newItems||[]).includes(b)?1:0)-((S.newItems||[]).includes(a)?1:0)).map(t=>`<button class="pal ${tool===t?'on':''} ${(S.newItems||[]).includes(t)?'isnew':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}>${(S.newItems||[]).includes(t)?'<i class="newb">NEW</i>':''}<img src="${iconFor(t)}" alt=""><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Sell</b><em>Half the cost back</em><small>½ back</small></button>`;
+function renderPalette(){const el=$('palItems');el.innerHTML=[...palette()].filter(t=>toolFitsView(t)).sort((a,b)=>((S.newItems||[]).includes(b)?1:0)-((S.newItems||[]).includes(a)?1:0)).map(t=>`<button class="pal ${tool===t?'on':''} ${(S.newItems||[]).includes(t)?'isnew':''}" data-t="${t}" ${S.cash<TYPES[t].cost?'disabled':''}>${(S.newItems||[]).includes(t)?'<i class="newb">NEW</i>':''}<img src="${iconFor(t)}" alt=""><b>${TYPES[t].name}</b><small>${fmt(TYPES[t].cost)}</small></button>`).join('')+`<button class="pal ${tool==='move'?'on':''}" data-t="move"><b>Move</b><em>Pick up, put down</em><small>free</small></button><button class="pal ${tool==='erase'?'on':''}" data-t="erase"><b>Sell</b><em>Half the cost back</em><small>½ back</small></button>`;
   el.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{cancelMove();tool=tool===b.dataset.t?null:b.dataset.t;renderPalette();SFX.click();palHint();});
   if(!tool)palHint();
   $('palRot').textContent=(tool&&TYPES[tool]&&TYPES[tool].two)?'Rotate · '+((rot&1)?'↕':'↔'):'Rotate · '+FACE_N[rot&3];$('palRot').onclick=()=>{rot=(rot+1)&3;renderPalette();SFX.click();};
   $('palDone').onclick=()=>{if(held&&ghostAt){const err=putDown(ghostAt[0],ghostAt[1]);renderPalette();palHint();if(err)toast(err);return;}if(!S.opened)showChecklist();else setBuild(false);};$('palDone').textContent=held?'Place here':S.opened?'Done':'Ready to open?';
-  $('camBtn').onclick=rotateCam;}
-function palHint(){let t;if(tool==='erase')t='Tap something to sell it.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". Rotate turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Use Rotate to face it another way.':'');
+  $('camBtn').onclick=rotateCam;$('viewBtn').onclick=()=>{SFX.click();setView(VIEW==='out'?'in':'out');};}
+function palHint(){let t;if(VIEW==='out'&&tool==='erase')t='Tap a parking space to remove it (half back).';else if(VIEW==='out'&&tool==='stall')t=`${TYPES.stall.desc} ${lotState().stalls.length} spaces now.`;else if(VIEW==='out'&&tool==='drive')t=`${laneLine()} Drag across the grass round the store to pave ($${DRIVE_COST} a tile).`;else if(VIEW==='out'&&!tool)t=`Outside: ${lotState().stalls.length} parking spaces. ${laneLine()} Tap a lot next door to buy it (level ${LAND_LV}). Tap the store to go back in.`;else if(tool==='erase')t='Tap something to sell it.';else if(tool==='move')t=held?(ghostAt?'Tap the same spot again, or "Place here". Rotate turns it.':'Tap where it goes.'):'Tap something to pick it up.';else if(tool)t=TYPES[tool].desc+(TYPES[tool].w>1?' Use Rotate to face it another way.':'');
   else if(!S.opened){const need=readiness().find(r=>!r.ok&&Object.keys(NEXT_HINT).some(k=>r.t.startsWith(k)));t=need?`Next: ${need.t.replace(/ customers can reach.*|$/,'')}. Tap it below, then tap the floor.`:'Everything is placed. Tap "Ready to open?"';}
   else t='Pick something to build, then tap the floor.';$('palHint').textContent=t;}
-function tapTile(tx,ty){if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}renderPalette();palHint();if(err)toast(err);return;}
+function tapTile(tx,ty){if(VIEW==='out'){let e=null;if(tool==='erase'){e=removeDrive(tx,ty);if(e===null)e=removeStall(tx,ty);else if(e==='')e=null;}else if(tool==='stall')e=placeStall(tx,ty);else if(tool==='drive')e=placeDrive(tx,ty);else if(tool==='move')e='Moving works inside the store.';renderPalette();palHint();if(e)toast(e);return;}
+  if(tool==='move'){const c=inb(tx,ty)?grid[ty][tx]:null;let err=null;if(held){if(ghostAt&&ghostAt[0]===tx&&ghostAt[1]===ty)err=putDown(tx,ty);else{ghostAt=[tx,ty];SFX.click();}}else{err=c&&c.o?pickUp(c.o):'Nothing there.';if(!err)ghostAt=[tx,ty];}renderPalette();palHint();if(err)toast(err);return;}
   if(tool==='erase'){const c=inb(tx,ty)?grid[ty][tx]:null;if(c&&c.o){const err=removeObj(c.o);if(err)toast(err);}return;}
   if(!tool)return;const T=TYPES[tool];const o={type:tool,x:tx,y:ty,rot};/* center 2-wide items under the finger */if(((rot&1)?T.d:T.w)>1&&tx===W-1)o.x=tx-1;
   const err=place(tool,o.x,o.y,rot);if(err)toast(err);else{renderPalette();palHint();if(tool==='consult'){$('palHint').textContent='Now ring it with walls and put one door on the orange tile. Private = more trust per visit. (Or sell it and place a ready-made Consult room.)';}if(tool==='room'){$('palHint').textContent='Consult room placed: private from the start. The pharmacist works it; customers enter through the door.';}if(tool==='wall'||tool==='counter'||tool==='chair')return;/* keep tool for painting */}}
@@ -1283,7 +1296,7 @@ function amenityCard(o){const nm=id=>(S.patients.find(p=>p.id===id)||S.staff.fin
   return {does,kv:`<div class="kv"><div><span>Holds</span><b>${holds}</b></div><div><span>Now</span>${now}</div><div><span>Used</span>${used}</div>${o.earn?`<div><span>Earned</span><b>${fmt(o.earn)}</b> <small class="sub">this week</small></div>`:''}${why?`<div class="foot">${why}</div>`:''}</div>`};}
 function openObj(o){S.sel=o.id;SFX.click();$('menu').hidden=true;const T=TYPES[o.type];const who=S.staff.find(w=>busyS[o.id]===w.id);
   const {n}=loadOf(o);
-  const shoppers=o.type==='otc'?S.patients.filter(p=>p.otcT===o.id&&p.state==='toOtc').length:0;const passive={restroom:o.occ?`${(S.patients.find(p=>p.id===o.occ)||{}).name||'Someone'} is inside`:'Free · customers use it while they wait',counter:'Staff step over it; customers go around',wall:'Solid for everyone',door:`Swings toward the ${FACE_N[(o.rot||0)&3]} side; customers and staff walk through`,plant:`+${(.3*Math.min(3,objsOf('plant').length)).toFixed(1)} trust a week from ${Math.min(3,objsOf('plant').length)} plant${objsOf('plant').length!==1?'s':''} (max 3 count)`,medshelf:`Holds generics · ${S.stock} on hand`,fridge:`Holds specialty (${S.inv.brand}) and vaccine doses (${S.vaxDoses})`}[o.type];
+  const shoppers=o.type==='otc'?S.patients.filter(p=>p.otcT===o.id&&p.state==='toOtc').length:0;const passive={dtwin:laneLine().replace(/\.$/,''),restroom:o.occ?`${(S.patients.find(p=>p.id===o.occ)||{}).name||'Someone'} is inside`:'Free · customers use it while they wait',counter:'Staff step over it; customers go around',wall:'Solid for everyone',door:`Swings toward the ${FACE_N[(o.rot||0)&3]} side; customers and staff walk through`,plant:`+${(.3*Math.min(3,objsOf('plant').length)).toFixed(1)} trust a week from ${Math.min(3,objsOf('plant').length)} plant${objsOf('plant').length!==1?'s':''} (max 3 count)`,medshelf:`Holds generics · ${S.stock} on hand`,fridge:`Holds specialty (${S.inv.brand}) and vaccine doses (${S.vaxDoses})`}[o.type];
   const status=passive?passive:who?`${who.name} is ${who.plan&&who.plan.steps[who.step]&&who.plan.steps[who.step].label||'working'} here`:o.type==='otc'?(shoppers?`${shoppers} customer${shoppers>1?'s':''} browsing`:'self-service · customers shop here on the way out'):n?`${n} waiting`:'idle';
   const lvl=T.levels?T.levels[o.level]:null,nxt=T.levels?T.levels[o.level+1]:null;const priv=o.type==='consult'?(enclosed(o)?'Private room ✓':'Not private yet — build walls on the grey tiles and a door on the orange one.')+(staffCanReach(o)?'':' <span class="neg">The pharmacist can\'t reach the spot behind the desk — put a staff door in the wall behind it.</span>'):'';
   const pt=patientTile(o);const unreachable=pt&&!reach.has(pt.join(','))&&FRONT_TYPES.includes(o.type);
@@ -1306,7 +1319,7 @@ function moraleBar(w){const e=(w.morale??80)/100;const c=e>=.5?'#378add':e>=.3?'
 function energyBar(w){const e=(w.energy??100)/100;return battery(Math.round(e*100),e>=.5?'var(--good)':e>=.25?'#ef9f27':'var(--bad)');}
 const battery=(p,c)=>`<span class="batt"><i style="width:${p}%;background:${c}"></i></span>`;
 const moraleBox=(p,c)=>`<span class="batt mo"><i style="width:${p}%;background:${c}"></i></span>`;/* same size as the battery, no nub */
-const STATION_ROLE={fill:'tech',verify:'rph',dropoff:'clerk',register:'clerk',phone:'clerk',problem:'rph',consult:'rph'};
+const STATION_ROLE={fill:'tech',verify:'rph',dropoff:'clerk',register:'clerk',dtwin:'clerk',phone:'clerk',problem:'rph',consult:'rph'};
 function staffingNote(o){/* one worker per station: who is on it, and whether someone of that role is idle waiting for it */const role=STATION_ROLE[o.type];if(!role)return '';const who=S.staff.find(w=>busyS[o.id]===w.id);const same=objsOf(o.type);const onRole=S.staff.filter(w=>w.role===role&&!w.off&&w.x<W);const idleRole=onRole.filter(w=>!w.plan);const allBusy=same.every(q=>busyS[q.id]);
   const line=`<div><span>Staff</span><b>${who?who.name:'nobody'} · ${who?1:0} / 1</b> <small class="sub">one at a time</small></div>`;
   const warn=S.running&&idleRole.length&&allBusy?`<div class="ustat bad">${idleRole[0].name} is waiting for a free ${TYPES[o.type].name.toLowerCase()} · build another${TYPES[o.type].levels&&TYPES[o.type].levels[(o.level||0)+1]?' or upgrade this one':''}</div>`:'';
@@ -1504,10 +1517,11 @@ function renderOffice(){$('office').classList.toggle('wide',officeTab==='schedul
   if(officeTab==='inventory_old'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;body=`<h2>Stock</h2><div class="grid3"><div class="tile"><small>On hand</small><b>${S.stock}</b><div class="n">~${daysLeft} days</div></div><div class="tile"><small>Next order · Mon</small><b>${S.orderQty}</b><div class="n">${fmt(S.orderQty*S.unitCost*(S.mods.cheap?.9:1))}</div></div><div class="tile"><small>Sent away empty</small><b class="${S.wk.backorder?'neg':''}">${S.wk.backorder||0}</b><div class="n">this week</div></div></div>
       <div class="lever"><div><div class="n">Weekly order</div><div class="h">Paid on delivery. Short = stockouts; long = cash tied up.</div></div><div class="seg"><button id="ordM">−25</button><button id="ordP">+25</button></div></div>`;}
   if(officeTab==='inbox'){const ib=S.inbox;if(ib)ib.seen=true;body=`<h2>Inbox <small>${ib?'week '+ib.week:'nothing yet'}</small></h2>${ib?mailsHtml(ib):'<div class="foot">Your four advisors write after each week: a financial advisor, the district manager, a Pharmacy Benefit Manager and a case manager.</div>'}`;}
+  if(officeTab==='career')body=careerHtml();
   if(officeTab==='feed'){const f=S.feed;if(f)f.seen=true;body=`<h2>Neighborhood feed <small>${f?'week '+f.week:'nothing yet'}</small></h2>${f?feedPostsHtml(f,false):'<div class="foot">Posts appear after your first full week.</div>'}`;}
   if(officeTab==='pricing_old'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
   el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Insurers',claims:'Claims',schedule:'Roster',inventory:'Supplies',pricing:'Price list',feed:'Neighborhood',flow:'Operations',promo:'Marketing',inbox:'Correspondence'}[officeTab]);el.classList.remove('tight');if(el.scrollHeight>el.clientHeight+2)el.classList.add('tight');/* drop the slip footer and tighten gaps before resorting to scrolling */
-  el.querySelectorAll('[data-borrow]').forEach(b=>b.onclick=()=>{const e=borrow(+b.dataset.borrow);if(e)toast(e);renderOffice();renderHud();});el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{const k=b.dataset.pay;const e=k==='bill'?prepayLoan():payLoan(k==='all'?S.loan:+k);if(e)toast(e);renderOffice();renderHud();});
+  el.querySelectorAll('[data-ach]').forEach(b=>b.onclick=()=>{achSel=b.dataset.ach;renderOffice();});el.querySelectorAll('[data-borrow]').forEach(b=>b.onclick=()=>{const e=borrow(+b.dataset.borrow);if(e)toast(e);renderOffice();renderHud();});el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{const k=b.dataset.pay;const e=k==='bill'?prepayLoan():payLoan(k==='all'?S.loan:+k);if(e)toast(e);renderOffice();renderHud();});
     el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h;if(h.startsWith('float')){const r=h.split('-')[1]||'rph';const f=floaterGet(r);glog('staff',`${f.name} is your ${r==='rph'?'floater pharmacist':'temp '+ROLE[r].toLowerCase()}: ${fmt(TEMP_DAY[r])} per booked day. Tap their days in the grid to book.`);}else if(h.startsWith('pt-'))hireStaff(h.slice(3),true);else hireStaff(h);renderOffice();renderHud();});
   if($('autoRest'))$('autoRest').onclick=()=>{S.autoRest=!S.autoRest;SFX.click();glog('staff',S.autoRest?'Keep everyone rested is on: tired staff get a day off when cover allows.':'Keep everyone rested is off.');renderOffice();};
   el.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{S.moneyTab=b.dataset.mtab;SFX.click();renderOffice();});
@@ -1603,7 +1617,7 @@ $('buildBtn').onclick=()=>{setBuild(!buildOn);SFX.click();};
 /* business value = cash + what the equipment would sell for (half of what went into it). Investing isn't punished by the goal, overbuilding still is */
 function worth(){return S.cash+S.objs.reduce((t,o)=>t+invested(o)/2,0);}
 function goalPct(){return Math.min(1,Math.max(0,Math.min(1,worth()/GOAL_CASH)*.4+Math.min(1,Math.max(0,S.cash)/GOAL_HAND)*.15+(1-Math.min(1,S.loan/LOAN))*.25+Math.min(1,S.trust/GOAL_TRUST)*.2));}
-function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();$('wkL').textContent=`Week ${S.week}`;$('wkT').textContent=S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'Closed':'Building';$('rxT').textContent=S.running?`${S.dayServed||0}`:'—';$('rxW').textContent=S.running?(S.wk.served||0):'—';$('inT').textContent=S.running?S.patients.filter(p=>p.state!=='leaving'&&p.state!=='pending'&&p.x<W+1).length:'—';{const lo=S.staff.reduce((m,w)=>Math.min(m,w.energy??100),100);const n=S.staff.filter(w=>(w.energy??100)<EN.exhausted).length;const c=$('stChip');c.classList.toggle('bad',lo<EN.exhausted);c.classList.toggle('warn',lo>=EN.exhausted&&lo<EN.tired);const sk=S.staff.filter(w=>w.sick>0).length;const up=S.staff.filter(w=>!w.isYou&&!w.floater&&((w.morale??80)<MO.complain||w.notice>0)).length;if(up)c.classList.add('bad');$('stChipV').textContent=sk?`${sk} sick`:up?`${up} upset`:lo<EN.exhausted?`${n} low`:lo<EN.tired?'tired':'ok';if(sk)c.classList.add('bad');}{const pc=$('prChip');const on=pressActive();pc.classList.toggle('bad',on&&S.press.bad);pc.classList.toggle('good',on&&!S.press.bad);$('prChipV').textContent=on?(S.press.bad?'−15%':'+10%'):'—';}
+function renderHud(){if(!$('office').hidden&&S.running&&S.tick%8===0&&!ptrDown&&!document.querySelector('#off button:active'))renderOffice();$('wkL').textContent=`Week ${S.week}`;$('wkT').textContent=S.running?`${DAYS[S.day].slice(0,3)} ${clockAt(S.tick)}`:S.opened?'Closed':'Building';$('rxT').textContent=S.running?`${S.dayServed||0}`:'—';$('rxW').textContent=S.running?(S.wk.served||0):'—';$('inT').textContent=S.running?S.patients.filter(p=>p.state!=='leaving'&&p.state!=='pending'&&!p.dt&&p.x<W+1).length:'—';{const lo=S.staff.reduce((m,w)=>Math.min(m,w.energy??100),100);const n=S.staff.filter(w=>(w.energy??100)<EN.exhausted).length;const c=$('stChip');c.classList.toggle('bad',lo<EN.exhausted);c.classList.toggle('warn',lo>=EN.exhausted&&lo<EN.tired);const sk=S.staff.filter(w=>w.sick>0).length;const up=S.staff.filter(w=>!w.isYou&&!w.floater&&((w.morale??80)<MO.complain||w.notice>0)).length;if(up)c.classList.add('bad');$('stChipV').textContent=sk?`${sk} sick`:up?`${up} upset`:lo<EN.exhausted?`${n} low`:lo<EN.tired?'tired':'ok';if(sk)c.classList.add('bad');}{const pc=$('prChip');const on=pressActive();pc.classList.toggle('bad',on&&S.press.bad);pc.classList.toggle('good',on&&!S.press.bad);$('prChipV').textContent=on?(S.press.bad?'−15%':'+10%'):'—';}
   const sk=`${S.running}|${S.speed}|${S.opened}`;if(sk!==spdKey){spdKey=sk;$('spd').innerHTML=S.running?[[0,'❚❚'],[1,'▶'],[3,'▶▶']].map(([n,g])=>`<button class="spd ${S.speed===n?'on':''}" data-s="${n}" aria-label="speed ${n}">${g}</button>`).join(''):`<button class="spd on" id="goBtn" aria-label="Continue">▶</button>`;
   $('spd').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.speedSet=true;setSpeed(+b.dataset.s);SFX.click();});const gb=$('goBtn');if(gb)gb.onclick=()=>{SFX.click();if(!S.opened){setBuild(true);showChecklist();}else resumeReview();};}
   {const rs=$('resume');const show=S.opened&&!S.running&&!S.done&&S.stage&&$('review').hidden&&$('title').hidden;rs.hidden=!show;if(show){const st=STAGES[S.stage]||STAGES.review;rs.textContent=`▶ Continue week review · ${st[0]} ${st[1]} of 5`;rs.onclick=()=>{SFX.click();resumeReview();};}}
@@ -1640,7 +1654,7 @@ function winApply(){fitCanvas();applyLayout();fitWorld();winRender();}
 function fitCanvas(){dpr=Math.min(2,window.devicePixelRatio||1);applyOrientation();cv.width=VW*dpr;cv.height=VH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 /* JS instead of a @container rule: container-type on the strip crashed iOS/WebKit on reload */(()=>{const st=$('strip');if(!st)return;const fit=()=>{const w=st.clientWidth;if(w)st.classList.toggle('narrow',w<560);};if(window.ResizeObserver)new ResizeObserver(fit).observe(st);window.addEventListener('resize',fit);fit();})();
 function freeBox(){const cs=getComputedStyle($('app'));const px=v=>parseFloat(cs.getPropertyValue(v))||0;const gl=px('--gl'),gr=px('--gr'),top=px('--barY')+px('--barH')+6;const pal=$('palette');const bot=(buildOn&&!pal.hidden?pal.offsetHeight-34:px('--chatY')+56*K+10)+(ROT?0:px('--sab'));return {x:gl,y:top,w:Math.max(100,VW-gl-gr),h:Math.max(100,VH-top-bot)};}
-function fitWorld(){userCam=false;offShift=0;lastVW=VW;lastVH=VH;const fb=freeBox();const bx=fb.x,by=fb.y,bw=fb.w,bh=fb.h;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const wx=(W+D)*TW,wy=(W+D)*TH+64;const z=Math.min(bw/wx,bh/wy);cam.z=Math.max(.22,z);cam.x=bx+bw/2-((VWd-VDd)/2)*TW*cam.z;cam.y=by+bh/2-(((W+D)/2)*TH-32)*cam.z;}
+function fitWorld(){userCam=false;offShift=0;lastVW=VW;lastVH=VH;const fb=freeBox();/* inside: the store; outside: the whole lot and street */const R=VIEW==='out'?(()=>{const b=lotB();for(const k of ['N','S','W']){const r=parcelRect(k);b.x0=Math.min(b.x0,r.x0);b.y0=Math.min(b.y0,r.y0);b.y1=Math.max(b.y1,r.y1);}return b;})():{x0:0,y0:0,x1:W,y1:D};const pts=[[R.x0,R.y0],[R.x1,R.y0],[R.x0,R.y1],[R.x1,R.y1]].map(([x,y])=>{const v=vw(x,y);return [(v[0]-v[1])*TW,(v[0]+v[1])*TH];});const mnx=Math.min(...pts.map(p=>p[0])),mxx=Math.max(...pts.map(p=>p[0])),mny=Math.min(...pts.map(p=>p[1]))-64,mxy=Math.max(...pts.map(p=>p[1]));const z=Math.min(fb.w/(mxx-mnx),fb.h/(mxy-mny));cam.z=Math.max(VIEW==='out'?.14:.22,z);cam.x=fb.x+fb.w/2-(mnx+mxx)/2*cam.z;cam.y=fb.y+fb.h/2-(mny+mxy)/2*cam.z;}
 const toLocal=(cx,cy)=>{const r=$('app').getBoundingClientRect();return ROT?[cy-r.top,r.right-cx]:[cx-r.left,cy-r.top];};const dLocal=(dx,dy)=>ROT?[dy,-dx]:[dx,dy];
 let rsT,lastVW=0,lastVH=0;const onRs=()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fitCanvas();applyLayout();const big=Math.abs(VW-lastVW)>120||Math.abs(VH-lastVH)>120;if(!userCam||big)fitWorld();lastVW=VW;lastVH=VH;},80);};window.addEventListener('resize',onRs);window.addEventListener('orientationchange',onRs);/* iOS: after typing in a text box the keyboard leaves the page scrolled up, shifting the chat and Build bar. Put it back. */document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName))setTimeout(()=>{window.scrollTo(0,0);onRs();},150);});window.addEventListener('scroll',()=>{const t=(document.activeElement||{}).tagName||'';if(!/INPUT|TEXTAREA/.test(t)&&(window.scrollY||window.scrollX))window.scrollTo(0,0);},{passive:true});if(window.visualViewport)window.visualViewport.addEventListener('resize',onRs);if(screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',onRs);
 const vw=(x,y)=>cam.r===0?[x,y]:cam.r===1?[D-y,x]:cam.r===2?[W-x,D-y]:[y,W-x];
@@ -1713,7 +1727,7 @@ function lw(o,lx,ly){const T=TYPES[o.type];const r=(o.rot||0)&3;return r===0?[o.
 function lbox(o,lx,ly,w,d,h,col){const a=lw(o,lx,ly),b=lw(o,lx+w,ly+d);const x0=Math.min(a[0],b[0]),y0=Math.min(a[1],b[1]);box(x0,y0,Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]),h,col);}
 function lpt(o,lx,ly){return iso(...lw(o,lx,ly));}
 function frontStrip(o,col){/* thin strip along the customer-facing edge */const T=TYPES[o.type];lbox(o,0,T.d-.12,T.w,.12,.95,col);}
-function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const t=o.type;const grow=o.t0?Math.max(0,Math.min(1,(performance.now()-o.t0)/350)):1;
+function drawObj(o){if(o.type==='drive'){flat(o.x,o.y,1,1,'#5b6168');const c=iso(o.x+.5,o.y+.5),n=iso(o.x+.85,o.y+.5),l=iso(o.x+.35,o.y+.25),r=iso(o.x+.35,o.y+.75);poly([n,l,c,r],'#f4f1e6');return;}if(o.type==='stall'){flat(o.x,o.y,2,1,'#5b6168');drawCar({x:o.x+1,y:o.y+.5,col:'#2d6a8f',parkedAxis:'x'});return;}const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const t=o.type;const grow=o.t0?Math.max(0,Math.min(1,(performance.now()-o.t0)/350)):1;
   if(grow<1){const [cx,cy]=iso(o.x+w/2,o.y+d/2);ctx.save();ctx.translate(cx,cy);ctx.scale(grow,grow);ctx.translate(-cx,-cy);}
   const cx=o.x+w/2,cy=o.y+d/2;
   if(t==='room'){/* prefab ghost / palette icon: draw its parts, joined like the real thing */const parts=roomParts(o).map(pt=>({...pt,id:'ghost',level:0}));extraObjs=parts;for(const pt of parts.sort((p,q)=>depth(p.x+.5,p.y+.5)-depth(q.x+.5,q.y+.5)))drawObj(pt);extraObjs=[];if(grow<1)ctx.restore();return;}
@@ -1751,6 +1765,7 @@ function drawObj(o){const z=Z();const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,
   else if(t==='verify'){box(o.x,o.y,w,d,.8,'#4b4f5a');const [sx,sy]=lpt(o,.45,.4);ctx.fillStyle='#22252c';ctx.fillRect(sx-9*z,sy-44*z,18*z,13*z);ctx.fillStyle='#9fe1cb';ctx.fillRect(sx-8*z,sy-43*z,16*z,11*z);
     const n=S.scripts.filter(x=>x.at==='tray:'+o.id).length;if(n){const p=lw(o,T.w*.75,.55);stack(p[0],p[1],n,'basket',27);}const cl=S.scripts.filter(x=>x.at==='claim:'+o.id).length;if(cl){const p=lw(o,T.w*.25,.75);stack(p[0],p[1],cl,'problem',27);}const wk=S.scripts.filter(x=>x.at==='slot:'+o.id).length;if(wk){const p=lw(o,T.w*.5,.3);stack(p[0],p[1],wk,'basket',27);}}
   else if(t==='shelf'){lbox(o,0,0,T.w,T.d*.5,1.7,'#e9e2d6');const bags=S.scripts.filter(x=>x.at==='shelf:'+o.id);for(let i=0;i<Math.min(bags.length,16);i++){const [sx,sy]=lpt(o,.15+(i%8)*(T.w/8.5),.25);ctx.save();ctx.translate(sx,sy-(52-Math.floor(i/8)*22)*z);ctx.scale(z,z);basket(0,0,'bag');ctx.restore();}}
+  else if(t==='dtwin'){box(o.x+.05,o.y+.05,.9,.9,.8,'#c9a26e');const f=facing(o);const [sx,sy]=lpt(o,.5,.5);ctx.fillStyle='rgba(143,211,232,.85)';ctx.fillRect(sx-9*z,sy-46*z,18*z,14*z);sign(o.x,o.y+.5,1,'DRIVE-THRU','#fff','#1d9e75');}
   else if(t==='phone'){box(o.x,o.y,1,1,.8,'#d9d2c4');const [sx,sy]=lpt(o,.5,.45);const ring=S.scripts.some(x=>x.stage==='ringing');ctx.save();ctx.translate(sx,sy-32*z);ctx.scale(z,z);handset(0,0,ring&&Math.floor(perf/300)%2?'#e24b4a':'#b03030');ctx.restore();}
   else if(t==='problem'){box(o.x,o.y,1,1,.8,'#d9d2c4');lbox(o,.65,.1,.3,.6,.9,'#e24b4a');const n=S.scripts.filter(x=>x.at==='problem:'+o.id).length;if(n){const p=lw(o,.4,.5);stack(p[0],p[1],n,'problem',27);}}
   else if(t==='consult'){box(o.x,o.y,w,d,.8,'#dfe9e4');frontStrip(o,'#c9dcd3');lbox(o,T.w-.6,.15,.4,.5,.6,'#9fe1cb');sign(cx-w/2,cy-.15,w,'CONSULT','#085041','#e1f5ee');}
@@ -1780,36 +1795,309 @@ function roomGuide(o){/* suggested walls + door around a consult desk */const [w
 function sideLabels(o){const T=TYPES[o.type];if(!T.sides)return;const st=staffTile(o),pt=patientTile(o);if(st&&inb(st[0],st[1])){flat(st[0],st[1],1,1,'rgba(93,140,214,.35)');chip(st[0]+.5,st[1]+.5,'STAFF','rgba(93,140,214,.95)','#fff');}if(pt&&inb(pt[0],pt[1])){flat(pt[0],pt[1],1,1,'rgba(239,159,39,.35)');chip(pt[0]+.5,pt[1]+.5,'CUSTOMERS','rgba(239,159,39,.95)','#2a1a00');}}
 /* static floor (tiles, outer walls, entrance) is rendered once per camera/grid state into an offscreen canvas */
 let floorCv=null,floorKey='';
-function drawFloor(){const key=[cam.x.toFixed(1),cam.y.toFixed(1),cam.z.toFixed(3),cam.r,VW,VH,dpr,S.gridVer,W,D].join('|');
+function drawFloor(){const key=[cam.x.toFixed(1),cam.y.toFixed(1),cam.z.toFixed(3),cam.r,VW,VH,dpr,S.gridVer,W,D,VIEW,LOT.ver,buildOn&&tool==='stall',laneNow().ok].join('|');
   if(key!==floorKey||!floorCv){floorKey=key;if(!floorCv)floorCv=document.createElement('canvas');floorCv.width=cv.width;floorCv.height=cv.height;const fc=floorCv.getContext('2d');fc.setTransform(dpr,0,0,dpr,0,0);const main=ctx;ctx=fc;
-    const z=Z();for(let x=0;x<W;x++)for(let y=0;y<D;y++){const shop=reach.has(x+','+y);flat(x,y,1,1,shop?((x+y)%2?'#eadcc4':'#e4d5bb'):((x+y)%2?'#dfe6ee':'#d3dce6'));}
+    const z=Z();drawLotGround();for(let x=0;x<W;x++)for(let y=0;y<D;y++){const shop=reach.has(x+','+y);flat(x,y,1,1,shop?((x+y)%2?'#eadcc4':'#e4d5bb'):((x+y)%2?'#dfe6ee':'#d3dce6'));}
     const H=64*z;const VWd=(cam.r&1)?D:W,VDd=(cam.r&1)?W:D;const dv=vw(DOOR.x+.5,DOOR.y+.5);const wallSeg=(a0,b0,a1,b1,col)=>{const p=isoV(a0,b0),q=isoV(a1,b1);poly([p,q,[q[0],q[1]-H],[p[0],p[1]-H]],col);};
+    if(VIEW==='out'){ctx=main;}else{
     if(dv[1]<1){const g=Math.floor(dv[0]);wallSeg(0,0,g,0,'#c3d3e2');wallSeg(g+1,0,VWd,0,'#c3d3e2');}else wallSeg(0,0,VWd,0,'#c3d3e2');
     if(dv[0]<1){const g=Math.floor(dv[1]);wallSeg(0,0,0,g,'#bdd6cc');wallSeg(0,g+1,0,VDd,'#bdd6cc');}else wallSeg(0,0,0,VDd,'#bdd6cc');
     flat(DOOR.x,DOOR.y,1,1,'#b8a888');const dA=iso(W,DOOR.y),dB=iso(W,DOOR.y+1);ctx.strokeStyle='#8b6b4a';ctx.lineWidth=3*z;ctx.beginPath();ctx.moveTo(dA[0],dA[1]);ctx.lineTo(dA[0],dA[1]-50*z);ctx.moveTo(dB[0],dB[1]);ctx.lineTo(dB[0],dB[1]-50*z);ctx.stroke();label(DOOR.x+.5,DOOR.y+1.6,'ENTRANCE','rgba(107,74,30,.6)',8);
-    ctx=main;}
+    ctx=main;}}
   ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(floorCv,0,0);ctx.restore();}
 function drawScene(){
   ctx.clearRect(0,0,VW,VH);const z=Z();
   drawFloor();
   let ghost=null;const gpos=tool==='move'?(held?(ghostAt||hover):null):hover;
-  if(buildOn&&tool&&tool!=='erase'&&gpos){const ty=tool==='move'?held.o.type:tool;const T=TYPES[ty];let gx=gpos[0];if(((rot&1)?T.d:T.w)>1&&gx===W-1)gx--;const o={type:ty,x:gx,y:gpos[1],rot,id:'ghost',level:held?held.o.level:0};const ok=!canPlace(ty,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');ghost={o,ok};}
-  if(buildOn){for(let x=0;x<W;x++)for(let y=0;y<D;y++){if(grid[y][x].o)continue;const [sx,sy]=iso(x+.5,y+.5);ctx.fillStyle='rgba(0,0,0,.08)';ctx.beginPath();ctx.arc(sx,sy,1.2*z,0,Math.PI*2);ctx.fill();}}
-  const items=[];
-  for(const m of S.mess||[])items.push({d:-1e9+1,f:()=>{const [mx,my]=iso(m.x+.5,m.y+.5);const zz=Z();ctx.fillStyle='rgba(150,170,60,.85)';ctx.beginPath();ctx.ellipse(mx,my,13*zz,6*zz,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(120,140,40,.9)';ctx.beginPath();ctx.ellipse(mx+6*zz,my+2*zz,6*zz,3*zz,0,0,Math.PI*2);ctx.fill();}});
-  for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;items.push({d:o.type==='mat'?-1e9:Math.max(...footprint(o).map(([x,y])=>depth(x+.5,y+.5))),f:()=>drawObj(o)});}
-  for(const w of S.staff){if(w.off||w.x>=W+1)continue;const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
+  if(buildOn&&tool==='stall'&&gpos&&VIEW==='out'){const sl=stallAt(gpos[0],gpos[1]);if(sl){const x0=stallX(sl);flat(x0,sl.y,2,1,hasStall(sl)?'rgba(226,75,74,.4)':'rgba(29,158,117,.45)');}}
+  if(buildOn&&tool&&tool!=='erase'&&gpos&&!(TYPES[tool]&&TYPES[tool].outside)&&VIEW==='in'){const ty=tool==='move'?held.o.type:tool;const T=TYPES[ty];let gx=gpos[0];if(((rot&1)?T.d:T.w)>1&&gx===W-1)gx--;const o={type:ty,x:gx,y:gpos[1],rot,id:'ghost',level:held?held.o.level:0};const ok=!canPlace(ty,o.x,o.y,rot);for(const [x,y] of footprint(o))if(inb(x,y))flat(x,y,1,1,ok?'rgba(29,158,117,.35)':'rgba(226,75,74,.35)');ghost={o,ok};}
+  if(buildOn&&VIEW==='in'){for(let x=0;x<W;x++)for(let y=0;y<D;y++){if(grid[y][x].o)continue;const [sx,sy]=iso(x+.5,y+.5);ctx.fillStyle='rgba(0,0,0,.08)';ctx.beginPath();ctx.arc(sx,sy,1.2*z,0,Math.PI*2);ctx.fill();}}
+  const items=[];const OUTV=VIEW==='out';const inStore=(x,y)=>x>=0&&x<W&&y>=0&&y<D;
+  if(!OUTV)for(const m of S.mess||[])items.push({d:-1e9+1,f:()=>{const [mx,my]=iso(m.x+.5,m.y+.5);const zz=Z();ctx.fillStyle='rgba(150,170,60,.85)';ctx.beginPath();ctx.ellipse(mx,my,13*zz,6*zz,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(120,140,40,.9)';ctx.beginPath();ctx.ellipse(mx+6*zz,my+2*zz,6*zz,3*zz,0,0,Math.PI*2);ctx.fill();}});
+  if(!OUTV)for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;items.push({d:o.type==='mat'?-1e9:Math.max(...footprint(o).map(([x,y])=>depth(x+.5,y+.5))),f:()=>drawObj(o)});}
+  for(const w of S.staff){if(w.off||w.x>=W+1||(OUTV&&inStore(w.x,w.y)))continue;const st=w.plan&&w.plan.steps[w.step];const prog=st&&st.work!==undefined&&w.workMax?1-w.work/w.workMax:undefined;
     const cue=S.running&&!st&&(w.idleT||0)>=6?(idleWhy(w).startsWith('waiting')?'wait':'idle'):null;const eb=enBand(w);const wen=w.floater?100:w.energy;const wm=eb==='risk'||eb==='empty'?'angry':eb==='exhausted'?'sad':null;items.push({d:depth(w.x,w.y),f:()=>person(w.x,w.y,{cue,role:w.floater&&w.role==='rph'?'float':w.role,mood:wm,energy:wen,shirt:w.role==='tech'?'#2f7fd6':w.role==='clerk'?'#1d9e75':'#9aa3b5',coat:w.floater?'#aeb4bd':w.role==='rph'?'#f6f6f4':null,skin:w.skin,busy:!!st,walking:w.walking,bob:w.bob,tag:w.name,carry:w.carry.length?(w.carryKind==='box'?'box':(w.plan&&(w.plan.name==='pickup'||w.plan.name==='verify'||w.plan.name==='problem')?'bag':'basket')):null,carryN:w.carry.length,prog})});}
-  for(const p of S.patients){if(p.state==='pending'||p.state==='inLoo')continue;const m=moodOf(p);items.push({d:depth(p.x,p.y),f:()=>person(p.x,p.y,{shirt:p.shirt,skin:p.skin,walking:p.walking,bob:p.bob,mood:m,cane:p.elderly,sick:p.sick,carry:p.stole?'basket':p.carryOtc?'otc':null,carryN:p.stole?1:(p.carryOtc||0),hair:p.elderly?'#cfcfcf':'#3a2a1e'})});}
-  items.sort((a,b)=>a.d-b.d);for(const it of items)it.f();
-  if(S.running)floorCues();
+  for(const p of S.patients){if(p.state==='pending'||p.state==='inLoo'||p.arrWait||p.dt||(OUTV&&inStore(p.x,p.y)))continue;const m=moodOf(p);items.push({x:p.x,y:p.y,d:depth(p.x,p.y),f:()=>person(p.x,p.y,{shirt:p.shirt,skin:p.skin,walking:p.walking,bob:p.bob,mood:m,cane:p.elderly,sick:p.sick,carry:p.stole?'basket':p.carryOtc?'otc':null,carryN:p.stole?1:(p.carryOtc||0),hair:p.elderly?'#cfcfcf':'#3a2a1e'})});}
+  lotItems(items);
+  items.sort((a,b)=>a.d-b.d);
+  if(OUTV){/* far side of the building first, then the building, then the near side */const near=[];for(const it of items){if(it.x!==undefined&&!behindStore(it.x,it.y))near.push(it);else it.f();}drawExterior();for(const it of near)it.f();}
+  else for(const it of items){if(it.x!==undefined&&!inStore(it.x,it.y)&&behindStore(it.x,it.y))continue;/* hidden behind the back walls */it.f();}
+  if(S.running&&!OUTV)floorCues();
   if(S.inv&&S.inv.recv.length){const bn=binOf();if(bn){const st=staffTile(bn);const [bx,by]=iso(st[0]+.5,st[1]+.9);ctx.save();ctx.translate(bx,by);ctx.scale(z,z);for(let i=0;i<Math.min(4,S.inv.recv.length);i++)basket(-10+i*7,-i*5,'box');ctx.restore();}}
-  const selO=S.sel&&S.objs.find(x=>x.id===S.sel);if(selO)sideLabels(selO);if(justPlaced&&performance.now()-justPlaced.t<2200){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo)sideLabels(jo);}
+  const selO=!OUTV&&S.sel&&S.objs.find(x=>x.id===S.sel);if(selO)sideLabels(selO);if(!OUTV&&justPlaced&&performance.now()-justPlaced.t<2200){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo)sideLabels(jo);}
   /* consult room guide: while a consult desk is selected/just placed, or while building walls/doors with an unenclosed desk */
   {const guideFor=new Set();if(selO&&selO.type==='consult')guideFor.add(selO.id);if(justPlaced&&performance.now()-justPlaced.t<8000){const jo=S.objs.find(x=>x.id===justPlaced.id);if(jo&&jo.type==='consult')guideFor.add(jo.id);}if(buildOn&&(tool==='wall'||tool==='door'))for(const c of objsOf('consult'))if(!enclosed(c))guideFor.add(c.id);for(const id of guideFor){const c=objById(id);if(c)roomGuide(c);}}
   if(ghost){ctx.save();ctx.globalAlpha=.55;drawObj(ghost.o);ctx.restore();sideLabels(ghost.o);if(ghost.o.type==='consult')roomGuide(ghost.o);const f=facing(ghost.o),[fw,fd]=dims(ghost.o);const c=[ghost.o.x+fw/2,ghost.o.y+fd/2];const a=iso(c[0],c[1]),b=iso(c[0]+f[0]*1.1,c[1]+f[1]*1.1);ctx.strokeStyle=ghost.ok?'#1d9e75':'#e24b4a';ctx.lineWidth=2.5*z;ctx.beginPath();ctx.moveTo(a[0],a[1]-6*z);ctx.lineTo(b[0],b[1]-6*z);ctx.stroke();ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(b[0],b[1]-6*z,4*z,0,Math.PI*2);ctx.fill();}
-  for(const f of S.fx){const [sx,sy]=iso(f.x,f.y);ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.globalAlpha=Math.max(0,1-f.t/1.6);ctx.fillStyle=f.kind==='cash'?'#1d9e75':f.kind==='bad'?'#e24b4a':'#ba7517';ctx.fillText(f.text,sx,sy-(40+f.t*22)*z);ctx.globalAlpha=1;}
+  for(const f of S.fx){if(OUTV&&inStore(f.x,f.y))continue;const [sx,sy]=iso(f.x,f.y);ctx.font=`800 ${12*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.globalAlpha=Math.max(0,1-f.t/1.6);ctx.fillStyle=f.kind==='cash'?'#1d9e75':f.kind==='bad'?'#e24b4a':'#ba7517';ctx.fillText(f.text,sx,sy-(40+f.t*22)*z);ctx.globalAlpha=1;}
   if(!S.running){ctx.fillStyle='rgba(20,30,40,.18)';ctx.fillRect(0,0,VW,VH);}}
+
+/* ============ outside: the lot, the street and parking (v25) ============
+   World coordinates are shared with the store: the store is x 0..W-1, y 0..D-1, its front (east) wall faces the lot.
+   East of the store: storefront sidewalk, two rows of parking with an aisle between, a planter strip, the public sidewalk, a two-lane street.
+   North/south connector rows are the lot's exit and entrance. A path runs round the other three sides; grass beyond. */
+let VIEW='in';try{VIEW=localStorage.getItem('msp-view')==='out'?'out':'in';}catch(e){}
+const LXc=()=>({apron:W,rowA:W+1,aisle:W+3,rowB:W+4,strip:W+6,walk:W+7,st1:W+8,st2:W+9});
+const lotB=()=>{const o=(S&&S.lot&&S.lot.own)||{};return {x0:-4-(o.W?PARCEL_DEPTH:0),y0:-5-(o.N?PARCEL_DEPTH:0),x1:W+10,y1:D+5+(o.S?PARCEL_DEPTH:0)};};/* exclusive ends; owned lots next door widen it */
+const STALL_COST=350,STALL_BASE=6,STALL_MAX_BONUS=10;
+function defaultStalls(){const s=[];for(const dy of [-3,-2,-1,1,2,3]){const y=DOOR.y+dy;if(y>=0&&y<D)s.push({r:'A',y});}return s;}
+function lotState(){if(!S.lot)S.lot={stalls:defaultStalls()};if(!S.lot.drive)S.lot.drive=[];return S.lot;}
+const stallX=st=>st.r==='A'?W+1:W+4;
+function stallSlots(){const out=[];for(const r of ['A','B'])for(let y=0;y<D;y++)if(y!==DOOR.y)out.push({r,y});return out;}
+function stallAt(x,y){const L=LXc();const r=(x===L.rowA||x===L.rowA+1)?'A':(x===L.rowB||x===L.rowB+1)?'B':null;if(!r||y<0||y>=D||y===DOOR.y)return null;return {r,y};}
+const hasStall=s=>lotState().stalls.some(t=>t.r===s.r&&t.y===s.y);
+/* more parking brings a few more customers: +1.5% a space above 6, up to +15% */
+const parkK=()=>1+.015*Math.max(0,Math.min(STALL_MAX_BONUS,lotState().stalls.length-STALL_BASE));
+function lotTile(x,y){const L=LXc(),B=lotB();if(x>=0&&x<W&&y>=0&&y<D)return 'store';
+  if(x>=L.st1&&x<=L.st2)return 'street';
+  const conn=(y===-1||y===D);
+  if(x===L.walk)return conn?'curbcut':'sidewalk';
+  if(x===L.strip)return conn?'asphalt':y===DOOR.y?'path':'strip';
+  if(x>=L.rowA&&x<=L.rowB+1){if(conn)return 'asphalt';if(y>=0&&y<D)return y===DOOR.y?(x===L.aisle?'crosswalk':'path'):'asphalt';}
+  if(x===L.apron&&y>=-1&&y<=D)return 'apron';
+  if((y===-1||y===D)&&x>=-1&&x<W)return 'apron';
+  if(x===-1&&y>=-1&&y<=D)return 'apron';
+  return 'grass';}
+/* runtime only: cars, passers-by and customers walking back out (not saved) */
+const LOT={cars:[],walkers:[],nextAmbCar:3,nextAmbPed:2,ver:0};
+function lotReset(){LOT.cars=[];LOT.walkers=[];}
+const CAR_COLS=['#c44536','#2d6a8f','#e9c46a','#6c757d','#2a9d8f','#f4f1de','#3d3d3d','#8a5a44','#5b84c4'];
+function stallTaken(st){return LOT.cars.some(c=>c.stall&&c.stall.r===st.r&&c.stall.y===st.y);}
+function freeStall(elderly){const L=lotState().stalls.filter(s=>!stallTaken(s));if(!L.length)return null;/* closest to the door first; older customers always take the closest */L.sort((a,b)=>(a.r===b.r?0:a.r==='A'?-1:1)||Math.abs(a.y-DOOR.y)-Math.abs(b.y-DOOR.y));return elderly||Math.random()<.6?L[0]:pick(L);}
+/* waypoints (tile-centre coordinates) */
+function carInPath(st){const L=LXc(),B=lotB();const cx=stallX(st)+1,cy=st.y+.5;return [[L.st2+.5,B.y1+1.5],[L.st2+.5,D+.5],[L.aisle+.5,D+.5],[L.aisle+.5,cy],[cx,cy]];}
+function carOutPath(st){const L=LXc(),B=lotB();const cy=st.y+.5;return [[L.aisle+.5,cy],[L.aisle+.5,-.5],[L.st1+.5,-.5],[L.st1+.5,B.y0-1.5]];}
+function walkFromStall(st){const L=LXc();const cy=st.y+.5,dy=DOOR.y+.5;if(st.r==='A')return [[L.apron+.5,cy],[L.apron+.5,dy]];return [[L.aisle+.5,cy],[L.aisle+.5,dy],[L.apron+.5,dy]];}
+function walkFromSidewalk(fromNorth){const L=LXc(),B=lotB();const y0=fromNorth?B.y0-1.5:B.y1+1.5;return {start:[L.walk+.5,y0],path:[[L.walk+.5,DOOR.y+.5],[L.apron+.5,DOOR.y+.5]]};}
+/* a customer arriving: by car if a space is free (most do), otherwise on foot from either end of the sidewalk */
+function planArrival(p){p.arrPlanned=true;const st=Math.random()<(p.elderly?.8:.6)?freeStall(p.elderly):null;
+  if(st){const car={id:uid(),pid:p.id,stall:st,col:pick(CAR_COLS),x:0,y:0,path:carInPath(st),state:'in',spd:10};[car.x,car.y]=car.path.shift();LOT.cars.push(car);p.arr={mode:'car',car:car.id,stall:st};p.arrWait=true;p.x=car.x;p.y=car.y;return;}
+  if(lotState().stalls.length&&Math.random()<.6)S.wk.lotFull=(S.wk.lotFull||0)+1;
+  const fn=Math.random()<.5;const w=walkFromSidewalk(fn);p.arr={mode:'walk',north:fn};p.x=w.start[0];p.y=w.start[1];p.arrPath=w.path;}
+function moveAlong(a,path,dt,spd){while(path.length){const [tx,ty]=path[0];const dx=tx-a.x,dy=ty-a.y,d=Math.hypot(dx,dy);if(d<.03){a.x=tx;a.y=ty;path.shift();continue;}const st=Math.min(d,spd*dt);a.x+=dx/d*st;a.y+=dy/d*st;a.dir=Math.abs(dx)>Math.abs(dy)?'x':'y';a.walking=true;return false;}a.walking=false;return true;}
+/* called from motionStep for each patient: true = this patient is outside and was moved here */
+function lotPatient(p,dt,spd){if(p.dt)return dtPatient(p);if(p.state==='pending'||p.state==='leaving')return false;
+  if(!p.arrPlanned){if(p.x<W)return false;planArrival(p);}
+  if(p.arrWait){const car=LOT.cars.find(c=>c.id===p.arr.car);if(car&&car.state!=='parked')return true;p.arrWait=false;if(car){p.x=car.x-(p.arr.stall.r==='A'?.6:-.6);p.y=car.y;}p.arrPath=walkFromStall(p.arr.stall);}
+  if(p.arrPath&&p.arrPath.length){moveAlong(p,p.arrPath,dt,spd*1.6);if(p.arrPath.length)return true;p.arrPath=null;}
+  return false;}
+/* a customer who reached the door on the way out becomes an outside walker */
+function lotExit(p){if(!p.arr)return;const L=LXc(),B=lotB();const w={id:p.id,x:L.apron+.5,y:DOOR.y+.5,shirt:p.shirt,skin:p.skin,elderly:p.elderly,sick:p.sick,mood:p.exitMood||'content',hair:p.elderly?'#cfcfcf':'#3a2a1e',carryOtc:p.carryOtc||0,bob:p.bob,spd:p.elderly?4.5:6};
+  if(p.arr.mode==='car'){const car=LOT.cars.find(c=>c.id===p.arr.car);if(car&&car.state==='parked'){const st=p.arr.stall;const back=walkFromStall(st).reverse().slice(1);back.push([car.x-(st.r==='A'?.6:-.6),car.y]);w.path=back;w.car=car.id;}}
+  if(!w.path){const n=p.arr.mode==='walk'?!p.arr.north:Math.random()<.5;w.path=[[L.walk+.5,DOOR.y+.5],[L.walk+.5,n?B.y0-1.5:B.y1+1.5]];}
+  LOT.walkers.push(w);}
+function lotStep(dt){const L=LXc(),B=lotB();
+  /* cars */for(const c of LOT.cars){if(c.dt){dtCarStep(c,dt);continue;}if(c.state==='in'){if(moveAlong(c,c.path,dt,c.spd))c.state='parked';}
+    else if(c.state==='out'){if(moveAlong(c,c.path,dt,c.spd))c.gone=true;}
+    else if(c.state==='parked'&&c.pid&&!S.patients.some(p=>p.id===c.pid)&&!LOT.walkers.some(w=>w.car===c.id)){c.state='out';c.path=carOutPath(c.stall);c.stall=null;}}
+  LOT.cars=LOT.cars.filter(c=>!c.gone);
+  /* people walking back out */for(const w of LOT.walkers){if(moveAlong(w,w.path,dt,w.spd||6)){w.gone=true;if(w.car){const c=LOT.cars.find(k=>k.id===w.car);if(c&&c.state==='parked'&&c.stall){c.pid=null;c.state='out';c.path=carOutPath(c.stall);c.stall=null;}}}}
+  LOT.walkers=LOT.walkers.filter(w=>!w.gone);
+  /* street life: through traffic and passers-by, only while the store is open */
+  if(!S.running)return;
+  LOT.nextAmbCar-=dt;if(LOT.nextAmbCar<=0){LOT.nextAmbCar=2+Math.random()*4;const nb=Math.random()<.5;const lane=nb?L.st2:L.st1;LOT.cars.push({id:uid(),amb:true,col:pick(CAR_COLS),x:lane+.5,y:nb?B.y1+1.5:B.y0-1.5,path:[[lane+.5,nb?B.y0-1.5:B.y1+1.5]],state:'out',spd:7});}
+  LOT.nextAmbPed-=dt;if(LOT.nextAmbPed<=0){LOT.nextAmbPed=3+Math.random()*5;const n=Math.random()<.5;LOT.walkers.push({id:uid(),x:L.walk+.5,y:n?B.y0-1.5:B.y1+1.5,path:[[L.walk+.5,n?B.y1+1.5:B.y0-1.5]],shirt:pick(SHIRTS),skin:pick(SKINS),elderly:Math.random()<.2,hair:'#3a2a1e',mood:'content',bob:Math.random()*6,spd:4+Math.random()*2});}}
+/* ---------- building outside parts ---------- */
+function setView(v){VIEW=v;try{localStorage.setItem('msp-view',v);}catch(e){}floorKey='';fitWorld();if(buildOn){if(tool&&!toolFitsView(tool))tool=null;renderPalette();palHint();}const b=$('viewBtn');if(b){b.classList.toggle('on',v==='out');b.querySelector('small').textContent=v==='out'?'Inside':'Outside';b.setAttribute('aria-label',v==='out'?'Go inside the store':'Go outside to the lot');}}
+const toolFitsView=t=>t==='move'||t==='erase'||(!!(TYPES[t]&&TYPES[t].outside)===(VIEW==='out'));
+function placeStall(tx,ty){const s=stallAt(tx,ty);if(!s)return 'Parking spaces go in the two rows of the lot.';if(hasStall(s))return 'There\'s already a parking space there.';if(S.cash<STALL_COST)return 'Not enough cash.';S.cash-=STALL_COST;wkAdd('equip',STALL_COST);lotState().stalls.push(s);LOT.ver++;floorKey='';SFX.build();glog('staff',`Painted a parking space for ${fmt(STALL_COST)} (${lotState().stalls.length} spaces).`);checkAch();saveGame();return null;}
+function removeStall(tx,ty){const s=stallAt(tx,ty);const L=lotState();const i=s?L.stalls.findIndex(t=>t.r===s.r&&t.y===s.y):-1;if(i<0)return 'Tap a parking space to remove it.';if(stallTaken(s))return 'A car is parked there.';L.stalls.splice(i,1);const back=Math.round(STALL_COST/2);S.cash+=back;wkAdd('equip',-back);LOT.ver++;floorKey='';glog('staff',`Removed a parking space (+${fmt(back)}).`);saveGame();return null;}
+/* ground: drawn once into the floor cache */
+const LOT_COL={grass:['#a9c48c','#a3be86'],apron:['#d9d4c7','#d3cec0'],path:['#d9d4c7','#d3cec0'],sidewalk:['#d6d1c4','#cfcabc'],curbcut:['#8a8f95','#868b91'],strip:['#9cbb7d','#97b678'],asphalt:['#5b6168','#585e65'],crosswalk:['#5b6168','#585e65'],street:['#4d5359','#4b5157']};
+function drawLotGround(){const B=lotB(),L=LXc(),z=Z();
+  for(let y=B.y0-2;y<B.y1+2;y++)for(let x=B.x0-2;x<B.x1+2;x++){const t=(x<B.x0||y<B.y0||x>=B.x1||y>=B.y1)?((x>=L.st1&&x<=L.st2)?'street':'grass'):lotTile(x,y);if(t==='store')continue;flat(x,y,1,1,LOT_COL[t][(x+y)&1]);}
+  const line=(x0,y0,x1,y1,col,w,dash)=>{const a=iso(x0,y0),b=iso(x1,y1);ctx.strokeStyle=col;ctx.lineWidth=(w||1.5)*z;ctx.setLineDash(dash?dash.map(v=>v*z):[]);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.setLineDash([]);};
+  drawParcels();drawDriveTiles();
+  /* street centre line and edge lines */line(L.st2,B.y0-2,L.st2,B.y1+2,'#f2d06b',2,[10,8]);line(L.st1,B.y0-2,L.st1,B.y1+2,'rgba(255,255,255,.55)',1.2);
+  /* parking spaces */for(const s of lotState().stalls){const x0=stallX(s);line(x0,s.y,x0+2,s.y,'#f4f1e6',1.4);line(x0,s.y+1,x0+2,s.y+1,'#f4f1e6',1.4);const st=s.r==='A'?x0+.25:x0+1.75;line(st,s.y+.25,st,s.y+.75,'#c9c2ad',3);}
+  /* empty slots, faint, only while building outside */if(buildOn&&VIEW==='out'&&tool==='stall')for(const s of stallSlots())if(!hasStall(s)){const x0=stallX(s);ctx.setLineDash([3*z,3*z]);poly([iso(x0+.1,s.y+.1),iso(x0+1.9,s.y+.1),iso(x0+1.9,s.y+.9),iso(x0+.1,s.y+.9)],null,'rgba(255,255,255,.45)');ctx.setLineDash([]);}
+  /* accessible space nearest the door */{const a=lotState().stalls.filter(s=>s.r==='A').sort((p,q)=>Math.abs(p.y-DOOR.y)-Math.abs(q.y-DOOR.y))[0];if(a){const x0=stallX(a);poly([iso(x0+.3,a.y+.2),iso(x0+1.7,a.y+.2),iso(x0+1.7,a.y+.8),iso(x0+.3,a.y+.8)],'rgba(60,110,200,.55)');}}
+  /* crosswalk stripes across the aisle and the curb cuts */for(let i=0;i<5;i++){const yy=DOOR.y+.1+i*.2;line(L.aisle+.1,yy,L.aisle+.9,yy,'#f4f1e6',2.2);}
+  for(const cy of [-1,D])for(let i=0;i<5;i++){const xx=L.walk+.1+i*.2;line(xx,cy+.1,xx,cy+.9,'#e8e3d4',2);}
+  /* painted arrows: in at the south connector, out at the north one */const arrow=(x,y,dx,dy)=>{const c=iso(x,y),n=iso(x+dx*.35,y+dy*.35),l=iso(x-dx*.15+dy*.22,y-dy*.15-dx*.22),r=iso(x-dx*.15-dy*.22,y-dy*.15+dx*.22);poly([n,l,c,r],'#f4f1e6');};
+  arrow(L.strip+.5,D+.5,-1,0);arrow(L.aisle+.5,D-1.5,0,-1);arrow(L.aisle+.5,1.5,0,-1);arrow(L.strip+.5,-.5,1,0);
+  label(L.strip+.5,D+1.3,'ENTER','rgba(255,255,255,.75)',8);label(L.strip+.5,-1.4,'EXIT','rgba(255,255,255,.75)',8);}
+/* the building from outside: walls that face the camera, roof, storefront */
+const LIFT=64;
+function liftPt(x,y,h){const p=iso(x,y);return [p[0],p[1]-h*Z()];}
+function faceVisible(nx,ny){/* outward normal (world) → visible when it points toward the camera (+a,+b in view) */const a=vw(nx,ny),o=vw(0,0);return (a[0]-o[0])+(a[1]-o[1])>0;}
+function wallQuad(x0,y0,x1,y1,h0,h1,col){poly([liftPt(x0,y0,h0),liftPt(x1,y1,h0),liftPt(x1,y1,h1),liftPt(x0,y0,h1)],col);}
+function faceText(x0,y0,x1,y1,h,text,col,size){/* text along a wall, letters upright */const a=liftPt(x0,y0,h),b=liftPt(x1,y1,h);let dx=b[0]-a[0],dy=b[1]-a[1];const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];if(dx<0){dx=-dx;dy=-dy;}ctx.save();ctx.translate(m[0],m[1]);ctx.transform(1,dy/dx,0,1,0,0);ctx.fillStyle=col;ctx.font=`900 ${size*Z()}px Nunito,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,0,0);ctx.restore();}
+function drawExterior(){const z=Z(),H=LIFT;const wallCol={E:'#ebe6da',W:'#d9d3c5',N:'#dcd6c8',S:'#e3ddd0'};
+  const sides=[{k:'N',n:[0,-1],a:[0,0],b:[W,0]},{k:'S',n:[0,1],a:[0,D],b:[W,D]},{k:'W',n:[-1,0],a:[0,0],b:[0,D]},{k:'E',n:[1,0],a:[W,0],b:[W,D]}];
+  for(const s of sides){if(!faceVisible(...s.n))continue;wallQuad(...s.a,...s.b,0,H,wallCol[s.k]);/* base band */wallQuad(...s.a,...s.b,0,6,shade('#b9b2a2',1));
+    if(s.k==='E'){/* storefront glass either side of the door, sign band above */for(let y=1;y<D-1;y++){if(Math.abs(y-DOOR.y)<=1)continue;wallQuad(W,y+.08,W,y+.92,10,40,'#9fc9d9');}
+      wallQuad(W,DOOR.y+.12,W,DOOR.y+.88,0,42,'#4f6f63');wallQuad(W,DOOR.y+.2,W,DOOR.y+.8,4,38,'#a8d5e2');
+      wallQuad(W,1,W,D-1,46,60,'#1d9e75');faceText(W,1,W,D-1,53,'MAPLE STREET PHARMACY','#fff',10);}
+    else if(s.k==='W'){wallQuad(0,3.2,0,3.9,0,36,'#8e8678');faceText(0,2,0,5,42,'STAFF','#6b6458',7);}
+    else{wallQuad(s.a[0]+3,s.a[1],s.a[0]+W-3,s.b[1],46,58,'#1d9e75');faceText(s.a[0]+3,s.a[1],s.a[0]+W-3,s.b[1],52,'PHARMACY  ·  Rx','#fff',9);}}
+  /* roof with a parapet lip and rooftop units */
+  poly([liftPt(0,0,H),liftPt(W,0,H),liftPt(W,D,H),liftPt(0,D,H)],'#9aa2a8');poly([liftPt(.4,.4,H),liftPt(W-.4,.4,H),liftPt(W-.4,D-.4,H),liftPt(.4,D-.4,H)],'#b4bbc0');
+  const roofBox=(x,y,w,d,h,col)=>{const A=liftPt(x,y,H),Bp=liftPt(x+w,y,H),C=liftPt(x+w,y+d,H),Dp=liftPt(x,y+d,H);const up=p=>[p[0],p[1]-h*z];const vis=[];const pts=[[A,Bp,[0,-1]],[Bp,C,[1,0]],[C,Dp,[0,1]],[Dp,A,[-1,0]]];for(const [p,q,n] of pts)if(faceVisible(...n))poly([p,q,up(q),up(p)],shade(col,n[0]?.82:.7));poly([up(A),up(Bp),up(C),up(Dp)],col);};
+  roofBox(4,3,2,2,12,'#c9cfd3');roofBox(12,8,3,2,10,'#c9cfd3');roofBox(W-3,D-3,1,1,7,'#aeb5ba');drawDtExterior();}
+/* static things around the lot: trees, lamps, the pylon sign, a bench, a dumpster */
+function lotDecor(){const L=LXc(),B=lotB(),out=[];
+  for(let y=B.y0+1;y<B.y1-1;y+=3)if(y!==-1&&y!==D&&y!==DOOR.y&&(y<0||y>=D||y%3===1))out.push({k:'tree',x:L.strip+.5,y:y+.5});
+  for(let x=1;x<W;x+=4){out.push({k:'tree',x:x+.5,y:-3});out.push({k:'tree',x:x+1.5,y:D+3});}
+  for(let y=1;y<D;y+=4)out.push({k:'tree',x:-3,y:y+.5});
+  out.push({k:'lamp',x:L.aisle+.5,y:2.5},{k:'lamp',x:L.aisle+.5,y:D-2.5},{k:'pylon',x:L.strip+.5,y:D+2.5},{k:'bench',x:L.apron+.5,y:DOOR.y+2.5},{k:'dump',x:-2.5,y:D-2.5},{k:'cart',x:L.apron+.5,y:DOOR.y-2.5});
+  return out;}
+function drawDecor(d){const z=Z();const [sx,sy]=iso(d.x,d.y);
+  if(d.k==='tree'){ctx.fillStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.ellipse(sx,sy,12*z,6*z,0,0,7);ctx.fill();ctx.fillStyle='#7a5a3a';ctx.fillRect(sx-1.5*z,sy-14*z,3*z,14*z);ctx.fillStyle='#5f8f4e';ctx.beginPath();ctx.arc(sx,sy-22*z,11*z,0,7);ctx.fill();ctx.fillStyle='#74a660';ctx.beginPath();ctx.arc(sx-3*z,sy-25*z,7*z,0,7);ctx.fill();}
+  else if(d.k==='lamp'){ctx.fillStyle='#4a4f55';ctx.fillRect(sx-1*z,sy-46*z,2*z,46*z);ctx.fillStyle='#f6e7a8';ctx.beginPath();ctx.ellipse(sx,sy-47*z,5*z,2.5*z,0,0,7);ctx.fill();}
+  else if(d.k==='pylon'){ctx.fillStyle='#5a6168';ctx.fillRect(sx-1.5*z,sy-40*z,3*z,40*z);ctx.fillStyle='#1d9e75';const w=46*z,h=26*z;ctx.fillRect(sx-w/2,sy-40*z-h,w,h);ctx.fillStyle='#fff';ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';ctx.fillText('Rx',sx,sy-40*z-h+11*z);ctx.font=`800 ${6.5*z}px Nunito,sans-serif`;ctx.fillText('PHARMACY',sx,sy-40*z-h+21*z);}
+  else if(d.k==='bench'){box(d.x-.35,d.y-.15,.7,.3,.12,'#8b6b4a');}
+  else if(d.k==='dump'){box(d.x-.5,d.y-.35,1,.7,.35,'#3f6b4f');}
+  else if(d.k==='cart'){box(d.x-.2,d.y-.3,.4,.6,.18,'#9aa3ad');}}
+function drawCar(c){const along=c.parkedAxis||c.dir||'y';const l=1.45,wd=.72;const w=along==='x'?l:wd,d=along==='x'?wd:l;const x=c.x-w/2,y=c.y-d/2;
+  poly([iso(x-.04,y-.04),iso(x+w+.04,y-.04),iso(x+w+.04,y+d+.04),iso(x-.04,y+d+.04)],'rgba(0,0,0,.22)');box(x,y,w,d,.2,c.col);/* cabin: glass band with a roof */const iw=along==='x'?w*.52:w-.12,id=along==='x'?d-.12:d*.52;const ix=x+(w-iw)/2+(along==='x'?-.06:0),iy=y+(d-id)/2+(along==='y'?-.06:0);box(ix,iy,iw,id,.34,'#a9cfe0');box(ix+.03,iy+.03,iw-.06,id-.06,.36,c.col);}
+function lotItems(items){const pushF=(x,y,f)=>items.push({d:depth(x,y),x,y,f});parcelSigns(items);
+  for(const d of LOT_DECOR())pushF(d.x,d.y,()=>drawDecor(d));
+  for(const c of LOT.cars){if(c.state==='parked'&&c.stall)c.parkedAxis='x';else c.parkedAxis=null;pushF(c.x,c.y+.01,()=>drawCar(c));}
+  for(const w of LOT.walkers)pushF(w.x,w.y,()=>person(w.x,w.y,{shirt:w.shirt,skin:w.skin,walking:true,bob:w.bob,mood:w.mood,cane:w.elderly,sick:w.sick,hair:w.hair,carry:w.carryOtc?'otc':null,carryN:w.carryOtc||0}));}
+let _decor=null,_decorKey='';function LOT_DECOR(){const k=W+','+D+','+DOOR.y+','+(lotState().drive||[]).length;if(k!==_decorKey){_decor=lotDecor();_decorKey=k;}return _decor;}
+/* which side of the building an outside point is on, as the camera sees it */
+function behindStore(x,y){const v=vw(x,y),o=vw(0,0),f=vw(W,D);const a0=Math.min(o[0],f[0]),a1=Math.max(o[0],f[0]),b0=Math.min(o[1],f[1]),b1=Math.max(o[1],f[1]);return v[0]<a1&&v[1]<b1&&(v[0]<a0||v[1]<b0);}
+
+/* ============ drive-thru (v25) ============
+   A Drive-thru window is a station built against the north, south or west wall; a clerk works it from inside.
+   Cars need a lane: driveway tiles from the lot (aisle or connector rows), past the tile outside the window, and back to the lot.
+   Pick-up customers with a ready bag may come by the drive-thru instead of the counter; the lane holds as many cars as it has tiles before the window. */
+const DRIVE_COST=40,DT_SHARE=.45,DT_DEMAND=.10,DT_PAT=1.3;
+const driveSet=()=>{const L=lotState();if(!L.drive)L.drive=[];if(!L._set||L._setN!==L.drive.length){L._set=new Set(L.drive.map(t=>t[0]+','+t[1]));L._setN=L.drive.length;}return L._set;};
+function canPave(x,y){const B=lotB();if(x<B.x0+1||y<B.y0+1||x>=B.x1||y>=B.y1)return false;if(x>=0&&x<W&&y>=0&&y<D)return false;const t=lotTile(x,y);if(t!=='grass'&&t!=='apron')return false;if(x>W&&y>=-1&&y<=D)return false;/* the front lot rows stay parking */if(x===W&&y>=0&&y<D)return false;/* keep the storefront sidewalk clear */return true;}
+/* tiles cars may drive on to reach a lane: the aisle, the two connector rows, the curb cuts and the street */
+function roadTile(x,y){const L=LXc(),B=lotB();if(x>=L.st1&&x<=L.st2&&y>=B.y0-2&&y<B.y1+2)return true;if((y===-1||y===D)&&x>=L.rowA&&x<=L.walk)return true;if(x===L.aisle&&y>=-1&&y<=D)return true;return false;}
+function roadPath(from,to,extra){/* BFS over road tiles (+ optional extra set); returns tile list including both ends */const K=(x,y)=>x+','+y;const ok=(x,y)=>roadTile(x,y)||(extra&&extra.has(K(x,y)));const q=[from],prev=new Map([[K(...from),null]]);while(q.length){const c=q.shift();if(c[0]===to[0]&&c[1]===to[1])break;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const n=[c[0]+dx,c[1]+dy],k=K(...n);if(prev.has(k)||!ok(...n))continue;prev.set(k,c);q.push(n);}}if(!prev.has(K(...to)))return null;const p=[];let c=to;while(c){p.unshift(c);c=prev.get(K(...c));}return p;}
+function laneBFS(from,to,block){const S2=driveSet(),K=(x,y)=>x+','+y;const q=[from],prev=new Map([[K(...from),null]]);while(q.length){const c=q.shift();if(c[0]===to[0]&&c[1]===to[1])break;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const n=[c[0]+dx,c[1]+dy],k=K(...n);if(prev.has(k)||!S2.has(k))continue;if(block&&block.has(k)&&!(n[0]===to[0]&&n[1]===to[1]))continue;prev.set(k,c);q.push(n);}}if(!prev.has(K(...to)))return null;const p=[];let c=to;while(c){p.unshift(c);c=prev.get(K(...c));}return p;}
+let LANE={ok:false,msg:'No drive-thru window yet'},laneKey='';
+function laneNow(){const win=objsOf('dtwin')[0];const k=(win?win.id+win.x+','+win.y+','+win.rot:'-')+'|'+lotState().drive.map(String).join(';')+'|'+W+','+D;if(k!==laneKey){laneKey=k;LANE=computeLane(win);}return LANE;}
+function computeLane(win){if(!win)return {ok:false,msg:'No drive-thru window yet'};const f=patientTile(win);if(!f)return {ok:false,msg:'Turn the window to face outside'};
+  const S2=driveSet();if(!S2.has(f.join(',')))return {ok:false,msg:'Pave the tile outside the window',front:f};
+  const gates=[];for(const k of S2){const [x,y]=k.split(',').map(Number);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]])if(roadTile(x+dx,y+dy))gates.push({t:[x,y],road:[x+dx,y+dy]});}
+  const reach=gates.filter(g=>laneBFS(f,g.t));if(!reach.length)return {ok:false,msg:'Connect the driveway to the parking lot',front:f};
+  const uniq=[...new Map(reach.map(g=>[g.t.join(','),g])).values()];if(uniq.length<2)return {ok:false,msg:'Add a way back out to the lot',front:f};
+  let best=null;for(const a of uniq)for(const b of uniq){if(a===b)continue;const inP=laneBFS(a.t,f);if(!inP)continue;const outP=laneBFS(f,b.t,new Set(inP.slice(0,-1).map(String)))||laneBFS(f,b.t);if(!outP)continue;const score=inP.length*10-outP.length;if(!best||score>best.score)best={score,a,b,inP,outP};}
+  if(!best)return {ok:false,msg:'Add a way back out to the lot',front:f};
+  return {ok:true,front:f,entry:best.a,exit:best.b,inPath:best.inP,outPath:best.outP,slots:best.inP.length};}
+const dtOpen=()=>{const L=laneNow();return L.ok&&objsOf('dtwin').length>0;};
+const dtK=()=>dtOpen()?1+DT_DEMAND:1;
+/* a pick-up customer coming by car to the window */
+function spawnDtPickup(sc){const win=objsOf('dtwin')[0];const p=spawnPerson('pickup',sc);sc.patient=p.id;p.dt=true;p.q=win.id;p.state='dtIn';p.dtT=0;p.arrPlanned=true;p.seq=S.sid++;const L=laneNow(),B=lotB(),Lx=LXc();
+  const start=[Lx.st2,B.y1+1];const appr=roadPath([Lx.st2,B.y1-1],L.entry.road)||[];const route=[start,...appr,...L.inPath];const wi=route.length-1;const back=roadPath(L.exit.road,[Lx.st1,B.y0])||[];route.push(...L.outPath.slice(1),...back,[Lx.st1,B.y0-2]);
+  const car={id:uid(),pid:p.id,dt:true,col:pick(CAR_COLS),route,i:0,wi,laneA:1+appr.length,laneB:wi+L.outPath.length-1,x:start[0]+.5,y:start[1]+.5,state:'dt',spd:10};LOT.cars.push(car);p.car=car.id;p.x=car.x;p.y=car.y;return p;}
+function dtCarStep(c,dt){const p=S.patients.find(q=>q.id===c.pid);const tgt=c.route[c.i];if(!tgt){c.gone=true;if(p)p.gone=true;return;}
+  const arrived=moveAlong(c,[[tgt[0]+.5,tgt[1]+.5]],dt,c.i>=c.laneA&&c.i<=c.laneB?3.5:c.spd);if(!arrived)return;
+  if(c.i===c.wi&&p&&!p.dtDone){if(p.state!=='queued'){p.state='queued';p.arrived=true;p.qt=0;p.atWin=true;}return;}
+  const nx=c.route[c.i+1];if(!nx){c.gone=true;if(p)p.gone=true;return;}
+  /* inside the lane, cars keep one tile apart */if(c.i+1>=c.laneA&&c.i+1<=c.laneB&&LOT.cars.some(o=>o!==c&&o.dt&&o.route[o.i]&&o.route[o.i][0]===nx[0]&&o.route[o.i][1]===nx[1]))return;
+  /* the lane is full right back to the lot: drive past */if(c.i+1===c.laneA&&LOT.cars.some(o=>o!==c&&o.dt&&o.i>=c.laneA&&o.i<=c.wi&&o.route[o.i][0]===nx[0]&&o.route[o.i][1]===nx[1])){if(p&&!p.dtDone){p.dtDone=true;S.wk.dtPast=(S.wk.dtPast||0)+1;leave(p,'annoyed');p.state='dtOut';}c.i=c.laneB+1;return;}
+  c.i++;}
+/* patient side: called from lotPatient for drive-thru customers. true = handled; p.gone = remove */
+function dtPatient(p){const c=LOT.cars.find(k=>k.id===p.car);if(!c){p.gone=true;return true;}p.x=c.x;p.y=c.y;
+  if(p.state==='leaving'||p.state==='dtOut'){p.dtDone=true;p.atWin=false;if(c.i===c.wi)c.i++;p.state='dtOut';}
+  return true;}
+function dtTick(){/* patience while in the lane (the window itself uses the normal line timer) */for(const p of S.patients){if(!p.dt||p.state!=='dtIn')continue;p.dtT=(p.dtT||0)+1;if(p.dtT>PAT_LINE*DT_PAT*p.patience){p.dtDone=true;leave(p,'angry');p.state='dtOut';const c=LOT.cars.find(k=>k.id===p.car);if(c){/* pull out of the line at the next gap: skip to the exit */c.i=Math.max(c.i,c.wi+1);}}}}
+function drawDriveTiles(){const S2=driveSet();const z=Z();for(const k of S2){const [x,y]=k.split(',').map(Number);flat(x,y,1,1,(x+y)&1?'#585e65':'#5b6168');}
+  const L=laneNow();if(L.ok){const all=[...L.inPath,...L.outPath.slice(1)];for(let i=0;i<all.length-1;i++){const [x,y]=all[i],dx=all[i+1][0]-x,dy=all[i+1][1]-y;const c=iso(x+.5,y+.5),n=iso(x+.5+dx*.3,y+.5+dy*.3),l=iso(x+.5-dx*.12+dy*.2,y+.5-dy*.12-dx*.2),r=iso(x+.5-dx*.12-dy*.2,y+.5-dy*.12+dx*.2);poly([n,l,c,r],'rgba(244,241,230,.85)');}}
+  else if(L.front){flat(L.front[0],L.front[1],1,1,'rgba(226,75,74,.45)');}}
+function placeDrive(tx,ty){const S2=driveSet();if(S2.has(tx+','+ty))return null;if(!canPave(tx,ty)){const t=lotTile(tx,ty);return t==='store'?'That\'s inside the store.':tx>=W?'Keep the front lot and sidewalk for parking and people. Pave around the sides and back of the store.':'You can pave grass and the path round the store.';}if(S.cash<DRIVE_COST)return 'Not enough cash.';S.cash-=DRIVE_COST;wkAdd('equip',DRIVE_COST);lotState().drive.push([tx,ty]);LOT.ver++;floorKey='';return null;}
+function removeDrive(tx,ty){const L=lotState();const i=(L.drive||[]).findIndex(t=>t[0]===tx&&t[1]===ty);if(i<0)return null;if(LOT.cars.some(c=>c.dt&&c.route[c.i]&&c.route[c.i][0]===tx&&c.route[c.i][1]===ty))return 'A car is on that tile.';L.drive.splice(i,1);const back=Math.round(DRIVE_COST/2);S.cash+=back;wkAdd('equip',-back);LOT.ver++;floorKey='';return '';}
+function laneLine(){const L=laneNow();if(!objsOf('dtwin').length)return 'Drive-thru: build a Drive-thru window inside, on the north, south or west wall.';return L.ok?`Drive-thru open · ${L.slots} cars can line up.`:`Drive-thru closed: ${L.msg.toLowerCase()}.`;}
+/* window on the outside wall + canopy (exterior view) */
+function drawDtExterior(){for(const o of objsOf('dtwin')){const f=facing(o);if(!faceVisible(...f))continue;const pt=patientTile(o);if(!pt)continue;const wx=f[0]?(f[0]>0?o.x+1:o.x):null,wy=f[1]?(f[1]>0?o.y+1:o.y):null;
+  const a=f[1]?[o.x+.12,wy]:[wx,o.y+.12],b=f[1]?[o.x+.88,wy]:[wx,o.y+.88];wallQuad(...a,...b,10,36,'#8fd3e8');
+  const c0=f[1]?[o.x-.15,wy]:[wx,o.y-.15],c1=f[1]?[o.x+1.15,wy]:[wx,o.y+1.15],c2=f[1]?[o.x+1.15,wy+f[1]*1.1]:[wx+f[0]*1.1,o.y+1.15],c3=f[1]?[o.x-.15,wy+f[1]*1.1]:[wx+f[0]*1.1,o.y-.15];poly([liftPt(...c0,44),liftPt(...c1,44),liftPt(...c2,44),liftPt(...c3,44)],'rgba(29,158,117,.9)');
+  const m=liftPt((c0[0]+c2[0])/2,(c0[1]+c2[1])/2,52);ctx.font=`900 ${Math.max(7,8*Z())}px Nunito,sans-serif`;ctx.textAlign='center';const tw=ctx.measureText('DRIVE-THRU').width+8;ctx.fillStyle='#1d9e75';ctx.fillRect(m[0]-tw/2,m[1]-8*Z(),tw,11*Z());ctx.fillStyle='#fff';ctx.fillText('DRIVE-THRU',m[0],m[1]+.5*Z());}}
+
+/* ============ career: levels and achievements (v25) ============
+   XP comes from running the store: +1 per prescription filled, +25 for a week in the black, +15 for a week with under 5% walking out,
+   plus each achievement's bonus. The career is kept apart from the store save, so a new store (after a win or a loss) starts at your level.
+   Levels open Build items early (each item still also opens the old way), and level 4 opens the drive-thru. */
+const LV_TITLES=['New Owner','Neighborhood Pharmacist','Trusted Name','Community Anchor','Maple Street Institution','Regional Name','District Leader','Chain Owner','Health Network Founder','Legend of Maple Street'];
+const LV_MAX=LV_TITLES.length;
+const lvXP=L=>L<=1?0:Math.round(100*Math.pow(L-1,1.6));
+const ACH=[
+ {id:'first_rx',g:'Service',ic:'💊',t:'First fill',d:'Fill your first prescription.',goal:1,v:()=>CAREER.tot.rx,xp:20},
+ {id:'rx100',g:'Service',ic:'💯',t:'Hundred scripts',d:'Fill 100 prescriptions.',goal:100,v:()=>CAREER.tot.rx,xp:50},
+ {id:'rx1000',g:'Service',ic:'📦',t:'Thousand scripts',d:'Fill 1,000 prescriptions.',goal:1000,v:()=>CAREER.tot.rx,xp:150},
+ {id:'rx5000',g:'Service',ic:'🏆',t:'Five thousand',d:'Fill 5,000 prescriptions.',goal:5000,v:()=>CAREER.tot.rx,xp:400},
+ {id:'clean_day',g:'Service',ic:'☀️',t:'Nobody left',d:'A full day of 15+ served with nobody walking out.',goal:1,v:()=>CAREER.tot.cleanDays,xp:75},
+ {id:'smooth_week',g:'Service',ic:'🧭',t:'Smooth week',d:'A week of 100+ served with under 5% walking out.',goal:1,v:()=>CAREER.tot.smoothWeeks,xp:100},
+ {id:'full_house',g:'Service',ic:'🪑',t:'Full house',d:'6 customers seated at once.',goal:6,v:()=>CAREER.tot.maxSeated,xp:40},
+ {id:'black',g:'Money',ic:'📈',t:'In the black',d:'Finish a week with more coming in than going out.',goal:1,v:()=>CAREER.tot.greenWeeks,xp:50},
+ {id:'cash20k',g:'Money',ic:'💵',t:'Cushion',d:'Have $20,000 cash on hand.',goal:20000,v:()=>CAREER.tot.maxCash,xp:150},
+ {id:'debt_free',g:'Money',ic:'🔓',t:'Debt free',d:'Pay the bank loan off.',goal:1,v:()=>CAREER.tot.debtFree,xp:200},
+ {id:'comeback',g:'Money',ic:'↗️',t:'Comeback',d:'Go from below $0 to $5,000 within 4 weeks.',goal:1,v:()=>CAREER.tot.comebacks,xp:150},
+ {id:'trust70',g:'Trust',ic:'🤝',t:'Trusted',d:'Reach trust 70.',goal:70,v:()=>CAREER.tot.maxTrust,xp:80},
+ {id:'trust90',g:'Trust',ic:'❤️',t:'Beloved',d:'Reach trust 90.',goal:90,v:()=>CAREER.tot.maxTrust,xp:200},
+ {id:'team5',g:'Staff',ic:'👥',t:'Real team',d:'Have 5 people on staff.',goal:5,v:()=>CAREER.tot.maxStaff,xp:60},
+ {id:'lunch100',g:'Staff',ic:'☕',t:'Lunch is sacred',d:'100 lunch breaks in the break room.',goal:100,v:()=>CAREER.tot.breaks,xp:40},
+ {id:'snack50',g:'Store',ic:'🍫',t:'Snack stop',d:'Sell 50 snacks.',goal:50,v:()=>CAREER.tot.snacks,xp:40},
+ {id:'park12',g:'Store',ic:'🅿️',t:'Plenty of parking',d:'Have 12 parking spaces.',goal:12,v:()=>CAREER.tot.maxStalls,xp:60},
+ {id:'dt_open',g:'Store',ic:'🚗',t:'Drive-thru open',d:'Open a working drive-thru.',goal:1,v:()=>CAREER.tot.dtOpen,xp:100},
+ {id:'dt100',g:'Store',ic:'🚙',t:'Window regulars',d:'100 drive-thru pick-ups.',goal:100,v:()=>CAREER.tot.dt,xp:120},
+ {id:'land',g:'Store',ic:'🗺️',t:'Land owner',d:'Buy a lot next door.',goal:1,v:()=>CAREER.tot.land||0,xp:100},
+ {id:'grow',g:'Store',ic:'📐',t:'Room to grow',d:'Expand the store onto your land.',goal:1,v:()=>CAREER.tot.grew||0,xp:150},
+ {id:'win',g:'Goal',ic:'🏪',t:'Second store',d:'Reach the goal and open a second store.',goal:1,v:()=>CAREER.tot.wins,xp:300},
+ {id:'win12',g:'Goal',ic:'⚡',t:'Fast growth',d:'Reach the goal by week 12.',goal:1,v:()=>CAREER.tot.fastWins,xp:400}];
+/* levels that open Build items early; the drive-thru only opens this way */
+const LV_ITEMS={2:['plant','snack','mat'],3:['breakroom','otc','problem'],4:['dtwin','room','consult'],5:['fridge','medshelf']};
+const TOT0={rx:0,dt:0,breaks:0,snacks:0,cleanDays:0,smoothWeeks:0,greenWeeks:0,maxSeated:0,maxCash:0,debtFree:0,comebacks:0,maxTrust:0,maxStaff:0,maxStalls:0,dtOpen:0,wins:0,fastWins:0};
+let CAREER=(()=>{let c=null;try{c=JSON.parse(localStorage.getItem('msp-career')||'null');}catch(e){}c=c||{xp:0,ach:{},tot:{},stores:0};c.tot={...TOT0,...(c.tot||{})};c.ach=c.ach||{};return c;})();
+function saveCareer(){try{localStorage.setItem('msp-career',JSON.stringify(CAREER));}catch(e){}}
+const careerLevel=()=>{let L=1;while(L<LV_MAX&&CAREER.xp>=lvXP(L+1))L++;return L;};
+function addXP(n){if(!(n>0))return;const before=careerLevel();CAREER.xp+=n;if(S)S.runXp=(S.runXp||0)+n;const after=careerLevel();if(after>before){const items=Object.entries(LV_ITEMS).filter(([l])=>+l>before&&+l<=after).flatMap(([,v])=>v);cheer('▲',`Level ${after} · ${LV_TITLES[after-1]}`,items.length?`Opens early in Build: ${items.map(t=>TYPES[t].name).join(', ')}`:'Keep going: the next level opens more.');glog('event',`Level ${after}: ${LV_TITLES[after-1]}.${items.length?` Opens in Build: ${items.map(t=>TYPES[t].name).join(', ')}.`:''}`);if(S&&S.opened)checkUnlocks(true);if(typeof renderPalette==='function'&&buildOn)renderPalette();}renderLevel();}
+function checkAch(){if(!S)return;const t=CAREER.tot;t.maxCash=Math.max(t.maxCash,Math.round(S.cash));t.maxTrust=Math.max(t.maxTrust,Math.round(S.trust));t.maxStaff=Math.max(t.maxStaff,S.staff.filter(w=>!w.floater).length);t.maxStalls=Math.max(t.maxStalls,lotState().stalls.length);if(S.opened&&S.loan<=0)t.debtFree=1;if(dtOpen())t.dtOpen=1;
+  for(const a of ACH){if(CAREER.ach[a.id])continue;if((a.v()||0)>=a.goal){CAREER.ach[a.id]=S.week||1;cheer('★',a.t,`${a.d}${a.xp?` +${a.xp} XP`:''}`);glog('event',`Achievement: ${a.t} — ${a.d} (+${a.xp} XP)`);addXP(a.xp);}}saveCareer();}
+function careerServed(){CAREER.tot.rx++;addXP(1);}
+function careerDay(served,lost){if(served>=15&&lost===0)CAREER.tot.cleanDays++;if(S.cash<0&&S.redWk===undefined)S.redWk=S.week;if(S.redWk!==undefined&&S.cash>=5000){if(S.week-S.redWk<=4)CAREER.tot.comebacks++;S.redWk=undefined;}if(S.redWk!==undefined&&S.week-S.redWk>4&&S.cash>=0)S.redWk=undefined;checkAch();}
+function careerWeek(){const w=S.wk;let xp=0;if((w.net||0)>=0){CAREER.tot.greenWeeks++;xp+=25;}const r=w.lost/Math.max(1,w.served+w.lost);if(w.served>=100&&r<.05){CAREER.tot.smoothWeeks++;xp+=15;}if(S.done==='win'){CAREER.tot.wins++;if(S.week-1<=12)CAREER.tot.fastWins++;}addXP(xp);checkAch();}
+function careerSeated(){const n=S.patients.filter(p=>p.seat&&p.state==='waiting').length;if(n>CAREER.tot.maxSeated)CAREER.tot.maxSeated=n;}
+/* a celebration line at the top of the screen; never moves the layout */
+let cheerT=null;function cheer(icon,title,sub){const el=$('cheer');if(!el)return;el.innerHTML=`<i>${icon}</i><span><b>${title}</b><small>${sub||''}</small></span>`;el.hidden=false;el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(cheerT);cheerT=setTimeout(()=>{el.hidden=true;},4200);try{SFX.bell();}catch(e){}}
+function renderLevel(){const b=$('lvN');if(b)b.textContent=careerLevel();}
+let achSel=null;
+function careerHtml(){const L=careerLevel(),cur=lvXP(L),nx=L<LV_MAX?lvXP(L+1):null;const pct=nx?Math.min(100,(CAREER.xp-cur)/(nx-cur)*100):100;const nextItems=L<LV_MAX?(LV_ITEMS[L+1]||[]):[];const got=ACH.filter(a=>CAREER.ach[a.id]).length;
+  const sel=ACH.find(a=>a.id===achSel);const selTxt=sel?`<b>${sel.ic} ${sel.t}</b> · ${sel.d} ${CAREER.ach[sel.id]?`<span class="pos">Earned (week ${CAREER.ach[sel.id]})</span>`:`<span class="num">${Math.min(sel.goal,Math.round(sel.v()||0)).toLocaleString()} / ${sel.goal.toLocaleString()}</span>`} · ${sel.xp} XP`:'Tap a badge to see what it takes. XP: +1 per prescription, +25 a week in the black, +15 a smooth week, plus each badge.';
+  return `<h2>Career <small>Level ${L} · ${LV_TITLES[L-1]}</small></h2>
+  <div class="tile lvcard"><div class="pay"><div><span>XP</span><b class="num">${CAREER.xp.toLocaleString()}${nx?` / ${nx.toLocaleString()}`:''}</b></div></div><div class="lvtrk"><i style="width:${pct}%"></i></div><div class="foot">${nx?`Level ${L+1}${nextItems.length?` opens ${nextItems.map(t=>TYPES[t].name).join(', ')}`:''}.`:'Top level.'} This store: +${(S.runXp||0).toLocaleString()} XP.</div></div>
+  <div class="tile"><small>Badges · ${got} of ${ACH.length}</small><div class="foot" id="achD" style="min-height:2.4em;line-height:1.2">${selTxt}</div><div class="achg">${ACH.map(a=>{const done=!!CAREER.ach[a.id];const p=done?100:Math.round(Math.min(1,(a.v()||0)/a.goal)*100);return `<button class="ach ${done?'done':''} ${achSel===a.id?'sel':''}" data-ach="${a.id}" aria-label="${a.t}"><span>${a.ic}</span>${done?'':`<em style="width:${p}%"></em>`}</button>`;}).join('')}</div></div>`;}
+
+/* ============ land: buy the lots next door, expand the store (v25) ============
+   Three neighbouring lots are for sale: north, south and behind (west). A lot you own widens your property: more room to pave
+   (a longer drive-thru lane) and, from a higher level, room to expand the store by 4 rows or columns in that direction.
+   Expanding happens between weeks: the wall moves out, the new floor starts empty, and every item stays where it is. */
+const LAND={N:{name:'North lot',price:15000,exp:10000,rent:100,erent:150},S:{name:'South lot',price:15000,exp:10000,rent:100,erent:150},W:{name:'Back lot',price:12000,exp:10000,rent:80,erent:150}};
+const LAND_LV=5,EXPAND_LV=6,EXP_STEP=4,PARCEL_DEPTH=6;
+const landState=()=>{const L=lotState();if(!L.own)L.own={};if(!L.exp)L.exp={};return L;};
+/* where each neighbouring lot sits, in world tiles (exclusive ends), around the current lot ring */
+function parcelRect(k){const x0=-4,y0=-5,x1=W+7,y1=D+5;if(k==='N')return {x0,y0:y0-PARCEL_DEPTH,x1,y1:y0};if(k==='S')return {x0,y0:y1,x1,y1:y1+PARCEL_DEPTH};return {x0:x0-PARCEL_DEPTH,y0:y0-(landState().own.N?PARCEL_DEPTH:0),x1:x0,y1:y1+(landState().own.S?PARCEL_DEPTH:0)};}
+const parcelAt=(x,y)=>{for(const k of ['N','S','W']){const r=parcelRect(k);if(x>=r.x0&&x<r.x1&&y>=r.y0&&y<r.y1)return k;}return null;};
+function syncDims(){if(!S)return;W=S.W||20;D=S.D||14;DOOR.x=W-1;DOOR.y=S.doorY??8;OUT.x=W+1.5;OUT.y=DOOR.y+.5;}
+function buyLand(k){const P=LAND[k],L=landState();if(L.own[k])return 'You own it already.';if(careerLevel()<LAND_LV)return `Buying land opens at level ${LAND_LV} (${LV_TITLES[LAND_LV-1]}).`;if(S.cash<P.price)return `Need ${fmt(P.price)} cash.`;S.cash-=P.price;wkAdd('equip',P.price);L.own[k]=S.week;S.rent+=P.rent;LOT.ver++;floorKey='';_decorKey='';CAREER.tot.land=(CAREER.tot.land||0)+1;glog('money',`Bought the ${P.name.toLowerCase()} for ${fmt(P.price)}. Rent +${fmt(P.rent)} a week (property tax and upkeep).`);checkAch();if(VIEW==='out')fitWorld();saveGame();return null;}
+function expandBlocker(k){const L=landState();if(!L.own[k])return `Buy the ${LAND[k].name.toLowerCase()} first.`;if(L.exp[k])return 'The store already grew this way.';if(careerLevel()<EXPAND_LV)return `Expanding opens at level ${EXPAND_LV} (${LV_TITLES[EXPAND_LV-1]}).`;if(S.running)return 'Expand between weeks, when the store is closed.';
+  const wallOf=o=>{const pt=patientTile(o);if(!pt||inb(pt[0],pt[1]))return null;return pt[1]<0?'N':pt[1]>=D?'S':pt[0]<0?'W':null;};if(objsOf('dtwin').some(o=>wallOf(o)===k))return 'Move the drive-thru window off that wall first.';
+  if(S.cash<LAND[k].exp)return `Need ${fmt(LAND[k].exp)} cash.`;return null;}
+function expandStore(k){const e=expandBlocker(k);if(e)return e;const L=landState(),n=EXP_STEP;const dx=k==='W'?n:0,dy=k==='N'?n:0;
+  S.cash-=LAND[k].exp;wkAdd('equip',LAND[k].exp);S.rent+=LAND[k].erent;
+  /* shift everything that has a position so the store keeps its corner at 0,0 */
+  if(dx||dy){for(const o of S.objs){o.x+=dx;o.y+=dy;}for(const w of S.staff){w.x+=dx;w.y+=dy;w.path=null;w.goal=null;w.home=null;}for(const p of S.patients){p.x+=dx;p.y+=dy;p.path=null;}for(const m of S.mess||[]){m.x+=dx;m.y+=dy;}
+    if(dy)for(const s of L.stalls)s.y+=dy;L.drive=L.drive.map(([x,y])=>[x+dx,y+dy]);}
+  S.W=(S.W||20)+(k==='W'?n:0);S.D=(S.D||14)+(k==='N'||k==='S'?n:0);S.doorY=(S.doorY??8)+dy;syncDims();
+  /* driveway that is now inside the store comes up (half back) */const before=L.drive.length;L.drive=L.drive.filter(([x,y])=>!(x>=0&&x<W&&y>=0&&y<D));const lost=before-L.drive.length;if(lost){const back=Math.round(lost*DRIVE_COST/2);S.cash+=back;wkAdd('equip',-back);}
+  L.exp[k]=S.week;lotReset();LOT.ver++;floorKey='';_decorKey='';laneKey='';rebuildGrid();nudgeAll();CAREER.tot.grew=(CAREER.tot.grew||0)+1;
+  glog('staff',`The store grew ${k==='N'?'north':k==='S'?'south':'back'} by ${n} ${k==='W'?'columns':'rows'} (${fmt(LAND[k].exp)}): now ${W}×${D} tiles. The new floor is empty. Rent +${fmt(LAND[k].erent)} a week.${lost?` ${lost} driveway tiles were inside the new walls (half back).`:''}`);
+  checkAch();if(typeof fitWorld==='function')fitWorld();saveGame();return null;}
+function openLand(k){const P=LAND[k],L=landState();const own=!!L.own[k],grown=!!L.exp[k];const r=parcelRect(k);const w=r.x1-r.x0,d=r.y1-r.y0;
+  const lvBuy=careerLevel()>=LAND_LV,lvExp=careerLevel()>=EXPAND_LV;const eb=own&&!grown?expandBlocker(k):null;
+  sheet(`<h3>${P.name} <small>${own?'yours':'for sale'}</small></h3><p>${own?(grown?`The store already grew onto it. The rest is your lot: pave it for a longer drive-thru lane.`:`Pave it for a longer drive-thru lane, or expand the store ${EXP_STEP} ${k==='W'?'columns':'rows'} this way. The wall moves out, every item stays put, and the new floor starts empty.`):`Next door, ${w}×${d} tiles. Buy it to pave more driveway, and later to expand the store this way.`}</p>
+  <div class="kv"><div><span>${own?'Expand':'Price'}</span><b>${own?fmt(P.exp):fmt(P.price)}</b> <small class="sub">rent +${fmt(own?P.erent:P.rent)} a week</small></div><div><span>Needs</span><b>level ${own?EXPAND_LV:LAND_LV}</b> <small class="sub">you're level ${careerLevel()}</small></div></div>
+  <div class="acts">${own?(grown?'':`<button class="pri" id="landGo" ${eb?'disabled':''}>Expand the store · ${fmt(P.exp)}</button>`):`<button class="pri" id="landGo" ${!lvBuy||S.cash<P.price?'disabled':''}>Buy · ${fmt(P.price)}</button>`}</div>${own&&!grown&&eb?`<div class="uph">${eb}</div>`:!own&&!lvBuy?`<div class="uph">Buying land opens at level ${LAND_LV}.</div>`:!own&&S.cash<P.price?`<div class="uph">Need ${fmt(P.price)} cash.</div>`:''}`);
+  const b=$('landGo');if(b)b.onclick=()=>{const e=own?expandStore(k):buyLand(k);if(e)toast(e);else{SFX.build();closeSheet();if(own)setView('in');}renderHud();};}
+/* ground of the neighbouring lots: a fence and a sign while for sale */
+function drawParcels(){const z=Z();for(const k of ['N','S','W']){const r=parcelRect(k),own=landState().own[k];if(own)continue;for(let y=r.y0;y<r.y1;y++)for(let x=r.x0;x<r.x1;x++){if(x>=0&&x<W&&y>=0&&y<D)continue;flat(x,y,1,1,own?((x+y)&1?'#a3be86':'#a9c48c'):((x+y)&1?'#b9b08a':'#c1b892'));}
+    if(!own){ctx.setLineDash([5*z,4*z]);poly([iso(r.x0,r.y0),iso(r.x1,r.y0),iso(r.x1,r.y1),iso(r.x0,r.y1)],null,'rgba(110,90,40,.7)');ctx.setLineDash([]);}}}
+function parcelSigns(items){for(const k of ['N','S','W']){if(landState().own[k])continue;const r=parcelRect(k);const cx=(r.x0+r.x1)/2,cy=(r.y0+r.y1)/2;items.push({d:depth(cx,cy),x:cx,y:cy,f:()=>{const z=Z();const [sx,sy]=iso(cx,cy);ctx.fillStyle='#6b5a2a';ctx.fillRect(sx-1.5*z,sy-30*z,3*z,30*z);const t1='FOR SALE',t2=`${fmt(LAND[k].price)} · Lv ${LAND_LV}`;ctx.font=`900 ${9*z}px Nunito,sans-serif`;ctx.textAlign='center';const w=Math.max(ctx.measureText(t1).width,ctx.measureText(t2).width)+12*z,h=26*z;ctx.fillStyle='#fff3cf';ctx.strokeStyle='#c98a12';ctx.lineWidth=2;ctx.fillRect(sx-w/2,sy-30*z-h,w,h);ctx.strokeRect(sx-w/2,sy-30*z-h,w,h);ctx.fillStyle='#5a3b00';ctx.fillText(t1,sx,sy-30*z-h+11*z);ctx.font=`800 ${8*z}px Nunito,sans-serif`;ctx.fillText(t2,sx,sy-30*z-h+21*z);}});}}
 
 /* ============ frame ============ */
 let perf=0,last=0,fps=0,fpsN=0,fpsT=0;
@@ -1818,14 +2106,14 @@ function frame(ts){perf=ts;const raw=Math.min(.05,(ts-last)/1000||0);last=ts;fps
   const live=S.running&&S.speed>0;if(live)motion(raw);
   const titled=!$('title').hidden||document.hidden;const want=live||ptrs.size>0||buildOn||ts-lastDraw>66;/* paused: ~15 fps unless touching or building */
   if(!titled&&want){drawScene();lastDraw=ts;}requestAnimationFrame(frame);}
-/* walking covers the same ground per game minute at every speed (it used to be 43% slower at 3×) */let MRAW=0;function motion(raw){const DT=raw*WALK_K*(S.speed||1);const n=Math.max(1,Math.ceil(DT*9/.45));MRAW=raw/n;for(let i=0;i<n;i++)motionStep(DT/n);}
+/* walking covers the same ground per game minute at every speed (it used to be 43% slower at 3×) */let MRAW=0;function motion(raw){const DT=raw*WALK_K*(S.speed||1);const n=Math.max(1,Math.ceil(DT*9/.45));MRAW=raw/n;for(let i=0;i<n;i++){motionStep(DT/n);lotStep(DT/n);}}
 function motionStep(dt){{
     for(const w of S.staff){if(w.off){if(w.x<W){goTo(w,DOOR.x,DOOR.y);if(stepAgent(w,dt,9)){w.x=OUT.x;w.y=OUT.y;w.goal=null;}}continue;}
       if(!w.plan){if(!w.goal||!w.home||Math.random()<.004){const t=homeTile(w)||idleTile();if(t){w.home=t;goTo(w,t[0],t[1]);}}stepAgent(w,dt,5);continue;}
       let guard=0;while(w.plan&&guard++<6){const st=w.plan.steps[w.step];if(!st){w.plan=null;w.wkJobs=(w.wkJobs||0)+1;break;}
         if(st.go){goTo(w,st.go[0],st.go[1]);if(stepAgent(w,dt,9))w.step++;else{if(w.noPath){/* can't reach: abort job */for(const k in busyS)if(busyS[k]===w.id)delete busyS[k];const v0=objsOf('verify')[0];for(const c of w.carry){delete c.toShelf;const b=binOf();if(c.rej){c.stage='claim';c.at=v0?'claim:'+v0.id:null;}else{c.stage='bin';c.at=b?'bin:'+b.id:null;}c.claimed=null;}w.carry=[];w.plan=null;const tgt=S.objs.find(o=>{const t=TYPES[o.type].sides?staffTile(o):null;return t&&t[0]===st.go[0]&&t[1]===st.go[1];});glog('bad',`${w.name} can't reach ${tgt?'the '+TYPES[tgt.type].name.toLowerCase():'a station'} — something blocks the staff side.`,'noreach'+(tgt?tgt.id:''),24);}break;}}
         else if(st.fn){st.fn();w.step++;}else break;}}
-    for(let i=S.patients.length-1;i>=0;i--){const p=S.patients[i];const spd=p.elderly?4.5:6;
+    for(let i=S.patients.length-1;i>=0;i--){const p=S.patients[i];const spd=p.elderly?4.5:6;if(lotPatient(p,dt,spd)){if(p.gone)S.patients.splice(i,1);continue;}
       if(p.state==='toQueue'||p.state==='queued'){const o=objById(p.q);if(!o){leave(p,'confused');continue;}const k=Math.min(qIndex(p),8);const qt=queueTile(o,k<0?0:k);goTo(p,qt[0],qt[1]);const ok=stepAgent(p,dt,spd);if(p.noPath){if(!p.conf)p.conf=1;}else p.conf=0;if(p.state==='toQueue'&&ok){p.state='queued';p.arrived=true;}else if(p.state==='queued')p.arrived=ok;}
       else if(p.state==='toOtc'){const sh=objById(p.otcT);if(!sh||(sh.stock||0)<=0){p.state='toQueue';continue;}const pt=patientTile(sh);goTo(p,pt[0],pt[1]);if(stepAgent(p,dt,spd)){p.otcWait+=dt;if(p.otcWait>.8){sh.stock--;sh.sold=(sh.sold||0)+1;p.carryOtc=(p.carryOtc||0)+1;sh.earn=(sh.earn||0);p.state='toQueue';}}else if(p.noPath)p.state='toQueue';}
       else if(p.state==='toSeat'){if(stepAgent(p,dt,spd)){p.state='waiting';if(p.seat&&p.seatCounted!==p.seat){p.seatCounted=p.seat;useBump(objById(p.seat));}}else if(p.noPath){seat(p);}}
@@ -1837,7 +2125,7 @@ function motionStep(dt){{
       else if(p.state==='toLoo'){const o=objById(p.looT);if(!o){p.loo='denied';sendBack(p);continue;}const pt=patientTile(o);goTo(p,pt[0],pt[1]);p.arrivedLoo=stepAgent(p,dt,spd);if(p.noPath){p.loo='denied';sendBack(p);}}
       else if(p.state==='inLoo'){/* inside; drawn hidden */}
       else if(p.state==='enter'){goTo(p,DOOR.x,DOOR.y);stepAgent(p,dt,spd);}
-      else if(p.state==='leaving'){goTo(p,DOOR.x,DOOR.y);if(stepAgent(p,dt,spd+.8)||p.noPath){if(p.noPath&&p.x<W){/* trapped: fade away through nearest wall */}S.patients.splice(i,1);}}}
+      else if(p.state==='leaving'){goTo(p,DOOR.x,DOOR.y);if(stepAgent(p,dt,spd+.8)||p.noPath){if(p.noPath&&p.x<W){/* trapped: fade away through nearest wall */}else lotExit(p);S.patients.splice(i,1);}}}
     for(const f of S.fx)f.t+=MRAW*1.2;S.fx=S.fx.filter(f=>f.t<1.6);}}
 function homeTile(w){/* a free staff-side tile next to the worker's own station */const types=w.role==='tech'?['fill','bin']:w.role==='clerk'?['dropoff','register']:['verify','consult','problem'];
   for(const t of types){for(const o of objsOf(t)){const st=staffTile(o);if(!st)continue;const cands=[st,[st[0]+1,st[1]],[st[0]-1,st[1]],[st[0],st[1]+1],[st[0],st[1]-1]];for(const c of cands){if(!passS(c[0],c[1]))continue;if(busyS[o.id]&&c[0]===st[0]&&c[1]===st[1])continue;if(reach.has(c.join(',')))continue;/* stay on the staff side */if(S.staff.some(x=>x!==w&&!x.off&&x.home&&x.home[0]===c[0]&&x.home[1]===c[1]))continue;return c;}}}
@@ -1847,11 +2135,12 @@ function idleTile(){const back=[];for(let y=0;y<D;y++)for(let x=0;x<W;x++)if(!re
 /* ============ pointer ============ */
 const ptrs=new Map();let dragging=false,pinch0=0,z0=1;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY});dragging=false;if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);z0=cam.z;}const [mx,my]=toLocal(e.clientX,e.clientY);const [wx,wy]=fromScreen(mx,my);hover=[Math.floor(wx),Math.floor(wy)];});
-cv.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);const [mx,my]=toLocal(e.clientX,e.clientY);const [wx,wy]=fromScreen(mx,my);hover=[Math.floor(wx),Math.floor(wy)];if(!p)return;const [dx,dy]=dLocal(e.clientX-p.x,e.clientY-p.y);p.x=e.clientX;p.y=e.clientY;if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const [cx,cy]=toLocal((a.x+b.x)/2,(a.y+b.y)/2);zoomLocal(cx,cy,z0*d/pinch0);dragging=true;return;}if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)>12)dragging=true;if(dragging){cam.x+=dx;cam.y+=dy;userCam=true;}});
+cv.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);const [mx,my]=toLocal(e.clientX,e.clientY);const [wx,wy]=fromScreen(mx,my);hover=[Math.floor(wx),Math.floor(wy)];if(!p)return;if(buildOn&&tool==='drive'&&VIEW==='out'&&ptrs.size===1){dragging=true;if(placeDrive(...hover)===null){renderPalette();palHint();}return;}const [dx,dy]=dLocal(e.clientX-p.x,e.clientY-p.y);p.x=e.clientX;p.y=e.clientY;if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const [cx,cy]=toLocal((a.x+b.x)/2,(a.y+b.y)/2);zoomLocal(cx,cy,z0*d/pinch0);dragging=true;return;}if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)>12)dragging=true;if(dragging){cam.x+=dx;cam.y+=dy;userCam=true;}});
 function endPtr(e){const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p||dragging||ptrs.size)return;const [mx,my]=toLocal(e.clientX,e.clientY);$('menu').hidden=true;
   /* hit objects by their top face (lifted) */let best=null,bd=1e9;for(const o of S.objs){const T=TYPES[o.type];const w=(o.rot&1)?T.d:T.w,d=(o.rot&1)?T.w:T.d;const [cx,cy]=iso(o.x+w/2,o.y+d/2);const dd=Math.hypot(mx-cx,my-(cy-14*Z()));if(dd<bd){bd=dd;best=o;}}
   const [wx,wy]=fromScreen(mx,my);const tx=Math.floor(wx),ty=Math.floor(wy);
   if(buildOn&&tool){tapTile(tx,ty);return;}
+  if(VIEW==='out'){if(tx>=0&&tx<W&&ty>=0&&ty<D){SFX.click();setView('in');}else{const k=parcelAt(tx,ty);if(k){SFX.click();openLand(k);}}return;}/* outside: tap the building to go in */
   /* people first */let bp=null,bpd=1e9;const z_=Math.max(Z(),.8);for(const q of [...S.staff.filter(w=>!w.off&&w.x<W+1),...S.patients.filter(p=>p.state!=='pending')]){const [px,py]=iso(q.x,q.y);/* body + name tag: a tall box from the feet to above the tag */const inBox=Math.abs(mx-px)<18*z_&&my<py+8*z_&&my>py-(q.role?80:66)*z_;if(!inBox)continue;const dd=Math.hypot(mx-px,my-(py-30*z_));if(dd<bpd){bpd=dd;bp=q;}}
   const objHit=best&&bd<Math.max(30*Z(),26);
   if(bp&&(!objHit||bpd<=bd*.8)){if(bp.role)openWorker(bp);else openPatient(bp);return;}/* person only when the tap is clearly on them */
@@ -1859,7 +2148,7 @@ function endPtr(e){const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p|
   if(inb(tx,ty)&&grid[ty][tx].o){openObj(objById(grid[ty][tx].o));return;}
   closeSheet();}
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',endPtr);
-function zoomLocal(px,py,nz){userCam=true;nz=Math.max(.3,Math.min(2.2,nz));const k=nz/cam.z;cam.x=px-(px-cam.x)*k;cam.y=py-(py-cam.y)*k;cam.z=nz;}
+function zoomLocal(px,py,nz){userCam=true;nz=Math.max(VIEW==='out'?.14:.3,Math.min(2.2,nz));const k=nz/cam.z;cam.x=px-(px-cam.x)*k;cam.y=py-(py-cam.y)*k;cam.z=nz;}
 cv.addEventListener('wheel',e=>{e.preventDefault();const [x,y]=toLocal(e.clientX,e.clientY);zoomLocal(x,y,cam.z*(e.deltaY<0?1.1:.9));},{passive:false});
 
 /* ============ audio ============ */
@@ -1931,11 +2220,11 @@ function showTitle(saved){$('app').classList.add('titled');$('title').hidden=fal
   $('tNew').onclick=()=>go(true);$('tCont').onclick=()=>go(false);
   checkUpdate();}
 function checkUpdate(){if(location.protocol==='file:')return;fetch(location.href.split('#')[0]+(location.search?'&':'?')+'v='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/BUILD='([^']*)'/);if(m&&m[1]!==BUILD){const b=$('tUpd');b.hidden=false;b.textContent='Update to '+m[1]+' · tap to reload';b.onclick=()=>{if(S&&S.week)saveGame();location.reload();};}}).catch(()=>{});}
-function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();if(saved&&S.opened)checkUnlocks(true);if(saved)for(const o of S.objs.filter(q=>['dropoff','register','consult'].includes(q.type)))autoFace(o);/* items added in an update unlock right away in an older save */
+function start(){const saved=loadGame();S=saved||fresh();rebuildGrid();renderLevel();{const b=$('viewBtn');if(b){b.onclick=()=>{SFX.click();setView(VIEW==='out'?'in':'out');};b.classList.toggle('on',VIEW==='out');b.querySelector('small').textContent=VIEW==='out'?'Inside':'Outside';}};if(saved&&S.opened)checkUnlocks(true);if(saved)for(const o of S.objs.filter(q=>['dropoff','register','consult'].includes(q.type)))autoFace(o);/* items added in an update unlock right away in an older save */
   if(saved){S.promo=S.promo||{};S.contracts=S.contracts||{};S.vaxDoses=S.vaxDoses||0;S.rival=S.rival||0;S.wk.ev=S.wk.ev||[];S.wk.built=S.wk.built||[];S.advisors=S.advisors||rollAdvisors();if(!S.inv){S.inv=freshInv();S.inv.order.gen=S.orderQty||150;for(const o of S.objs)if(o.type==='otc'&&o.stock===undefined)o.stock=OTC_CAP;}if(S.opened&&!S.unlocked){S.unlocked=[...PALETTE_MORE];S.newItems=[];}for(const w of S.staff)if(w.isYou&&(w.name==='You'||!w.name)){w.name=pick(OWNER_NAMES);w.portrait='You';}for(const l of S.ledger)if(l.dueDay===undefined)l.dueDay=((l.due||S.week)-1)*DAYS_WEEK+DAYS_WEEK-1;for(const o of S.objs){o.t0=0;if(o.born===undefined){o.born=dayIdx();o.bornWk=S.opened?S.week:0;o.earnAll=o.earnAll||o.earn||0;}}rebuildGrid();for(const c of S.objs.filter(o=>o.type==='consult')){if(staffCanReach(c))continue;const st=staffTile(c),f=facing(c);const bx=st[0]-f[0],by=st[1]-f[1];const w=S.objs.find(o=>o.type==='wall'&&o.x===bx&&o.y===by);if(w){w.type='sdoor';w.rot=((c.rot||0)+2)&3;rebuildGrid();glog('ops','A consult room from an earlier version had no way in for the pharmacist; the wall behind the desk is now a staff door.');}}if(!S.running&&S.opened&&S.inbox&&S.inbox.mails&&S.inbox.mails.length<4&&S.inbox.week===S.week-1){try{makeInbox();S.inbox.week=S.week-1;S.inbox.seen=false;}catch(e){}}for(const w of S.staff){w.plan=null;w.carry=[];w.workMax=0;w.goal=null;w.path=null;}for(const sc of S.scripts){sc.claimed=null;if(sc.stage==='carried'){const b=binOf();sc.stage='bin';sc.at=b?'bin:'+b.id:null;}}for(const p of S.patients){p.path=null;p.goal=null;}if(S.running)S.speed=0;}
   fitCanvas();applyLayout();fitWorld();$('mSound').textContent='Sound: '+(AU.on?'on':'off');$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');renderHud();renderChat();renderPalette();
   showTitle(!!saved);log('sys',`start ${BUILD} ${innerWidth}×${innerHeight} rot=${ROT}`);requestAnimationFrame(frame);}
-window.__msp={iso:(x,y)=>iso(x,y),Z:()=>Z(),GL,LOG,TYPES,composePhoto,get SHOTS(){return SHOTS;},busy:()=>({...busyS}),draw:()=>drawScene(),get S(){return S;},get L(){return L;},api:{takeAdvance,advanceAmt,loanSettle,serviceTrust,scriptMargin,idleWhy,satCash,hireAdvice,walkInPerDay,regPerDay,borrow,canBorrow,loanDue,priceMult,fairPrice,priceGap,endWeek,endDay,bankNotes,runStory,pressActive,giveBonus,giveRaise,dMorale,quitStaff,setShift,bookFloater,floaterGet,wageOf,wages,place,removeObj,turnObj,payLoan,openObj,enclosedTest:(o)=>enclosed(o),exposedN:()=>exposed.size,resumeReview,pathTest:(sx,sy,tx,ty,staff)=>astar(sx,sy,tx,ty,staff),setSpeed,demandPerDay,staffReach:o=>staffCanReach(o),openPatient,openWorker,makeInbox,showInbox,makeFeed,showFeed,buyPromo,signContract,flowHtml,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
+window.__msp={iso:(x,y)=>iso(x,y),Z:()=>Z(),GL,LOG,TYPES,composePhoto,get SHOTS(){return SHOTS;},busy:()=>({...busyS}),draw:()=>drawScene(),get S(){return S;},get L(){return L;},api:{buyLand,expandStore,landState,laneNow,placeDrive,removeDrive,dtOpen,setView,placeStall,removeStall,lotState,parkK,lotLive:()=>LOT,takeAdvance,advanceAmt,loanSettle,serviceTrust,scriptMargin,idleWhy,satCash,hireAdvice,walkInPerDay,regPerDay,borrow,canBorrow,loanDue,priceMult,fairPrice,priceGap,endWeek,endDay,bankNotes,runStory,pressActive,giveBonus,giveRaise,dMorale,quitStaff,setShift,bookFloater,floaterGet,wageOf,wages,place,removeObj,turnObj,payLoan,openObj,enclosedTest:(o)=>enclosed(o),exposedN:()=>exposed.size,resumeReview,pathTest:(sx,sy,tx,ty,staff)=>astar(sx,sy,tx,ty,staff),setSpeed,demandPerDay,staffReach:o=>staffCanReach(o),openPatient,openWorker,makeInbox,showInbox,makeFeed,showFeed,buyPromo,signContract,flowHtml,tapTile,pickUp,putDown,rotateCam,cam,patientTile,staffTile,readiness,startWeek,motion,hire:(r)=>{S.staff.push(mkStaff(freshName(),r));},fresh:()=>{S=fresh();rebuildGrid();},tick,setBuild,openOffice,reviewDecide}};
 document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault());
 window.addEventListener('pagehide',()=>{if(S&&S.week)saveGame();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&S&&S.week)saveGame();});
 start();
