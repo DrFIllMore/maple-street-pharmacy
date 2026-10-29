@@ -1,5 +1,11 @@
 # Changelog
 
+## v25.10 · 2026-10-29 — An item's window no longer covers the build items
+- In Build, tapping a placed item opens its window (details, rotate, sell, upgrades). That window used to sit on top of the row of items to buy, so a tap could land on the wrong one and buy something.
+- Now, while the window is open, the row of build items folds away and the window sits above the bottom bar. The hint reads "Close the window (×) to see the build items again." Closing it brings the items back.
+- For half a second after the window opens or closes, taps on the build items are ignored, so a quick double tap can't buy anything by accident.
+- Checked on 932, 844 and 667-wide phones. The window never covers the bar and never needs scrolling.
+
 ## v25.9 · 2026-10-29 — Level 1 stays inside
 - During **Level 1** you only see the inside of the store. The **Outside** and **See-thru** buttons are hidden, and the area around the store is plain grass with a short path at the door. The parking lot, street, cars, people walking up and the for-sale lots stay hidden. Customers appear at the door and walk in.
 - When **Level 2** starts, both buttons appear and the whole outside is revealed.
