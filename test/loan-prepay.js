@@ -4,10 +4,10 @@ const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.
  const run=(mid)=>{const c0=S.cash;a.startWeek();a.setSpeed(0);let did=false;while(S.running){for(let f=0;f<12;f++)a.motion(.016);a.tick();if(mid&&!did&&S.day===2){did=true;out.mid=mid();}}document.getElementById('review').hidden=true;const h=S.hist[S.hist.length-1];return {cashDelta:Math.round(S.cash-c0),net:h.net,loanPay:S.wk.loanPay,loan:S.loan,miss:S.bank.miss};};
  out.w1=run();
  // week 2: pay the bill mid-week while paused via the Money tab button
- out.w2=run(()=>{a.setSpeed(0);a.openOffice('metrics');const btn=document.querySelector('[data-pay="bill"]');const t=btn.textContent;btn.click();const after=document.querySelector('[data-pay="bill"]').textContent;return {t,after,cash:Math.round(S.cash),loan:S.loan};});
+ out.w2=run(()=>{a.setSpeed(0);(S.moneyTab='loan',a.openOffice('metrics'));const btn=document.querySelector('[data-pay="bill"]');const t=btn.textContent;btn.click();const after=document.querySelector('[data-pay="bill"]').textContent;return {t,after,cash:Math.round(S.cash),loan:S.loan};});
  // between weeks: prepay then run week 3
- a.openOffice('metrics');document.querySelector('[data-pay="bill"]').click();out.between={loan:S.loan,pre:S.preWk};out.w3=run();
+ (S.moneyTab='loan',a.openOffice('metrics'));document.querySelector('[data-pay="bill"]').click();out.between={loan:S.loan,pre:S.preWk};out.w3=run();
  // low cash: buttons disabled message
- S.cash=200;a.openOffice('metrics');out.low=document.querySelector('.tile .foot.neg')?.textContent||'';
+ S.cash=200;(S.moneyTab='loan',a.openOffice('metrics'));out.low=document.querySelector('.tile .foot.neg')?.textContent||'';
  return out;});
 console.log(JSON.stringify(r,null,1),errs);await b.close();})();
