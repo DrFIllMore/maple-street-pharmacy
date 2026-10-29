@@ -444,7 +444,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v25.19 · 2026-10-29';
+const BUILD='v25.20 · 2026-10-29';
 /* money: thousands separators without Intl (toLocaleString was a hot spot, called every frame by the HUD) */const fmt=n=>(n<0?'−':'')+'$'+String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1174,6 +1174,10 @@ function shotTick(){if(!S.running||S.closedToday)return;
 function wrapText(o,txt,x,y,maxW,lh,maxLines){const words=String(txt).split(/\s+/);let line='',n=0;for(let i=0;i<words.length;i++){const t=line?line+' '+words[i]:words[i];if(o.measureText(t).width>maxW&&line){o.fillText(line,x,y+n*lh);n++;line=words[i];if(n>=maxLines-1){const rest=words.slice(i).join(' ');let r=rest;while(o.measureText(r+'…').width>maxW&&r.length)r=r.slice(0,-1);o.fillText(r+(r.length<rest.length?'…':''),x,y+n*lh);return n+1;}}else line=t;}if(line){o.fillText(line,x,y+n*lh);n++;}return n;}
 function gray(c){const o=c.getContext('2d');const d=o.getImageData(0,0,c.width,c.height);const a=d.data;for(let i=0;i<a.length;i+=4){const v=a[i]*.3+a[i+1]*.59+a[i+2]*.11;const g=Math.min(255,Math.max(0,(v-128)*1.25+140));a[i]=a[i+1]=a[i+2]=g;}o.putImageData(d,0,0);return c;}
 /* compose: every photo is 600×340 */
+/* v25.20: the week's photo is composed a moment after the week ends, not inside the last tick (it froze the end of the week for ~0.3 s on iPhone) */
+let PHOTO_JOBS=[];function deferPhoto(kind,d){const job={kind,d,img:null};PHOTO_JOBS.push(job);return job;}
+function finishPhotos(){if(!PHOTO_JOBS.length)return;const jobs=PHOTO_JOBS;PHOTO_JOBS=[];for(const j of jobs)j.img=j.kind==='floor'?snapshotFloor():composePhoto(j.kind,j.d);const f=S&&S.feed;if(f&&f.photo&&f.photo.img&&typeof f.photo.img==='object')f.photo.img=f.photo.img.img||null;saveGame();}
+function schedulePhotos(){setTimeout(finishPhotos,80);}
 function composePhoto(kind,d){const W2=600,H2=340;const c=document.createElement('canvas');c.width=W2;c.height=H2;const o=c.getContext('2d');const cover=(src)=>{const r=Math.max(W2/src.width,H2/src.height);const w=src.width*r,h=src.height*r;o.drawImage(src,(W2-w)/2,(H2-h)/2,w,h);};
   const pill=(txt,x,y,bg,fg)=>{o.font='800 20px Nunito,sans-serif';const w=o.measureText(txt).width+22;o.fillStyle=bg;o.beginPath();o.roundRect?o.roundRect(x,y,w,34,17):o.rect(x,y,w,34);o.fill();o.fillStyle=fg;o.fillText(txt,x+11,y+24);};
   const vignette=(a)=>{const g=o.createRadialGradient(W2/2,H2/2,H2*.3,W2/2,H2/2,W2*.65);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${a})`);o.fillStyle=g;o.fillRect(0,0,W2,H2);};
@@ -1242,21 +1246,21 @@ function makeFeed(){const w=S.wk,posts=[];const ev=w.ev||[];const likes=(base)=>
   const staffP=posts.find(p=>p.kind==='staff'&&p.bad),happyP=posts.find(p=>p.kind==='patient'&&p.good),worstP=posts.find(p=>p.kind==='patient'&&p.bad);
   const SHOP={name:'maplestreetpharmacy',kind:'shop'};const asUser=p=>({name:p.who.replace(/[^A-Za-z]/g,'').toLowerCase(),kind:p.kind==='staff'?'staff':'patient',who:p.who,av:p.av});
   let pk='floor',img=null,author=SHOP,caption=pick(captions);if(worst&&(worst[0]==='at drop-off'||worst[0]==='at pick-up'))SHOTS.line=worst[0]==='at drop-off'?SHOTS.line_dropoff:SHOTS.line_register;/* the photo shows the line people complained about */
-  if((viral==='down'||(worst&&worst[1]>=3))&&SHOTS.line){pk='line';img=composePhoto('line',SHOTS.line);{const wp=posts.find(p=>p.kind==='patient'&&/walked out|Gave up/.test(p.head||''))||worstP;author=wp?asUser(wp):{name:'mapleneighbor',kind:'patient',av:'😤'};}caption=`${SHOTS.line.n} people in line at ${SHOTS.line.where}. ${pick(['Again. 🙄','Bring snacks.','Is this the DMV?','Every. Single. Time.'])}`;}
-  else if(pressBad){pk='clip';img=composePhoto('clip',{head:pressBad.head,bad:true,img:(SHOTS.line||SHOTS.busy||{}).c||null});author=worstP?asUser(worstP):{name:'mapleneighbor',kind:'patient',av:'👀'};caption=pick(['Saw this in the paper 👀','Not a great look, Maple St.','Front page. Yikes.']);}
-  else if(staffP){pk='text';img=composePhoto('text',{text:staffP.text,by:'— a Maple Street employee',c1:'#2b3440',c2:'#4a3b52'});author=asUser(staffP);caption=pick(['Not my best week at work.','Somebody had to say it.','Long week.']);}
-  else if(viral==='up'&&SHOTS.busy){pk='viral';img=composePhoto('viral',{c:SHOTS.busy.c,shares:212});author=happyP?asUser(happyP):SHOP;caption='This place 👏';}
-  else if((pr0||happyP)&&SHOTS.busy){pk='good';img=composePhoto('good',{c:SHOTS.busy.c});author=happyP?asUser(happyP):SHOP;caption=pr0?'They said they\'d fix it, and they did 👏':pick(['Shoutout to the Maple St crew ❤️','In and out in five minutes. Love this place.','Best pharmacy on the block, no contest.','They remembered my name 🥹']);}
-  else if(SHOTS.newItem){pk='new';img=composePhoto('new',SHOTS.newItem);caption=`New ${SHOTS.newItem.name.toLowerCase()} is in. Come see ✨`;}
-  else if(pressGood){pk='clip';img=composePhoto('clip',{head:pressGood.head,bad:false,img:(SHOTS.busy||{}).c||null});caption=pick(['We made the paper! 🗞️','Proud of this team.','Thanks for reading, neighbors.']);}
-  else if(w.served<40){pk='text';img=composePhoto('text',{text:'Quiet one on Maple Street this week. Come say hi.',by:'— the Maple Street team',c1:'#efe3c8',c2:'#cfe3d6',fg:'#2a2620'});caption='☕';}
+  if((viral==='down'||(worst&&worst[1]>=3))&&SHOTS.line){pk='line';img=deferPhoto('line',SHOTS.line);{const wp=posts.find(p=>p.kind==='patient'&&/walked out|Gave up/.test(p.head||''))||worstP;author=wp?asUser(wp):{name:'mapleneighbor',kind:'patient',av:'😤'};}caption=`${SHOTS.line.n} people in line at ${SHOTS.line.where}. ${pick(['Again. 🙄','Bring snacks.','Is this the DMV?','Every. Single. Time.'])}`;}
+  else if(pressBad){pk='clip';img=deferPhoto('clip',{head:pressBad.head,bad:true,img:(SHOTS.line||SHOTS.busy||{}).c||null});author=worstP?asUser(worstP):{name:'mapleneighbor',kind:'patient',av:'👀'};caption=pick(['Saw this in the paper 👀','Not a great look, Maple St.','Front page. Yikes.']);}
+  else if(staffP){pk='text';img=deferPhoto('text',{text:staffP.text,by:'— a Maple Street employee',c1:'#2b3440',c2:'#4a3b52'});author=asUser(staffP);caption=pick(['Not my best week at work.','Somebody had to say it.','Long week.']);}
+  else if(viral==='up'&&SHOTS.busy){pk='viral';img=deferPhoto('viral',{c:SHOTS.busy.c,shares:212});author=happyP?asUser(happyP):SHOP;caption='This place 👏';}
+  else if((pr0||happyP)&&SHOTS.busy){pk='good';img=deferPhoto('good',{c:SHOTS.busy.c});author=happyP?asUser(happyP):SHOP;caption=pr0?'They said they\'d fix it, and they did 👏':pick(['Shoutout to the Maple St crew ❤️','In and out in five minutes. Love this place.','Best pharmacy on the block, no contest.','They remembered my name 🥹']);}
+  else if(SHOTS.newItem){pk='new';img=deferPhoto('new',SHOTS.newItem);caption=`New ${SHOTS.newItem.name.toLowerCase()} is in. Come see ✨`;}
+  else if(pressGood){pk='clip';img=deferPhoto('clip',{head:pressGood.head,bad:false,img:(SHOTS.busy||{}).c||null});caption=pick(['We made the paper! 🗞️','Proud of this team.','Thanks for reading, neighbors.']);}
+  else if(w.served<40){pk='text';img=deferPhoto('text',{text:'Quiet one on Maple Street this week. Come say hi.',by:'— the Maple Street team',c1:'#efe3c8',c2:'#cfe3d6',fg:'#2a2620'});caption='☕';}
   if(pk==='good'&&S.lastPk==='good'&&Math.random()<.6){pk='floor';img=null;author=SHOP;caption=pick(captions);}/* don't run the same kind of photo every week */
-  if(!img){pk='floor';img=snapshotFloor();}S.lastPk=pk;
+  if(!img){pk='floor';img=deferPhoto('floor');}S.lastPk=pk;
   const photo={kind:pk,img,author,caption,tags,likes:likes(40+(viral==='up'?120:0)),shares:viral?(viral==='up'?'Shared 212 times':'Shared 148 times'):'',comments:posts.slice(0,3).map(p=>({who:p.who,text:p.text.split(/[.!?]/)[0]+(p.bad?'.':'!')}))};
-  S.feed={week:S.week,posts:posts.slice(0,5),photo,viral,replied:null,seen:false};}
-function showFeed(){closeAll();const f=S.feed;if(!f){reviewDecide();return;}setStage('feed');f.seen=true;
+  S.feed={week:S.week,posts:posts.slice(0,5),photo,viral,replied:null,seen:false};schedulePhotos();}
+function showFeed(){finishPhotos();closeAll();const f=S.feed;if(!f){reviewDecide();return;}setStage('feed');f.seen=true;
   page(`<h2>Neighborhood feed <small>2 of 5 · week ${f.week} · ${f.viral==='up'?'<span class="pos">your photo went viral</span>':f.viral==='down'?'<span class="neg">a complaint went viral</span>':'what people are saying'}</small></h2>
-    <div class="feed2"><div class="ig igbig">${f.photo?photoHead(f.photo):''}${f.photo&&f.photo.img?`<img src="${f.photo.img}" alt="Top story this week">`:''}<div class="igc"><b>${f.photo&&f.photo.author?f.photo.author.name:'maplestreetpharmacy'}</b> ${f.photo?f.photo.caption:''}</div></div>
+    <div class="feed2"><div class="ig igbig">${f.photo?photoHead(f.photo):''}${f.photo&&typeof f.photo.img==='string'?`<img src="${f.photo.img}" alt="Top story this week">`:''}<div class="igc"><b>${f.photo&&f.photo.author?f.photo.author.name:'maplestreetpharmacy'}</b> ${f.photo?f.photo.caption:''}</div></div>
       <div class="cmts">${f.posts.map((p,i)=>[p,i]).sort((a,b)=>((b[0].bad&&b[0].promise)?1:0)-((a[0].bad&&a[0].promise)?1:0)||a[1]-b[1]).slice(0,3).sort((a,b)=>a[1]-b[1]).map(([p,i])=>postHtml(p,i,f,true)).join('')}</div></div>
     <div class="btns"><button class="big ghost" id="back">◀ Results</button><button class="big" id="next">Next: ${S.inbox&&S.inbox.week===f.week?'inbox':'decide'} ▶</button></div>`,false,true);
   $('back').onclick=()=>{SFX.click();showReview();};$('next').onclick=()=>{SFX.click();if(S.inbox&&S.inbox.week===f.week)showInbox();else reviewDecide();};
@@ -1271,13 +1275,13 @@ function postHtml(p,i,f,canReply){const cls=p.bad?'bad':p.good?'good':'';
   const tip=p.kind!=='press'&&(p.fix||p.want)&&p.bad?`<div class="ptip">→ ${p.fix||p.want}</div>`:'';
   return `<div class="post2 ${cls}"><div class="av2 ${p.kind} ${p.role||''}">${postAv(p)}</div><div class="pb2"><div class="pl1"><b>${p.who}</b><span class="ptag ${p.kind}">${POST_TAG[p.kind]||''}</span><span class="lk">♥ ${p.likes}</span></div>${body}${tip}</div><div class="pa">${act}</div></div>`;}
 function feedPostsHtml(f,canReply){const photo=f.photo;const posts=f.posts.map((p,i)=>postHtml(p,i,f,canReply)).join('');
-  const ig=photo?`<div class="ig">${photoHead(photo)}${photo.img?`<img src="${photo.img}" alt="Top story this week">`:''}<div class="igc"><b>${photo.author?photo.author.name:'maplestreetpharmacy'}</b> ${photo.caption} <span class="tags">${photo.tags.join(' ')}</span></div>${photo.comments.map(c=>`<div class="igc"><b>${c.who.replace(/\s+/g,'').toLowerCase()}</b> ${c.text}</div>`).join('')}</div>`:'';
+  const ig=photo?`<div class="ig">${photoHead(photo)}${typeof photo.img==='string'?`<img src="${photo.img}" alt="Top story this week">`:''}<div class="igc"><b>${photo.author?photo.author.name:'maplestreetpharmacy'}</b> ${photo.caption} <span class="tags">${photo.tags.join(' ')}</span></div>${photo.comments.map(c=>`<div class="igc"><b>${c.who.replace(/\s+/g,'').toLowerCase()}</b> ${c.text}</div>`).join('')}</div>`:'';
   return `<div class="fcol">${posts||'<div class="post"><div class="pb"><div class="pt">Quiet week. Nobody posted.</div></div></div>'}</div>${ig}`;}
 
 /* ============ pages: title, opening checklist, review ============ */
 const rxHead=()=>`<div class="rxhead"><span class="rx">℞</span><span>Maple Street Pharmacy</span><span class="dt">Wk ${S.week}${S.running?' · '+DAYS[S.day].slice(0,3):''}</span></div>`;const rxFoot=(l)=>`<div class="rxfoot"><span>${l||'Pharmacist'}</span><span class="sig">${(S&&S.staff.find(w=>w.isYou)||{}).name||'Owner'}</span><span>RPh</span></div>`;
 /* every review page must fit without scrolling: shrink the type a step at a time (down to 72%) until it does */
-function fitRev(){const el=$('rev');if(!el||$('review').hidden)return;el.style.fontSize='';let k=1;while(el.scrollHeight>el.clientHeight+1&&k>.72){k-=.04;el.style.fontSize=`calc(var(--revF) * ${k.toFixed(2)})`;}}
+function fitRev(){/* v25.20: one measured guess instead of a shrink loop (each pass forced a full page layout; the week-end freeze on iPhone was mostly this) */const el=$('rev');if(!el||$('review').hidden)return;el.style.fontSize='';const sh=el.scrollHeight,ch=el.clientHeight;if(sh<=ch+1)return;let k=Math.max(.72,Math.floor((ch/sh)*.97*25)/25);el.style.fontSize=`calc(var(--revF) * ${k.toFixed(2)})`;if(el.scrollHeight>el.clientHeight+1&&k>.72){k=Math.max(.72,k-.04);el.style.fontSize=`calc(var(--revF) * ${k.toFixed(2)})`;}}
 addEventListener('resize',()=>requestAnimationFrame(fitRev));
 function page(html,raw,wide){requestAnimationFrame(fitRev);const el=$('rev');el.innerHTML=raw?html:rxHead()+html+(wide?'':rxFoot());el.classList.toggle('news',!!raw);el.classList.toggle('wide',!!wide);$('review').hidden=false;const fx_=$('floorX');fx_.hidden=!(S.opened&&!S.running&&!S.done&&S.stage);renderHud();}
 const STAGES={review:['Results',1],feed:['Feed',2],call:['Call',3],stock:['Stock order',4],decide:['Proposals',5]};
@@ -1640,7 +1644,7 @@ function openStaff(){openOffice('schedule');}
 function openOffice(tab){const same=!$('office').hidden&&tab===officeTab;closeAll();if(same)return;if(tab)officeTab=tab;const was=$('office').hidden;$('office').hidden=false;renderOffice();if(was&&!ROT){const dw=$('office').offsetWidth;const want=Math.round(dw*.45);cam.x-=want-offShift;offShift=want;}}
 function closeOffice(){$('office').hidden=true;document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.remove('on'));cam.x+=offShift;offShift=0;renderHud();}
 /* v25.17: shrink an office page a little (down to 74%) when it would otherwise need scrolling */
-function fitOff(){const el=$('off');if(!el||$('office').hidden)return;el.style.fontSize='';let k=1;while(el.scrollHeight>el.clientHeight+1&&k>.83){k-=.04;el.style.fontSize=k.toFixed(2)+'em';}if(el.scrollHeight>el.clientHeight+8)el.style.fontSize='';/* a long list (staff, campaigns) scrolls at full size rather than shrinking */}
+function fitOff(){const el=$('off');if(!el||$('office').hidden)return;el.style.fontSize='';const sh=el.scrollHeight,ch=el.clientHeight;if(sh<=ch+1)return;const need=ch/sh;if(need<.8)return;/* a long list (staff, campaigns) scrolls at full size rather than shrinking */let k=Math.max(.83,Math.floor(need*.97*25)/25);el.style.fontSize=k.toFixed(2)+'em';if(el.scrollHeight>el.clientHeight+1&&k>.83){k=Math.max(.83,k-.04);el.style.fontSize=k.toFixed(2)+'em';}if(el.scrollHeight>el.clientHeight+8)el.style.fontSize='';}
 function renderOffice(){requestAnimationFrame(fitOff);setTimeout(fitOff,0);$('office').classList.toggle('wide',officeTab==='schedule'||(officeTab==='metrics'&&S.moneyTab==='equip'));const el=$('off');const oc=S.claims.filter(c=>c.status==='open').length;
   const tabs=[['metrics','📈','Money'],['insurance','🏦','Insurers'],['claims','📨','Claims'],['schedule','🗓','Shifts'],['inventory','📦','Stock'],['pricing','🏷','Prices']];
   document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===officeTab));$('offClose').onclick=()=>{SFX.click();closeOffice();};
@@ -2528,8 +2532,9 @@ $('dbgRot').onclick=()=>{forceLand=true;fitCanvas();applyLayout();fitWorld();ren
 setInterval(()=>{if(!$('dbg').hidden)$('dbgEnv').textContent=env()+'\n'+snap();},1000);
 
 /* ============ save / title / start ============ */
+function scrubFeed(f){if(!f)return;if(f.photo&&f.photo.img&&typeof f.photo.img!=='string')f.photo.img=null;}
 function saveGame(){let objs=S.objs;if(held&&!S.objs.includes(held.o))objs=[...S.objs,{...held.o,x:held.ox,y:held.oy,rot:held.orot}];try{localStorage.setItem('msp-save',JSON.stringify({S:{...S,objs},GL:GL.slice(-120),PLANS}));}catch(e){}}
-function loadGame(){hourSnap=null;try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){for(const w of d.S.staff||[]){if(w.energy===undefined)w.energy=Math.round((1-Math.min(6,w.fatigue||0)/6)*100);if(w.morale===undefined)w.morale=80;if(w.tenure===undefined)w.tenure=Math.max(0,(d.S.week||1)-1);}if(d.S.reg==null){d.S.reg=REG_START+Math.min(200,(d.S.week-1)*12);d.S.hood=1;}GL.push(...(d.GL||[]));/* insurer rates always come from the current build */return d.S;}}catch(e){}return null;}
+function loadGame(){hourSnap=null;try{const d=JSON.parse(localStorage.getItem('msp-save')||'null');if(d&&d.S&&d.S.week&&d.S.objs){scrubFeed(d.S.feed);for(const w of d.S.staff||[]){if(w.energy===undefined)w.energy=Math.round((1-Math.min(6,w.fatigue||0)/6)*100);if(w.morale===undefined)w.morale=80;if(w.tenure===undefined)w.tenure=Math.max(0,(d.S.week||1)-1);}if(d.S.reg==null){d.S.reg=REG_START+Math.min(200,(d.S.week-1)*12);d.S.hood=1;}GL.push(...(d.GL||[]));/* insurer rates always come from the current build */return d.S;}}catch(e){}return null;}
 function showTitle(saved){$('app').classList.add('titled');$('title').hidden=false;renderTitleCareer();$('tCont').hidden=!saved;$('tVer').textContent=BUILD;$('tSound').textContent='Sound: '+(AU.on?'on':'off');
   $('tSound').onclick=()=>{setSound(!AU.on);$('tSound').textContent='Sound: '+(AU.on?'on':'off');$('mSound').textContent='Sound: '+(AU.on?'on':'off');audioInit();};
   const go=(fresh_)=>{audioInit();setMusic('title');duck();SFX.bell();$('title').hidden=true;$('app').classList.remove('titled');

@@ -1,5 +1,14 @@
 # Changelog
 
+## v25.20 · 2026-10-29 — Audit: money, staff and speed
+I replayed a full Level-2 store (your week-21 layout, 12 staff hired from the job market, drive-thru, shots, OTC, promotions, a promotion and a raise) for 12 weeks with every cash change traced.
+- **Money adds up.** Every week, the sum of every cash movement equalled counter sales + insurer checks − wages, rent, drugs, driver, loan, promotions, hiring fees and bonuses. No double-counting, nothing missing. (Hiring fees and bonuses paid between weeks are charged to the following week's costs; that's by design and the Gazette says so.)
+- **Economy at Level 2:** about 300 prescriptions a week earned $22–24k (prescriptions 85%, OTC 10%, shots 5%) against $14–15k of costs, for +$6–9k a week with a 12-person team. Wages were about 50% of what the week earned, which is the healthy line the payroll warning uses.
+- **Staff do their jobs.** Pharmacists idle 2–8%, technicians 0–6%, clerks 6–32% (the spare clerk is the right one to lose). Speed, stamina, raises and promotions all carry through to how fast people work and what they're paid. No stuck staff, no page errors in 12 weeks.
+- **The end-of-week freeze is gone.** The last tick of the week took 0.3–0.5 s on iPhone, almost all of it composing the social-feed photo (a 600×340 JPEG). The photo is now composed a moment after the week ends, while the review is already on screen, and the Feed page waits for it if you get there first. The week now ends in under 40 ms.
+- The review page and office pages shrink their text with one measurement instead of a loop of re-layouts (the loop forced up to 7 full page layouts).
+- Memory stays flat over a long game: scripts (~40), claims (~50), insurer ledger (~350) and the activity log (capped at 400) all hold steady; a save is about 100 KB.
+
 ## v25.19 · 2026-10-29 — Raises can improve people; promotions
 - **Raise +10%** now also has a **50% chance** of a small speed gain (+0.03 to +0.07). The staff log says when it happens.
 - **Promote** (new button in a person's ⋯ sheet, after 4 weeks on the job): Technician → **Senior technician**, Clerk → **Senior clerk**, Pharmacist → **Pharmacy manager**. A promotion is a title, a **15% raise**, **+0.10 speed**, slightly better stamina and +25 morale. Promoting a pharmacist to manager also gives the rest of the team +5 morale. One promotion per person.
