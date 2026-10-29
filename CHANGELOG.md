@@ -1,5 +1,11 @@
 # Changelog
 
+## v25.9 · 2026-10-29 — Level 1 stays inside
+- During **Level 1** you only see the inside of the store. The **Outside** and **See-thru** buttons are hidden, and the area around the store is plain grass with a short path at the door. The parking lot, street, cars, people walking up and the for-sale lots stay hidden. Customers appear at the door and walk in.
+- When **Level 2** starts, both buttons appear and the whole outside is revealed.
+- The cutscenes still show the storefront (the grand opening, the Level 1 celebration and the Level 2 post).
+- A saved game that was left outside switches back inside if it's still on Level 1.
+
 ## v25.8 · 2026-10-29 — Problem reports show the level
 - **Report a problem** now starts with a level line, for example: "Level 2: trust 93/90 · net 45,210/100,000 · drive-thru not working". The line also lists:
   - parking spaces, driveway tiles, land bought and store expansions;
