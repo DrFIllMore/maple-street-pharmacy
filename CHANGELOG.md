@@ -1,5 +1,14 @@
 # Changelog
 
+## v25.8 · 2026-10-29 — Problem reports show the level
+- **Report a problem** now starts with a level line, for example: "Level 2: trust 93/90 · net 45,210/100,000 · drive-thru not working". The line also lists:
+  - parking spaces, driveway tiles, land bought and store expansions;
+  - items unlocked and campaigns run;
+  - career rank and XP;
+  - whether you were inside, outside or in see-through view;
+  - whether a cutscene was playing.
+- The same details appear on the report's GitHub issue ("**Level** …") and in the saved report file's summary. The saved file now also includes your career (rank, badges, scenes seen), so a problem that crosses from Level 1 to Level 2 can be replayed exactly.
+
 ## v25.7 · 2026-10-28 — Cutscenes for the big moments
 Three short scenes (about 9 seconds each), drawn live from your own store in the game's 3D style. The game pauses while they play; tap **Skip ›** to end one early.
 - **Grand opening** (the first time you open, before Level 1 starts): a Gazette **breaking news** broadcast. LIVE bug, masthead, lower-third headline and a scrolling ticker. The camera swoops in to the front door, a crowd waits by balloons and a GRAND OPENING banner, the owner cuts the ribbon, and confetti flies.
