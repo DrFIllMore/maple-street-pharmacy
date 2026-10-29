@@ -6,7 +6,7 @@ const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.
  a.startWeek();a.setSpeed(0);
  for(let i=0;i<108*2;i++){for(let f2=0;f2<12;f2++)a.motion(.016);a.tick();}
  a.openOffice('schedule');out.hadv=[...document.querySelectorAll('.hadv>div')].map(d=>d.textContent);
- document.querySelector('[data-h="pt-tech"]').click();document.querySelector('[data-h="float-tech"]').click();document.getElementById('autoRest').click();
+ {const c=a.market().cands.find(x=>x.role==='tech');c.pt=true;a.hireCand(c.id);}a.floaterGet('tech');document.getElementById('autoRest').click();
  out.staff=S.staff.map(w=>[w.name,w.role,w.floater?'temp':w.pt?'pt':'',S.sched[w.id].join(''),Math.round(a.wageOf(w))]);
  S.staff.filter(w=>!w.floater).forEach(w=>w.energy=30);
  while(S.running){for(let f2=0;f2<12;f2++)a.motion(.016);a.tick();}

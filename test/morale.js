@@ -5,7 +5,7 @@ const r=await pg.evaluate(()=>{const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.
  const T=(n)=>{for(let i=0;i<n;i++){for(let f=0;f<12;f++)a.motion(.016);a.tick();}};const toDayEnd=()=>{const d=S.day;while(S.day===d)T(1);};
  const out={};const tech=S.staff.find(w=>w.role==='tech'),clerk=S.staff.find(w=>w.role==='clerk');
  // hire fee + next-day start
- const c0=S.cash;const n0=S.staff.length;document.body.innerHTML+='';a.openOffice('schedule');S.staffTab='workers';a.openOffice('schedule');document.querySelector('[data-h="tech"]').click();const nh=S.staff[S.staff.length-1];out.hire={fee:c0-S.cash,n:S.staff.length-n0,start:[nh.startWk,nh.startDay],offToday:nh.off||!nh.plan};
+ const c0=S.cash;const n0=S.staff.length;document.body.innerHTML+='';a.openOffice('schedule');S.staffTab='workers';a.openOffice('schedule');a.hireCand(a.market().cands.find(x=>x.role==='tech').id);const nh=S.staff[S.staff.length-1];out.hire={fee:c0-S.cash,n:S.staff.length-n0,start:[nh.startWk,nh.startDay],offToday:nh.off||!nh.plan};
  // morale: run tech into the ground
  tech.energy=5;tech.morale=40;toDayEnd();out.day1={techMorale:tech.morale,sick:tech.sick,notice:tech.notice};
  tech.morale=12;tech.sick=0;toDayEnd();out.day2={notice:tech.notice,gl:__msp.GL.slice(-4).map(e=>e.text)};
