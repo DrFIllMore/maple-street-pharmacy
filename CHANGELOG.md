@@ -1,5 +1,28 @@
 # Changelog
 
+## v25.17 · 2026-10-29 — Phones, advisors that point at the real problem, and tidy Money and Supplies pages
+**Phone calls**
+- **What was wrong:** only a phone desk could take a call, and one desk answers one call at a time. In your store, calls averaged 8 waiting, 80 went to voicemail in a week, and clerks stood idle next to the drop-off windows. The "phones ringing, nobody free to answer" message was wrong too: people *were* free, but the desk was taken.
+- **Now** when the phone desk is busy, a free drop-off window or register with nobody waiting at it takes the call. Same store: about **2 calls waiting on average (was 8), ~30 voicemails (was 80)**, prescriptions served about the same.
+- The message now says which it is: "…while 2 people are free: every phone desk and drop-off window is busy. A second phone desk answers more at once", or "…nobody free to answer. Another clerk helps."
+
+**Advisors**
+- **Financial advisor** now leads with payroll when wages take more than 55% of what the week earned. They name the mismatch, for example: "You have 7 pharmacists but only 2 verify terminals and 1 consult desk: at most 4 can be useful at once. Let 3 go (Staff) or build more stations for them."
+- **District manager** now knows drive-thru, flu-shot and consult walk-outs (before, those fell through to "look at the Flow panel"). It also flags extra staff that the stations can't use.
+- **Operations (phones and claims)** now counts voicemail, not only missed calls. Its advice for a busy phone desk is a second desk next to drop-off.
+- **Case manager:** when older patients give up, the advice is now about *where* they gave up, not an unrelated item.
+- Flu-shot waits: if you have more pharmacists than consult desks, the advice is a second consult desk, not another hire.
+
+**Money and Supplies pages**
+- **Fixed the oversized text:** a style meant for big headline numbers was making every number inside the tables large and bold.
+- **Money** is split into **This week · Loan · Earned · Equipment**.
+  - Equipment shows one row per kind of item ("Registers ×6") instead of one row per item.
+  - Equipment has two views: what earns money, and workstations.
+- **Supplies** is split into **Stock · Prices & deals · Upgrades**.
+  - Stock is a small table: on hand, Monday's order, and a one-line note (days left, shots wanted a day, shoppers a day).
+  - Upgrades are grouped ("Fill station ×5 → Automatic counter").
+- Every Money and Supplies page now fits its window without scrolling on your phone. If a page is a few lines too tall, its text shrinks slightly (to no less than 83%) instead of scrolling.
+
 ## v25.16 · 2026-10-29 — Fix: the drive-thru starved, and the week now flags payroll
 **What happened (your week 21–23 report):** the week before the drive-thru: 468 served, 12 lost. The week it opened: 241 served, 249 lost. Every lost customer was a car at the drive-thru, while clerks sat idle. I rebuilt your store and lane from the report and reproduced it: **0 cars served at the window, 116 gave up.**
 - **Why:** your lane wraps around three sides of the store (64 tiles). The game picked the **longest** way in (44 tiles), to make room for a long line. Cars crawl through a lane, and their patience counted down while they were still driving, so they gave up before reaching the window. Those cars then blocked the lane for everyone behind them. Half your pick-ups were sent to that lane.
