@@ -1,5 +1,9 @@
 # Changelog
 
+## v25.15 · 2026-10-29 — Outside tab in Build
+- Build had no way to reach the driveway and parking items from inside: the Outside button hides while Build is open. Now, from Level 2, there's an **🚗 Outside** tab at the end of the Build tabs. It switches to the lot and shows Parking space, Driveway and Grass. **🏠 Inside** takes you back.
+- On small screens the tabs drop their icons so all of them fit.
+
 ## v25.14 · 2026-10-29 — Undo paving, and see where a drive-thru lane must connect
 - **Grass tool**: outside in Build, next to Driveway. Drag over paving to turn it back into grass, with half the cost back ($20 a tile). Sell also still removes paving one tile at a time.
 - **Green arrows show where a lane can join the lot**: while you pave (or whenever the drive-thru isn't working), a green arrow marks every tile where a driveway can connect to the parking lot's lanes. A drive-thru lane needs to reach **two** of them (one way in, one way out). They sit at the corners of the front lot, so a lane from a back or side window has to run all the way to the front.
