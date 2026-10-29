@@ -415,7 +415,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v25.10 · 2026-10-29';
+const BUILD='v25.11 · 2026-10-29';
 /* money: thousands separators without Intl (toLocaleString was a hot spot, called every frame by the HUD) */const fmt=n=>(n<0?'−':'')+'$'+String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1343,7 +1343,7 @@ function sheet(html){$('sheet').classList.toggle('wide',html.includes('class="wm
 /* while an item's window is open in Build, fold away the item row and sit the window above what's left of the palette,
    so a tap meant for the window can't buy something and a tap meant for the palette can't hit the window */
 let palGuardT=0;function syncSheetPal(){const sh=$('sheet'),pal=$('palette');if(!sh||!pal)return;const on=!sh.hidden&&!pal.hidden;if(pal.classList.contains('sheeted')!==on){pal.classList.toggle('sheeted',on);palGuardT=performance.now()+450;}
-  if(on){const app=$('app').getBoundingClientRect(),pr=pal.getBoundingClientRect(),bar=$('bar').getBoundingClientRect();sh.style.bottom=Math.round(app.bottom-pr.top+8)+'px';sh.style.maxHeight=Math.round(pr.top-bar.bottom-14)+'px';$('palHint').textContent='Close the window (×) to see the build items again.';}else{sh.style.bottom='';sh.style.maxHeight='';if(!pal.hidden)palHint();}}
+  if(on){/* layout coordinates inside the app (offsetTop), not screen ones: on a phone held upright the app is turned 90° and screen rects would point the wrong way */const appH=$('app').clientHeight,bar=$('bar'),palTop=pal.offsetTop,barB=bar.offsetTop+bar.offsetHeight;sh.style.bottom=Math.round(appH-palTop+8)+'px';sh.style.maxHeight=Math.max(120,Math.round(palTop-barB-14))+'px';$('palHint').textContent='Close the window (×) to see the build items again.';}else{sh.style.bottom='';sh.style.maxHeight='';if(!pal.hidden)palHint();}}
 function closeSheet(){$('sheet').hidden=true;S.sel=null;if(S.coverPending){S.coverPending=false;closeToday();}/* dismissing the no-pharmacist question = closing for the day */}
 function closeAll(){closeSheet();$('menu').hidden=true;$('dbg').hidden=true;if(!$('office').hidden)closeOffice();}
 function loadOf(o){const n=o.type==='fill'?S.scripts.filter(x=>x.at==='slot:'+o.id).length:o.type==='verify'?S.scripts.filter(x=>x.at==='tray:'+o.id||x.at==='claim:'+o.id).length:o.type==='shelf'?S.scripts.filter(x=>x.at==='shelf:'+o.id).length:o.type==='bin'?S.scripts.filter(x=>x.at==='bin:'+o.id).length:['dropoff','register'].includes(o.type)?S.patients.filter(p=>p.q===o.id&&(p.state==='queued'||p.state==='toQueue')).length:0;

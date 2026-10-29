@@ -1,5 +1,10 @@
 # Changelog
 
+## v25.11 · 2026-10-29 — Fix: couldn't rotate items on a phone held upright
+- The v25.10 change that moves an item's window above the build bar measured the screen the wrong way when the phone is held upright (the game is turned 90°). That pushed the window off-screen. You couldn't see it, so its rotate (↻) and move buttons were out of reach.
+- It now measures inside the game's own frame, so the window sits in the same place either way you hold the phone.
+- New test: on an upright phone, tap a placed item in Build, tap ↻, and the item turns.
+
 ## v25.10 · 2026-10-29 — An item's window no longer covers the build items
 - In Build, tapping a placed item opens its window (details, rotate, sell, upgrades). That window used to sit on top of the row of items to buy, so a tap could land on the wrong one and buy something.
 - Now, while the window is open, the row of build items folds away and the window sits above the bottom bar. The hint reads "Close the window (×) to see the build items again." Closing it brings the items back.
