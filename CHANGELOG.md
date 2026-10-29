@@ -1,5 +1,10 @@
 # Changelog
 
+## v25.19 · 2026-10-29 — Raises can improve people; promotions
+- **Raise +10%** now also has a **50% chance** of a small speed gain (+0.03 to +0.07). The staff log says when it happens.
+- **Promote** (new button in a person's ⋯ sheet, after 4 weeks on the job): Technician → **Senior technician**, Clerk → **Senior clerk**, Pharmacist → **Pharmacy manager**. A promotion is a title, a **15% raise**, **+0.10 speed**, slightly better stamina and +25 morale. Promoting a pharmacist to manager also gives the rest of the team +5 morale. One promotion per person.
+- Senior staff show "SR" in their floor tag and their new title on the Team tab.
+
 ## v25.18 · 2026-10-29 — Every hire is different
 - **Staff now differ.** Each person has a **speed** (×0.78 to ×1.40 at every job), **stamina** (how fast they tire) and an **asking wage**. Before, every technician was the same technician at the same price.
 - **A new set of applicants every Monday.** The Staff page has a new **Hire** tab with six applicants a week: name, role, a one-word type (Quick hands, Steady, Tireless, Fresh out of school, Bargain, and now and then a Star), speed, stamina, whether that role is needed right now, and a value-for-money verdict. Hire one and they're off the list; skip them and they're gone next week.
