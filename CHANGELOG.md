@@ -1,5 +1,16 @@
 # Changelog
 
+## v25.16 · 2026-10-29 — Fix: the drive-thru starved, and the week now flags payroll
+**What happened (your week 21–23 report):** the week before the drive-thru: 468 served, 12 lost. The week it opened: 241 served, 249 lost. Every lost customer was a car at the drive-thru, while clerks sat idle. I rebuilt your store and lane from the report and reproduced it: **0 cars served at the window, 116 gave up.**
+- **Why:** your lane wraps around three sides of the store (64 tiles). The game picked the **longest** way in (44 tiles), to make room for a long line. Cars crawl through a lane, and their patience counted down while they were still driving, so they gave up before reaching the window. Those cars then blocked the lane for everyone behind them. Half your pick-ups were sent to that lane.
+- **Fixed:**
+  - Cars now take the **shortest** way in.
+  - Patience only counts down while a car is **stuck in line**, not while it's moving.
+  - When **6 cars** are already waiting, new pick-ups come inside to the counter instead.
+  - Same store and lane: **51 served at the window, 0 gave up, 336 served in all** (was 228).
+- **The drive-thru window's info** now shows cars served and cars that gave up this week, and how many are in line now.
+- **Payroll warning at week end:** when wages are more than 55% of what the week earned, the money messages say so, name how many of each role sat idle more than half the week, and say what letting them go would save. In your store, 4 of 7 pharmacists were idle 74–98% of the week. Only 2 verify terminals means only 2 pharmacists can check at a time.
+
 ## v25.15 · 2026-10-29 — Outside tab in Build
 - Build had no way to reach the driveway and parking items from inside: the Outside button hides while Build is open. Now, from Level 2, there's an **🚗 Outside** tab at the end of the Build tabs. It switches to the lot and shows Parking space, Driveway and Grass. **🏠 Inside** takes you back.
 - On small screens the tabs drop their icons so all of them fit.
