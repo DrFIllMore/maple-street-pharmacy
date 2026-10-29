@@ -1,0 +1,14 @@
+// v25.12: a 'more chairs' complaint only comes from people who stood because every chair was taken (report 2026-10-29: 15 chairs, mostly empty).
+const {webkit}=require('playwright');const path=require('path');const OBJS="dropoff@5,12r1 bin@0,12r1 bin@0,11r1 otc@19,6r3 otc@19,10r3 shelf@3,0 register@5,5r1L1 counter@5,7r1 register@5,8r1L1 dropoff@5,10r1 wall@10,3r3 register@6,3L1 wall@5,3r2 wall@5,4r2 wall@11,3r3 wall@12,3r3 wall@13,3r3 consult@15,1r1 wall@14,3 wall@15,3 wall@16,3 wall@17,3 wall@17,2 door@17,1r1 wall@17,0r1 wall@16,0r1 wall@15,0r2 shelf@5,0 register@8,3 breakroom@11,0 phone@10,0 shelf@7,0 verify@1,0L1 verify@0,2r1L1 fill@0,4r1L1 fill@0,6r1L1 fill@0,8r1L1 bin@0,10r1 problem@9,0 bin@0,13r1 chair@10,13r2 chair@9,13r2 chair@8,13r2 chair@7,13r2 chair@11,13r2 chair@12,13r2 restroom@18,12r3 restroom@18,13r3 chair@13,13r2 chair@14,13r2 chair@19,5r3 chair@19,4r3 chair@19,3r3 chair@19,2r3 chair@19,1r3 chair@19,0r3 snack@16,13r2 chair@15,13r2";const GAME=process.env.GAME||path.join(__dirname,'..','index.html');
+(async()=>{const b=await webkit.launch();const errs=[];const ctx=await b.newContext({viewport:{width:932,height:430}});await ctx.addInitScript(()=>{let x=21;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};});const pg=await ctx.newPage();pg.on('pageerror',e=>errs.push(e.message+' '+(e.stack||'').split('\n')[1]));
+await pg.goto('file://'+GAME);await pg.waitForTimeout(300);
+const r=await pg.evaluate((OBJS)=>{localStorage.clear();document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;S.cash=1e6;S.unlocked=['plant','snack','mat','problem','breakroom','otc','room','consult','fridge','medshelf'];S.major=2;
+ for(const tok of OBJS.split(' ')){const m=tok.match(/^(\w+)@(\d+),(\d+)(?:r(\d))?/);if(!m)continue;a.place(m[1],+m[2],+m[3],+(m[4]||0));}
+ for(const r of ['rph','rph','tech','tech','tech','tech','tech','clerk','clerk','clerk','clerk','clerk','clerk'])a.hire(r);
+ a.setBuild(false);S.opened=true;S.trust=100;S.reg=680;S.contracts.vax=true;S.vaxDoses=20;S.stock=2000;S.inv.otcBack=200;for(const o of S.objs)if(o.type==='otc')o.stock=40;
+ document.getElementById('review').hidden=true;a.startWeek();a.setSpeed(0);S.speed=1;while(S.running){for(let f=0;f<10;f++)a.motion(.016);a.tick();}
+ const w=S.hist.length?S.wk:S.wk;const gave={};for(const e of (S.wk.ev||[]))if(e.k==='gaveup')gave[e.where]=(gave[e.where]||0)+1;
+ a.makeFeed();const posts=(S.feed&&S.feed.posts||[]).filter(p=>p.fix).map(p=>p.head+' → '+p.fix+' ['+p.promise+']');
+ return {chairs:S.objs.filter(o=>o.type==='chair').length,noSeat:S.wk.noSeat||0,gave,posts};},OBJS);
+const chairPost=r.posts.some(p=>/\[chairs\]/.test(p));const ok=!errs.length&&(!chairPost||r.noSeat>=3);
+console.log(JSON.stringify(r,null,1),errs.slice(0,3),ok?'PASS':'FAIL');await b.close();})();

@@ -1,5 +1,14 @@
 # Changelog
 
+## v25.13 · 2026-10-29 — Fix: "more seating" complaints when chairs sat empty
+**What happened (your week-16 report, 15 chairs mostly empty):** when a customer gave up somewhere the game had no name for, it called the place "in the store". The social feed then suggested **"More chairs"** for any walk-out like that. Most of those walk-outs were people waiting at the consult room for a pharmacist (more of them since v25.12 added flu-shot asks at pick-up). So the post blamed seating, and the "more seating" promise was judged on chairs you didn't need. That's why it broke.
+
+- Walk-outs at the consult room are now named "waiting for a flu shot" or "waiting for a consult". The feed's fix for those is "keep a pharmacist free for the consult room", with a new promise to match.
+- A seating complaint now comes only from people who **stood because every chair was taken** (3 or more in a week). A "more seating" promise also counts as kept if nobody had to stand.
+- The advisor no longer says "more chairs" as a catch-all. It points to the Flow page, or to a pharmacist for shot waits.
+- **OTC shoppers now pay at the shelf**, not at a register. In v25.12 they queued with prescription pick-ups and lengthened that line. OTC income stays (about $2.6k in the test week). Over 3 test runs of your store, prescriptions served and pick-up walk-outs were about the same as before shoppers existed.
+- Fix: buying a build item right after closing an item's window is blocked reliably (the half-second tap guard is set immediately).
+
 ## v25.12 · 2026-10-29 — More ways to earn, Build categories, clearer restrooms, flu shots, claims and walls
 From the week-15 report (Level 2, trust 100). Prescriptions brought in about 97% of the money: OTC added about $600 a week and flu shots about $1,200.
 

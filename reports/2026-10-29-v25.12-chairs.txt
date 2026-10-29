@@ -1,0 +1,111 @@
+=== Maple Street Pharmacy debug ===
+build v25.12 · 2026-10-29 · 2026-10-29T03:33:57.545Z
+window 430×873 · dpr 3 · screen 430×932
+orientation portrait-primary · app 817×426 · rotated true · fps 61
+bar 389,69 35×762 · chat 8,69 74×329 · sheet hidden · review hidden · office hidden
+layout {"barL":87,"barR":39,"barY":3,"barH":41,"barF":11,"chat":[85,8,329.3333333333334,74.3333333333333,10],"size":0.85,"k":0.84} · window 430×873 @3 rot=true
+window insets top 56 bottom 0 left 0 right 4 · screen 430×873 @3 · safe-area 59/34/0/0 · rot=true · app 817×426
+ua Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1
+
+--- state ---
+Level 2: trust 100/90 · net 44603/100000 · drive-thru not working · stalls 6 drive 0 land - grew - · unlocked 11 · promos 5 · rank 10 (6099 XP) · view in
+week 17 day 6 tick 0 running=false opened=true speed=3 cash=15508 owed=23438 loan=0 trust=99.5 stock=89 plans={"blue":true,"silver":true,"quick":true} price=56 mods={"viral":2,"viralK":0.85,"delivery":99,"raise":99,"referral":3}
+objs dropoff@5,12r1 bin@0,12r1 bin@0,11r1 otc@19,6r3 otc@19,10r3 shelf@3,0 register@5,5r1L1 counter@5,7r1 register@5,8r1L1 dropoff@5,10r1 wall@10,3r3 register@6,3L1 wall@5,3r2 wall@5,4r2 wall@11,3r3 wall@12,3r3 wall@13,3r3 consult@15,1r1 wall@14,3 wall@15,3 wall@16,3 wall@17,3 wall@17,2 door@17,1r1 wall@17,0r1 wall@16,0r1 wall@15,0r2 shelf@5,0 register@8,3 breakroom@11,0 phone@10,0 shelf@7,0 verify@1,0L1 verify@0,2r1L1 fill@0,4r1L1 fill@0,6r1L1 fill@0,8r1L1 bin@0,10r1 problem@9,0 bin@0,13r1 chair@10,13r2 chair@9,13r2 chair@8,13r2 chair@7,13r2 chair@11,13r2 chair@12,13r2 restroom@18,12r3 restroom@18,13r3 chair@13,13r2 chair@14,13r2 chair@19,5r3 chair@19,4r3 chair@19,3r3 chair@19,2r3 chair@19,1r3 chair@19,0r3 snack@16,13r2 chair@15,13r2 · reach 127 tiles
+staff Jordan/rph/off, Kenji/tech/off, Bo/clerk/off, Owen/clerk/off, Theo/rph/off, Amara/tech/off, Felix/tech/off, Omar/clerk/off, Ines/clerk/off, Priya/clerk/off, Nia/clerk/off, Grace/rph/off, Luis/tech/off, Dana/tech/off
+scripts ring2 with0 bin28 carried3 tray5 prob0 claim0 shelf16 back0 · people 0 () · claims open 6
+busy {} wk={"served":397,"lost":54,"consults":50,"otc":1467,"cashIn":12493,"drug":5499,"paid":13222.039999999997,"fee":843.9599999999999,"trust0":99.752,"phoneMissed":0,"backorder":0,"writeoff":8,"annoyed":0,"ev":[{"k":"happy","name":"Aunt Bea","el":true},{"k":"gaveup","name":"Derek","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Yuki","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Aunt Bea","where":"in the store","mood":"annoyed","el":false},{"k":"consult","name":"Mrs. Alvarez","priv":true,"shot":true},{"k":"happy","name":"Tasha","el":false},{"k":"gaveup","name":"Mina","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Aunt Bea","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Grandpa Joe","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Derek","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Patel","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Tasha","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Tasha","where":"in the store","mood":"annoyed","el":true},{"k":"consult","name":"Ruby","priv":true,"shot":true},{"k":"gaveup","name":"Mr. Brooks","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Jordan","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Mina","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Jordan","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Sam","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Ruby","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Ruby","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Ms. Okafor","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Ms. Okafor","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Coach Riley","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Tasha","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Grandpa Joe","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Hector","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mrs. Nowak","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Ms. Okafor","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Mr. Patel","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Derek","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Hector","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Coach Riley","where":"in the store","mood":"annoyed","el":true},{"k":"consult","name":"Ms. Okafor","priv":true,"shot":true},{"k":"gaveup","name":"Yuki","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Coach Riley","where":"in the store","mood":"annoyed","el":true},{"k":"happy","name":"Coach Riley","el":false},{"k":"consult","name":"Mrs. Alvarez","priv":true,"shot":true},{"k":"gaveup","name":"Mr. Brooks","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Grandpa Joe","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Hector","where":"in the store","mood":"annoyed","el":false},{"k":"consult","name":"Mrs. Nowak","priv":true,"shot":true},{"k":"consult","name":"Tasha","priv":true,"shot":true},{"k":"happy","name":"Yuki","el":false},{"k":"consult","name":"Coach Riley","priv":true,"shot":true},{"k":"consult","name":"Mrs. Nowak","priv":true,"shot":false},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Derek","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Hector","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Ms. Okafor","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Sam","where":"at pick-up","mood":"angry","el":false},{"k":"happy","name":"Elena","el":true},{"k":"gaveup","name":"Hector","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at drop-off","mood":"angry","el":false},{"k":"gaveup","name":"Sam","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Coach Riley","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Tasha","where":"at pick-up","mood":"angry","el":false},{"k":"happy","name":"Tasha","el":true},{"k":"gaveup","name":"Mrs. Alvarez","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Patel","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Aunt Bea","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Elena","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Derek","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Jordan","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Mina","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Hector","where":"at pick-up","mood":"angry","el":false},{"k":"happy","name":"Grandpa Joe","el":true},{"k":"gaveup","name":"Tasha","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mr. Chen","where":"at pick-up","mood":"angry","el":false},{"k":"consult","name":"Ruby","priv":true,"shot":false},{"k":"happy","name":"Mrs. Nowak","el":true},{"k":"happy","name":"Grandpa Joe","el":false},{"k":"gaveup","name":"Ruby","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Mrs. Alvarez","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Aunt Bea","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":true},{"k":"consult","name":"Derek","priv":true,"shot":false},{"k":"happy","name":"Elena","el":true},{"k":"gaveup","name":"Mr. Patel","where":"at pick-up","mood":"angry","el":true},{"k":"consult","name":"Coach Riley","priv":true,"shot":false},{"k":"happy","name":"Grandpa Joe","el":true},{"k":"gaveup","name":"Mr. Chen","where":"at pick-up","mood":"angry","el":true},{"k":"consult","name":"Mr. Chen","priv":true,"shot":false},{"k":"gaveup","name":"Mina","where":"at pick-up","mood":"angry","el":false}],"built":[],"maxTray":18,"intrude":0,"theft":0,"theftVal":0,"escorted":0,"looDenied":0,"tw":{"walk-outs":-7.600000000000193,"consults":10.668000000000703,"served":4.9399999999994435,"claims written off":-4,"press":-4,"mess on the floor":-2.0999999999999943,"perks":2.340000000000046,"promises":-1.5,"sponsorship":1},"cashStart":9514.200000000015,"reg0":650.4443042358081,"equip":300,"lost_cancelled_after_2_days":9,"regLost":34.73296456353718,"qw":{"win":978,"pick":6805,"bin":6275,"tray":2211},"shotWant":211,"lotFull":455,"later":87,"inc":{"shots":1350,"rx":25982,"otc":1467,"snacks":164,"reviews":400},"shotGiven":30,"lost_wait_too_long":1,"regNew":62.819999999999986,"looUsed":132,"annoyedTicks":0,"shoppers":46,"snacks":82,"breaks":59,"lost_at_pick-up":43,"shotMiss":181,"shotMissWait":35,"_ps":397,"_pl":54,"leftAtClose":79,"shopEmpty":3,"shelfFull":23,"shopLost":3,"promo":2000,"press":[{"k":"lines","bad":true,"head":"Long lines at Maple Street — 15 walk out in a day"},{"k":"billing","bad":true,"head":"Billing troubles at Maple Street Pharmacy"}],"voicemail":9,"shotMissDose":146,"noDoseSaid":true,"lost_at_drop-off":1,"mess":2,"interest":0,"billPay":11062,"billRent":500,"billDriver":60,"costs":19121,"loanPay":0,"complaints":[],"svcRate":0.1197339246119734,"promiseResults":[{"k":"chairs","who":"Mrs. Nowak","made":16,"snap":{"loos":2,"win":2,"clerks":6,"regs":4,"regLvl":1,"fills":3,"fillLvl":1,"techs":5,"chairs":15,"verLvl":1,"rphs":3,"lostDrop":1,"lostPick":8,"lostFill":0},"done":true,"kept":false}],"regEnd":679,"net":6594.039999999997,"cashNet":5994,"other":-300,"bankNote":[],"unlocks":[]} demand/day=79.4
+
+--- activity (400) ---
+w16 Fri 5:20 [bad] Kenji: bin has 9 baskets, I can't keep up.
+w16 Fri 5:20 [ops] Line at drop-off: 4 waiting.
+w16 Fri 5:45 [ops] Line at pick-up: 5 waiting.
+w16 Fri 5:50 [bad] Jordan: 6 fills waiting on me to check.
+w16 Fri 6:00 [money] Hour: 11 served, 0 gave up, $249 in.
+w16 Sat 9:00 [ops] Wait is about 200 min — customers are dropping off and coming back later.
+w16 Sat 9:05 [money] Insurer remittance: +$2,423 (49 claims, $155 fees).
+w16 Sat 9:05 [ops] 12 bags on the shelf. People haven't come back yet.
+w16 Sat 9:05 [ops] Stock is low: 170 units left.
+w16 Sat 10:00 [money] Hour: 3 served, 0 gave up, $86 in.
+w16 Sat 10:00 [money] Claim rejected by the insurer.
+w16 Sat 10:20 [bad] Kenji: bin has 12 baskets, I can't keep up.
+w16 Sat 10:45 [ops] Line at pick-up: 10 waiting.
+w16 Sat 10:50 [bad] Jordan: 5 fills waiting on me to check.
+w16 Sat 10:55 [money] Mr. Brooks grabbed a snack (+$2) and will wait longer.
+w16 Sat 11:00 [staff] Ines has had nothing to do for two hours: between tasks.
+w16 Sat 11:00 [money] Hour: 1 served, 0 gave up, $17 in.
+w16 Sat 11:15 [staff] Priya has had nothing to do for two hours: between tasks.
+w16 Sat 11:25 [bad] 2 phones ringing, nobody free to answer.
+w16 Sat 11:55 [ops] Line at drop-off: 4 waiting.
+w16 Sat 12:00 [money] Hour: 8 served, 0 gave up, 2 annoyed right now, $181 in.
+w16 Sat 12:05 [ops] 30 bags on the shelf. People haven't come back yet.
+w16 Sat 12:20 [bad] Kenji: bin has 7 baskets, I can't keep up.
+w16 Sat 12:45 [ops] Line at pick-up: 7 waiting.
+w16 Sat 12:50 [bad] Jordan: 4 fills waiting on me to check.
+w16 Sat 1:00 [money] Hour: 7 served, 0 gave up, 2 annoyed right now, $207 in.
+w16 Sat 1:05 [money] Claim rejected by the insurer.
+w16 Sat 1:15 [money] Aunt Bea grabbed a snack (+$2) and will wait longer.
+w16 Sat 1:35 [ops] Wait is about 175 min — customers are dropping off and coming back later.
+w16 Sat 1:40 [bad] Mr. Chen gave up at pick-up.
+w16 Sat 1:55 [ops] Line at drop-off: 4 waiting.
+w16 Sat 2:00 [money] Hour: 9 served, 1 gave up, 5 annoyed right now, $180 in.
+w16 Sat 2:20 [bad] Kenji: bin has 14 baskets, I can't keep up.
+w16 Sat 2:40 [bad] Mina gave up at pick-up.
+w16 Sat 2:45 [money] Ruby grabbed a snack (+$2) and will wait longer.
+w16 Sat 2:45 [ops] Line at pick-up: 8 waiting.
+w16 Sat 2:55 [bad] Jordan: 4 fills waiting on me to check.
+w16 Sat 3:00 [money] Hour: 11 served, 1 gave up, 3 annoyed right now, $269 in.
+w16 Sat 3:05 [ops] 29 bags on the shelf. People haven't come back yet.
+w16 Sat 3:05 [ops] Stock is low: 116 units left.
+w16 Sat 3:55 [ops] Line at drop-off: 4 waiting.
+w16 Sat 4:00 [money] Hour: 14 served, 0 gave up, $400 in.
+w16 Sat 4:10 [money] Claim rejected by the insurer.
+w16 Sat 4:20 [bad] Kenji: bin has 11 baskets, I can't keep up.
+w16 Sat 4:25 [bad] 2 phones ringing, nobody free to answer.
+w16 Sat 4:45 [bad] Yuki was sick on the floor. Staff need to clean it up.
+w16 Sat 4:45 [ops] Wait is about 200 min — customers are dropping off and coming back later.
+w16 Sat 5:00 [money] Hour: 13 served, 0 gave up, $277 in.
+w16 Sat 5:00 [bad] Jordan: 5 fills waiting on me to check.
+w16 Sat 5:05 [money] Mr. Patel grabbed a snack (+$2) and will wait longer.
+w16 Sat 5:05 [ops] Bo cleaned up the floor.
+w16 Sat 5:20 [ops] Line at pick-up: 5 waiting.
+w16 Sat 5:55 [ops] Line at drop-off: 5 waiting.
+w16 Sat 6:00 [money] Hour: 9 served, 0 gave up, $200 in.
+w16 Sat 6:00 [bad] 📰 Gazette: "Billing troubles at Maple Street Pharmacy" — customers −15%, trust −2, team morale −5 for 3 days.
+w16 — 9:00 [bad] Promise broken: more seating. Mrs. Nowak noticed. −1.5 trust.
+w16 — 9:00 [money] Counter $12,493, insurers $13,222 (fees $844). Wages $11,062, rent $500, drugs $5,499, driver $60, loan $0. Week net +$6,594, equipment −$300. Cash +$5,994 for the week.
+w16 — 9:00 [money] Where the money came from: prescriptions $25,982 (88%) · OTC $1,467 (5%) · flu shots $1,350 (5%) · med reviews $400 (1%) · snacks $164 (1%).
+w16 — 9:00 [money] Local paper ad ended: about 44 extra customers ≈ $2,376 margin on a $900 campaign — paid for itself.
+w16 — 9:00 [money] Social push ended: about 10 extra customers ≈ $540 margin on a $500 campaign — paid for itself.
+
+--- log (31) ---
+0.3s w15 [sys] start v25.12 · 2026-10-29 430×873 rot=true
+5.8s w15 [game] week 15 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk","rph"],"objs":56,"cash":12363,"trust":100,"demand":64.3}
+169.5s w15 [game] week 15 end {"served":349,"lost":12,"paid":12325,"costs":28019,"net":-4049,"cash":9514,"owed":20634,"trust":98.5}
+254.7s w16 [game] week 16 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk","rph","tech","tech"],"objs":58,"cash":8914,"trust":99.8,"demand":76.9}
+450.4s w16 [staff] Kenji morale -5 (press) → 95
+450.4s w16 [staff] Bo morale -5 (press) → 95
+450.4s w16 [staff] Owen morale -5 (press) → 95
+450.4s w16 [staff] Theo morale -5 (press) → 95
+450.4s w16 [staff] Amara morale -5 (press) → 95
+450.4s w16 [staff] Felix morale -5 (press) → 95
+450.4s w16 [staff] Omar morale -5 (press) → 95
+450.4s w16 [staff] Ines morale -5 (press) → 95
+450.4s w16 [staff] Priya morale -5 (press) → 95
+450.4s w16 [staff] Nia morale -5 (press) → 95
+450.4s w16 [staff] Grace morale -5 (press) → 93
+450.4s w16 [staff] Luis morale -5 (press) → 87
+450.4s w16 [staff] Dana morale -5 (press) → 89
+479.9s w16 [staff] Kenji morale -5 (press) → 94
+479.9s w16 [staff] Bo morale -5 (press) → 93
+479.9s w16 [staff] Owen morale -5 (press) → 94
+479.9s w16 [staff] Theo morale -5 (press) → 92
+479.9s w16 [staff] Amara morale -5 (press) → 94
+479.9s w16 [staff] Felix morale -5 (press) → 93
+479.9s w16 [staff] Omar morale -5 (press) → 93
+479.9s w16 [staff] Ines morale -5 (press) → 93
+479.9s w16 [staff] Priya morale -5 (press) → 94
+479.9s w16 [staff] Nia morale -5 (press) → 92
+479.9s w16 [staff] Grace morale -5 (press) → 89
+479.9s w16 [staff] Luis morale -5 (press) → 84
+479.9s w16 [staff] Dana morale -5 (press) → 85
+479.9s w16 [game] week 16 end {"served":397,"lost":54,"paid":13222,"costs":19121,"net":6594,"cash":15508,"owed":23438,"trust":98.5}
