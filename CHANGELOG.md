@@ -1,5 +1,11 @@
 # Changelog
 
+## v25.14 · 2026-10-29 — Undo paving, and see where a drive-thru lane must connect
+- **Grass tool**: outside in Build, next to Driveway. Drag over paving to turn it back into grass, with half the cost back ($20 a tile). Sell also still removes paving one tile at a time.
+- **Green arrows show where a lane can join the lot**: while you pave (or whenever the drive-thru isn't working), a green arrow marks every tile where a driveway can connect to the parking lot's lanes. A drive-thru lane needs to reach **two** of them (one way in, one way out). They sit at the corners of the front lot, so a lane from a back or side window has to run all the way to the front.
+- **The red tile now says what's wrong**: the tile in front of the window gets a label: "Pave this tile", "Lane must reach a green arrow", "Needs a 2nd green arrow (way out)", or "Way in and way out share tiles".
+- Problem reports now list the driveway tiles, so a lane can be rebuilt exactly.
+
 ## v25.13 · 2026-10-29 — Fix: "more seating" complaints when chairs sat empty
 **What happened (your week-16 report, 15 chairs mostly empty):** when a customer gave up somewhere the game had no name for, it called the place "in the store". The social feed then suggested **"More chairs"** for any walk-out like that. Most of those walk-outs were people waiting at the consult room for a pharmacist (more of them since v25.12 added flu-shot asks at pick-up). So the post blamed seating, and the "more seating" promise was judged on chairs you didn't need. That's why it broke.
 

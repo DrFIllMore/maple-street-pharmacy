@@ -1,0 +1,119 @@
+=== Maple Street Pharmacy debug ===
+build v25.13 · 2026-10-29 · 2026-10-29T04:45:03.795Z
+window 430×873 · dpr 3 · screen 430×932
+orientation portrait-primary · app 817×426 · rotated true · fps 61
+bar 389,69 35×762 · chat 8,69 91×375 · sheet hidden · review hidden · office hidden
+layout {"barL":87,"barR":39,"barY":3,"barH":41,"barF":11,"chat":[85,8,375.0000000000001,90.66666666666664,10],"size":0.85,"k":0.84} · window 430×873 @3 rot=true
+window insets top 56 bottom 0 left 0 right 4 · screen 430×873 @3 · safe-area 59/34/0/0 · rot=true · app 817×426
+ua Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1
+
+--- state ---
+Level 2: trust 100/90 · net 80000/100000 · drive-thru not working · stalls 6 drive 72 land - grew - · unlocked 11 · promos 5 · rank 10 (8508 XP) · view out+seethru
+week 21 day 6 tick 0 running=false opened=true speed=3 cash=7246 owed=25428 loan=0 trust=100.0 stock=101 plans={"blue":true,"silver":true,"quick":true} price=56 mods={"viral":2,"viralK":0.85,"delivery":99,"raise":99,"referral":3,"cheap":1}
+objs dropoff@5,12r1 bin@0,12r1 bin@0,11r1 otc@19,6r3 otc@19,10r3 shelf@3,0 register@5,5r1L1 counter@5,7r1 register@5,8r1L1 dropoff@5,10r1 wall@5,3r2 wall@5,4r2 consult@15,1r1 wall@14,3 wall@15,3 wall@16,3 wall@17,3 wall@17,2 door@17,1r1 wall@17,0r1 wall@16,0r1 wall@15,0r2 shelf@5,0 breakroom@11,0 phone@10,0 shelf@7,0 verify@0,2r1L1 fill@0,4r1L2 fill@0,6r1L2 fill@0,8r1L2 bin@0,10r1 problem@9,0 bin@0,13r1 chair@10,13r2 chair@9,13r2 chair@8,13r2 chair@7,13r2 chair@11,13r2 chair@12,13r2 restroom@18,12r3 restroom@18,13r3 chair@13,13r2 chair@14,13r2 chair@19,5r3 chair@19,4r3 chair@19,3r3 chair@19,2r3 chair@19,1r3 chair@19,0r3 snack@16,13r2 chair@15,13r2 bin@2,13r2 bin@3,13r2 register@6,4L1 register@8,4L1 register@10,4L1 register@12,4L1 fill@2,10r1L1 fill@2,8r1L1 verify@2,6r1L1 dtwin@2,0r2 · reach 119 tiles
+staff Jordan/rph/off, Kenji/tech/off, Bo/clerk/off, Owen/clerk/off, Theo/rph/off, Amara/tech/off, Felix/tech/off, Omar/clerk/off, Ines/clerk/off, Priya/clerk/off, Nia/clerk/off, Grace/rph/off, Luis/tech/off, Dana/tech/off, Rosa/clerk/off, Priya/rph/off, Grace/rph/off
+scripts ring57 with0 bin28 carried0 tray0 prob0 claim0 shelf9 back0 · people 0 () · claims open 0
+busy {} wk={"served":468,"lost":12,"consults":43,"otc":3312,"cashIn":15943,"drug":5405,"paid":17920.160000000018,"fee":1143.8399999999997,"trust0":100,"phoneMissed":0,"backorder":0,"writeoff":1,"annoyed":0,"ev":[{"k":"happy","name":"Ms. Okafor","el":false},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"consult","name":"Ruby","priv":true,"shot":true},{"k":"happy","name":"Mrs. Nowak","el":false},{"k":"consult","name":"Hector","priv":true,"shot":true},{"k":"happy","name":"Ms. Okafor","el":false},{"k":"gaveup","name":"Mrs. Nowak","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Elena","where":"at pick-up","mood":"angry","el":true},{"k":"consult","name":"Mrs. Nowak","priv":true,"shot":true},{"k":"consult","name":"Elena","priv":true,"shot":true},{"k":"happy","name":"Mrs. Nowak","el":true},{"k":"consult","name":"Elena","priv":true,"shot":true},{"k":"consult","name":"Yuki","priv":true,"shot":true},{"k":"happy","name":"Coach Riley","el":true},{"k":"consult","name":"Grandpa Joe","priv":true,"shot":true},{"k":"gaveup","name":"Elena","where":"waiting for a flu shot","mood":"annoyed","el":false},{"k":"gaveup","name":"Tasha","where":"waiting for a flu shot","mood":"annoyed","el":false},{"k":"consult","name":"Derek","priv":true,"shot":true},{"k":"consult","name":"Sam","priv":true,"shot":true},{"k":"consult","name":"Mina","priv":true,"shot":true},{"k":"happy","name":"Aunt Bea","el":false},{"k":"consult","name":"Hector","priv":true,"shot":true},{"k":"consult","name":"Mr. Patel","priv":true,"shot":true},{"k":"happy","name":"Tasha","el":false},{"k":"gaveup","name":"Mr. Patel","where":"waiting for a flu shot","mood":"annoyed","el":false},{"k":"consult","name":"Ruby","priv":true,"shot":true},{"k":"gaveup","name":"Ms. Okafor","where":"waiting for a flu shot","mood":"annoyed","el":false},{"k":"gaveup","name":"Derek","where":"waiting for a flu shot","mood":"annoyed","el":false},{"k":"consult","name":"Yuki","priv":true,"shot":false},{"k":"happy","name":"Ruby","el":true},{"k":"consult","name":"Aunt Bea","priv":true,"shot":false},{"k":"consult","name":"Ruby","priv":true,"shot":false},{"k":"happy","name":"Mr. Brooks","el":true},{"k":"gaveup","name":"Hector","where":"at pick-up","mood":"angry","el":false},{"k":"consult","name":"Mina","priv":true,"shot":false},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"gaveup","name":"Tasha","where":"at pick-up","mood":"angry","el":false},{"k":"happy","name":"Mr. Patel","el":true},{"k":"consult","name":"Yuki","priv":true,"shot":false},{"k":"happy","name":"Mr. Chen","el":true},{"k":"gaveup","name":"Mrs. Nowak","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Coach Riley","where":"at pick-up","mood":"angry","el":true},{"k":"happy","name":"Jordan","el":false},{"k":"happy","name":"Mrs. Alvarez","el":true},{"k":"happy","name":"Mrs. Alvarez","el":true}],"built":["dtwin"],"maxTray":10,"intrude":0,"theft":0,"theftVal":0,"escorted":0,"looDenied":0,"tw":{"walk-outs":-1.5,"served":1.259999999999934,"consults":1.740000000000066,"mess on the floor":-1,"claims written off":-0.5,"perks":0,"service":0,"sponsorship":0},"cashStart":9239.440000000031,"reg0":834.5054126506342,"promo":7600,"hireFees":300,"regLost":26.06928118975966,"lost_cancelled_after_2_days":5,"qw":{"win":711,"pick":2958,"bin":1398,"tray":482},"shotWant":113,"lotFull":381,"lost_wait_too_long":1,"inc":{"rx":29447,"shots":1350,"otc":3312,"snacks":106,"reviews":260},"shotGiven":30,"regNew":108.88000000000056,"shoppers":84,"looUsed":73,"annoyedTicks":0,"breaks":62,"voicemail":121,"snacks":53,"lost_at_pick-up":6,"_ps":468,"_pl":12,"shotMiss":83,"shotMissWait":11,"leftAtClose":54,"later":7,"shotMissDose":72,"noDoseSaid":true,"mess":1,"shopEmpty":1,"interest":0,"billPay":15312,"billRent":500,"billDriver":60,"costs":29177,"loanPay":0,"complaints":[],"svcRate":0.025,"promiseResults":[],"hoodEv":"The school nurse started sending families your way.","regEnd":917,"net":4686.160000000018,"cashNet":4686,"other":0,"bankNote":[],"unlocks":[]} demand/day=92.2
+
+--- activity (400) ---
+w20 Sat 9:55 [ops] 17 bags on the shelf. People haven't come back yet.
+w20 Sat 10:00 [money] Hour: 4 served, 0 gave up, $187 in.
+w20 Sat 10:00 [bad] Jordan: 8 fills waiting on me to check.
+w20 Sat 10:15 [money] Sam grabbed a snack (+$2) and will wait longer.
+w20 Sat 10:25 [money] Claim rejected by the insurer.
+w20 Sat 11:00 [staff] Grace has had nothing to do for two hours: waiting — the verify terminal is taken · a second one lets two pharmacists check.
+w20 Sat 11:00 [ops] A call went to voicemail — someone will call back when free.
+w20 Sat 11:00 [money] Hour: 1 served, 0 gave up, $55 in.
+w20 Sat 11:10 [staff] Priya has had nothing to do for two hours: between tasks.
+w20 Sat 11:10 [ops] Bin is filling: 3 baskets.
+w20 Sat 11:10 [ops] Line at drop-off: 4 waiting.
+w20 Sat 11:15 [staff] Nia has had nothing to do for two hours: between tasks.
+w20 Sat 11:20 [staff] Rosa has had nothing to do for two hours: between tasks.
+w20 Sat 11:25 [bad] 49 phones ringing, nobody free to answer.
+w20 Sat 11:50 [ops] Line at pick-up: 9 waiting.
+w20 Sat 12:00 [money] Hour: 6 served, 0 gave up, 2 annoyed right now, $228 in.
+w20 Sat 12:10 [staff] Priya has had nothing to do for two hours: waiting — every fill station is taken · another station lets the pharmacist help fill.
+w20 Sat 12:20 [money] Mr. Chen grabbed a snack (+$2) and will wait longer.
+w20 Sat 12:50 [bad] Jordan: 4 fills waiting on me to check.
+w20 Sat 12:55 [ops] 33 bags on the shelf. People haven't come back yet.
+w20 Sat 1:00 [money] Hour: 9 served, 0 gave up, 5 annoyed right now, $175 in.
+w20 Sat 1:10 [ops] Bin is filling: 3 baskets.
+w20 Sat 1:10 [ops] Line at drop-off: 5 waiting.
+w20 Sat 1:15 [ops] A call went to voicemail — someone will call back when free.
+w20 Sat 1:25 [bad] 54 phones ringing, nobody free to answer.
+w20 Sat 1:35 [bad] Mrs. Nowak gave up at pick-up.
+w20 Sat 1:50 [ops] Line at pick-up: 5 waiting.
+w20 Sat 2:00 [money] Hour: 19 served, 2 gave up, 3 annoyed right now, $561 in.
+w20 Sat 2:05 [money] Hector grabbed a snack (+$2) and will wait longer.
+w20 Sat 2:35 [money] Claim rejected by the insurer.
+w20 Sat 3:00 [money] Hour: 18 served, 0 gave up, $436 in.
+w20 Sat 3:10 [ops] Stock is low: 127 units left.
+w20 Sat 3:10 [money] Claim rejected by the insurer.
+w20 Sat 3:15 [bad] Jordan: 4 fills waiting on me to check.
+w20 Sat 3:25 [ops] A call went to voicemail — someone will call back when free.
+w20 Sat 3:25 [bad] 56 phones ringing, nobody free to answer.
+w20 Sat 3:25 [ops] Bin is filling: 3 baskets.
+w20 Sat 3:55 [ops] 14 bags on the shelf. People haven't come back yet.
+w20 Sat 4:00 [money] Hour: 12 served, 0 gave up, $344 in.
+w20 Sat 4:05 [ops] Line at drop-off: 4 waiting.
+w20 Sat 4:25 [money] Mrs. Alvarez grabbed a snack (+$2) and will wait longer.
+w20 Sat 5:00 [money] Hour: 9 served, 0 gave up, $239 in.
+w20 Sat 5:15 [bad] Jordan: 5 fills waiting on me to check.
+w20 Sat 5:25 [bad] 57 phones ringing, nobody free to answer.
+w20 Sat 5:25 [ops] Bin is filling: 4 baskets.
+w20 Sat 5:35 [ops] A call went to voicemail — someone will call back when free.
+w20 Sat 6:00 [money] Mrs. Nowak grabbed a snack (+$2) and will wait longer.
+w20 Sat 6:00 [money] Hour: 6 served, 0 gave up, $174 in.
+w20 — 9:00 [event] The school nurse started sending families your way.
+w20 — 9:00 [money] Counter $15,943, insurers $17,920 (fees $1,144). Wages $15,312, rent $500, drugs $5,405, driver $60, hiring & bonuses $300, loan $0. Week net +$4,686.
+w20 — 9:00 [money] Where the money came from: prescriptions $29,447 (85%) · OTC $3,312 (10%) · flu shots $1,350 (4%) · med reviews $260 (1%) · snacks $106 (0%).
+w20 — 9:00 [money] Social push ended: about 12 extra customers ≈ $624 margin on a $500 campaign — paid for itself.
+w20 — 9:00 [money] Price-match week ended. Regulars +163 since it started.
+w21 — 9:00 [staff] Nia moves to half days Mon–Wed.
+w21 — 9:00 [staff] Moved the verify terminal.
+w21 — 9:00 [staff] Moved the fill station. ×2
+w21 — 9:00 [staff] Moved the verify terminal.
+w21 — 9:00 [ops] Off the floor.
+w21 — 9:00 [staff] Built a drive-thru window for $3,500.
+w21 — 9:00 [staff] Moved the drive-thru window.
+
+--- log (39) ---
+0.6s w17 [sys] start v25.13 · 2026-10-29 430×873 rot=true
+101.8s w17 [game] week 17 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk","rph","tech","tech","clerk"],"objs":57,"cash":11168,"trust":99.7,"demand":74.5}
+235.7s w17 [game] week 17 end {"served":464,"lost":24,"paid":16160,"costs":20286,"net":10634,"cash":-3437,"owed":24962,"trust":100}
+254.2s w18 [game] week 18 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk","rph","tech","tech","clerk","rph"],"objs":58,"cash":-3437,"trust":100,"demand":86.2}
+283.6s w18 [staff] Kenji morale -5 (press) → 95
+283.6s w18 [staff] Bo morale -5 (press) → 95
+283.6s w18 [staff] Owen morale -5 (press) → 95
+283.6s w18 [staff] Theo morale -5 (press) → 95
+283.6s w18 [staff] Amara morale -5 (press) → 95
+283.6s w18 [staff] Felix morale -5 (press) → 95
+283.6s w18 [staff] Omar morale -5 (press) → 95
+283.6s w18 [staff] Ines morale -5 (press) → 95
+283.6s w18 [staff] Priya morale -5 (press) → 95
+283.6s w18 [staff] Nia morale -5 (press) → 95
+283.6s w18 [staff] Grace morale -5 (press) → 95
+283.6s w18 [staff] Luis morale -5 (press) → 95
+283.6s w18 [staff] Dana morale -5 (press) → 95
+283.6s w18 [staff] Rosa morale -5 (press) → 95
+283.6s w18 [staff] Priya morale -5 (press) → 94
+298.4s w18 [game] week 18 end {"served":466,"lost":48,"paid":15984,"costs":22030,"net":8214,"cash":4776,"owed":27826,"trust":98.5}
+398.1s w19 [game] week 19 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk","rph","tech","tech","clerk","rph"],"objs":60,"cash":2376,"trust":99.7,"demand":73.5}
+451.4s w19 [staff] Kenji morale -5 (press) → 95
+451.4s w19 [staff] Bo morale -5 (press) → 95
+451.4s w19 [staff] Owen morale -5 (press) → 95
+451.4s w19 [staff] Theo morale -5 (press) → 95
+451.4s w19 [staff] Amara morale -5 (press) → 95
+451.4s w19 [staff] Felix morale -5 (press) → 95
+451.4s w19 [staff] Omar morale -5 (press) → 95
+451.4s w19 [staff] Ines morale -5 (press) → 95
+451.4s w19 [staff] Priya morale -5 (press) → 95
+451.4s w19 [staff] Nia morale -5 (press) → 95
+451.4s w19 [staff] Grace morale -5 (press) → 95
+451.4s w19 [staff] Luis morale -5 (press) → 95
+451.4s w19 [staff] Dana morale -5 (press) → 95
+451.4s w19 [staff] Rosa morale -5 (press) → 95
+451.4s w19 [staff] Priya morale -5 (press) → 95
+458.8s w19 [game] week 19 end {"served":466,"lost":6,"paid":19020,"costs":22421,"net":11863,"cash":9239,"owed":25960,"trust":98.5}
+480.9s w20 [game] week 20 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk","rph","tech","tech","clerk","rph","rph"],"objs":60,"cash":8039,"trust":100,"demand":70.3}
+525.1s w20 [game] week 20 end {"served":468,"lost":12,"paid":17920,"costs":29177,"net":4686,"cash":13926,"owed":25428,"trust":100}
