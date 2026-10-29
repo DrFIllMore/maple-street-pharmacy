@@ -165,3 +165,10 @@ Prototype: `prototypes/lot-and-levels.html` (standalone, simplified numbers).
   - The Level 1 page's button → `lvl2`, then the rest of the review.
 - Scenes seen are kept in `CAREER.scenes` for the replay buttons.
 - `navigator.webdriver` skips scenes unless `window.__cineTest` is set. Test API: `playCine`, `endCine`, `cine()`, `cineAt(ms)`.
+
+## Income mix (v25.12)
+- Before: prescriptions brought in about 97% of the money (week-15 report: OTC $720, shots/consults ~$1.4k, Rx ~$22k).
+- Front-store shoppers: `shopPerDay()` = min(3, stocked reachable OTC shelves) × 9 × (0.5 + trust/200), ×1.3 in flu season. Each takes 1–3 items ($9, cost $4) and pays at a register with `jobCheckout` (half a ring-up). Giving up counts in `wk.shopLost`, not `wk.lost`.
+- Flu shots: $45 (dose $12). Pick-up customers ask with chance 10% (older customers 30%), ×1.8 in flu season, and become consult visitors with `wantShot`, which shows a 💉 bubble. Shot seekers wait 14 ticks at the room (others 10). Misses are tracked as `shotMissDose` and `shotMissWait`.
+- `S.wk.inc` holds rx / otc / shots / reviews / snacks. Shown on the Money page bar and in the weekly money message.
+- Sim of the report's store (1 week): Rx 77%, OTC 12%, shots 11%; net about +$2k.

@@ -1,0 +1,135 @@
+=== Maple Street Pharmacy debug ===
+build v25.11 · 2026-10-29 · 2026-10-29T03:00:33.728Z
+window 430×873 · dpr 3 · screen 430×932
+orientation portrait-primary · app 817×426 · rotated true · fps 61
+bar 389,69 35×762 · chat 8,69 82×330 · sheet hidden · review hidden · office hidden
+layout {"barL":87,"barR":39,"barY":3,"barH":41,"barF":11,"chat":[85,8,330.00000000000006,82.33333333333329,10],"size":0.85,"k":0.84} · window 430×873 @3 rot=true
+window insets top 56 bottom 0 left 0 right 4 · screen 430×873 @3 · safe-area 59/34/0/0 · rot=true · app 817×426
+ua Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1
+
+--- state ---
+Level 2: trust 100/90 · net 42057/100000 · drive-thru not working · stalls 6 drive 0 land - grew - · unlocked 11 · promos 5 · rank 10 (5313 XP) · view in
+week 15 day 6 tick 0 running=false opened=true speed=3 cash=12663 owed=18594 loan=0 trust=100.0 stock=90 plans={"blue":true,"silver":true,"quick":true} price=56 mods={"viral":2,"viralK":0.85,"delivery":99,"raise":99}
+objs dropoff@5,12r1 fill@0,7r1L1 chair@12,6r1 chair@12,7r1 chair@12,8r1 chair@14,6r1 chair@14,7r1 restroom@15,12r2 chair@14,8r1 snack@12,13r2 problem@0,13r1 bin@0,12r1 bin@0,11r1 fill@0,9r1L1 otc@19,6r3 otc@19,10r3 shelf@3,0 shelf@1,0 verify@0,1r1L1 verify@0,3r1L1 fill@0,5r1L1 register@5,5r1L1 counter@5,7r1 register@5,8r1L1 dropoff@5,10r1 wall@10,3r3 breakroom@8,0 register@6,3L1 wall@5,3r2 wall@5,4r2 chair@12,5r1 chair@14,5r1 restroom@16,12r2 wall@11,3r3 wall@12,3r3 wall@13,3r3 chair@12,9r1 chair@14,9r1 consult@15,1r1 wall@14,3 wall@15,3 wall@16,3 wall@17,3 wall@17,2 door@17,1r1 wall@17,0r1 wall@16,0r1 wall@15,0r2 phone@7,0 shelf@5,0 register@8,3 chair@10,9r1 chair@10,8r1 chair@10,7r1 chair@10,6r1 chair@10,5r1 · reach 127 tiles
+staff Jordan/rph/off, Kenji/tech/off, Bo/clerk/off, Owen/clerk/off, Theo/rph/off, Amara/tech/off, Felix/tech/off, Omar/clerk/off, Ines/clerk/off, Priya/clerk/off, Nia/clerk/off, Grace/rph/idle
+scripts ring21 with0 bin17 carried0 tray3 prob0 claim0 shelf10 back0 · people 0 () · claims open 2
+busy {} wk={"served":332,"lost":11,"consults":31,"otc":1125,"cashIn":10178,"drug":4437,"paid":12267.000000000002,"fee":783.0000000000002,"trust0":100,"phoneMissed":0,"backorder":0,"writeoff":5,"annoyed":0,"ev":[{"k":"happy","name":"Mr. Patel","el":false},{"k":"happy","name":"Derek","el":false},{"k":"gaveup","name":"Mr. Patel","where":"in the store","mood":"annoyed","el":true},{"k":"happy","name":"Hector","el":false},{"k":"gaveup","name":"Grandpa Joe","where":"in the store","mood":"annoyed","el":true},{"k":"happy","name":"Mrs. Alvarez","el":false},{"k":"gaveup","name":"Mr. Brooks","where":"in the store","mood":"annoyed","el":false},{"k":"happy","name":"Mrs. Alvarez","el":true},{"k":"happy","name":"Hector","el":false},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Tasha","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":true},{"k":"gaveup","name":"Mrs. Alvarez","where":"in the store","mood":"annoyed","el":true},{"k":"gaveup","name":"Ms. Okafor","where":"in the store","mood":"annoyed","el":false},{"k":"gaveup","name":"Tasha","where":"in the store","mood":"annoyed","el":false},{"k":"consult","name":"Jordan","priv":true,"shot":true},{"k":"happy","name":"Grandpa Joe","el":false},{"k":"happy","name":"Mr. Chen","el":false},{"k":"gaveup","name":"Mina","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Yuki","where":"at pick-up","mood":"angry","el":false},{"k":"gaveup","name":"Hector","where":"at pick-up","mood":"angry","el":false},{"k":"happy","name":"Elena","el":true},{"k":"happy","name":"Ms. Okafor","el":false},{"k":"consult","name":"Mr. Patel","priv":true,"shot":true},{"k":"consult","name":"Mrs. Nowak","priv":true,"shot":true},{"k":"happy","name":"Grandpa Joe","el":true},{"k":"consult","name":"Ms. Okafor","priv":true,"shot":true},{"k":"gaveup","name":"Mina","where":"in the store","mood":"annoyed","el":false},{"k":"happy","name":"Grandpa Joe","el":false},{"k":"consult","name":"Coach Riley","priv":true,"shot":true}],"built":[],"maxTray":12,"intrude":0,"theft":0,"theftVal":0,"escorted":0,"looDenied":0,"tw":{"walk-outs":-1.4000000000000057,"served":1.2199999999997715,"consults":2.680000000000234,"claims written off":-2.5,"perks":0,"service":0,"promises":0,"press":0,"replies":0},"cashStart":12257.919999999998,"reg0":549.4286776116834,"equip":500,"promo":2600,"regLost":19.22913016417536,"lost_cancelled_after_2_days":4,"qw":{"win":331,"pick":2108,"bin":2514,"tray":949},"lotFull":241,"later":36,"lost_wait_too_long":1,"regNew":59.42999999999998,"breaks":57,"looUsed":52,"snacks":43,"annoyedTicks":0,"voicemail":82,"_ps":332,"_pl":11,"leftAtClose":33,"lost_at_pick-up":6,"interest":0,"billPay":8593,"billRent":500,"billDriver":60,"costs":16190,"loanPay":0,"complaints":[],"svcRate":0.03206997084548105,"promiseResults":[{"k":"chairs","who":"Mr. Patel","made":14,"snap":{"loos":2,"win":2,"clerks":6,"regs":4,"regLvl":1,"fills":3,"fillLvl":1,"techs":3,"chairs":10,"verLvl":1,"rphs":2,"lostDrop":0,"lostPick":3,"lostFill":0},"done":true,"kept":true}],"press":[{"k":"kept","bad":false,"head":"Maple Street keeps its word on more seating"}],"regEnd":590,"net":6255,"cashNet":1605,"other":-4150,"bankNote":[],"unlocks":[]} demand/day=60.7
+
+--- activity (400) ---
+w14 Fri 5:05 [bad] 18 phones ringing, nobody free to answer.
+w14 Fri 5:35 [ops] Wait is about 170 min — customers are dropping off and coming back later.
+w14 Fri 5:45 [ops] Line at drop-off: 4 waiting.
+w14 Fri 6:00 [money] Hour: 8 served, 0 gave up, $172 in.
+w14 Sat 9:05 [money] Insurer remittance: +$1,935 (42 claims, $123 fees).
+w14 Sat 9:05 [bad] 1 prescription waited more than 2 days and was cancelled — those customers went to the chain. Speed up the slowest step (Flow).
+w14 Sat 9:05 [ops] 12 bags on the shelf. People haven't come back yet.
+w14 Sat 9:30 [bad] Jordan: 5 fills waiting on me to check.
+w14 Sat 9:40 [ops] Line at pick-up: 4 waiting.
+w14 Sat 9:55 [ops] A call went to voicemail — someone will call back when free.
+w14 Sat 9:55 [bad] Kenji: bin has 7 baskets, I can't keep up.
+w14 Sat 10:00 [money] Hour: 3 served, 1 gave up, $135 in.
+w14 Sat 10:05 [bad] 15 phones ringing, nobody free to answer.
+w14 Sat 11:05 [staff] Ines has had nothing to do for two hours: between tasks.
+w14 Sat 11:30 [bad] Jordan: 4 fills waiting on me to check.
+w14 Sat 11:30 [ops] Stock is low: 126 units left.
+w14 Sat 11:40 [ops] Line at pick-up: 7 waiting.
+w14 Sat 11:55 [ops] A call went to voicemail — someone will call back when free.
+w14 Sat 11:55 [ops] Bin is filling: 3 baskets.
+w14 Sat 12:00 [money] Hour: 6 served, 0 gave up, $180 in.
+w14 Sat 12:05 [bad] 16 phones ringing, nobody free to answer.
+w14 Sat 12:05 [ops] 25 bags on the shelf. People haven't come back yet.
+w14 Sat 12:20 [money] Grandpa Joe grabbed a snack (+$2) and will wait longer.
+w14 Sat 1:00 [money] Hour: 9 served, 0 gave up, $368 in.
+w14 Sat 1:00 [ops] Wait is about 180 min — customers are dropping off and coming back later.
+w14 Sat 1:05 [money] Claim rejected by the insurer.
+w14 Sat 1:30 [bad] Jordan: 6 fills waiting on me to check.
+w14 Sat 1:40 [ops] Line at pick-up: 6 waiting.
+w14 Sat 1:55 [ops] Bin is filling: 4 baskets.
+w14 Sat 2:00 [money] Hour: 8 served, 0 gave up, $233 in.
+w14 Sat 2:05 [ops] A call went to voicemail — someone will call back when free.
+w14 Sat 2:05 [bad] 18 phones ringing, nobody free to answer.
+w14 Sat 3:00 [money] Hour: 10 served, 0 gave up, 2 annoyed right now, $340 in.
+w14 Sat 3:05 [ops] 13 bags on the shelf. People haven't come back yet.
+w14 Sat 3:35 [ops] Ines restocked the OTC shelf (+18).
+w14 Sat 3:50 [ops] Line at pick-up: 4 waiting.
+w14 Sat 3:55 [ops] Bin is filling: 3 baskets.
+w14 Sat 4:00 [money] Hour: 6 served, 0 gave up, $199 in.
+w14 Sat 4:05 [bad] 17 phones ringing, nobody free to answer.
+w14 Sat 4:10 [ops] A call went to voicemail — someone will call back when free.
+w14 Sat 4:15 [money] Claim rejected by the insurer.
+w14 Sat 4:25 [bad] Jordan: 6 fills waiting on me to check.
+w14 Sat 4:25 [ops] Line at drop-off: 4 waiting.
+w14 Sat 4:45 [money] Elena grabbed a snack (+$2) and will wait longer.
+w14 Sat 5:00 [money] Hour: 9 served, 0 gave up, $222 in.
+w14 Sat 5:30 [ops] Stock is low: 90 units left.
+w14 Sat 5:50 [ops] Line at pick-up: 5 waiting.
+w14 Sat 5:55 [bad] Kenji: bin has 10 baskets, I can't keep up.
+w14 Sat 6:00 [money] Hour: 10 served, 0 gave up, $271 in.
+w14 — 9:00 [event] Promise kept: more seating. Mr. Patel noticed. +1.5 trust.
+w14 — 9:00 [event] 📰 Gazette: "Maple Street keeps its word on more seating" — customers +10%, trust +1, team morale +5 for 3 days.
+w14 — 9:00 [money] Counter $10,178, insurers $12,267 (fees $783). Wages $8,593, rent $500, drugs $4,437, driver $60, loan $0. Week net +$6,255, equipment −$500. Cash +$1,605 for the week.
+w14 — 9:00 [money] Local paper ad ended: about 46 extra customers ≈ $2,392 margin on a $900 campaign — paid for itself.
+w14 — 9:00 [money] Social push ended: about 11 extra customers ≈ $572 margin on a $500 campaign — paid for itself.
+w14 — 9:00 [money] Price-match week ended. Regulars +98 since it started.
+w14 — 9:00 [money] Health fair booth ended: about 7 extra customers ≈ $364 margin on a $600 campaign.
+w15 — 9:00 [event] You promised Coach Riley more seating. The neighborhood will check next Saturday.
+w15 — 9:00 [event] Local paper ad: $900.
+w15 — 9:00 [staff] Nia moves to half days Mon–Wed.
+w15 — 9:00 [staff] Grace hired as pharmacist, $1,900/week ($300 agency fee).
+
+--- log (55) ---
+0.5s w1 [sys] start v25.11 · 2026-10-29 430×873 rot=true
+268.0s w1 [game] week 1 start {"staff":["rph","tech","clerk"],"objs":24,"cash":4060,"trust":50,"demand":21.1}
+321.1s w1 [game] week 1 end {"served":129,"lost":0,"paid":83,"costs":5310,"net":-2467,"cash":1543,"owed":5430,"trust":57.6}
+335.1s w2 [game] week 2 start {"staff":["rph","tech","clerk"],"objs":25,"cash":643,"trust":58.6,"demand":32.2}
+364.5s w2 [staff] Kenji morale -5 (press) → 95
+364.5s w2 [staff] Bo morale -5 (press) → 95
+379.2s w2 [game] week 2 end {"served":171,"lost":1,"paid":2651,"costs":4583,"net":1749,"cash":3292,"owed":9874,"trust":56.9}
+431.6s w3 [game] week 3 start {"staff":["rph","tech","clerk","clerk"],"objs":24,"cash":-548,"trust":57.2,"demand":22.3}
+468.3s w3 [staff] Kenji morale -5 (press) → 90
+468.3s w3 [staff] Bo morale -5 (press) → 95
+468.3s w3 [staff] Owen morale -5 (press) → 75
+475.7s w3 [game] week 3 end {"served":145,"lost":1,"paid":5804,"costs":5038,"net":4019,"cash":3770,"owed":9738,"trust":56}
+537.1s w4 [staff] Kenji morale -10 (raise refused) → 80
+537.1s w4 [staff] Bo morale -10 (raise refused) → 90
+537.1s w4 [staff] Owen morale -10 (raise refused) → 75
+537.1s w4 [game] week 4 start {"staff":["rph","tech","clerk","clerk"],"objs":25,"cash":870,"trust":55.3,"demand":23.7}
+595.2s w4 [game] week 4 end {"served":155,"lost":0,"paid":6881,"costs":6341,"net":4013,"cash":6983,"owed":8730,"trust":57.9}
+871.4s w5 [game] week 5 start {"staff":["rph","tech","clerk","clerk","rph"],"objs":27,"cash":2583,"trust":56.9,"demand":32.8}
+933.6s w5 [game] week 5 end {"served":194,"lost":1,"paid":5860,"costs":8147,"net":1800,"cash":4533,"owed":10878,"trust":63}
+968.6s w6 [game] week 6 start {"staff":["rph","tech","clerk","clerk","rph","tech"],"objs":28,"cash":3633,"trust":64,"demand":35.6}
+1052.8s w6 [game] week 6 end {"served":216,"lost":6,"paid":7016,"costs":8478,"net":3197,"cash":4030,"owed":12272,"trust":69.6}
+1065.7s w7 [game] week 7 start {"staff":["rph","tech","clerk","clerk","rph","tech"],"objs":29,"cash":1730,"trust":69.9,"demand":36.3}
+1380.2s w7 [game] week 7 end {"served":221,"lost":3,"paid":8913,"costs":9837,"net":4472,"cash":22,"owed":11756,"trust":72.9}
+1391.3s w8 [game] week 8 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech"],"objs":36,"cash":10838,"trust":73.1,"demand":34.7}
+1476.8s w8 [game] week 8 end {"served":222,"lost":1,"paid":372,"costs":9245,"net":-2875,"cash":7423,"owed":8036,"trust":80.3}
+1691.4s w9 [game] week 9 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk"],"objs":38,"cash":5303,"trust":81.6,"demand":44.8}
+1789.8s w9 [game] week 9 end {"served":263,"lost":4,"paid":4369,"costs":12150,"net":-1125,"cash":1878,"owed":14028,"trust":91.5}
+1807.0s w10 [game] week 10 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk"],"objs":36,"cash":1878,"trust":91.8,"demand":51.4}
+1821.8s w10 [staff] Kenji morale -5 (press) → 95
+1821.8s w10 [staff] Bo morale -5 (press) → 95
+1821.8s w10 [staff] Owen morale -5 (press) → 95
+1821.8s w10 [staff] Theo morale -5 (press) → 95
+1821.8s w10 [staff] Amara morale -5 (press) → 95
+1821.8s w10 [staff] Felix morale -5 (press) → 95
+1821.8s w10 [staff] Omar morale -5 (press) → 95
+1821.8s w10 [staff] Ines morale -5 (press) → 91
+1861.3s w10 [game] week 10 end {"served":267,"lost":20,"paid":8956,"costs":12029,"net":4015,"cash":5493,"owed":15018,"trust":91.4}
+1877.1s w11 [game] week 11 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk"],"objs":40,"cash":2593,"trust":92.7,"demand":54.6}
+1950.7s w11 [game] week 11 end {"served":307,"lost":10,"paid":9840,"costs":12046,"net":5791,"cash":6384,"owed":16876,"trust":100}
+2142.7s w12 [game] week 12 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk"],"objs":51,"cash":3384,"trust":100,"demand":59.1}
+2221.8s w12 [game] week 12 end {"served":302,"lost":20,"paid":11090,"costs":13416,"net":7184,"cash":10668,"owed":17012,"trust":96.5}
+2265.3s w13 [game] week 13 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk"],"objs":51,"cash":9328,"trust":97.7,"demand":57.2}
+2334.2s w13 [staff] Kenji morale -5 (press) → 95
+2334.2s w13 [staff] Bo morale -5 (press) → 95
+2334.2s w13 [staff] Owen morale -5 (press) → 95
+2334.2s w13 [staff] Theo morale -5 (press) → 95
+2334.2s w13 [staff] Amara morale -5 (press) → 95
+2334.2s w13 [staff] Felix morale -5 (press) → 95
+2334.2s w13 [staff] Omar morale -5 (press) → 95
+2334.2s w13 [staff] Ines morale -5 (press) → 95
+2334.2s w13 [staff] Priya morale -5 (press) → 95
+2334.2s w13 [staff] Nia morale -5 (press) → 77
+2341.6s w13 [game] week 13 end {"served":329,"lost":11,"paid":11271,"costs":15067,"net":6030,"cash":12258,"owed":18506,"trust":100}
+2446.6s w14 [game] week 14 start {"staff":["rph","tech","clerk","clerk","rph","tech","tech","clerk","clerk","clerk","clerk"],"objs":56,"cash":8858,"trust":100,"demand":55.6}
+2490.7s w14 [game] week 14 end {"served":332,"lost":11,"paid":12267,"costs":16190,"net":6255,"cash":13863,"owed":18594,"trust":100}

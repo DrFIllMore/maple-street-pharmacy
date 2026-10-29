@@ -1,5 +1,35 @@
 # Changelog
 
+## v25.12 · 2026-10-29 — More ways to earn, Build categories, clearer restrooms, flu shots, claims and walls
+From the week-15 report (Level 2, trust 100). Prescriptions brought in about 97% of the money: OTC added about $600 a week and flu shots about $1,200.
+
+**Money from more than prescriptions**
+- **Front-store shoppers.** People now come in just for OTC goods (cold medicine, vitamins). Each stocked OTC shelf that customers can reach brings about 5–9 shoppers a day, depending on trust (counts up to 3 shelves). Each shopper takes 1–3 items and pays at a register, so clerks ring them up. A shopper who gives up doesn't count as a lost customer.
+- Prescription customers who browse the OTC shelf now sometimes take 2 items.
+- **Flu shots pay $45** (was $40). Doses still cost $12.
+- **Pick-up customers ask for flu shots.** About 1 in 10 people picking up (3 in 10 older customers, more in flu season) ask for a shot when you have the vaccine contract. They walk to the consult room with a 💉 flu shot bubble over their head. Shot seekers wait up to about 70 minutes for a pharmacist.
+- **Where the money came from**: the Money page has a new bar (prescriptions, OTC, flu shots, med reviews, snacks), and the week's money message lists the same split.
+- In a test of your week-15 store over one week: OTC went from about $700 to $2,300 and flu shots from about $1,600 to $2,250 (12% and 11% of the money), and the week's net went up by about $2,000. Prescriptions served fell a little (about 228 vs 240), because clerks and pharmacists now spend time on those customers too.
+
+**Build items in categories**
+- Tabs above the items: **Rx flow** (in the order a prescription moves: drop-off, phone, bin, fill, verify, will-call shelf, register), **Services** (problem desk, consult desk and room, stock shelf, fridge, drive-thru window), **Customers** (chairs, restroom, snacks, OTC, plant), **Staff** (break room, mat) and **Walls** (wall, door, staff door, counter). Move and Sell are always on the right.
+- A red number on a tab shows new items in it. Locked items show in their own tab with what opens them.
+- Each tab fits on screen with no sideways scrolling. Before opening, Build starts on the tab of the next item you need, and the hint names the tab.
+
+**Restrooms: x of x**
+- A restroom's window shows **In use 2 / 3** (1 inside, 2 in line), **All restrooms 4 / 6**, how many people were **turned away** today and this week, and the busiest it got today. It ends with a plain verdict: "Enough restrooms for now", "It filled up once today", or "Full: build another restroom".
+
+**Flu shots you can read**
+- The consult desk window shows: doses left, $45 a shot (dose $12), **about how many shots are wanted a day**, shots given out of shots wanted this week, and why any were missed (out of doses, or no pharmacist free within an hour).
+- Supplies shows the same demand next to vaccine doses, and the shoppers a day next to OTC goods.
+
+**Rejected claims never run off the window**
+- One line per claim, 4 to a page (3 on small screens), with Prev / Next. New **Appeal all / Ask cash / Drop all** buttons handle every open claim at once.
+
+**Walls that look connected when they are**
+- A wall now reaches out to the store's own walls and to anything solid next to it (counter, register, shelf…). A sealed line looks sealed, with no gap at the end.
+- In Build, an orange **gap** ring marks every place a wall line stops at open floor, so you can see a room isn't closed yet.
+
 ## v25.11 · 2026-10-29 — Fix: couldn't rotate items on a phone held upright
 - The v25.10 change that moves an item's window above the build bar measured the screen the wrong way when the phone is held upright (the game is turned 90°). That pushed the window off-screen. You couldn't see it, so its rotate (↻) and move buttons were out of reach.
 - It now measures inside the game's own frame, so the window sits in the same place either way you hold the phone.
