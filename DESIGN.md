@@ -172,3 +172,13 @@ Prototype: `prototypes/lot-and-levels.html` (standalone, simplified numbers).
 - Flu shots: $45 (dose $12). Pick-up customers ask with chance 10% (older customers 30%), ×1.8 in flu season, and become consult visitors with `wantShot`, which shows a 💉 bubble. Shot seekers wait 14 ticks at the room (others 10). Misses are tracked as `shotMissDose` and `shotMissWait`.
 - `S.wk.inc` holds rx / otc / shots / reviews / snacks. Shown on the Money page bar and in the weekly money message.
 - Sim of the report's store (1 week): Rx 77%, OTC 12%, shots 11%; net about +$2k.
+
+## Job market (v25.18)
+- `S.market={week,cands}`; `market()` rebuilds it when the week changes. Six candidates: rph, tech, clerk, clerk, tech, random. At most one Star a week.
+- Traits set ranges for speed (`skill`), stamina (`stam`, multiplies energy drain) and pay (× the role wage): quick 1.12–1.28 / .95–1.15 / 1.1–1.35; steady .95–1.08 / .9–1.05 / .95–1.1; iron .9–1.05 / .6–.8 / 1.0–1.2; green .78–.9 / 1.0–1.15 / .7–.85; bargain .88–1.0 / 1.15–1.35 / .7–.85; star 1.25–1.4 / .7–.85 / 1.4–1.7.
+- `eff(w)` multiplies by `w.skill`; the energy drain multiplies by `w.stam`; `wageOf` uses `w.wage` when set. Robot players still use `api.hire`, which makes plain ×1.00 staff, so playtests are unchanged.
+
+## Level 3 proposal (not built) — "The Three Letter Store"
+- The rival is literally named **The Three Letter Store** (sign: THE THREE LETTER STORE, with "TLS" small underneath). Opening scene: a 9-second TV breaking-news report (Channel 9), camera pans from the player's store across the street to the rival's building as the sign goes up; a reporter on the sidewalk; the owner steps out and folds their arms.
+- Block-share meter (you vs TLS), weekly rival moves (price cut, staff poaching with a week's warning, their own drive-thru/clinic, an insurer steering deal, a bad week for them), delivery van unlock, loyalty tiers. Win: hold 60% of the block for 4 weeks with trust ≥ 90 and no bank strikes. Lose: TLS ≥ 50% for 4 weeks → buy-out offer.
+- Open questions for the player: win measure, delivery van yes/no, poaching yes/no.

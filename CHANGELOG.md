@@ -1,5 +1,12 @@
 # Changelog
 
+## v25.18 · 2026-10-29 — Every hire is different
+- **Staff now differ.** Each person has a **speed** (×0.78 to ×1.40 at every job), **stamina** (how fast they tire) and an **asking wage**. Before, every technician was the same technician at the same price.
+- **A new set of applicants every Monday.** The Staff page has a new **Hire** tab with six applicants a week: name, role, a one-word type (Quick hands, Steady, Tireless, Fresh out of school, Bargain, and now and then a Star), speed, stamina, whether that role is needed right now, and a value-for-money verdict. Hire one and they're off the list; skip them and they're gone next week.
+- Some applicants are **part-time** (Mon · Wed · Fri at half the wage). Day cover (floater pharmacist, temps) is on the same tab.
+- The Team tab shows each person's speed next to their title, and the ⋯ sheet shows speed, stamina and type.
+- Existing saves: everyone you already have is a plain ×1.00 at their current wage.
+
 ## v25.17 · 2026-10-29 — Phones, advisors that point at the real problem, and tidy Money and Supplies pages
 **Phone calls**
 - **What was wrong:** only a phone desk could take a call, and one desk answers one call at a time. In your store, calls averaged 8 waiting, 80 went to voicemail in a week, and clerks stood idle next to the drop-off windows. The "phones ringing, nobody free to answer" message was wrong too: people *were* free, but the desk was taken.
