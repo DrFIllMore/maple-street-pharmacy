@@ -1,0 +1,14 @@
+// v25.22: Tuesday morning of week 1 shows the first neighbor post and the Gazette; the Insurers chip draws the checks due over the next 7 days; the first check lands with a toast.
+const {webkit}=require('playwright');const path=require('path');const GAME=process.env.GAME||path.join(__dirname,'..','index.html');
+(async()=>{const b=await webkit.launch();const errs=[];
+for(const vp of [{width:932,height:430},{width:430,height:873,m:1}]){
+const ctx=await b.newContext({viewport:{width:vp.width,height:vp.height},deviceScaleFactor:2,isMobile:!!vp.m,hasTouch:true});await ctx.addInitScript(()=>{let x=5;Math.random=()=>{x=(x*16807)%2147483647;return x/2147483647;};});const pg=await ctx.newPage();pg.on('pageerror',e=>errs.push(e.message+' '+(e.stack||'').split('\n')[1]));
+await pg.goto('file://'+GAME);await pg.waitForTimeout(300);
+const r=await pg.evaluate(()=>{localStorage.clear();document.getElementById('tNew').click();document.getElementById('go').click();const a=__msp.api,S=__msp.S;const P=(t,x,y,r)=>a.place(t,x,y,r||0);for(const x of [0,1,2,3,6,7,8,11,12,13,14,15,16,17,18,19])P('counter',x,4);P('dropoff',4,4);P('register',9,4);P('bin',2,1);P('fill',5,1);P('verify',8,1);P('shelf',11,1);P('chair',4,7);P('chair',5,7);a.hire('tech');a.hire('clerk');a.setBuild(false);
+ document.getElementById('review').hidden=true;a.startWeek();a.setSpeed(0);S.speed=1;while(!(S.day===1&&S.tick>=2)){for(let f=0;f<10;f++)a.motion(.016);a.tick();}return {fp:!!S.firstPost,img:typeof (S.firstPost||{}).img,press:S.press&&S.press.head};});
+await pg.waitForTimeout(600);
+const r2=await pg.evaluate(()=>({sheet:!document.getElementById('sheet').hidden,txt:document.getElementById('sheet').innerText.replace(/\s+/g,' ').slice(0,160),iou:document.querySelectorAll('#iouB i').length,fit:document.getElementById('sheet').scrollHeight<=document.getElementById('sheet').clientHeight+1,sh:document.getElementById('sheet').scrollHeight,ch:document.getElementById('sheet').clientHeight}));
+
+const r3=await pg.evaluate(()=>{const a=__msp.api,S=__msp.S;document.getElementById('sheet').hidden=true;while(S.running){for(let f=0;f<10;f++)a.motion(.016);a.tick();}document.getElementById('review').hidden=true;a.startWeek();a.setSpeed(0);S.speed=1;let toast='';while(S.day<2){for(let f=0;f<10;f++)a.motion(.016);a.tick();const c=document.getElementById('cheer');if(!c.hidden&&/Insurer check/.test(c.innerText))toast=c.innerText.replace(/\s+/g,' ').slice(0,80);}return {toast,remitN:S.remitN};});
+const ok1=r.fp&&r.img==='string'&&/opens/.test(r.press||'')&&r2.sheet&&/mapleneighbor/.test(r2.txt)&&r2.iou===7&&r2.fit&&/Insurer check/.test(r3.toast);if(!ok1)errs.push('bad '+vp.width+' '+JSON.stringify([r,r2,r3]));console.log(vp.width,r2.txt.slice(40,120),'|',r3.toast.slice(0,40));await ctx.close();}
+const ok=!errs.length;console.log(errs,ok?'PASS':'FAIL');await b.close();})();
