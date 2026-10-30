@@ -1,5 +1,13 @@
 # Changelog
 
+## v25.21 · 2026-10-29 — The week in one card
+- **Saturday opens on a summary card:** one sentence on the week's biggest issue (chosen by the same logic the advisors use), with the fix under it; cash, trust, served/lost and what insurers owe; and an in/out money bar. Two buttons: **Full report** or **Skip to** the next page that has something new.
+- **Pages only appear when they have news.** The feed shows when a post is bad, a promise was graded, a photo went viral or something new was built; the weekly call shows when an advisor is against you or changed their mind. A quiet week is the card, the stock order and the proposals.
+- **One voice on the call.** Only advisors with a problem speak, in full. The others are a one-line "fine" at the bottom.
+- **Money as a bar.** The Gazette's money column is now the in/out bar instead of a list of twelve numbers.
+- **The important line follows you:** it's pinned under the top bar on Monday (dismiss with ×), and repeated at the top of Monday's activity log.
+- **Red means act.** In the Gazette, red is kept for the bank notice and a negative cash change; walk-outs and missed calls are amber.
+
 ## v25.20 · 2026-10-29 — Audit: money, staff and speed
 I replayed a full Level-2 store (your week-21 layout, 12 staff hired from the job market, drive-thru, shots, OTC, promotions, a promotion and a raise) for 12 weeks with every cash change traced.
 - **Money adds up.** Every week, the sum of every cash movement equalled counter sales + insurer checks − wages, rent, drugs, driver, loan, promotions, hiring fees and bonuses. No double-counting, nothing missing. (Hiring fees and bonuses paid between weeks are charged to the following week's costs; that's by design and the Gazette says so.)
