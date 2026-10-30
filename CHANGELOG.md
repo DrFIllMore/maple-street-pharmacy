@@ -1,5 +1,26 @@
 # Changelog
 
+## v25.29 · 2026-10-30 — Every screen trimmed
+From the screen-by-screen review (28 screens measured on a phone-sized frame).
+- **Live feed.** Town → Feed now shows posts as they happen: a quick visit, a walk-out, someone sick on the floor, a regular switching pharmacies or coming back, a staff birthday, a campaign you launched, a Gazette story, the chain's moves across the street, a challenge met. Four newest first, "Earlier posts" folds the rest; the Saturday roundup (with replies and promises) is a tab beside it. The Town badge counts new posts.
+- **Claims are a policy, not a chore.** Money → Insurers shows the standing order for rejected claims — Appeal every one (default), Ask the patient for cash, Write them off, or Ask me each time — and the pharmacy applies it the moment a claim is rejected. The Claims page is where you change it and see this week's tally.
+- **Money is four tabs:** This week (three big numbers — cash now, Saturday night, this week's net — plus "Show the numbers" for the table and the income bar), Loan, Insurers, Equipment.
+- **Loan:** three numbers and a tidy six-button grid (pay this week's, $500 extra, $2,000 extra, pay it off, borrow $2,000, borrow $5,000).
+- **Insurers:** two lines per insurer, no scrolling.
+- **Team:** one line per person (status, energy · morale, wage, ⋯); the Mon–Sat shift grid is behind a Shifts toggle.
+- **Capacity:** the bar and one number (idle %) per person; jobs per hour and off-role time moved to each worker's sheet under "This week".
+- **Hire:** every column is two lines, aligned (applicant · speed · fit · wage · Hire).
+- **Flow:** smaller captions; stations with nobody in them fold into one "Quiet:" line.
+- **Inbox:** one line per advisor with their "What I'd do"; tap the name for the full letter.
+- **Promote:** three cards (what fits your week) with "All campaigns" behind a toggle.
+- **Rank:** the four badges you are closest to, with "All badges" behind a toggle.
+- **Stock:** column widths fixed so "On hand" is one line. **Prices & deals:** the price blurb is one line.
+- **Build palette:** item descriptions wrap to three lines instead of being cut off; the drive-thru, break room and restroom descriptions were shortened.
+- **Worker sheet:** the promotion explainer moved onto the Promote button; "This week" row added.
+- **Proposals:** every older required card (reporter, chain, rent, QuickPay, BlueLeaf, raise, late insurer, delivery, wholesaler, referral, flu, shortage) now lists what each option does, instead of "Option: Decline".
+- **Floor:** staff name tags show only when you zoom in, tap someone, or they are idle; Rx day / Rx week left the top bar and the News chip appears only while a story is running; achievement toasts sit bottom-left for 4 s instead of over page titles.
+- **Feed bug fixed:** two staff no longer post the identical complaint.
+
 ## v25.28 · 2026-10-30 — Level 3 balance
 - Robot playtests of Level 3 (two seeds each): a player who buys the van and loyalty tiers and runs a price-match week when under 62% wins in 4–5 weeks; a player who changes nothing drifts to 40–50% and is bought out in 7–13 weeks. The chain's baseline pull is now 55% (settling to 65% over a month) so that a strong Level-2 store starts near 60% and has to use the new levers rather than coast.
 - The Level-2 test now expects Level 3 to open instead of the game ending.

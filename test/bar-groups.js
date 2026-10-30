@@ -12,10 +12,10 @@ const r=await pg.evaluate(async (OBJS)=>{localStorage.clear();document.getElemen
   for(const k of tabs.length?tabs:['-']){if(k!=='-')document.querySelector(`[data-gt="${k}"]`).click();await new Promise(r=>setTimeout(r,250));const e=document.getElementById("off");res[g].fits.push([k,e.scrollHeight<=e.clientHeight+4,e.scrollHeight-e.clientHeight,getComputedStyle(e).fontSize]);}
   btn.click();/* toggles closed */}
  out.res=res;out.closedAfterToggle=document.getElementById('office').hidden;return out;},OBJS);
-await pg.evaluate(()=>{document.querySelector('[data-group="money"]').click();document.querySelector('[data-gt="claims"]').click();});await pg.waitForTimeout(300);
+await pg.evaluate(()=>{document.querySelector('[data-group="money"]').click();document.querySelector('[data-gt="insurance"]').click();});await pg.waitForTimeout(300);
 const bad=[];if(r.bar.join()!=='⚒Build,🔀Floor,💵Money,📦Supplies,📣Town,⭐Rank')bad.push('bar '+r.bar.join());
-if(r.res.floor.tabs.join()!=='flow,schedule:team,schedule:hire,schedule:cap')bad.push('floor tabs');if(r.res.money.tabs.length!==6)bad.push('money tabs');if(r.res.town.tabs.join()!=='promo,feed,inbox,patients')bad.push('town tabs');
+if(r.res.floor.tabs.join()!=='flow,schedule:team,schedule:hire,schedule:cap')bad.push('floor tabs');if(r.res.money.tabs.length!==4)bad.push('money tabs');if(r.res.town.tabs.join()!=='promo,feed,inbox,patients')bad.push('town tabs');
 if(!/vaccine/.test(r.res.floor.why))bad.push('why line missing: '+r.res.floor.why);if(!r.closedAfterToggle)bad.push('toggle did not close');
-if(vp.width===932){for(const [k,ok,ov] of r.res.money.fits)if(['metrics:money','metrics:loan','metrics:earn','claims'].includes(k)&&!ok)bad.push(k+' overflows '+ov);for(const [k,ok,ov] of r.res.supplies.fits)if(!ok)bad.push(k+' overflows '+ov);}
+if(vp.width===932){for(const [k,ok,ov] of r.res.money.fits)if(['metrics:money','metrics:loan','insurance'].includes(k)&&!ok)bad.push(k+' overflows '+ov);for(const [k,ok,ov] of r.res.supplies.fits)if(!ok)bad.push(k+' overflows '+ov);}
 console.log(vp.width,bad.length?bad:'ok');errs.push(...bad);await ctx.close();}
 console.log(errs,errs.length?'FAIL':'PASS');await b.close();})();
