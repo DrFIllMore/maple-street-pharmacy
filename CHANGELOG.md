@@ -1,5 +1,9 @@
 # Changelog
 
+## v25.28 · 2026-10-30 — Level 3 balance
+- Robot playtests of Level 3 (two seeds each): a player who buys the van and loyalty tiers and runs a price-match week when under 62% wins in 4–5 weeks; a player who changes nothing drifts to 40–50% and is bought out in 7–13 weeks. The chain's baseline pull is now 55% (settling to 65% over a month) so that a strong Level-2 store starts near 60% and has to use the new levers rather than coast.
+- The Level-2 test now expects Level 3 to open instead of the game ending.
+
 ## v25.27 · 2026-10-30 — Level 3: The Three Letter Store
 - **Level 2 no longer ends the game.** Trust 90, $100k net and a working drive-thru now open **Level 3**: a chain called **The Three Letter Store** opens across the street. A 9-second Channel 9 breaking-news scene pans from your store across the street as their sign goes up, a reporter on the sidewalk, the manager stepping out to fold their arms. The building stays on the map (outside view) with its own drive-thru and clinic when they add them.
 - **The block is shared.** Your share = 100% − their pull. Their pull starts around 45% and settles in over a month, grows with their moves and shrinks with yours: trust above 80, your drive-thru, a price list below fair, promotions (price-match week especially), the delivery van, loyalty tiers, good press. Their share also takes that many walk-ins (half of it), so losing the block costs real money.

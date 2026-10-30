@@ -11,7 +11,7 @@ const r=await pg.evaluate(()=>{document.getElementById('tNew').click();document.
  document.getElementById('majGo')&&document.getElementById('majGo').click();
  out.stallL2=a.placeStall(24,2);out.radioL2=a.buyPromo('radio');a.setBuild(true);a.setBuild(false);out.dtUnlocked=(S.unlocked||[]).includes('dtwin');
  /* Level 2 needs a working drive-thru too */S.trust=95;S.netTot=120000;run();out.doneNoDt=S.done||'';
- a.place('dtwin',15,0,2);for(let x=20;x>=15;x--)a.placeDrive(x,-1);a.placeDrive(15,-2);for(let x=16;x<=22;x++)a.placeDrive(x,-2);out.dtOpen=a.dtOpen();S.trust=95;run();out.final=S.done||'';
+ a.place('dtwin',15,0,2);for(let x=20;x>=15;x--)a.placeDrive(x,-1);a.placeDrive(15,-2);for(let x=16;x<=22;x++)a.placeDrive(x,-2);out.dtOpen=a.dtOpen();S.trust=95;run();out.final=S.done||'';out.major3=S.major;out.tls=!!S.tls;/* v25.27: Level 2 complete opens Level 3 (The Three Letter Store) instead of ending the game */
  return out;});
-const ok=r.goalL1==='Level 1'&&r.stallL1&&/Level 2/.test(r.radioL1)&&r.landL1&&r.majorAfterWk1===1&&r.major===2&&!r.done&&r.levelPage&&!r.stallL2&&!r.radioL2&&r.dtUnlocked&&!r.doneNoDt&&r.dtOpen&&r.final==='win'&&!errs.length;
+const ok=r.goalL1==='Level 1'&&r.stallL1&&/Level 2/.test(r.radioL1)&&r.landL1&&r.majorAfterWk1===1&&r.major===2&&!r.done&&r.levelPage&&!r.stallL2&&!r.radioL2&&r.dtUnlocked&&!r.doneNoDt&&r.dtOpen&&r.final===''&&r.major3===3&&r.tls&&!errs.length;
 console.log(JSON.stringify(r),errs,ok?'PASS':'FAIL');await b.close();})();
