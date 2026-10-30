@@ -1,5 +1,9 @@
 # Changelog
 
+## v25.26 · 2026-10-30 — Store focus and a storefront that grows
+- **Store focus.** At Level 2 a required decision asks what kind of pharmacy you are: **Clinic** (shots and consults +40%, walk-ins −5%), **Fast fills** (technicians 15% faster, OTC −20%), **Front store** (OTC shoppers +50%, regulars grow 20% slower) or **Specialty** (twice the specialty scripts, drugs cost 5% more). The focus shows on the Rank page and on the storefront sign and awning colour. After 8 weeks you can change it for $2,000.
+- **The storefront grows with your rank.** Rank 3: a painted sign over the door (inside view) and a green sign band (outside). Rank 5: a striped awning. Level 2: warm lights by the door and in the windows after 5 pm. Rank 8: a brass plaque by the door. Rank 10: the gold band.
+
 ## v25.25 · 2026-10-30 — Seasons, challenges, setbacks
 - **Seasons.** A 13-week cycle: Autumn (3 weeks, steady), Winter (4: shots +50%, sick days +40%, walk-ins −3%), Spring (3: walk-ins +8%, OTC shoppers +40%), Summer (3: walk-ins −10%, staff tire 10% slower, shots rare). The proposals page shows the season; the summary card and Monday's log announce a new one.
 - **Challenges.** From week 2, when you have none running, one of the proposals is a one- or two-week contract with a target and a reward: fill N prescriptions (clinic, cash), fewer walk-outs two weeks running (district office, trust +3), N flu shots in two weeks (county, $800), no call unanswered ($400), sell $N over the counter ($500), nobody under 40% energy (team morale +8), clear every open claim ($600). Targets come from your last week. No penalty for missing one. Progress shows as a blue line on every office page during the week, in the proposals while it runs, and the result on the Saturday card (+60 XP when met).
