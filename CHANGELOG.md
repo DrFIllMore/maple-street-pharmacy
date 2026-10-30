@@ -1,5 +1,16 @@
 # Changelog
 
+## v25.23 · 2026-10-30 — Six buttons
+- **The bottom bar is six buttons:** Build, Floor, Money, Supplies, Town, Rank. Each opens a drawer with its own tabs along the top (Floor: Flow · Team · Hire · Capacity; Money: This week · Loan · Earned · Equipment · Insurers · Claims; Supplies: Stock · Prices & deals · Upgrades; Town: Promote · Feed · Inbox). The drawer remembers the tab you were on in each group. Tapping the open group's button closes it.
+- **Badges moved with the pages:** open claims show on Money and the Claims tab; unread feed and mail show on Town and their tabs.
+- **One "what's wrong right now" line on every page** (amber; red when cash is below zero): out of doses, a long line at pick-up or drop-off, fills piling up at verify or in the bin, calls ringing out, a drive-thru backlog, stock running out. Between weeks it shows the Saturday takeaway. One line, same wording everywhere, so you never have to hunt for the reason.
+- Office pages shrink a little further before they resort to scrolling (down to 80% text), so This week fits again on an iPhone with the new tab row above it.
+
+## v25.22 · 2026-10-29 — The first day has a beat
+- **Tuesday morning of week 1, the block notices you:** a sheet with the first neighbor post about the new pharmacy and the Gazette's opening paragraph, with the small bonus it gives (customers +10%, trust +1, team morale +5 for three days). It explains that Saturdays are when the feed and the Gazette review the week, so the first review doesn't come as a surprise.
+- **Insurers owe you is a bar now, not a number:** the HUD's Insurers figure shows one bar per insurer filling as the check comes closer. Tap it to open Insurers.
+- The first two insurer checks pop a toast when they land, so the first week's "where's my money" question answers itself.
+
 ## v25.21 · 2026-10-29 — The week in one card
 - **Saturday opens on a summary card:** one sentence on the week's biggest issue (chosen by the same logic the advisors use), with the fix under it; cash, trust, served/lost and what insurers owe; and an in/out money bar. Two buttons: **Full report** or **Skip to** the next page that has something new.
 - **Pages only appear when they have news.** The feed shows when a post is bad, a promise was graded, a photo went viral or something new was built; the weekly call shows when an advisor is against you or changed their mind. A quiet week is the card, the stock order and the proposals.

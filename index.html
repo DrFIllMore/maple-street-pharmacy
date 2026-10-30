@@ -140,6 +140,8 @@
 .iou{position:relative;cursor:pointer;text-align:left}.ioub{position:absolute;left:0;right:0;bottom:-1px;display:flex;align-items:flex-end;gap:1px;height:6px;opacity:.9}.ioub i{flex:1;min-width:2px;background:#d9a441;border-radius:1px 1px 0 0;opacity:.85}.ioub i.now{background:#b8730f;opacity:1}
 .fb1{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;align-items:start;background:var(--panel-solid);border:1px solid var(--line);border-radius:10px;padding:5px;margin:2px 0}.fb1 img{width:110px;height:62px;object-fit:cover;border-radius:6px;display:block}.fbc{font-size:.88em;line-height:1.25}.fbc small{display:block;color:var(--ink-2);font-weight:700;margin-top:3px}
 .fbg{border-left:4px solid #1f1b16;padding:3px 8px;margin:2px 0;background:rgba(0,0,0,.04);border-radius:0 8px 8px 0}.fbg span{display:block;font-size:.7em;letter-spacing:.08em;text-transform:uppercase;font-weight:900}.fbg b{display:block;font-family:Georgia,serif;font-size:1em;line-height:1.15}.fbg small{display:block;color:var(--ink-2);font-weight:600}
+.gtabs{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 1px}.gtabs button{position:relative;height:22px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:var(--panel-solid);font:800 11.5px Nunito,sans-serif;color:var(--ink)}.gtabs button.on{background:var(--ink);color:var(--panel-solid);border-color:var(--ink)}.gtabs .pdot{position:absolute;top:-5px;right:-4px;min-width:14px;height:14px;border-radius:7px;background:var(--bad);color:#fff;font:900 9px/14px Nunito,sans-serif;font-style:normal;text-align:center;padding:0 3px}
+.why{font-size:.8em;line-height:1.25;font-weight:700;padding:3px 8px;border-radius:7px;background:rgba(239,159,39,.14);border-left:4px solid #ba7517;margin:0 0 2px}.why.bad{background:rgba(226,75,74,.1);border-left-color:var(--bad)}
 </style>
 <title>Maple Street Pharmacy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -394,17 +396,13 @@ button,.hud{touch-action:manipulation}
   </div>
   <div class="hud strip" id="strip">
     <button class="sb" id="buildBtn" aria-label="Build"><span>⚒</span>Build</button>
-    <button class="sb" data-tab="flow"><span>🔀</span>Flow</button>
-    <button class="sb" data-tab="metrics"><span>💵</span>Money</button>
-    <button class="sb" data-tab="insurance"><span>🏦</span>Insurers</button>
-    <button class="sb" data-tab="claims" id="claimsBtn"><span>📨</span>Claims<i id="claimsN" hidden></i></button>
-    <button class="sb" data-tab="schedule"><span>🗓</span>Staff</button>
-    <button class="sb" data-tab="inventory"><span>📦</span>Supplies</button>
-    <button class="sb" data-tab="promo"><span>📢</span>Promote</button>
-    <button class="sb" data-tab="feed" id="feedBtn"><span>📣</span>Feed<i id="feedN" hidden>new</i></button>
-    <button class="sb" data-tab="inbox" id="inboxBtn"><span>✉️</span>Inbox<i id="inboxN" hidden>4</i></button>
-    <button class="sb" data-tab="career" id="careerBtn"><span>⭐</span>Rank<i class="lv" id="lvN">1</i><b class="lvbar"><em id="lvBar"></em></b></button>
+    <button class="sb" data-group="floor"><span>🔀</span>Floor</button>
+    <button class="sb" data-group="money" id="moneyBtn"><span>💵</span>Money<i id="claimsN" hidden></i></button>
+    <button class="sb" data-group="supplies"><span>📦</span>Supplies</button>
+    <button class="sb" data-group="town" id="townBtn"><span>📣</span>Town<i id="townN" hidden></i></button>
+    <button class="sb" data-group="career" id="careerBtn"><span>⭐</span>Rank<i class="lv" id="lvN">1</i><b class="lvbar"><em id="lvBar"></em></b></button>
   </div>
+  <div id="tabCompat" hidden><button data-tab="flow"></button><button data-tab="metrics"></button><button data-tab="insurance"></button><button data-tab="claims" id="claimsBtn"></button><button data-tab="schedule"></button><button data-tab="inventory"></button><button data-tab="promo"></button><button data-tab="feed" id="feedBtn"><i id="feedN" hidden></i></button><button data-tab="inbox" id="inboxBtn"><i id="inboxN" hidden></i></button><button data-tab="career"></button></div>
   <div id="cheer" role="status" aria-live="polite" hidden></div>
   <div id="pin" class="pin" hidden></div>
   <div class="cine" id="cine" hidden></div>
@@ -456,7 +454,7 @@ button,.hud{touch-action:manipulation}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const BUILD='v25.22 · 2026-10-29';
+const BUILD='v25.23 · 2026-10-29';
 /* money: thousands separators without Intl (toLocaleString was a hot spot, called every frame by the HUD) */const fmt=n=>(n<0?'−':'')+'$'+String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1670,7 +1668,7 @@ function capacityHtml(){const ws=staffSorted().filter(w=>(w.wkTicks||0)>0);if(!w
     <div class="cp hd"><span>Who</span><span>Where their time went</span><span class="n">Idle</span><span class="n">Jobs/h</span><span class="n">Off-role</span></div>${rows}
     ${notes.length?`<div class="cnotes">${notes.map(n=>`<div>• ${n}</div>`).join('')}</div>`:''}
     <div class="foot">Off-role = time outside their own area (clerk: counter · tech: fill, stock · pharmacist: check, consult). Idle under 10% means no slack left.</div>`;}
-const moneyTabs=()=>`<div class="tabs2">${[['money','This week'],['loan','Loan'],['earn','Earned'],['equip','Equipment']].map(([k,n])=>`<button class="${(S.moneyTab||'money')===k?'on':''}" data-mtab="${k}">${n}</button>`).join('')}</div>`;
+const moneyTabs=()=>'';
 /* Equipment: one row per item. Earners show money; workstations show jobs (the sale is credited at the register, so fill/verify have no $ of their own); support items are summed. */
 function invested(o){const T=TYPES[o.type];let c=T.cost||0;if(T.levels)for(let i=1;i<=(o.level||0);i++)c+=T.levels[i].cost||0;return c;}
 function equipHtml(){/* v25.17: one row per kind of item (not one per item), and two views so it fits without scrolling */const EARN=['register','otc','consult','dtwin'],WORK=['dropoff','bin','fill','verify','shelf','phone','problem','fridge'],STORE=['bin','shelf','fridge'];
@@ -1689,12 +1687,32 @@ function equipHtml(){/* v25.17: one row per kind of item (not one per item), and
     <div class="foot">This week so far, averaged across items of the same kind.</div>`;}
 function openStaff(){openOffice('schedule');}
 function openOffice(tab){const same=!$('office').hidden&&tab===officeTab;closeAll();if(same)return;if(tab)officeTab=tab;const was=$('office').hidden;$('office').hidden=false;renderOffice();if(was&&!ROT){const dw=$('office').offsetWidth;const want=Math.round(dw*.45);cam.x-=want-offShift;offShift=want;}}
-function closeOffice(){$('office').hidden=true;document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.remove('on'));cam.x+=offShift;offShift=0;renderHud();}
+function closeOffice(){$('office').hidden=true;document.querySelectorAll('.sb[data-group]').forEach(b=>b.classList.remove('on'));cam.x+=offShift;offShift=0;renderHud();}
 /* v25.17: shrink an office page a little (down to 74%) when it would otherwise need scrolling */
-function fitOff(){const el=$('off');if(!el||$('office').hidden)return;el.style.fontSize='';const sh=el.scrollHeight,ch=el.clientHeight;if(sh<=ch+1)return;const need=ch/sh;if(need<.8)return;/* a long list (staff, campaigns) scrolls at full size rather than shrinking */let k=Math.max(.83,Math.floor(need*.97*25)/25);el.style.fontSize=k.toFixed(2)+'em';if(el.scrollHeight>el.clientHeight+1&&k>.83){k=Math.max(.83,k-.04);el.style.fontSize=k.toFixed(2)+'em';}if(el.scrollHeight>el.clientHeight+8)el.style.fontSize='';}
+function fitOff(){const el=$('off');if(!el||$('office').hidden)return;el.style.fontSize='';const sh=el.scrollHeight,ch=el.clientHeight;if(sh<=ch+1)return;const need=ch/sh;if(need<.76)return;/* a long list (staff, campaigns) scrolls at full size rather than shrinking */let k=Math.max(.8,Math.floor(need*.97*25)/25);el.style.fontSize=k.toFixed(2)+'em';if(el.scrollHeight>el.clientHeight+1&&k>.8){k=Math.max(.8,k-.04);el.style.fontSize=k.toFixed(2)+'em';}if(el.scrollHeight>el.clientHeight+8)el.style.fontSize='';}
+/* v25.23: six bottom buttons; each office page belongs to a group, and the group's pages are tabs inside the drawer */
+const GROUPS={floor:[['flow','Flow'],['schedule:team','Team'],['schedule:hire','Hire'],['schedule:cap','Capacity']],money:[['metrics:money','This week'],['metrics:loan','Loan'],['metrics:earn','Earned'],['metrics:equip','Equipment'],['insurance','Insurers'],['claims','Claims']],supplies:[['inventory:stock','Stock'],['inventory:deals','Prices & deals'],['inventory:upg','Upgrades']],town:[['promo','Promote'],['feed','Feed'],['inbox','Inbox']],career:[['career','Career']]};
+const groupOf=tab=>Object.keys(GROUPS).find(g=>GROUPS[g].some(([k])=>k.split(':')[0]===tab))||'money';
+function curTabKey(){if(officeTab==='metrics')return 'metrics:'+(S.moneyTab||'money');if(officeTab==='schedule')return 'schedule:'+(S.staffTab||'team');if(officeTab==='inventory')return 'inventory:'+(S.supTab||'stock');return officeTab;}
+function goTabKey(key){const [tab,sub]=key.split(':');if(tab==='metrics')S.moneyTab=sub||'money';if(tab==='schedule')S.staffTab=sub||'team';if(tab==='inventory')S.supTab=sub||'stock';if(!$('office').hidden&&officeTab===tab){renderOffice();return;}officeTab=tab;if($('office').hidden)openOffice(tab);else renderOffice();}
+function openGroup(g){const last=(S.lastTab||{})[g]||GROUPS[g][0][0];const same=!$('office').hidden&&groupOf(officeTab)===g;if(same){closeOffice();return;}goTabKey(last);}
+function groupTabsHtml(){const g=groupOf(officeTab);const cur=curTabKey();(S.lastTab=S.lastTab||{})[g]=cur;if(GROUPS[g].length<2)return '';const oc=S.claims.filter(c=>c.status==='open').length;const badge=k=>k==='claims'&&oc?`<i class="pdot">${oc}</i>`:k==='feed'&&S.feed&&!S.feed.seen?'<i class="pdot">!</i>':k==='inbox'&&S.inbox&&!S.inbox.seen?`<i class="pdot">${S.inbox.mails.length}</i>`:'';return `<div class="gtabs">${GROUPS[g].map(([k,n])=>`<button class="${k===cur?'on':''}" data-gt="${k}">${n}${badge(k)}</button>`).join('')}</div>`;}
+/* one line, on every office page: what is wrong right now (live), from the same logic as the advisors */
+function whyNow(){if(!S||!S.opened)return null;if(!S.running){const T=S.wk&&S.wk.takeaway;return T&&T.sev!=='ok'&&T.sev!=='good'?T:null;}const w=S.wk;const ring=S.scripts.filter(x=>x.stage==='ringing').length,tray=S.scripts.filter(x=>x.stage==='tray').length,bin=S.scripts.filter(x=>x.stage==='bin').length;const ql=t=>objsOf(t).reduce((m,o)=>Math.max(m,S.patients.filter(p=>p.q===o.id&&p.state==='queued').length),0);
+  if(S.cash<0)return {sev:'bad',t:`Cash is ${fmt(S.cash)}. Get above $0 by Saturday close.`};
+  if(S.contracts.vax&&S.vaxDoses<=0&&objsOf('consult').length)return {sev:'warn',t:'Out of vaccine doses: shots are being turned away. Order in Supplies.'};
+  if(ql('register')>=5)return {sev:'warn',t:`${ql('register')} waiting at pick-up. A free clerk or another register.`};
+  if(ql('dropoff')>=5)return {sev:'warn',t:`${ql('dropoff')} waiting at drop-off. A free clerk or another window.`};
+  if(tray>=6)return {sev:'warn',t:`${tray} fills waiting for a pharmacist's check. Verify is the jam.`};
+  if(bin>=8)return {sev:'warn',t:`${bin} baskets in the bin. Fills are the jam: another tech or station.`};
+  if(ring>=4)return {sev:'warn',t:`${ring} calls waiting. Nobody free for the phone.`};
+  if(dtOpen&&dtOpen()&&dtWaiting()>=5)return {sev:'warn',t:`${dtWaiting()} cars in the drive-thru line.`};
+  if(S.stock<demandPerDay()*1.5)return {sev:'warn',t:`Stock is low: ${S.stock} units, about ${Math.max(0,Math.floor(S.stock/Math.max(1,demandPerDay())))} day(s). Order on the Stock slip.`};
+  return null;}
+function whyLine(){const W=whyNow();return W?`<div class="why ${W.sev}">${W.t}</div>`:'';}
 function renderOffice(){requestAnimationFrame(fitOff);setTimeout(fitOff,0);$('office').classList.toggle('wide',officeTab==='schedule'||(officeTab==='metrics'&&S.moneyTab==='equip'));const el=$('off');const oc=S.claims.filter(c=>c.status==='open').length;
   const tabs=[['metrics','📈','Money'],['insurance','🏦','Insurers'],['claims','📨','Claims'],['schedule','🗓','Shifts'],['inventory','📦','Stock'],['pricing','🏷','Prices']];
-  document.querySelectorAll('.sb[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===officeTab));$('offClose').onclick=()=>{SFX.click();closeOffice();};
+  document.querySelectorAll('.sb[data-group]').forEach(b=>b.classList.toggle('on',b.dataset.group===groupOf(officeTab)));$('offClose').onclick=()=>{SFX.click();closeOffice();};
   let body='';const ds=S.days.slice(-18);
   const line=(key,col,max)=>{if(ds.length<2)return '';const mx=max||Math.max(1,...ds.map(d=>typeof key==='function'?key(d):d[key]));const Wd=200,H=26;const pts=ds.map((d,i)=>{const v=typeof key==='function'?key(d):d[key];return [i/(ds.length-1)*Wd,H-2-(v/mx)*(H-4)];});return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/></svg>`;};
   if(officeTab==='flow')body=flowHtml();
@@ -1725,7 +1743,7 @@ function renderOffice(){requestAnimationFrame(fitOff);setTimeout(fitOff,0);$('of
       ${pages>1?`<div class="clpg"><button class="a" data-clpg="-1" ${S.claimPg?'':'disabled'}>‹ Prev</button><span>Page ${S.claimPg+1} of ${pages}</span><button class="a" data-clpg="1" ${S.claimPg<pages-1?'':'disabled'}>Next ›</button></div>`:''}
       ${closed.length?`<div class="lbl">Recent</div>${closed.map(c=>`<div class="clm cl1" style="opacity:.75"><div>${c.plan} · ${c.name} <small>· ${c.reason} · ${c.status}</small></div></div>`).join('')}`:''}
       <div class="foot">${objsOf('problem').length?'A free clerk or your pharmacist works these at the problem desk (70% paid).':`Appeal: ~60% paid (70% with a problem desk), two weeks later. Cash: the patient pays ${fmt(S.cashPrice)} now, some walk. Drop: gone.`}${objsOf('problem').length?'':' A problem desk does this for you.'}</div>`;}
-  if(officeTab==='schedule'){S.staffTab=['cap','hire'].includes(S.staffTab)?S.staffTab:'team';const tabs=`<div class="tabs2">${[['team','Team'],['hire','Hire'+(market().cands.length?' ('+market().cands.length+')':'')],['cap','Capacity']].map(([k,n])=>`<button class="${S.staffTab===k?'on':''}" data-stab="${k}">${n}</button>`).join('')}</div>`;
+  if(officeTab==='schedule'){S.staffTab=['cap','hire'].includes(S.staffTab)?S.staffTab:'team';const tabs='';
     let sb='';
     if(S.staffTab==='cap')sb=capacityHtml();else if(S.staffTab==='hire')sb=hireHtml();else{
       const enCol=e=>e>=EN.tired?'var(--good)':e>=EN.exhausted?'#ef9f27':'var(--bad)';const moCol=m=>m>=MO.low?'#378add':m>=MO.complain?'#ef9f27':'var(--bad)';
@@ -1748,7 +1766,7 @@ function renderOffice(){requestAnimationFrame(fitOff);setTimeout(fitOff,0);$('of
       ${(()=>{const nx=Object.keys(PROMOS).filter(k=>!promoOpen(k)&&!PROMOS[k].m2).sort((a,b)=>PROMOS[a].lv-PROMOS[b].lv).slice(0,2);const m2=Object.keys(PROMOS).filter(k=>PROMOS[k].m2&&!promoOpen(k)).length;return (nx.length||m2)?`<div class="foot">🔒 ${nx.map(k=>`<b>${PROMOS[k].n}</b> at rank ${PROMOS[k].lv}`).join(' · ')}${nx.length&&m2?' · ':''}${m2?`<b>${m2} new campaigns</b> at Level 2 (radio, billboard, TV, sponsorships…)`:''}.</div>`:'';})()}
       ${(S.promoLog||[]).length?`<div class="tile"><small>Recent campaigns</small>${S.promoLog.slice(0,3).map(r=>`<div class="pay"><div><span>${r.n} · wk ${r.wk}</span><b class="${r.boost?(r.val>=r.cost?'pos':'neg'):''}">${r.boost?`~${r.extra} customers · ${fmt(r.val)} vs ${fmt(r.cost)}`:(r.reg?`regulars ${r.reg>0?'+':''}${r.reg}`:'done')}</b></div></div>`).join('')}</div>`:''}`;}
   if(officeTab==='inventory'){const perDay=demandPerDay();const daysLeft=perDay?Math.floor(S.stock/perDay):99;const ups=S.objs.filter(o=>TYPES[o.type].levels&&TYPES[o.type].levels[o.level+1]);
-    const stab=S.supTab||'stock';const stabs=`<div class="tabs2">${[['stock','Stock'],['deals','Prices & deals'],['upg','Upgrades'+(ups.length?' ('+ups.length+')':'')]].map(([k,n])=>`<button class="${stab===k?'on':''}" data-stab2="${k}">${n}</button>`).join('')}</div>`;
+    const stab=S.supTab||'stock';const stabs='';
     const note=k=>k==='gen'?`~${daysLeft} days at today's pace`:k==='vax'?(S.contracts.vax?`~${Math.round(shotsPerDay())} shots wanted a day`:'needs the vaccine contract'):k==='otc'?(objsOf('otc').length?`~${Math.round(shopPerDay())} shoppers a day + Rx buyers`:'needs an OTC shelf'):(S.contracts.special?'cold chain · spoils 10% a week':'needs the specialty contract');
     const stockT=`<div class="tile"><div class="stk"><div class="sh"><span>Item</span><span>On hand</span><span>Monday</span></div>${['gen','vax','otc','brand'].map(k=>`<div><span><b>${INV[k].n}</b><small>${note(k)}</small></span><span class="${k==='gen'&&daysLeft<3||k==='vax'&&S.contracts.vax&&S.vaxDoses<10?'neg':''}">${invOn(k)}</span><span>${S.inv.order[k]?'+'+S.inv.order[k]:'—'}</span></div>`).join('')}</div>${S.inv.recv.length?`<div class="foot neg">${S.inv.recv.length} delivery box${S.inv.recv.length>1?'es':''} waiting to be put away.</div>`:''}</div>`;
     const dealsT=`<div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Fair price on this block: <b>${fmt(fairPrice())}</b> (rises with trust). ${priceHint()}</div></div><div class="seg"><button id="prM" ${S.cashPrice<=PRICE_MIN?'disabled':''}>−$4</button><button id="prP" ${S.cashPrice>=PRICE_MAX?'disabled':''}>+$4</button></div></div>
@@ -1762,8 +1780,8 @@ function renderOffice(){requestAnimationFrame(fitOff);setTimeout(fitOff,0);$('of
   if(officeTab==='career')body=careerHtml();
   if(officeTab==='feed'){const f=S.feed;if(f)f.seen=true;body=`<h2>Neighborhood feed <small>${f?'week '+f.week:'nothing yet'}</small></h2>${f?feedPostsHtml(f,false):'<div class="foot">Posts appear after your first full week.</div>'}`;}
   if(officeTab==='pricing_old'){body=`<h2>Prices</h2><div class="lever"><div><div class="n">Cash price per script · ${fmt(S.cashPrice)}</div><div class="h">Higher = fewer cash customers. Insured patients pay a ${fmt(COPAY)} copay regardless.</div></div><div class="seg"><button id="prM">−$2</button><button id="prP">+$2</button></div></div><div class="foot">Consults ${fmt(CONSULT)} cash. OTC items ${fmt(OTC)}; about a third of walk-ins buy one if you have a shelf.</div>`;}
-  el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Insurers',claims:'Claims',schedule:'Roster',inventory:'Supplies',pricing:'Price list',feed:'Neighborhood',flow:'Operations',promo:'Marketing',inbox:'Correspondence'}[officeTab]);fitOff();el.classList.remove('tight');if(el.scrollHeight>el.clientHeight+2)el.classList.add('tight');/* drop the slip footer and tighten gaps before resorting to scrolling */
-  el.querySelectorAll('[data-ach]').forEach(b=>b.onclick=()=>{achSel=b.dataset.ach;renderOffice();});el.querySelectorAll('[data-cine]').forEach(b=>b.onclick=()=>{$('office').hidden=true;playCine(b.dataset.cine);});el.querySelectorAll('[data-borrow]').forEach(b=>b.onclick=()=>{const e=borrow(+b.dataset.borrow);if(e)toast(e);renderOffice();renderHud();});el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{const k=b.dataset.pay;const e=k==='bill'?prepayLoan():payLoan(k==='all'?S.loan:+k);if(e)toast(e);renderOffice();renderHud();});
+  body=body.replace(/<\/h2>/,'</h2>'+groupTabsHtml()+whyLine());el.innerHTML=rxHead()+body+rxFoot({metrics:'Cash forecast',insurance:'Insurers',claims:'Claims',schedule:'Roster',inventory:'Supplies',pricing:'Price list',feed:'Neighborhood',flow:'Operations',promo:'Marketing',inbox:'Correspondence'}[officeTab]);fitOff();el.classList.remove('tight');if(el.scrollHeight>el.clientHeight+2)el.classList.add('tight');/* drop the slip footer and tighten gaps before resorting to scrolling */
+  el.querySelectorAll('[data-gt]').forEach(b=>b.onclick=()=>{SFX.click();goTabKey(b.dataset.gt);});el.querySelectorAll('[data-ach]').forEach(b=>b.onclick=()=>{achSel=b.dataset.ach;renderOffice();});el.querySelectorAll('[data-cine]').forEach(b=>b.onclick=()=>{$('office').hidden=true;playCine(b.dataset.cine);});el.querySelectorAll('[data-borrow]').forEach(b=>b.onclick=()=>{const e=borrow(+b.dataset.borrow);if(e)toast(e);renderOffice();renderHud();});el.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{const k=b.dataset.pay;const e=k==='bill'?prepayLoan():payLoan(k==='all'?S.loan:+k);if(e)toast(e);renderOffice();renderHud();});
     el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h;if(h.startsWith('float')){const r=h.split('-')[1]||'rph';const f=floaterGet(r);glog('staff',`${f.name} is your ${r==='rph'?'floater pharmacist':'temp '+ROLE[r].toLowerCase()}: ${fmt(TEMP_DAY[r])} per booked day. Tap their days in the grid to book.`);}else if(h.startsWith('pt-'))hireStaff(h.slice(3),true);else hireStaff(h);renderOffice();renderHud();});
   el.querySelectorAll('[data-cand]').forEach(b=>b.onclick=()=>{hireCand(b.dataset.cand);renderOffice();renderHud();});
   if($('autoRest'))$('autoRest').onclick=()=>{S.autoRest=!S.autoRest;SFX.click();glog('staff',S.autoRest?'Keep everyone rested is on: tired staff get a day off when cover allows.':'Keep everyone rested is off.');renderOffice();};
@@ -1848,7 +1866,7 @@ function weekSoFar(){/* projected week net: counter cash on current pace + what 
 function runwayWeeks(){const burn=wages()+S.rent+loanDue()+orderCost();const h=S.hist||[];const inflow=h.length?h[h.length-1].inflow:S.wk.cashIn/Math.max(.15,(S.day*TICKS_DAY+S.tick)/(TICKS_DAY*DAYS_WEEK));const net=inflow-burn;if(net>=0)return Infinity;return Math.max(0,S.cash/-net);}
 $('menuBtn').onclick=()=>{const m=$('menu');m.hidden=!m.hidden;SFX.click();};
 $('mStaff').onclick=()=>openOffice('schedule');$('mOffice').onclick=()=>openOffice('metrics');
-document.querySelectorAll('.sb[data-tab]').forEach(b=>b.onclick=()=>{SFX.click();openOffice(b.dataset.tab);});
+document.querySelectorAll('.sb[data-group]').forEach(b=>b.onclick=()=>{SFX.click();openGroup(b.dataset.group);});document.querySelectorAll('#tabCompat [data-tab]').forEach(b=>b.onclick=()=>openOffice(b.dataset.tab));
 $('mChat').onclick=()=>{L.chatShown=!L.chatShown;$('mChat').textContent='Chat: '+(L.chatShown?'shown':'hidden');applyLayout();renderChat();$('menu').hidden=true;};
 $('mSize').onclick=()=>{L.size=L.size===1?1.2:L.size===1.2?.85:1;$('mSize').textContent='HUD size: '+(L.size===1?'M':L.size===1.2?'L':'S');applyLayout();fitWorld();};
 $('mSound').onclick=()=>{setSound(!AU.on);$('mSound').textContent='Sound: '+(AU.on?'on':'off');};
@@ -1865,7 +1883,7 @@ function renderHud(){syncViewLock();renderPin();if(!$('office').hidden&&S.runnin
   $('goalI').style.width=Math.round(goalPct()*100)+'%';{const gl=$('goalL');if(gl)gl.textContent='Level '+major();}
   $('cash').textContent=fmt(S.cash);$('cash').className=S.cash<0?'neg':'';$('owed').textContent=fmt(owedTotal());renderIou();$('trust').textContent=Math.round(S.trust);
   {const sc=satCash();const e=$('sat');if(sc===null){e.textContent='—';e.className='';}else{e.textContent=(Math.abs(sc)>=10000?(sc<0?'−':'')+'$'+(Math.abs(sc)/1000).toFixed(1)+'k':fmt(Math.round(sc/10)*10));e.className=sc<0?'neg':sc<2000?'warn':'';}}
-  const oc=S.claims.filter(c=>c.status==='open').length;$('claimsN').hidden=!oc;$('claimsN').textContent=oc;$('feedN').hidden=!(S.feed&&!S.feed.seen);$('inboxN').hidden=!(S.inbox&&!S.inbox.seen);}
+  const oc=S.claims.filter(c=>c.status==='open').length;$('claimsN').hidden=!oc;$('claimsN').textContent=oc;$('feedN').hidden=!(S.feed&&!S.feed.seen);{const t=$('townN');if(t){const n=(S.feed&&!S.feed.seen?1:0)+(S.inbox&&!S.inbox.seen?1:0);t.hidden=!n;t.textContent=n;}}$('inboxN').hidden=!(S.inbox&&!S.inbox.seen);}
 
 
 /* ============ renderer ============ */
