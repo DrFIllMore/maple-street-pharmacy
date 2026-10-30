@@ -1,5 +1,13 @@
 # Changelog
 
+## v25.24 · 2026-10-30 — Regulars and staff stories
+- **The same 18 neighbors keep coming back.** Each regular has a medication (Mrs. Alvarez: blood pressure pills; Mr. Chen: insulin…) and a refill rhythm (every 2 or 4 weeks). A regular's visits carry their name on the floor, in the log and in the feed.
+- **They remember how it went.** A quick visit makes a regular happier (up to loyal); a slow visit, a "come back later" or a walk-out makes them unhappy. Three bad visits and they switch to another pharmacy — the log says who left and what they took. Once trust is above 85 they may come back after three weeks.
+- **New page: Town → Regulars.** Who's happy, fine, unhappy or gone; the three who most need attention with the reason (e.g. "Gave up at pick-up in week 3"); chips for the rest; who you haven't met yet.
+- **Unhappy regulars are the ones who post.** Bad feed posts now come from a regular who's had a bad visit, when there is one.
+- **Staff have a story.** Each employee keeps a few lines: hired from the job market (and their trait), raises, promotions, sick days, giving notice. The worker sheet shows the latest under "Story" (tap it for all of them).
+- **Small staff moments** at the start of some weeks: someone knows an unhappy regular from the neighborhood and wins them back; a birthday (cake in the break room lifts the whole team +3; with no break room it goes unnoticed, −3 for them); someone back from being sick asks for an easier week (+15 energy).
+
 ## v25.23 · 2026-10-30 — Six buttons
 - **The bottom bar is six buttons:** Build, Floor, Money, Supplies, Town, Rank. Each opens a drawer with its own tabs along the top (Floor: Flow · Team · Hire · Capacity; Money: This week · Loan · Earned · Equipment · Insurers · Claims; Supplies: Stock · Prices & deals · Upgrades; Town: Promote · Feed · Inbox). The drawer remembers the tab you were on in each group. Tapping the open group's button closes it.
 - **Badges moved with the pages:** open claims show on Money and the Claims tab; unread feed and mail show on Town and their tabs.
