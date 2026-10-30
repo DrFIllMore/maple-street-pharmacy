@@ -26,5 +26,5 @@ const r=await pg.evaluate(async (OBJS)=>{localStorage.clear();document.getElemen
 console.log(JSON.stringify(r,null,1));
 await pg.screenshot({path:'regulars.png'});
 const last=r.weeks[r.weeks.length-1];
-if(last.met<4)errs.push('too few regulars met: '+last.met);if(last.fills<8)errs.push('too few regular fills');if(r.page.over>4)errs.push('Regulars page overflows by '+r.page.over);if(!/Regulars/.test(r.page.text))errs.push('page missing');if(r.regLeftErr)errs.push(r.regLeftErr);if(r.mem.length!==1)errs.push('memory not stored');if(!r.moments.some(n=>n>1))errs.push('no staff moments fired');
+if(last.met<4)errs.push('too few regulars met: '+last.met);if(last.fills<8)errs.push('too few regular fills');if(r.page.over>4)errs.push('Regulars page overflows by '+r.page.over);if(!/Regulars/.test(r.page.text))errs.push('page missing');if(r.regLeftErr)errs.push(r.regLeftErr);if(!r.mem.includes('Test memory'))errs.push('memory not stored');if(!r.moments.some(n=>n>1))errs.push('no staff moments fired');
 console.log(errs,errs.length?'FAIL':'PASS');await b.close();})();

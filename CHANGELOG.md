@@ -1,5 +1,11 @@
 # Changelog
 
+## v25.25 · 2026-10-30 — Seasons, challenges, setbacks
+- **Seasons.** A 13-week cycle: Autumn (3 weeks, steady), Winter (4: shots +50%, sick days +40%, walk-ins −3%), Spring (3: walk-ins +8%, OTC shoppers +40%), Summer (3: walk-ins −10%, staff tire 10% slower, shots rare). The proposals page shows the season; the summary card and Monday's log announce a new one.
+- **Challenges.** From week 2, when you have none running, one of the proposals is a one- or two-week contract with a target and a reward: fill N prescriptions (clinic, cash), fewer walk-outs two weeks running (district office, trust +3), N flu shots in two weeks (county, $800), no call unanswered ($400), sell $N over the counter ($500), nobody under 40% energy (team morale +8), clear every open claim ($600). Targets come from your last week. No penalty for missing one. Progress shows as a blue line on every office page during the week, in the proposals while it runs, and the result on the Saturday card (+60 XP when met).
+- **Designed setbacks**, as required decisions with a trade-off: a SilverPlan **claims audit** (open claims cost $100 each; pay a $400 fee or do it in-house with clerks 20% slower that week), a **drug recall** (15% of stock goes back: take the wholesaler's credit and run light, or $500 for a rush replacement), and a **state inspection** of the consult room (prepare for $300, or say you're ready: a fridge and doses in stock pass for +2 trust; a fail closes the room for the week, −1 trust). Each has a cooldown of 6–8 weeks.
+- The desk shows three proposals at most, so it never scrolls: when a challenge is offered, the routine staff note steps aside (a real staff request does not).
+
 ## v25.24 · 2026-10-30 — Regulars and staff stories
 - **The same 18 neighbors keep coming back.** Each regular has a medication (Mrs. Alvarez: blood pressure pills; Mr. Chen: insulin…) and a refill rhythm (every 2 or 4 weeks). A regular's visits carry their name on the floor, in the log and in the feed.
 - **They remember how it went.** A quick visit makes a regular happier (up to loyal); a slow visit, a "come back later" or a walk-out makes them unhappy. Three bad visits and they switch to another pharmacy — the log says who left and what they took. Once trust is above 85 they may come back after three weeks.
