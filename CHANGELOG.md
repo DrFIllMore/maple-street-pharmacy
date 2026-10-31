@@ -1,5 +1,10 @@
 # Changelog
 
+## v25.30 · 2026-10-31 — Appealed claims were getting stuck
+- **Bug (from a debug report):** with the new claims policy, an auto-appealed claim was put in the appeal queue and then immediately overwritten back to "waiting for your decision" by the verify step — so it sat in a stage nobody works. One save had 75 scripts stuck that way (about $3,700 of insurer money never collected). Fixed; saves are repaired on load and at each week start (the log says how many went back into the queue).
+- The log line "waiting for your decision in Manage → Claims" only appears under the Ask-me policy, and now points to Money → Insurers → Claims.
+- The "waiting at pick-up" line names the real jam when clerks are idle: people are waiting for bags that aren't ready (verify or fill), not for a clerk.
+
 ## v25.29 · 2026-10-30 — Every screen trimmed
 From the screen-by-screen review (28 screens measured on a phone-sized frame).
 - **Live feed.** Town → Feed now shows posts as they happen: a quick visit, a walk-out, someone sick on the floor, a regular switching pharmacies or coming back, a staff birthday, a campaign you launched, a Gazette story, the chain's moves across the street, a challenge met. Four newest first, "Earlier posts" folds the rest; the Saturday roundup (with replies and promises) is a tab beside it. The Town badge counts new posts.
