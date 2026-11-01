@@ -1,5 +1,22 @@
 # Changelog
 
+## v25.31 · 2026-11-01 — Start of game, Loan, Prices & deals, and the second-pass fixes
+- **Before the doors open, the bottom bar is there.** Build, Floor (hire), Money, Supplies, Town and Rank are all reachable while you build; the palette sits above the bar. (After opening, Build still takes the whole bottom as before.)
+- **Build items are sorted by price**, cheapest on the left, in every category.
+- **Loan:** the three tiles are Loan left · Due Saturday · Interest, one line each, same height.
+- **Prices & deals:** the price card is two lines (what you charge vs. fair, and the effect). Flu shots read "Vaccine doses · 46 in stock — you give about 16 shots a day (93 a week); each shot bills $45, a dose costs you $12", with one button: "Order 50 doses · $600". No more "signed" stamp or "+50 · $600".
+- From the second review pass:
+  - Achievement toasts never show over a review page; they wait for the floor.
+  - Regulars: only a walk-out or a "come back later" counts against a regular; a slow-but-served visit is neutral. A typical store now shows most regulars happy.
+  - Monday order suggestions: vaccines are suggested from last week's shots given plus missed (+20%), not a flat 30; the OTC "shoppers a day" estimate uses last week's sales when the shelf is empty.
+  - Claims page lights the Insurers tab and has a "‹ Back to Insurers" link; the Gazette prints the week's tally (rejected · appealed · written off) instead of "work new rejections".
+  - Feed: only bad posts count toward the Town badge (capped at 3); when a regular leaves, their walk-out is not posted twice.
+  - Capacity rows are half the height (the text under each bar is now a tooltip).
+  - Flow caption, worker-sheet rows, the Rank "closest to earning" line, and the flu-shot bubbles (now a small 💉) all trimmed.
+  - Declined standing offers (QuickPay, vaccines, specialty, loyalty, paper ad) rest four weeks before coming back.
+  - Hire: the Hire button is quiet (not green) when the fit says "not needed".
+- **Two new standing orders**, in the spirit of the claims policy: **Auto-order** on the stock slip (fills Monday's order from last week's use and skips the slip on Saturdays) and **Half days when idle** on Team (anyone idle over half of last week works Mon–Wed mornings until busy again).
+
 ## v25.30 · 2026-10-31 — Appealed claims were getting stuck
 - **Bug (from a debug report):** with the new claims policy, an auto-appealed claim was put in the appeal queue and then immediately overwritten back to "waiting for your decision" by the verify step — so it sat in a stage nobody works. One save had 75 scripts stuck that way (about $3,700 of insurer money never collected). Fixed; saves are repaired on load and at each week start (the log says how many went back into the queue).
 - The log line "waiting for your decision in Manage → Claims" only appears under the Ask-me policy, and now points to Money → Insurers → Claims.
