@@ -1,5 +1,12 @@
 # Changelog
 
+## v25.32 · 2026-11-02 — Building on a phone
+- **The palette gets out of the way while you place.** Tap an item and the palette collapses to one line ("Drop-off window · $600 — tap the floor to place it", with Rotate and Done); the whole floor is visible while you tap. "Items ▴" brings the list back; picking a category or another item collapses it again.
+- The "new" counts on the category tabs sit inside the tab instead of hanging off its corner (they were cut off on the phone).
+- Before opening, the bottom bar under the palette is slimmer so the floor keeps more room.
+- **Bug:** an OTC shelf could go to −12 in stock when two shoppers reached it at once; the second now finds it empty. Saves are repaired on load.
+- Labels that were cut off at the phone's width: "Saturday" tile on Money, "Take credit / Rush · $500" on the recall card.
+
 ## v25.31 · 2026-11-01 — Start of game, Loan, Prices & deals, and the second-pass fixes
 - **Before the doors open, the bottom bar is there.** Build, Floor (hire), Money, Supplies, Town and Rank are all reachable while you build; the palette sits above the bar. (After opening, Build still takes the whole bottom as before.)
 - **Build items are sorted by price**, cheapest on the left, in every category.

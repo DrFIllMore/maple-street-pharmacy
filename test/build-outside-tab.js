@@ -8,5 +8,5 @@ const r=await pg.evaluate(()=>{localStorage.clear();document.getElementById('tNe
  const t=document.getElementById('palTabs');const over=t.scrollWidth>t.clientWidth+1;document.querySelector('[data-go="out"]').click();const items=[...document.querySelectorAll('#palItems [data-t]')].map(b=>b.dataset.t);const view=document.querySelector('[data-go="in"]')?'out':'?';return {over,items,view};});
 await pg.waitForTimeout(400);
 const r2=await pg.evaluate(()=>{document.querySelector('[data-go="in"]').click();return [...document.querySelectorAll('#palItems [data-t]')].map(b=>b.dataset.t).join(',');});
-const ok=!r.over&&r.items.join()==='stall,drive,grass'&&r2.startsWith('dropoff');if(!ok)errs.push('bad '+vp.width);console.log(vp.width,JSON.stringify(r),r2);await ctx.close();}
+const ok=!r.over&&r.items.join()==='stall,drive,grass'&&r2.startsWith('bin')/* sorted by price since v25.31 */;if(!ok)errs.push('bad '+vp.width);console.log(vp.width,JSON.stringify(r),r2);await ctx.close();}
 console.log(errs,errs.length?'FAIL':'PASS');await b.close();})();
